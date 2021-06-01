@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="obs_box" params="prefix x y z attach_to_world loc_x loc_y orientation">
+
+    <xacro:if value="${attach_to_world}">
+      <joint name="${prefix}world" type="fixed">
+        <child link="${prefix}base_link" />
+        <parent link="world" />
+        <origin xyz="${loc_x} ${loc_y} 0.0" rpy="0.0 0.0 ${orientation}"/>
+      </joint>
+    </xacro:if>
+
+    <link name="${prefix}base_link">
+      <inertial>
+        <mass value="5.0" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+      </inertial>
+      <visual>
+        <origin xyz="0.0 0.0 ${z/2}" />
+        <geometry>
+          <box size="${x} ${y} ${z}" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 ${z/2}" />
+        <geometry>
+          <box size="${x} ${y} ${z}" />
+        </geometry>
+      </collision>
+    </link>
+
+  </xacro:macro>
+
+
+</robot>

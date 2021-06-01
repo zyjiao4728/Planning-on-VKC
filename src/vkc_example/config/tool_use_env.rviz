@@ -1,0 +1,418 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /Grid1
+        - /TesseractTrajectory1
+        - /TesseractTrajectory1/Trajectory Monitor1
+      Splitter Ratio: 0.770588219165802
+    Tree Height: 363
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+      - /Current View1/Focal Point1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Experimental: false
+    Name: Time
+    SyncMode: 0
+    SyncSource: ""
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 0; 0; 0
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 24
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: tesseract_rviz/TesseractTrajectory
+      Enabled: true
+      Environment:
+        Alpha: 1
+        Interface Namespace: ""
+        Show All Links: true
+        Show Collision: false
+        Show Highlights: true
+        Show Visual: true
+        Tesseract State Topic: ""
+        URDF Description: env_description
+        Value: ""
+      Joint State Monitor:
+        Topic: joint_states
+        Value: ""
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_door_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_handle1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_handle2_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_handle3_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_north_handle_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_bumper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        inertial_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        longstick_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        longstick_stick_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        longstick_stick_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        marker0_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        marker0_marker_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        marker1_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        marker1_marker_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        marker2_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        marker2_marker_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_bumper_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_left_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_right_wheel_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        shortstick_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        shortstick_stick_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        shortstick_stick_tip_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_chassis_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_plate_front_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        top_plate_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_plate_rear_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ur_arm_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ur_arm_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_ee_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_forearm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_shoulder_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_tool0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ur_arm_upper_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_2_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_3_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        user_rail_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        virtual_base_theta:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        virtual_base_x:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        virtual_base_y:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_north_left_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_north_left_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_north_right_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_north_right_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_south_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_south_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_west_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_west_wall_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Name: TesseractTrajectory
+      Trajectory Monitor:
+        Display Mode: Loop
+        Interrupt Display: false
+        State Display Time: 0.05 s
+        Topic: /trajopt/display_tesseract_trajectory
+        Trail Step Size: 1
+        Value: ""
+      Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 1
+      Name: Axes
+      Radius: 0.10000000149011612
+      Reference Frame: world
+      Value: true
+  Enabled: true
+  Global Options:
+    Background Color: 238; 238; 236
+    Default Light: true
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 9.089761734008789
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.6202038526535034
+      Target Frame: <Fixed Frame>
+      Value: Orbit (rviz)
+      Yaw: 4.714772701263428
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: true
+  Height: 1025
+  Hide Left Dock: true
+  Hide Right Dock: true
+  QMainWindow State: 000000ff00000000fd00000004000000000000015600000363fc020000000afb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000003d00000363000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb00000038005400650073007300650072006100630074005400720061006a006500630074006f007200790020002d00200053006c006900640065007200000003630000003f0000004100ffffff000000010000010f00000363fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000363000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d0000003efc0100000002fb0000000800540069006d006501000000000000073d000002eb00fffffffb0000000800540069006d006501000000000000045000000000000000000000073d0000036300000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  TesseractTrajectory - Slider:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: true
+  Width: 1853
+  X: 1987
+  Y: 27

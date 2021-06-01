@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="scene" default="vkc_demo" />
+    <arg name="urdf_file" value="xacro '$(find vkc_example)/env/vkc_demo.urdf.xacro'" />
+
+    <param name="robot_description" command="$(arg urdf_file)" />
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <!-- <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> -->
+
+    <node name="scene_movement_controller" pkg="vkc_example" type="ros_movement.py" output="screen" />
+    <node name="view_scene" pkg="rviz" type="rviz" args="-d $(find vkc_example)/config/vkc_demo.rviz" />
+</launch>

@@ -1,0 +1,6 @@
+[submodule "src/tesseract"]
+	path = src/tesseract
+	url = git@github.com:zyjiao4728/tesseract.git
+[submodule "src/trajopt_ros"]
+	path = src/trajopt_ros
+	url = https://github.com/ros-industrial-consortium/trajopt_ros.git
