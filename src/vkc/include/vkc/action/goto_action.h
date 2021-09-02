@@ -41,6 +41,21 @@ private:
   std::vector<JointDesiredPose> joint_objectives_;
 };
 
+
+// added: wanglei@bigai.ai 
+// time: 2021-08-17 
+std::ostream& operator << (std::ostream& oss, GotoAction& act)
+{
+    oss << ">>>" << std::endl
+        << "action: GtoAction" << std::endl
+        << "manipulator: " << act.getManipulatorID() << std::endl
+        << "joint objectives: " << std::endl
+        << act.getLinkObjectives() << std::endl
+        << "link target_pose: " << std::endl 
+        << act.getJointObjectives() << std::endl;
+        
+    return oss;
+}
 } // end of namespace vkc
 
 #endif

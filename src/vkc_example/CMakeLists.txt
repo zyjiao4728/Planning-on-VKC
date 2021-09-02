@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   tesseract_rosutils
   rospy
+  roslib # added: wanglei@bigai.ai, to get package path
 )
 find_package(vkc REQUIRED)
 find_package(Eigen3 REQUIRED)

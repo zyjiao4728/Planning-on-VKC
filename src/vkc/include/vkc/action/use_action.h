@@ -47,6 +47,21 @@ private:
   std::string end_effector_id_;
 };
 
+
+// added: wanglei@bigai.ai 
+// time: 2021-08-17 
+std::ostream& operator << (std::ostream& oss, UseAction& act)
+{
+    oss << ">>>" << std::endl
+        << "action: UseAction" << std::endl
+        << "attached_link: " << act.getAttachedObject() << std::endl
+        << "end-effector: "  << act.getEndEffectorID() << std::endl
+        << "manipulator: " << act.getManipulatorID() << std::endl
+        << "transform: " << std::endl 
+        << act.getTransform() << std::endl;
+        
+    return oss;
+}
 } // end of namespace vkc
 
 #endif
