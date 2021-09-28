@@ -14,6 +14,7 @@
 #include <vector>
 #include <iostream>
 
+
 namespace vkc
 {
 class TaskPlanParser
@@ -25,10 +26,13 @@ public:
     void Parse(ActionSeq &actions, const std::string &file)
     {
         std::string line;
-        std::ifstream iss(file);
-        getline(iss, line);
-        while (line.size() > 0)
+        char c_line[1024];   // we assume a line has no more than 1024 characters, this maybe the most common case
+        std::ifstream ifs(file);
+
+        while (ifs.good())
         {
+            ifs.getline(c_line, sizeof(c_line));
+            line = c_line;
             ActionBase::Ptr p_action = ParseActionSymbol(line);
             if (p_action)
             {
@@ -38,8 +42,6 @@ public:
             {
                 fprintf(stdout, "invalid action object while parsing action text: %s\n", line.c_str());
             }
-
-            getline(iss, line);
         }
 
         ROS_DEBUG("the task plan file contains %lu actions", actions.size());

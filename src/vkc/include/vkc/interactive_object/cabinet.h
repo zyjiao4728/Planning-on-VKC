@@ -21,8 +21,8 @@ public:
         joint_name_ = name_ + "_cabinet_door_joint"; 
         attach_handle_name_ = std::string("attach_") + name_ + "_handle_link";
 
-        joint_poses_.emplace("door_open", 1.5);
-        joint_poses_.emplace("door_close", 0);
+        joint_poses_.emplace("door_opened", 1.5);
+        joint_poses_.emplace("door_closed", 0);
     }
     
     virtual const std::string& Name()const
@@ -42,12 +42,12 @@ public:
 
     double OpenPose()
     {
-        return joint_poses_["door_open"];
+        return joint_poses_["door_opened"];
     }
     
     double ClosePose()
     {
-        return joint_poses_["door_close"];
+        return joint_poses_["door_closed"];
     }
     
     std::string AttachLinkName()

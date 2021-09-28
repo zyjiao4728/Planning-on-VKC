@@ -16,7 +16,7 @@ class ActionCreatorFactory
 public:
     ActionCreatorFactory(SceneObjects &scene_objs) : scene_objs_(scene_objs)
     {
-        action_mapper_.emplace("get_object", ActionType::PickAction);
+        action_mapper_.emplace("pick", ActionType::PickAction);
         action_mapper_.emplace("use_object", ActionType::UseAction);
         action_mapper_.emplace("place", ActionType::PlaceAction);
         action_mapper_.emplace("fetch", ActionType::PlaceAction);

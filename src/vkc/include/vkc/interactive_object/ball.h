@@ -24,15 +24,15 @@ public:
 
         // set default init_pose, where the ball is at the beginning
         double link_init_pose_[7]{0.1, 0, 0, 1.0, 0.0, 0.0, 0.0}; // 0~2: xyz  3~6: quateraion
-        poses_.emplace("init_pose", std::vector<double>(link_init_pose_, link_init_pose_ + sizeof(link_init_pose_) / sizeof(link_init_pose_[0])));
+        poses_.emplace("loc_under_table1", std::vector<double>(link_init_pose_, link_init_pose_ + sizeof(link_init_pose_) / sizeof(link_init_pose_[0])));
 
         // set default fetch_pose, where the ball will be placed after feteched from the under of the table
         double link_fetch_pose_[7]{-1, 1.5, 0.1, 1.0, 0.0, 0.0, 0.0}; // 0~2: xyz  3~6: quateraion
-        poses_.emplace("fetch_pose", std::vector<double>(link_fetch_pose_, link_fetch_pose_ + sizeof(link_fetch_pose_) / sizeof(link_fetch_pose_[0])));
+        poses_.emplace("loc_on_ground", std::vector<double>(link_fetch_pose_, link_fetch_pose_ + sizeof(link_fetch_pose_) / sizeof(link_fetch_pose_[0])));
 
         // set default fetch_pose, where the ball will be placed finally
         double link_target_pose_[7]{0, -2, 1.1, 0.5, -0.5, 0.5, 0.5}; // 0~2: xyz  3~6: quateraion
-        poses_.emplace("target_pose", std::vector<double>(link_target_pose_, link_target_pose_ + sizeof(link_target_pose_) / sizeof(link_target_pose_[0])));
+        poses_.emplace("loc_cabinet_room", std::vector<double>(link_target_pose_, link_target_pose_ + sizeof(link_target_pose_) / sizeof(link_target_pose_[0])));
 
         // set the default current_pose, and it always tells where the ball stays currently
         poses_.emplace("current_pose", std::vector<double>(7, 0.0));

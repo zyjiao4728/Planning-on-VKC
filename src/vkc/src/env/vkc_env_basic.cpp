@@ -221,6 +221,8 @@ bool VKCEnvBasic::sendRvizChanges_(unsigned long past_revision)
     return false;
   }
 
+
+
   if (modify_env_rviz_.call(update_env))
   {
     ROS_INFO("RViz environment Updated!");
@@ -264,7 +266,7 @@ void VKCEnvBasic::attachObject(std::string attach_location_name, Eigen::Isometry
         // attach_locations_.at(attach_location_name)->local_joint_origin_transform.inverse();
     attach_locations_.at(attach_location_name)->connection.parent_link_name = getEndEffectorLink();
   }
-  std::cout << getEndEffectorLink() << std::endl;
+  std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
 
   // std::cout << tesseract_->getTesseract()->getEnvironment()->getLinkTransform(getEndEffectorLink()).translation() << std::endl;
   // std::cout << tesseract_->getTesseract()->getEnvironment()->getLinkTransform(getEndEffectorLink()).linear() << std::endl;
@@ -274,8 +276,9 @@ void VKCEnvBasic::attachObject(std::string attach_location_name, Eigen::Isometry
   // std::cout << attach_locations_.at(attach_location_name)->connection.child_link_name << std::endl;
 
   tesseract_->getTesseract()->getEnvironment()->moveLink((attach_locations_.at(attach_location_name)->connection));
-
   end_effector_link_ = attach_locations_.at(attach_location_name)->base_link_;
+
+  std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
   addAttachedLink(attach_location_name);
 }
 
@@ -318,11 +321,13 @@ void VKCEnvBasic::detachObject(std::string detach_location_name)
 std::string VKCEnvBasic::updateEnv(std::vector<std::string>& joint_names,
                                    tesseract_motion_planners::PlannerResponse& response, ActionBase::Ptr action)
 {
-  std::cout << "VKCEnvBasic::updateEnv" << std::endl;
+  std::cout << __func__ << ": actioin" << std::endl
+            << action << std::endl;
   std::string location_name;
 
   // Set the current state to the last state of the pick trajectory
   tesseract_->getTesseract()->getEnvironment()->setState(joint_names, response.joint_trajectory.trajectory.bottomRows(1).transpose());
+
 
   if (action == nullptr){
       if (rviz_)
@@ -348,7 +353,10 @@ std::string VKCEnvBasic::updateEnv(std::vector<std::string>& joint_names,
     PlaceAction::Ptr place_act = std::dynamic_pointer_cast<PlaceAction>(action);
     location_name = place_act->getDetachedObject();
     std::cout << "detach: " << location_name << std::endl;
+    std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
     detachObject(location_name);
+    std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
   else if (action->getActionType() == ActionType::UseAction)
   {
