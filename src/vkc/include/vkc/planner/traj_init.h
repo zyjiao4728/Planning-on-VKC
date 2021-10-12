@@ -145,9 +145,10 @@ namespace vkc
         {
           if (joint_name_idx.at(joint_obj.joint_name) < 0 || joint_name_idx.at(joint_obj.joint_name) > seed.size())
           {
-            ROS_WARN("joint_name: %s, joint_index: %d", joint_obj.joint_name.c_str(), joint_name_idx.at(joint_obj.joint_name));
-            ROS_WARN("joint_index: %d", joint_name_idx.at(joint_obj.joint_name));
-            ROS_WARN("seed size: %d", seed.size());
+            ROS_WARN("joint_name: %s, joint_index: %d, seed size: %d",
+                     joint_obj.joint_name.c_str(),
+                     joint_name_idx.at(joint_obj.joint_name),
+                     seed.size());
           }
 
           seed[joint_name_idx.at(joint_obj.joint_name)] = joint_obj.joint_angle;
@@ -155,9 +156,10 @@ namespace vkc
         }
         else
         {
-          ROS_WARN("joint_name: %s, joint_index: %d", joint_obj.joint_name, joint_name_idx.at(joint_obj.joint_name));
-          ROS_WARN("joint_index: %d", joint_name_idx.at(joint_obj.joint_name));
-          ROS_WARN("seed size: %d", seed.size());
+            ROS_ERROR("joint_name: %s, joint_index: %d, seed size: %d",
+                     joint_obj.joint_name.c_str(),
+                     joint_name_idx.at(joint_obj.joint_name),
+                     seed.size());
           seed[joint_name_idx.at(joint_obj.joint_name)] = init_traj.topRows(1)(joint_name_idx.at(joint_obj.joint_name));
         }
       }
@@ -182,14 +184,14 @@ namespace vkc
   double interpolate(std::vector<LinkDesiredPose> base_pose, std::vector<double> remap, int i, bool x)
   {
 
-    ROS_WARN("base_pose size: %d, remap size: %d, index: %d", base_pose.size(), remap.size(), i);
+    //ROS_WARN("base_pose size: %d, remap size: %d, index: %d", base_pose.size(), remap.size(), i);
     double idx = remap[i];
     double idx_1 = 0;
     double rem = modf(idx, &idx_1);
     double idx_2 = idx_1 + 1;
 
-    ROS_WARN("remap[i]: %f, index_1: %f~%d, , index_2: %f~%d",
-             idx, idx_1, (int)idx_1, idx_2, (int)idx_2);
+    // ROS_WARN("remap[i]: %f, index_1: %f~%d, , index_2: %f~%d",
+    //          idx, idx_1, (int)idx_1, idx_2, (int)idx_2);
     double waypts_len = pow(pow(base_pose[int(idx_2)].tf.translation()[0] - base_pose[int(idx_1)].tf.translation()[0], 2.0) +
                                 pow(base_pose[int(idx_2)].tf.translation()[1] - base_pose[int(idx_1)].tf.translation()[1], 2.0),
                             0.5);

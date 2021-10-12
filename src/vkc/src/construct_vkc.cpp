@@ -70,7 +70,7 @@ bool ConstructVKC::initTesseract()
 {
   if (tesseract_ == nullptr)
   {
-    ROS_WARN("Null pointer to tesseract!");
+    //ROS_WARN("Null pointer to tesseract!");
     tesseract_ = std::make_shared<tesseract::Tesseract>();
   }
   if (scene_graph_ == nullptr || srdf_model_ == nullptr)

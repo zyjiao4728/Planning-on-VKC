@@ -93,7 +93,7 @@ void run(VKCEnvBasic &env, ActionSeq actions, int n_steps, int n_iter, bool rviz
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     // update env according to the action
-    env.updateEnv(joint_names_record.back(), response, action);
+    env.updateEnv(joint_names_record.back(), response.joint_trajectory.trajectory.bottomRows(1).transpose(), action);
 
     plotter->clear();
   }

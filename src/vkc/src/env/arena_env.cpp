@@ -85,9 +85,6 @@ bool ArenaEnv::createEnvironment()
   stick0.addToEnvironment(tesseract_->getTesseract());
 
 
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level1_link", "cabinet0_cabinet_door_link", "Never");
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level2_link", "cabinet0_cabinet_door_link", "Never");
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level3_link", "cabinet0_cabinet_door_link", "Never");
 
   tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("ur_arm_upper_arm_link", "ur_arm_wrist_1_link", "Never");
   tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("ur_arm_upper_arm_link", "ur_arm_wrist_2_link", "Never");
@@ -104,9 +101,6 @@ bool ArenaEnv::createEnvironment()
   tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("cabinet0_handle_link", false);
 
   tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_cabinet_bottom_link", "cabinet0_cabinet_door_link", "Never");
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level1_link", "cabinet0_cabinet_door_link", "Never");
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level2_link", "cabinet0_cabinet_door_link", "Never");
-  tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_level3_link", "cabinet0_cabinet_door_link", "Never");
 
   tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_cabinet_back_link", "cabinet0_cabinet_bottom_link", "Never");
   tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("cabinet0_cabinet_back_link", "cabinet0_cabinet_left_link", "Never");

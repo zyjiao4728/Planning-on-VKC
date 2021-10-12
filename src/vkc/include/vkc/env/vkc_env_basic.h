@@ -60,7 +60,7 @@ public:
 
   vkc::ConstructVKC::Ptr getVKCEnv();
 
-  std::string updateEnv(std::vector<std::string>& joint_names, tesseract_motion_planners::PlannerResponse& response, ActionBase::Ptr action);
+  std::string updateEnv(std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
 
   std::string getEndEffectorLink();
   
@@ -96,13 +96,14 @@ protected:
 
   bool sendRvizChanges();
 
+public:
   /**
    * @brief Send RViz the latest number of commands
    * @param n The past revision number
    * @return True if successful otherwise false
    */
   bool sendRvizChanges_(unsigned long past_revision);
-
+protected:
   bool loadRobotModel(
     const std::string &ENV_DESCRIPTION_PARAM,
     const std::string &ENV_SEMANTIC_PARAM,
@@ -116,6 +117,7 @@ protected:
 
   bool isGroupExist(std::string group_id);
 
+public:
   void attachObject(std::string attach_location_name, Eigen::Isometry3d* tf = nullptr);
 
   void detachObject(std::string attach_location_name);
@@ -125,7 +127,7 @@ protected:
   void addAttachedLink(std::string link_name);
 
   void removeTopAttachedLink();
-
+protected:
   std::string getTopAttachedLink();
 
   bool ifAttachedLink(std::string link_name);

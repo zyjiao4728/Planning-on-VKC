@@ -22,14 +22,14 @@ void solveProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
   // Set Planner Configuration
   planner.setConfiguration(std::make_shared<TrajOptPlannerConfig>(config));
 
-  ROS_WARN("Constructed open door optimization problem. Starting optimization.");
+  ROS_WARN("Constructed optimization problem. Starting optimization.");
   // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   // Solve problem. Results are stored in the response
   planner.solve(response);
 }
 
-CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
+CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter, bool enable_ploting)
 {
   // Set the optimization parameters (Most are being left as defaults)
   TrajOptPlannerConfig config(prob_ptr);
@@ -40,13 +40,21 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, in
   config.params.min_trust_box_size = 1e-3;
   config.params.min_approx_improve = 1e-3;
 
+  if(enable_ploting)
+  {
+    tesseract_rosutils::ROSPlottingPtr plotter =
+        std::make_shared<tesseract_rosutils::ROSPlotting>(prob_ptr->GetEnv());
+
+    config.callbacks.push_back(PlotCallback(*prob_ptr, plotter));
+  }
+
   // Create the planner and the responses that will store the results
   TrajOptMotionPlanner planner;
 
   // Set Planner Configuration
   planner.setConfiguration(std::make_shared<TrajOptPlannerConfig>(config));
 
-  ROS_WARN("Constructed open door optimization problem. Starting optimization.");
+  ROS_WARN("Constructed optimization problem with cost constraint. Starting optimization.");
   // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   CostInfo cost;
   // Solve problem. Results are stored in the response

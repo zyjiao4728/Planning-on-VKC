@@ -29,89 +29,9 @@ static SceneObjects &GetSceneObjects()
 }
 
 
-// class BlendingPath
-// {
-// public:
-//     BlendingPath(){}
-//     void AddPath(const std::vector<std::string>& joint_names, const tesseract_common::TrajArray& path)
-//     {
-//         std::vector<std::string> tmp_joint_names(joint_names);
-        
-//         // get to know how many path points to extend
-//         size_t rows = path.rows();
-
-//         for(auto iter = joint_names_.begin(); iter != joint_names_.end(); ++it)
-//         {
-//             // get the joint path to update
-//             std::vector<double> &update_joint_path = joint_paths_[iter - joint_names_.begin()];
-
-
-//             auto find_it = find(tmp_joint_names.begin(), temp_joint_names.end(), *iter);
-//             // first update the existing joint paths
-//             if(tmp_joint_names.end() != find_it)
-//             {
-//                 // the joint alread recorded has changes
-//                 int c = find_it - tmp_joint_names.begin();
-//                 update_joint_path.insert(update_joint_path.end(), path.block<rows, 1>(0, path_index).begin(), path.block<rows, 1>(0, path_index).end());
-
-//                 *find_it = "";  // means flag this joint deleted
-//             }
-//             else  // the joint alread recorded has no change
-//             {
-//                 // the joint has no updated
-//                 update_joint_path.insert(update_joint_path.end(), rows, *update_joint_path.rbegin());
-//             }
-//         }
-
-
-
-//         for(auto iter = tmp_joint_names.begin(); iter != tmp_joint_names.end(); ++iter)
-//         {
-//             if("" == *iter)
-//             {
-//                 continue;
-//             }
-
-//             auto new_path_section = path.block<rows, 1>(0, iter - tmp_joint_names.begin());
-//             if(0 == joint_paths_.size())
-//             {
-//                 std::vector<float> joint_path(new_path_section.begin(), new_path_section.end());
-//                 joint_paths_.emplace_back(joint_path);
-//                 joint_names_.emplace_back(*iter);
-//             }
-//             else
-//             {
-//                 std::vector<float> joint_path(joint_paths_[0].size() - rows, joint_new_path[0]);
-//                 joint_path.insert(joint_path.end(), new_path_section.begin(), new_path_section.end());
-//                 joint_paths_.emplace_back(joint_path);
-//                 joint_names_.emplace_back(*iter);
-//             }
-//         }
-
-
-//     }
-//     void GetPath(std::vector<std::string>& joint_names, tesseract_common::TrajArray& path)
-//     {
-//         if(0 != joint_paths_.size())
-//         {
-//             // the first dimension is waypoints' number, the second dimension is joints' number
-//             path.resize(joint_paths_[0].size(), joint_paths_.size());
-//             path = Map<Matrix<float, joint_paths_[0].size(), joint_paths_.size(), RowMajor> >(joint_paths_.data());
-
-//             joint_names = joint_names_;
-//         }
-//     }
-
-// private:
-//     std::vector<std::string> joint_names_;
-//     // TODO: list maybe much better
-//     std::vector<std::vector<float>> joint_paths_;
-// }
 
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled, int nruns,
-         vector<vector<string>>& joint_names_record,
-         vector<PlannerResponse>& planner_responses,
-         vector<tesseract_common::TrajArray>& joint_trajs_record)
+         vector<tesseract_common::JointTrajectory>& joint_trajs)
 {
     ProbGenerator prob_generator;
     // ROSPlottingPtr plotter;
@@ -124,9 +44,35 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
     env.getVKCEnv()->getTesseract()->getEnvironment()->setState(base_joints, base_values);
 
+    int env_revision = 0;
+    env_revision = env.getVKCEnv()->getTesseract()->getEnvironment()->getRevision();
+
     int i = 0;
+    vkc::ActionBase::Ptr pre_act = nullptr;
     for (auto &action : actions)
     {
+        // switch(action->getActionType())
+        // {
+        //     case vkc::ActionType::PlaceAction:
+                // if(pre_act && ActionType::PickAction == pre_act->getActionType())
+                // {
+                //     env.attachObject(std::dynamic_pointer_cast<PickAction>(pre_act)->getAttachedObject());
+
+                //     // Now update rviz environment
+                //     if (!env.sendRvizChanges_(env_revision))
+                //         return;
+
+                //     env.getVKCEnv()->getTesseract()->getEnvironment()->setState(joint_trajs.back().joint_names,
+                //                          joint_trajs.back().trajectory.bottomRows(1).transpose());
+
+                //     env_revision = env.getVKCEnv()->getTesseract()->getEnvironment()->getRevision();
+                // }
+
+
+        //     break;
+        // }
+
+
         PlannerResponse response;
         TrajOptProb::Ptr prob_ptr = nullptr;
         // plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
@@ -136,16 +82,21 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
         std::chrono::duration<double> elapsed_seconds;
 
         std::cout << __func__ << ": " << action << std::endl;
-        while (!converged && tries < 5)
+        while (!converged && tries < 1)
         {
             prob_ptr = prob_generator.genProb(env, action, n_steps);
 
             // 6: is half size of the map 
-            if ((abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(0)) - 6) < 1e-6 || abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(1)) - 6) < 1e-6) && env.getEndEffectorLink().find("cabinet") == string::npos)
+            bool on_map_border = (abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(0)) - 6) < 1e-6 
+            || abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(1)) - 6) < 1e-6);
+            if (on_map_border && string::npos == env.getEndEffectorLink().find("cabinet"))
             {
                 //std::cout << prob_ptr->GetInitTraj().bottomRows(1)(0) << " " << prob_ptr->GetInitTraj().bottomRows(1)(1) << std::endl;
                 if (tries < 4)
+                {
+                    ROS_INFO("unfornately got here before optimizing the trajectory!");
                     continue;
+                }
             }
 
             // ROS_WARN("motion planning for action: %d", i);
@@ -157,7 +108,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
             // }
 
             auto start = std::chrono::system_clock::now();
-            cost = solveProb_cost(prob_ptr, response, n_iter);
+            cost = solveProb_cost(prob_ptr, response, n_iter, false);
             elapsed_seconds = std::chrono::system_clock::now() - start;
             
             converged = sco::OptStatus::OPT_CONVERGED == response.status.value();
@@ -169,21 +120,18 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
         
         // record planning result
-        planner_responses.push_back(response);
-        // record optimized joint names in this step
-        joint_names_record.push_back(prob_ptr->GetKin()->getJointNames());
+        joint_trajs.push_back(response.joint_trajectory);
 
-        // refine the orientation of the move base
+        // // refine the orientation of the move base
         tesseract_common::TrajArray refined_traj =
             response.joint_trajectory.trajectory.leftCols(static_cast<long>(prob_ptr->GetKin()->getJointNames().size()));
         refineTrajectory(refined_traj);
-        joint_trajs_record.push_back(refined_traj);
 
         //std::cout << "Refined traj:" << std::endl;
         //std::cout << refined_traj << std::endl;
 
         // // plot current `action` result
-        // plotter->plotTrajectory(prob_ptr->GetKin()->getJointNames(), refined_traj);
+        //  plotter->plotTrajectory(prob_ptr->GetKin()->getJointNames(), refined_traj);
 
         // if (rviz_enabled)
         // {
@@ -192,45 +140,68 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
         // }
 
         // // update env according to the action
-        env.updateEnv(joint_names_record.back(), response, action);
-        // plotter->clear();
+        env.updateEnv(response.joint_trajectory.joint_names, response.joint_trajectory.trajectory.bottomRows(1).transpose(), action);
+        //plotter->clear();
+
+        // switch(action->getActionType())
+        // {
+        // case vkc::ActionType::PlaceAction:
+        //     ROS_WARN("detach object: %s", std::dynamic_pointer_cast<PlaceAction>(action)->getDetachedObject().c_str());
+        //     ROS_WARN("before detach current tip link: %s", env.getVKCEnv()->getTesseract()->getInvKinematicsManager()->getInvKinematicSolver("vkc")->getTipLinkName().c_str());
+        //     env.detachObject(std::dynamic_pointer_cast<PlaceAction>(action)->getDetachedObject());
+        //     ROS_WARN("after detach current tip link: %s", env.getVKCEnv()->getTesseract()->getInvKinematicsManager()->getInvKinematicSolver("vkc")->getTipLinkName().c_str());
+
+        //     // Now update rviz environment
+        //     if (!env.sendRvizChanges_(env_revision))
+        //         return;
+
+        //     env.getVKCEnv()->getTesseract()->getEnvironment()->setState(joint_trajs.back().joint_names,
+        //                                                                 joint_trajs.back().trajectory.bottomRows(1).transpose());
+        //     env_revision = env.getVKCEnv()->getTesseract()->getEnvironment()->getRevision();
+
+        //     break;
+        // }
+
         ++i;
+        pre_act = action;
     }
 }
 
 void TrajectoryVisualize(ArenaEnv& env,
                          ActionSeq &actions,
-                         vector<vector<string>> &joint_names_record,
-                         vector<PlannerResponse> &planner_responses,
-                         vector<tesseract_common::TrajArray> &joint_trajs_record)
+                         vector<tesseract_common::JointTrajectory> &joint_trajs)
 {
-        ROS_INFO("actions size: %d, joints motion names size: %d, traj size: %d, planner response size: %d",
-                 actions.size(), planner_responses.size(), joint_names_record.size(), joint_trajs_record.size());
+        ROS_INFO("actions size: %d, traj size: %d", actions.size(), joint_trajs.size());
 
-        for(auto& action : actions)
-        {
-            std::cout << action << std::endl;
-        }
+        // for(auto& action : actions)
+        // {
+        //     std::cout << action << std::endl;
+        // }
 
         long int max_traj_len{0};
-        for(auto& traj : joint_trajs_record)
+        for(auto& traj : joint_trajs)
         {
-            max_traj_len = traj.size() > max_traj_len ? traj.size() : max_traj_len;
-            std::cout << ">> traj details: " << std::endl
-                      << traj << std::endl;
+            max_traj_len = traj.trajectory.size() > max_traj_len ? traj.trajectory.size() : max_traj_len;
+            // std::cout << ">> traj details: " << std::endl
+            //           << traj << std::endl;
         }
 
         // plot current `action` result
         auto action_iter = actions.begin();
-        auto response_iter = planner_responses.begin();
-        auto joint_name_iter = joint_names_record.begin();
-        auto joint_traj_iter = joint_trajs_record.begin();
+        auto joint_traj_iter = joint_trajs.begin();
 
         ROSPlottingPtr plotter;
-        for (; joint_traj_iter != joint_trajs_record.end(); ++action_iter, ++response_iter, ++joint_name_iter, ++joint_traj_iter)
+        for (; joint_traj_iter != joint_trajs.end(); ++action_iter, ++joint_traj_iter)
         {
+
+            ROS_INFO("joints names number: %d, joint number: %d, joint states number: %d",
+                     joint_traj_iter->joint_names.size(), joint_traj_iter->trajectory.cols(), joint_traj_iter->trajectory.rows());
+            tesseract_common::TrajArray refined_traj = joint_traj_iter->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
+            refineTrajectory(refined_traj);
+
             plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
-            plotter->plotTrajectory(*joint_name_iter, *joint_traj_iter);
+            plotter->plotTrajectory(joint_traj_iter->joint_names, refined_traj);
+            usleep( (int)(joint_traj_iter->trajectory.size() * 3000000.0 / max_traj_len));
 
             // ROS_INFO("%s: Update Env, action: ", __func__);
             // std::cout << *action_iter << "\t";
@@ -238,9 +209,8 @@ void TrajectoryVisualize(ArenaEnv& env,
 
             //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             // update env according to the action
-            env.updateEnv(*joint_name_iter, *response_iter, *action_iter);
+            //env.updateEnv(*joint_name_iter, joint_traj_iter->bottomRows(1).transpose(), *action_iter);
             plotter->clear();
-            usleep( (int)(joint_traj_iter->size() * 1500000.0 / max_traj_len));
         }
 }
 
@@ -286,20 +256,17 @@ int main(int argc, char **argv)
 
 
     // cache the planning result for replaying
-    vector<vector<string>> joint_names_record;
-    vector<PlannerResponse> planner_responses;
-    vector<tesseract_common::TrajArray> joint_trajs_record;
+    vector<tesseract_common::JointTrajectory> joint_trajs;
 
-        ArenaEnv env(nh, plotting, rviz, steps);
+    ArenaEnv env(nh, plotting, rviz, steps);
     // plan motion trajectory according to given task actions
     {
-        run(env, actions, steps, n_iter, rviz, nruns,
-            joint_names_record, planner_responses, joint_trajs_record);
+        run(env, actions, steps, n_iter, rviz, nruns, joint_trajs);
     }
 
     // visualize the trajectory as planned
     {
         //ArenaEnv env(nh, plotting, rviz, steps);
-        TrajectoryVisualize(env, actions, joint_names_record, planner_responses, joint_trajs_record);
+        TrajectoryVisualize(env, actions, joint_trajs);
     }
 }

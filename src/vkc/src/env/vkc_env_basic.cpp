@@ -289,6 +289,8 @@ void VKCEnvBasic::detachTopObject()
 
   end_effector_link_ = attach_locations_.at(target_location_name)->connection.parent_link_name;
 
+  ROS_INFO("end_effector_link_: %s", end_effector_link_.c_str());
+
   std::string link_name = attach_locations_.at(target_location_name)->link_name_;
   std::string object_name = link_name.substr(0, link_name.find("_", 0));
   Joint world_joint(object_name + "_world");
@@ -298,7 +300,8 @@ void VKCEnvBasic::detachTopObject()
   world_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
   world_joint.parent_to_joint_origin_transform =
       tesseract_->getTesseract()->getEnvironment()->getLinkTransform(link_name);
-  tesseract_->getTesseract()->getEnvironment()->moveLink(world_joint);
+  bool link_moved = tesseract_->getTesseract()->getEnvironment()->moveLink(world_joint);
+  ROS_INFO("move link %s: %s", link_name.c_str(), link_moved ? "true" : "false");
   // std::cout << tesseract_->getTesseract()->getEnvironment()->getLinkTransform(link_name).translation() << std::endl;
   attach_locations_.at(target_location_name)->world_joint_origin_transform =
       tesseract_->getTesseract()->getEnvironment()->getLinkTransform(link_name) *
@@ -319,14 +322,14 @@ void VKCEnvBasic::detachObject(std::string detach_location_name)
 }
 
 std::string VKCEnvBasic::updateEnv(std::vector<std::string>& joint_names,
-                                   tesseract_motion_planners::PlannerResponse& response, ActionBase::Ptr action)
+                                   const Eigen::VectorXd& joint_states, ActionBase::Ptr action)
 {
   std::cout << __func__ << ": actioin" << std::endl
             << action << std::endl;
   std::string location_name;
 
   // Set the current state to the last state of the pick trajectory
-  tesseract_->getTesseract()->getEnvironment()->setState(joint_names, response.joint_trajectory.trajectory.bottomRows(1).transpose());
+  tesseract_->getTesseract()->getEnvironment()->setState(joint_names, joint_states);
 
 
   if (action == nullptr){

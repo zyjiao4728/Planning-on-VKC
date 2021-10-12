@@ -60,7 +60,7 @@ public:
 void solveProb(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_motion_planners::PlannerResponse &response, int n_iter);
 
 CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_motion_planners::PlannerResponse &response,
-                        int n_iter);
+                        int n_iter, bool enable_ploting = false);
 
 void refineTrajectory(tesseract_common::TrajArray &traj);
 
