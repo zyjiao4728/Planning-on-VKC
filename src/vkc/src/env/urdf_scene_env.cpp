@@ -78,7 +78,7 @@ bool UrdfSceneEnv::createEnvironment()
   if (rviz_)
   {
     // Now update rviz environment
-    if (!sendRvizChanges())
+    if (!sendRvizChanges(n_past_revisions_, tesseract_))
       return false;
   }
 

@@ -18,7 +18,7 @@ find_package(tesseract REQUIRED)
 find_package(tesseract_motion_planners REQUIRED)
 find_package(trajopt REQUIRED)
 find_package(astar REQUIRED)
-
+find_package(ompl REQUIRED)
 
 
 list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
@@ -66,13 +66,16 @@ target_include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+
 add_library(${PROJECT_NAME}_urdf_scene_env SHARED src/env/urdf_scene_env.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_urdf_scene_env
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
+  ${PROJECT_NAME}_prob_generator
   tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
+  tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
 )
 target_compile_options(
@@ -94,11 +97,14 @@ target_include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+
+
 add_library(${PROJECT_NAME}_arena_env SHARED src/env/arena_env.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_arena_env
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
+  ${PROJECT_NAME}_prob_generator
   tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
@@ -122,14 +128,46 @@ target_include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME}_prob_generator SHARED src/planner/prob_generator.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_prob_generator
+add_library(${PROJECT_NAME}_husky SHARED 
+  src/planner/ur_kin.cpp
+)
+target_link_libraries( ${PROJECT_NAME}_husky
+  ${catkin_LIBRARIES}
+)
+target_compile_options(
+  ${PROJECT_NAME}_husky
+  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
+)
+if(CXX_FEATURE_FOUND EQUAL "-1")
+    target_compile_options(${PROJECT_NAME}_husky PUBLIC -std=c++11)
+else()
+    target_compile_features(${PROJECT_NAME}_husky PUBLIC cxx_std_11)
+endif()
+target_include_directories(
+  ${PROJECT_NAME}_husky PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+)
+target_include_directories(
+  ${PROJECT_NAME}_husky SYSTEM PUBLIC
+  ${catkin_INCLUDE_DIRS}
+)
+
+
+add_library(${PROJECT_NAME}_prob_generator SHARED 
+  src/planner/prob_generator.cpp
+  src/planner/traj_init.cpp
+  src/action/actions.cpp
+  src/planner/prob_translator.cpp
+  src/planner/prob_translator_utils.cpp
+)
+target_link_libraries(${PROJECT_NAME}_prob_generator
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   astar
   tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
+  tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
 )
 target_compile_options(
@@ -149,7 +187,9 @@ target_include_directories(
 target_include_directories(
   ${PROJECT_NAME}_prob_generator SYSTEM PUBLIC
   ${catkin_INCLUDE_DIRS}
+  ${OMPL_INCLUDE_DIRS} 
 )
+
 
 
 list(APPEND PACKAGE_LIBRARIES 
@@ -157,7 +197,8 @@ list(APPEND PACKAGE_LIBRARIES
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_arena_env
   ${PROJECT_NAME}_urdf_scene_env
-  ${PROJECT_NAME}_prob_generator)
+  ${PROJECT_NAME}_prob_generator
+)
 
 # Mark executables and/or libraries for installation
 install(TARGETS ${PACKAGE_LIBRARIES} EXPORT ${PROJECT_NAME}-targets DESTINATION lib)

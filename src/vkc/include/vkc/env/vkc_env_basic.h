@@ -46,6 +46,7 @@ public:
 
   void setEndEffector(std::string name);
 
+  bool reInit();
   void setRobotEndEffector(std::string link_name);
 
   void addAttachLocation(vkc::BaseObject::AttachLocation attach_location);
@@ -59,19 +60,30 @@ public:
   vkc::BaseObject::AttachLocation::Ptr getAttachLocation(std::string name);
 
   vkc::ConstructVKC::Ptr getVKCEnv();
+  vkc::ConstructVKC::Ptr getPlotVKCEnv();
 
   std::string updateEnv(std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
+  std::string updatePlotEnv(std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
 
   std::string getEndEffectorLink();
+
+  
+
   
 
 protected:
   ros::NodeHandle nh_;
   bool plotting_; /**< @brief Enable plotting so data is published for rviz if available */
   bool rviz_;     /**< @brief Enable rviz updating */
-  unsigned long n_past_revisions_;
+  
   std::unordered_map<std::string, double> home_pose_; /**< @brief Home pose of robot model */
+
+  unsigned long n_past_revisions_;
   vkc::ConstructVKC::Ptr tesseract_;                  /**< @brief Tesseract Manager Class */
+
+  unsigned long n_past_plot_revisions_;
+  vkc::ConstructVKC::Ptr plot_tesseract_;                  /**< @brief Tesseract Manager Class */
+
   ros::ServiceClient modify_env_rviz_;                /**< @brief Service for modifying tesseract environment in rviz */
   ros::ServiceClient get_env_changes_rviz_;           /**< @brief Get the environment changes from rviz */
   // current end effector link of the whole body, which could be changed over time
@@ -94,16 +106,15 @@ protected:
    */
   bool checkRviz();
 
-  bool sendRvizChanges();
+  bool sendRvizChanges(unsigned long& past_revision, vkc::ConstructVKC::Ptr tesseract);
 
-public:
   /**
    * @brief Send RViz the latest number of commands
    * @param n The past revision number
    * @return True if successful otherwise false
    */
-  bool sendRvizChanges_(unsigned long past_revision);
-protected:
+  bool sendRvizChanges_(unsigned long past_revision, vkc::ConstructVKC::Ptr tesseract);
+
   bool loadRobotModel(
     const std::string &ENV_DESCRIPTION_PARAM,
     const std::string &ENV_SEMANTIC_PARAM,
@@ -117,17 +128,17 @@ protected:
 
   bool isGroupExist(std::string group_id);
 
-public:
-  void attachObject(std::string attach_location_name, Eigen::Isometry3d* tf = nullptr);
 
-  void detachObject(std::string attach_location_name);
+  void attachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract, Eigen::Isometry3d* tf = nullptr);
 
-  void detachTopObject();
+  void detachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract);
+
+  void detachTopObject(vkc::ConstructVKC::Ptr tesseract);
 
   void addAttachedLink(std::string link_name);
 
   void removeTopAttachedLink();
-protected:
+
   std::string getTopAttachedLink();
 
   bool ifAttachedLink(std::string link_name);
@@ -135,6 +146,9 @@ protected:
   bool isRobotArmFree();
 
   void updateAttachLocParentLink(std::string attach_loc_name, std::string parent_link_name);
+
+  std::string updateEnv_(std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states,
+                         ActionBase::Ptr action, vkc::ConstructVKC::Ptr tesseract, unsigned long &past_revision);
 };
 
 }  // namespace vkc_example

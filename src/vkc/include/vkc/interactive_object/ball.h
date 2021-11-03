@@ -30,7 +30,7 @@ public:
         double link_fetch_pose_[7]{-1, 1.5, 0.1, 1.0, 0.0, 0.0, 0.0}; // 0~2: xyz  3~6: quateraion
         poses_.emplace("loc_on_ground", std::vector<double>(link_fetch_pose_, link_fetch_pose_ + sizeof(link_fetch_pose_) / sizeof(link_fetch_pose_[0])));
 
-        // set default fetch_pose, where the ball will be placed finally
+        // set default temp_place_pose, where the ball will be placed finally
         double link_target_pose_[7]{0, -2, 1.1, 0.5, -0.5, 0.5, 0.5}; // 0~2: xyz  3~6: quateraion
         poses_.emplace("loc_cabinet_room", std::vector<double>(link_target_pose_, link_target_pose_ + sizeof(link_target_pose_) / sizeof(link_target_pose_[0])));
 
@@ -83,7 +83,7 @@ public:
 
     virtual PickAction::Ptr CreatePickAction(const std::string& manipulator)
     {
-        return std::make_shared<PickAction>(manipulator, attach_link_name_, true);
+        return std::make_shared<PickAction>(manipulator, attach_link_name_, false);
     }
 
     virtual PlaceAction::Ptr CreatePlaceAction(const std::string &manipulator,

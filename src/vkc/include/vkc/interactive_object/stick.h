@@ -84,7 +84,7 @@ public:
                                              attach_link_name_,
                                              link_objectives,
                                              joint_objectives,
-                                             true);
+                                             false);
     }
 
 private:

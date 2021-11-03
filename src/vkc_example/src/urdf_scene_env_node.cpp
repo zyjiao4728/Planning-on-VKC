@@ -60,7 +60,7 @@ void run(VKCEnvBasic &env, ActionSeq actions, int n_steps, int n_iter, bool rviz
       cost = solveProb_cost(prob_ptr, response, n_iter);
       elapsed_seconds = std::chrono::system_clock::now() - start;
 
-      if (response.status.value() == 0 || action->getActionType() == ActionType::PlaceAction){
+      if (response.status_code == 0 || action->getActionType() == ActionType::PlaceAction){
         converged = true;
       }
     }
@@ -78,7 +78,7 @@ void run(VKCEnvBasic &env, ActionSeq actions, int n_steps, int n_iter, bool rviz
 
     // refine the orientation of the move base
     tesseract_common::TrajArray refined_traj =
-        response.joint_trajectory.trajectory.leftCols(static_cast<long>(prob_ptr->GetKin()->getJointNames().size()));
+        response.trajectory.leftCols(static_cast<long>(prob_ptr->GetKin()->getJointNames().size()));
     
     std::cout << "Traj:" << std::endl;
     std::cout << refined_traj << std::endl;
@@ -93,7 +93,7 @@ void run(VKCEnvBasic &env, ActionSeq actions, int n_steps, int n_iter, bool rviz
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     // update env according to the action
-    env.updateEnv(joint_names_record.back(), response.joint_trajectory.trajectory.bottomRows(1).transpose(), action);
+    env.updateEnv(joint_names_record.back(), response.trajectory.bottomRows(1).transpose(), action);
 
     plotter->clear();
   }

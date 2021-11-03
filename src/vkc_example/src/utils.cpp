@@ -20,7 +20,7 @@ void solveProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
   TrajOptMotionPlanner planner;
 
   // Set Planner Configuration
-  planner.setConfiguration(std::make_shared<TrajOptPlannerConfig>(config));
+  planner.setConfiguration(config);
 
   ROS_WARN("Constructed optimization problem. Starting optimization.");
   // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -29,7 +29,7 @@ void solveProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
   planner.solve(response);
 }
 
-CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter, bool enable_ploting)
+CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter, bool enable_plotting)
 {
   // Set the optimization parameters (Most are being left as defaults)
   TrajOptPlannerConfig config(prob_ptr);
@@ -40,8 +40,9 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, in
   config.params.min_trust_box_size = 1e-3;
   config.params.min_approx_improve = 1e-3;
 
-  if(enable_ploting)
+  if(enable_plotting)
   {
+    ROS_WARN("[%s]plotting is enabled, plot callback is configured.", __func__);
     tesseract_rosutils::ROSPlottingPtr plotter =
         std::make_shared<tesseract_rosutils::ROSPlotting>(prob_ptr->GetEnv());
 
@@ -52,7 +53,7 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, in
   TrajOptMotionPlanner planner;
 
   // Set Planner Configuration
-  planner.setConfiguration(std::make_shared<TrajOptPlannerConfig>(config));
+  planner.setConfiguration(config);
 
   ROS_WARN("Constructed optimization problem with cost constraint. Starting optimization.");
   // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

@@ -19,6 +19,7 @@ find_package(Eigen3 REQUIRED)
 find_package(trajopt REQUIRED)
 find_package(tesseract REQUIRED)
 find_package(tesseract_motion_planners REQUIRED)
+find_package(ompl REQUIRED)
 
 # find_package(PCL REQUIRED COMPONENTS 
 #   core 
@@ -204,6 +205,7 @@ target_link_libraries(
   vkc::vkc_arena_env
   vkc::vkc_prob_generator
   vkc::vkc_vkc_env_basic
+  tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
 )
 if(CXX_FEATURE_FOUND EQUAL "-1")

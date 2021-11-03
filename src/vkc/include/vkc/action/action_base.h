@@ -14,6 +14,7 @@
 
 namespace vkc
 {
+using VKCTraj = Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 
 enum class ActionType
 {
@@ -35,39 +36,13 @@ struct LinkDesiredPose{
 // added: wanglei@bigai.ai 
 // time: 2021-08-17
 // reason: for output Eigen::Isometry to std::ostream 
-std::ostream& operator << (std::ostream& oss, Eigen::Isometry3d& tf)
-{
-    for(int r = 0; r < tf.rows(); ++r)
-    {
-        oss << "\t\t";
-        for(int c = 0; c < tf.cols(); ++c)
-        {
-            oss << tf(r,c) << " "; 
-        }
-        
-        oss << std::endl;
-    }
-            
-    
-    return oss;
-}
+std::ostream& operator << (std::ostream& oss, Eigen::Isometry3d& tf);
 
 // added: wanglei@bigai.ai 
 // time: 2021-08-17 
 // reason: for output LinkDesiredPose to std::ostream easily
-std::ostream& operator << (std::ostream& oss, std::vector<vkc::LinkDesiredPose>& poses)
-{
-    for(auto& pos : poses)
-    {
-        oss << "-----------------------" << std::endl
-            << "\tlink: " << pos.link_name << std::endl
-            << "\ttf: " << std::endl
-            << pos.tf << std::endl;
-            
-    }
-    
-    return oss;
-}
+std::ostream& operator << (std::ostream& oss, std::vector<vkc::LinkDesiredPose>& poses);
+
 
 struct JointDesiredPose{
   std::string joint_name;
@@ -82,38 +57,26 @@ struct JointDesiredPose{
 // added: wanglei@bigai.ai 
 // time: 2021-08-17 
 // reason: for output JointDesiredPose to std::ostream easily
-std::ostream& operator << (std::ostream& oss, std::vector<vkc::JointDesiredPose>& poses)
-{
+std::ostream& operator << (std::ostream& oss, std::vector<vkc::JointDesiredPose>& poses);
 
-    for(auto& pos : poses)
-    {
-        oss << "-----------------------" << std::endl
-            << "\tjoint: " << pos.joint_name  << std::endl
-            << "\tvalue: " << pos.joint_angle << std::endl;
-    }
-
-    return oss;
-}
 
 class ActionBase
 {
 public:
   using Ptr = std::shared_ptr<ActionBase>;
 
-  ActionBase(ActionType action_type, std::string manipulator_id)
+  ActionBase(ActionType action_type,
+             const std::string &manipulator_id,
+             const std::string &name)
+      : action_type_(action_type),
+        manipulator_id_(manipulator_id),
+        init_traj_required_(false), // initial trajectory for this action is required,  added: wanglei@bigai.ai, time: 2021-08-27
+        name_(name) // to print action's name easily,  added: wanglei@bigai.ai, time: 2021-10-22 
   {
-    action_type_ = action_type;
-    manipulator_id_ = manipulator_id;
-
-    // added: wanglei@bigai.ai
-    // time: 2021-08-27
-    // reason: mark and specify these action need init trajectory
-    init_traj_required_ = true;
   }
 
   virtual ~ActionBase() = default;
 
-public:
   ActionType getActionType()
   {
     return action_type_;
@@ -137,8 +100,24 @@ public:
 
   bool RequireInitTraj()const
   {
-    std::cout << __func__ << init_traj_required_ << std::endl;
+    std::cout << __func__ << "@" << __FILE__ << ": " << init_traj_required_ << std::endl;
     return init_traj_required_;
+  }
+
+  std::string Name()const
+  {
+    return name_;
+  }
+
+  bool setInitTrajectory(VKCTraj& init_traj)
+  {
+    init_traj_ = init_traj;
+    init_traj_required_ = true;
+  }
+
+  const VKCTraj& getInitTraj()const 
+  {
+    return init_traj_;
   }
 
 protected:
@@ -149,7 +128,13 @@ protected:
   // time: 2021-08-27
   // reason: mark and specify these action need init trajectory
   bool init_traj_required_;
+  std::string name_;   // action name string value
+  VKCTraj init_traj_;
 };
+
+// added: wanglei@bigai.ai 
+// time: 2021-08-17 
+std::ostream& operator << (std::ostream& oss, ActionBase::Ptr p_act);
 
 } // end of namespace vkc
 

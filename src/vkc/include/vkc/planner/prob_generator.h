@@ -32,13 +32,22 @@ public:
 public:
   trajopt::TrajOptProb::Ptr genProb(VKCEnvBasic &env, ActionBase::Ptr action, int n_steps);
   trajopt::TrajOptProb::Ptr genPickProb(VKCEnvBasic &env, PickAction::Ptr act, int n_steps);
+  // trajopt::TrajOptProb::Ptr genPickProbOMPL(VKCEnvBasic &env, PickAction::Ptr act, int n_steps);
   trajopt::TrajOptProb::Ptr genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
+  // trajopt::TrajOptProb::Ptr genPlaceProbOMPL(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
   trajopt::TrajOptProb::Ptr genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
   trajopt::TrajOptProb::Ptr genUseProb(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
 
-protected:
+  trajopt::ProblemConstructionInfo genProbTest(VKCEnvBasic &env, ActionBase::Ptr action, int n_steps);
+  trajopt::ProblemConstructionInfo genGotoProb_test(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
+  trajopt::ProblemConstructionInfo genPickProb_test(VKCEnvBasic &env, PickAction::Ptr act, int n_steps);
+  trajopt::ProblemConstructionInfo genPlaceProb_test(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
+  trajopt::ProblemConstructionInfo genUseProb_test(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
+
   int initProbInfo(trajopt::ProblemConstructionInfo &pci, tesseract::Tesseract::Ptr tesseract, int n_steps,
                    std::string manip);
+protected:
+
 
   bool validateGroupID(tesseract::Tesseract::Ptr tesseract, const std::string &group_id);
 

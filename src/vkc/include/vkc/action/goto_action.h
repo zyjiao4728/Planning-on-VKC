@@ -19,7 +19,7 @@ public:
     std::vector<LinkDesiredPose> link_objectives,
     std::vector<JointDesiredPose> joint_objectives
   ):
-    ActionBase(ActionType::GotoAction, manipulator_id),
+    ActionBase(ActionType::GotoAction, manipulator_id, "GotoAction"),
     link_objectives_(link_objectives),
     joint_objectives_(joint_objectives)
   {}
@@ -36,26 +36,27 @@ public:
     return joint_objectives_;
   }
 
+  // added: wanglei@bigai.ai
+  // time: 2021-08-17
+  friend std::ostream &operator<<(std::ostream &oss, GotoAction &act)
+  {
+    oss << ">>>" << std::endl
+        << "action: GtoAction" << std::endl
+        << "manipulator: " << act.getManipulatorID() << std::endl
+        << "joint objectives: " << std::endl
+        << act.getLinkObjectives() << std::endl
+        << "link target_pose: " << std::endl
+        << act.getJointObjectives() << std::endl;
+
+    return oss;
+  }
+
 private:
   std::vector<LinkDesiredPose> link_objectives_;
   std::vector<JointDesiredPose> joint_objectives_;
 };
 
 
-// added: wanglei@bigai.ai 
-// time: 2021-08-17 
-std::ostream& operator << (std::ostream& oss, GotoAction& act)
-{
-    oss << ">>>" << std::endl
-        << "action: GtoAction" << std::endl
-        << "manipulator: " << act.getManipulatorID() << std::endl
-        << "joint objectives: " << std::endl
-        << act.getLinkObjectives() << std::endl
-        << "link target_pose: " << std::endl 
-        << act.getJointObjectives() << std::endl;
-        
-    return oss;
-}
 } // end of namespace vkc
 
 #endif
