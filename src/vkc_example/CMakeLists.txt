@@ -240,6 +240,30 @@ target_include_directories(${PROJECT_NAME}_urdf_scene_env_node PUBLIC
     "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME}_urdf_scene_env_node SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS})
+
+
+
+add_executable(${PROJECT_NAME}_bigai_tamp_node src/bigai_tamp_node.cpp)
+target_link_libraries(
+    ${PROJECT_NAME}_bigai_tamp_node
+    ${PROJECT_NAME}_utils 
+    vkc::vkc_construct_vkc
+    vkc::vkc_urdf_scene_env
+    vkc::vkc_prob_generator
+    vkc::vkc_vkc_env_basic
+    tesseract::tesseract_motion_planners_ompl
+    ${catkin_LIBRARIES}
+)
+if(CXX_FEATURE_FOUND EQUAL "-1")
+    target_compile_options(${PROJECT_NAME}_bigai_tamp_node PRIVATE -std=c++11)
+else()
+    target_compile_features(${PROJECT_NAME}_bigai_tamp_node PRIVATE cxx_std_11)
+endif()
+target_include_directories(${PROJECT_NAME}_bigai_tamp_node PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>")
+target_include_directories(${PROJECT_NAME}_bigai_tamp_node SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS})    
 #############
 ## Install ##
 #############

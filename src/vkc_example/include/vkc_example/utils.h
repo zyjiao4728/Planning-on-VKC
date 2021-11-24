@@ -17,6 +17,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #include <trajopt_utils/logging.hpp>
 
 #include <fstream>
+#include <vector>
 
 #include <vkc/action/actions.h>
 #include <vkc/env/vkc_env_basic.h>
@@ -67,5 +68,9 @@ void refineTrajectory(tesseract_common::TrajArray &traj);
 int saveTrajToFile(const tesseract_common::TrajArray &traj, const std::string filename);
 
 std::vector<vkc::JointDesiredPose> getJointHome(std::unordered_map<std::string, double> home_pose);
+
+void TrajectoryVisualize(vkc::VKCEnvBasic& env,
+                         vkc::ActionSeq &actions,
+                         std::vector<tesseract_common::JointTrajectory> &joint_trajs);
 
 #endif

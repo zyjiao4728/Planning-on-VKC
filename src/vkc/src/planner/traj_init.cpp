@@ -128,7 +128,8 @@ namespace vkc
         {
           if (joint_name_idx.at(joint_obj.joint_name) < 0 || joint_name_idx.at(joint_obj.joint_name) > seed.size())
           {
-            ROS_WARN("joint_name: %s, joint_index: %d, seed size: %d",
+            ROS_WARN("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+                     __func__,
                      joint_obj.joint_name.c_str(),
                      joint_name_idx.at(joint_obj.joint_name),
                      seed.size());
@@ -139,7 +140,8 @@ namespace vkc
         }
         else
         {
-            ROS_ERROR("joint_name: %s, joint_index: %d, seed size: %d",
+            ROS_ERROR("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+                     __func__,
                      joint_obj.joint_name.c_str(),
                      joint_name_idx.at(joint_obj.joint_name),
                      seed.size());
@@ -448,6 +450,7 @@ namespace vkc
           base_final_pose.setIdentity();
           if (inv_suc && (satisfy_collision == 0) && (satisfy_limit == 1))
           {
+            ROS_INFO("[%s]init trajectory sucessfully!", __func__);
             // the third argument here is the z-offset of base frame referred to world frame
             base_final_pose.translation() = Eigen::Vector3d(sol(0), sol(1), 0.13);
           }
@@ -492,7 +495,9 @@ namespace vkc
         else
         {
           ROS_WARN("Unsupported trajectory initialization for given link desired pose:\t%s, tiplink: %s",
-                   link_obj.link_name.c_str(), inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName().c_str());
+                   link_obj.link_name.c_str(), 
+                   inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName().c_str());
+          return init_traj;
         }
       }
     }

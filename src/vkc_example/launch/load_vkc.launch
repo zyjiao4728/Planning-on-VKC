@@ -6,6 +6,7 @@
   <arg name="interactive_description" default="interactive_description"/>
   <arg name="end_effector_link" default="ur_arm_ee_link"/>
 
+
   <arg name="plotting" default="true"/>
   <arg name="rviz" default="true"/>
   <arg name="steps" default="30"/>

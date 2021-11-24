@@ -27,6 +27,8 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 namespace vkc
 {
+using TesseractSceneGraphPtr = tesseract_scene_graph::SceneGraph::Ptr;
+using TesseractSceneGraphConstPtr = tesseract_scene_graph::SceneGraph::ConstPtr;
 
 std::vector<std::string> findPath(tesseract_scene_graph::SceneGraph::ConstPtr sg, const std::string &src, const std::string &dst);
 bool findPathHelper(tesseract_scene_graph::SceneGraph::ConstPtr sg, const std::string &src, 
@@ -44,12 +46,38 @@ void deepcopySceneGraphHelper(tesseract_scene_graph::SceneGraph::Ptr dst_sg, tes
  */
 class UrdfSceneEnv : public VKCEnvBasic
 {
-public:
+public: 
+  struct AttachObjectInfo
+  {
+    std::string attach_name;
+    std::string attach_link;
+    std::string base_link;
+    std::vector<double> local_joint_tf_trans;
+    std::vector<double> local_joint_tf_quat;
+    bool fixed_base;
+  };
+
+  struct InverseChainsInfo
+  {
+    std::string ori_root_link;
+    std::string dst_root_link;
+  };
+
+  using AttachObjectInfos = std::vector<AttachObjectInfo>;
+  using InverseChainsInfos = std::vector<InverseChainsInfo>;
+
   UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps);
+
+  UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps,
+               const AttachObjectInfos &attaches,
+               const InverseChainsInfos &inverse_chains);
 
   ~UrdfSceneEnv() = default;
 
   bool createEnvironment() override;
+
+  bool reInit()override;
+
 
 private:
   /**
@@ -67,6 +95,13 @@ private:
    */
   void configAttachLocations_();
 
+  /*****************************************************************8
+   * Configurate AttachLocations in the URDF scene
+   * 
+   * Add AttachLocations in to the UrdfSceneEnv
+   */
+  void configAttachLocations_(const AttachObjectInfos &attaches);
+
   /*******************************************************************
    * Configurate Inserve Kinematics Chains
    * 
@@ -74,6 +109,12 @@ private:
    ******************************************************************/
   tesseract_scene_graph::SceneGraph::Ptr configInverseChains_();
 
+  /*******************************************************************
+   * Configurate Inserve Kinematics Chains
+   * 
+   * Inserve the chain of the manipulated object
+   ******************************************************************/
+  TesseractSceneGraphPtr configInverseChains_(const InverseChainsInfos &inverse_chains);
 
   /*****************************************************************8
    * Inserve a kinematic chain inside the Environment
@@ -123,6 +164,7 @@ private:
 
 private:
   int steps_;
+  AttachObjectInfos attaches_for_reset_;
 };
 
 }  // namespace vkc

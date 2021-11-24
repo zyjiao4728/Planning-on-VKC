@@ -19,7 +19,8 @@ namespace vkc
   bool VKCEnvBasic::reInit()
   {
     ROS_WARN("[%s]TODO: reset the rviz via call programming interface", __func__);
-
+    // attached_links_.clear();
+    end_effector_link_ = robot_end_effector_link_;
     ROS_INFO("[%s]revision: %lu", __func__, plot_tesseract_->getTesseract()->getEnvironment()->getRevision());
     if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
       return false;
@@ -168,7 +169,7 @@ namespace vkc
   {
     for (const auto &group_state : tesseract_->getTesseract()->getSRDFModel()->getGroupStates())
     {
-      if (group_state.name_ != "home")
+      if (std::string::npos == group_state.name_.find("home"))
       {
         continue;
       }
@@ -226,19 +227,22 @@ namespace vkc
 
   bool VKCEnvBasic::sendRvizChanges(unsigned long &past_revision, vkc::ConstructVKC::Ptr tesseract)
   {
+    ROS_INFO("[%s]enter into %s", __func__, __func__);
     bool ret = sendRvizChanges_(past_revision, tesseract);
 
     past_revision = (unsigned long)tesseract->getTesseract()->getEnvironment()->getRevision();
-
+    ROS_INFO("[%s]leave %s", __func__, __func__);
     return ret;
   }
 
   bool VKCEnvBasic::sendRvizChanges_(unsigned long past_revision, vkc::ConstructVKC::Ptr tesseract)
   {
+    ROS_INFO("[%s]enter into %s", __func__, __func__);
     modify_env_rviz_.waitForExistence();
     tesseract_msgs::ModifyEnvironment update_env;
     update_env.request.id = tesseract->getTesseract()->getEnvironment()->getName();
     update_env.request.revision = past_revision;
+    ROS_INFO("[%s]start to compose rviz message", __func__);
     if (!tesseract_rosutils::toMsg(update_env.request.commands,
                                    tesseract->getTesseract()->getEnvironment()->getCommandHistory(),
                                    update_env.request.revision))
@@ -246,7 +250,8 @@ namespace vkc
       ROS_ERROR("Failed to generate commands to update rviz environment!");
       return false;
     }
-
+    ROS_INFO("[%s]finish composing rviz message", __func__);
+    ROS_INFO("[%s]start to call ros rviz service", __func__);
     if (modify_env_rviz_.call(update_env))
     {
       ROS_INFO("Update rviz environment, result: %d, revision: %llu, past revision: %lu, current_revision: %lu",
@@ -261,7 +266,8 @@ namespace vkc
                tesseract->getTesseract()->getEnvironment()->getRevision());
       return false;
     }
-
+    ROS_INFO("[%s]finish calling ros rviz service", __func__);
+    ROS_INFO("[%s]leave %s", __func__, __func__);
     return true;
   }
 
@@ -269,7 +275,9 @@ namespace vkc
   {
     if (ifAttachedLink(attach_loc_name))
     {
-      ROS_ERROR("Cannot change parent link name since ", attach_loc_name.c_str(), " is already attached to another link");
+      ROS_ERROR("Cannot set link %s as the parent of %s, since %s is already attached to another link",
+                parent_link_name.c_str(), attach_loc_name.c_str(), attach_loc_name.c_str());
+      return;
     }
     attach_locations_.at(attach_loc_name)->connection.parent_link_name = parent_link_name;
   }
@@ -311,7 +319,7 @@ namespace vkc
     addAttachedLink(attach_location_name);
   }
 
-  void VKCEnvBasic::detachTopObject(vkc::ConstructVKC::Ptr tesseract)
+  void VKCEnvBasic::detachTopObject(vkc::ConstructVKC::Ptr tesseract, const std::string& new_attach_link)
   {
     std::string target_location_name = getTopAttachedLink();
     removeTopAttachedLink();
@@ -321,23 +329,30 @@ namespace vkc
     ROS_INFO("end_effector_link_: %s", end_effector_link_.c_str());
 
     std::string link_name = attach_locations_.at(target_location_name)->link_name_;
-    std::string object_name = link_name.substr(0, link_name.find("_", 0));
-    Joint world_joint(object_name + "_world");
-    world_joint.parent_link_name = "world";
-    world_joint.child_link_name = link_name;
-    world_joint.type = JointType::FIXED;
-    world_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
-    world_joint.parent_to_joint_origin_transform =
+    std::string object_name = link_name.substr(0, link_name.rfind("_"));
+    ROS_INFO("[%s]object link name: %s, object_name: %s", __func__, link_name.c_str(), object_name.c_str());
+
+    std::string new_parent_link { new_attach_link.empty() ? "world" : new_attach_link};
+    Joint new_joint(object_name + "_" + new_parent_link);   // wanglei@2021-11-15, to optionally support container fill operation, such as put a egg into a basket
+    ROS_INFO("[%s]detach %s from %s to attach to %s, assigned attach link: %s", __func__, target_location_name.c_str(), end_effector_link_.c_str(), new_parent_link.c_str(), new_attach_link.c_str());
+
+    new_joint.parent_link_name = new_parent_link;
+    new_joint.child_link_name = link_name;
+    new_joint.type = JointType::FIXED;
+    new_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
+    new_joint.parent_to_joint_origin_transform = tesseract->getTesseract()->getEnvironment()->getLinkTransform(new_parent_link).inverse() *
         tesseract->getTesseract()->getEnvironment()->getLinkTransform(link_name);
-    bool link_moved = tesseract->getTesseract()->getEnvironment()->moveLink(world_joint);
-    ROS_INFO("move link %s: %s", link_name.c_str(), link_moved ? "true" : "false");
+    bool link_moved = tesseract->getTesseract()->getEnvironment()->moveLink(new_joint);
+    ROS_INFO("[%s]detach action, move link %s: %s", __func__, link_name.c_str(), link_moved ? "true" : "false");
     // std::cout << tesseract->getTesseract()->getEnvironment()->getLinkTransform(link_name).translation() << std::endl;
     attach_locations_.at(target_location_name)->world_joint_origin_transform =
         tesseract->getTesseract()->getEnvironment()->getLinkTransform(link_name) *
         attach_locations_.at(target_location_name)->local_joint_origin_transform;
+
+    
   }
 
-  void VKCEnvBasic::detachObject(std::string detach_location_name, vkc::ConstructVKC::Ptr tesseract)
+  void VKCEnvBasic::detachObject(std::string detach_location_name, vkc::ConstructVKC::Ptr tesseract, const std::string& new_attach_link)
   {
     if (!ifAttachedLink(detach_location_name))
       return;
@@ -347,19 +362,19 @@ namespace vkc
       detachTopObject(tesseract);
 
     // detach the real target detach_location_name
-    detachTopObject(tesseract);
+    detachTopObject(tesseract, new_attach_link);
   }
 
-  std::string VKCEnvBasic::updateEnv(std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states, ActionBase::Ptr action)
+  std::string VKCEnvBasic::updateEnv(const std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states, ActionBase::Ptr action)
   {
     return updateEnv_(joint_names, joint_states, action, tesseract_, n_past_revisions_);
   }
-  std::string VKCEnvBasic::updatePlotEnv(std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states, ActionBase::Ptr action)
+  std::string VKCEnvBasic::updatePlotEnv(const std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states, ActionBase::Ptr action)
   {
     return updateEnv_(joint_names, joint_states, action, plot_tesseract_, n_past_plot_revisions_);
   }
 
-  std::string VKCEnvBasic::updateEnv_(std::vector<std::string> &joint_names,
+  std::string VKCEnvBasic::updateEnv_(const std::vector<std::string> &joint_names,
                                       const Eigen::VectorXd &joint_states,
                                       ActionBase::Ptr action,
                                       vkc::ConstructVKC::Ptr tesseract,
@@ -367,7 +382,6 @@ namespace vkc
   {
     std::cout << __func__ << ": actioin" << std::endl
               << action << std::endl;
-    std::string location_name;
 
     // Set the current state to the last state of the pick trajectory
     tesseract->getTesseract()->getEnvironment()->setState(joint_names, joint_states);
@@ -382,6 +396,8 @@ namespace vkc
       }
       return DEFAULT_VKC_GROUP_ID;
     }
+    
+    std::string location_name;
     if (action->getActionType() == ActionType::PickAction)
     {
       PickAction::Ptr pick_act = std::dynamic_pointer_cast<PickAction>(action);
@@ -389,6 +405,7 @@ namespace vkc
       if (attach_locations_.find(location_name) == attach_locations_.end())
       {
         ROS_ERROR("Cannot find attach location %s inside environment!", location_name.c_str());
+        return DEFAULT_VKC_GROUP_ID;
       }
       attachObject(location_name, tesseract);
     }
@@ -398,7 +415,7 @@ namespace vkc
       location_name = place_act->getDetachedObject();
       std::cout << "detach: " << location_name << std::endl;
       std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
-      detachObject(location_name, tesseract);
+      detachObject(location_name, tesseract, place_act->getNewAttachObject());
       std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
       // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }

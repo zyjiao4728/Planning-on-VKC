@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
+  <!-- The name of the parameter under which the URDF is loaded -->
+  <arg name="env_description" default="env_description"/>
+  <arg name="interactive_description" default="interactive_description"/>
+  
+  <!-- modified for ridgeback_dual_ure model -->
+  <arg name="end_effector_link" default="right_gripper_palm"/>
+
+  <arg name="robot" default="vkc"/>
+  <arg name="plotting" default="true"/>
+  <arg name="rviz" default="true"/>
+  <arg name="steps" default="30"/>
+  <arg name="niter" default="500"/>
+  <arg name="nruns" default="20"/>
+
+  <arg name="loc_x" default="0.0"/>
+  <arg name="loc_y" default="0.0"/>
+  <arg name="orient" default="1.57"/>
+
+  <!-- Load universal environment description format (URDF) -->
+  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_bigai_tamp.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)"/>
+  <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find scene_builder)/output/bigai_tamp_demo_v2/main.xacro'" />
+
+  <!-- The semantic description that corresponds to the URDF -->
+  <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" />
+
+  <param name="end_effector_link" type="str" value="$(arg end_effector_link)"/>
+
+  <!-- If needed, broadcast static tf for robot root -->
+  <node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 world base_link 100" />
+
+  <node pkg="vkc_example" type="vkc_example_bigai_tamp_node" name="bigai_tamp_env_node" output="screen" required="false">
+    <param name="plotting" type="bool" value="$(arg plotting)"/>
+    <param name="rviz" type="bool" value="$(arg rviz)"/>
+    <param name="steps" type="int" value="$(arg steps)"/>
+    <param name="niter" type="int" value="$(arg niter)"/>
+  </node>
+
+  <!-- Launch visualization -->
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vkc_example_arena_env_rviz" args="-d $(find vkc_example)/config/env.rviz" output="screen"  />
+</launch>

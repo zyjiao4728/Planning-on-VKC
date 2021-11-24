@@ -135,7 +135,7 @@ public:
 
     if (attach_location == attach_locations_.end())
     {
-      ROS_ERROR("Undefined attach location. Unable to set world transform.");
+      ROS_ERROR("[%s]Undefined attach location %s. Unable to set world transform.", __func__, name.c_str());
       return false;
     }
 
@@ -428,6 +428,8 @@ public:
       new_object_scene_graph->addJoint(*current_joint);
     }
 
+std::string attach("attach_" + new_root);
+    ROS_DEBUG("set attach transform: %s...", attach.c_str());
     setAttachLocationWorldTransform(tip_root_transform, "attach_" + new_root);
 
     new_object_scene_graph->setRoot(new_root);

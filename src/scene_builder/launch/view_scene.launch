@@ -1,5 +1,5 @@
 <launch>
-    <arg name="scene" value="scenenn_225" />
+    <arg name="scene" default="scenenn_225" />
     <arg name="urdf_file" value="xacro '$(find scene_builder)/output/$(arg scene)/main.xacro'" />
 
     <param name="robot_description" command="$(arg urdf_file)" />

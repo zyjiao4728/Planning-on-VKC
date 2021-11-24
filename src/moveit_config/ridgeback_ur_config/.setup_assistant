@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: vkc_example
+    relative_path: env/vkc_bigai_tamp.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/scene.srdf
+  CONFIG:
+    author_name: wanglei-albert
+    author_email: wanglei@bigai.ai
+    generated_timestamp: 1637026575

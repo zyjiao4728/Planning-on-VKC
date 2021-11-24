@@ -135,3 +135,51 @@ std::vector<vkc::JointDesiredPose> getJointHome(std::unordered_map<std::string, 
   }
   return joint_home;
 }
+
+void TrajectoryVisualize(vkc::VKCEnvBasic& env,
+                         vkc::ActionSeq &actions,
+                         vector<tesseract_common::JointTrajectory> &joint_trajs)
+{
+  ROS_INFO("[%s]actions size: %d, traj size: %d", __func__, actions.size(), joint_trajs.size());
+
+  // reset rviz
+  ROS_INFO("[%s]please reset rviz and presss ENTER to go on...", __func__);
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  env.reInit();
+
+  long int max_traj_len{0};
+  for (auto &traj : joint_trajs)
+  {
+    max_traj_len = traj.trajectory.size() > max_traj_len ? traj.trajectory.size() : max_traj_len;
+    // std::cout << ">> traj details: " << std::endl
+    //           << traj << std::endl;
+  }
+
+  // plot current `action` result
+  auto action_iter = actions.begin();
+  auto joint_traj_iter = joint_trajs.begin();
+
+  // plot current `action` trajectory data
+  for (; joint_traj_iter != joint_trajs.end(); ++action_iter, ++joint_traj_iter)
+  {
+    ROS_INFO("joints names number: %d, joint number: %d, joint states number: %d, revision: %d",
+             joint_traj_iter->joint_names.size(),
+             joint_traj_iter->trajectory.cols(),
+             joint_traj_iter->trajectory.rows(),
+             env.getPlotVKCEnv()->getTesseractEnvironment()->getRevision());
+    tesseract_common::TrajArray refined_traj = joint_traj_iter->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
+    //refineTrajectory(refined_traj);
+
+    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getPlotVKCEnv()->getTesseract()->getEnvironment());
+    plotter->plotTrajectory(joint_traj_iter->joint_names, refined_traj);
+    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 3000000.0 / max_traj_len));
+
+    // ROS_INFO("%s: Update Env, action: ", __func__);
+    // std::cout << *action_iter << "\t";
+
+    // update env according to the action
+    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    env.updatePlotEnv(joint_traj_iter->joint_names, joint_traj_iter->trajectory.bottomRows(1).transpose(), *action_iter);
+    plotter->clear();
+  }
+}

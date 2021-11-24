@@ -46,7 +46,7 @@ public:
 
   void setEndEffector(std::string name);
 
-  bool reInit();
+  virtual bool reInit();
   void setRobotEndEffector(std::string link_name);
 
   void addAttachLocation(vkc::BaseObject::AttachLocation attach_location);
@@ -62,8 +62,8 @@ public:
   vkc::ConstructVKC::Ptr getVKCEnv();
   vkc::ConstructVKC::Ptr getPlotVKCEnv();
 
-  std::string updateEnv(std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
-  std::string updatePlotEnv(std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
+  std::string updateEnv(const std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
+  std::string updatePlotEnv(const std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
 
   std::string getEndEffectorLink();
 
@@ -131,9 +131,9 @@ protected:
 
   void attachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract, Eigen::Isometry3d* tf = nullptr);
 
-  void detachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract);
+  void detachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract, const std::string& new_attach_link= std::string(""));
 
-  void detachTopObject(vkc::ConstructVKC::Ptr tesseract);
+  void detachTopObject(vkc::ConstructVKC::Ptr tesseract, const std::string& new_attach_link = std::string(""));
 
   void addAttachedLink(std::string link_name);
 
@@ -147,7 +147,7 @@ protected:
 
   void updateAttachLocParentLink(std::string attach_loc_name, std::string parent_link_name);
 
-  std::string updateEnv_(std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states,
+  std::string updateEnv_(const std::vector<std::string> &joint_names, const Eigen::VectorXd &joint_states,
                          ActionBase::Ptr action, vkc::ConstructVKC::Ptr tesseract, unsigned long &past_revision);
 };
 

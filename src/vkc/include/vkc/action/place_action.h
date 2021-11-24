@@ -38,13 +38,25 @@ public:
       : ActionBase(ActionType::PlaceAction, manipulator_id, "PlaceAction"),
         detached_object_id_(detached_object_id),
         link_objectives_(link_objectives),
-        joint_objectives_(joint_objectives)
+        joint_objectives_(joint_objectives),
+        is_rigid_object_(true)
   // base_objective_(base_objective)
   {
         init_traj_required_ = init_traj_required;
   }
 
   ~PlaceAction() = default;
+
+  void setNewAttachObject(const std::string& obj_id)
+  {
+    attach_object_id_ = obj_id;
+  }
+
+
+  const std::string getNewAttachObject()const
+  {
+    return attach_object_id_;
+  }
 
   std::string getDetachedObject()
   {
@@ -66,6 +78,16 @@ public:
   // {
   //   return base_objective_;
   // }
+
+  void setOperationObjectType(const bool is_rigid)
+  {
+    is_rigid_object_ = is_rigid;
+  } 
+
+  bool isRigidObject()const
+  {
+    return is_rigid_object_;
+  }
 
   std::vector<JointDesiredPose>& getJointObjectives()
   {
@@ -90,8 +112,10 @@ public:
 
 private:
   std::string detached_object_id_;
+  std::string attach_object_id_;  // attach to a new object after detached
   std::vector<LinkDesiredPose> link_objectives_;
   std::vector<JointDesiredPose> joint_objectives_;
+  bool is_rigid_object_;
   // LinkDesiredPose base_objective_;
 };
 

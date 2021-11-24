@@ -240,13 +240,18 @@ namespace vkc
     tesseract_collision::ContactResultMap collisions;
     Eigen::MatrixX2d joint_limits = kin_->getLimits();
 
-      int attempts = 0;
     if (inv_kin_solver)
     {
+      ROS_INFO("[%s]inverse kinematics solver name: %s",__func__, inv_kin_solver->getSolverName().c_str());
+
+      int attempts = 0;
       bool satisfied = false;
-      while (!satisfied && attempts < inv_attp_max_)
+      while (attempts < inv_attp_max_)
       {
         // calculate IK and make sure the solution satisfy joint limits
+        ROS_INFO("[%s]solving inverse kinematics problem: ",__func__);
+        std::cout << "\tsolution: " << solutions.transpose() << std::endl
+                  << "\tseed: " << seed.transpose() << std::endl;
         if (inverseKinematics(inv_kin_solver, solutions, pose, seed) && checkJointLimits(solutions, joint_limits))
         {
           tesseract_environment::EnvState::Ptr state =
@@ -255,6 +260,7 @@ namespace vkc
           collision_manager->setCollisionObjectsTransform(state->transforms);
 
           collisions.clear();
+          collision_manager->setContactDistanceThreshold(0.02);  // wanglei@2021-11-12
           collision_manager->contactTest(collisions, tesseract_collision::ContactTestType::FIRST);
 
           // collisions.size() = zero means no collisioin
@@ -263,20 +269,26 @@ namespace vkc
             satisfied = true;
             return true;
           }
+          else
+          {
+            ROS_INFO("[%s]the solution results in at least one collision: %s <--------> %s",
+              __func__, collisions.begin()->second[0].link_names[0].c_str(), collisions.begin()->second[0].link_names[1].c_str());
+          }
         }
 
         genRandState(kin_, seed);
         ++attempts;
       }
+
+      ROS_ERROR("%d attempts have been made to find a collision free state.", attempts);
+      return false;
     }
     else
     {
       ROS_ERROR("Unable to find inverse kinematics solver for  %s.", manipulator.c_str());
+      return false;
     }
 
-    ROS_ERROR("%d attempts have been made to find a collision free state.", attempts);
-
-    return false;
   }
 
   void ProbTranslator::genRandState(tesseract_kinematics::ForwardKinematics::Ptr kin, Eigen::VectorXd &seed)
@@ -313,8 +325,8 @@ namespace vkc
     {
       if(solution[i] < limits(i, 0) || solution[i] > limits(i, 1))
       {
-        ROS_INFO("joint limits violation joint index: %d, joint value: %f, joint limit: %f, %f",
-                 i, solution[i], limits(i, 0), limits(i, 1));
+        ROS_INFO("[%s]joint limits violation joint index: %d, joint value: %f, joint limit: %f, %f",
+                 __func__, i + 1, solution[i], limits(i, 0), limits(i, 1));
         return false;
       }
     }
@@ -325,18 +337,23 @@ namespace vkc
     ROS_INFO("Translating Pick Problem");
 
     setupParams(env, act);
-
+    ROS_INFO("Translating Pick Problem2");
     this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseract()->getEnvironmentConst(), this->kin);
+        ROS_INFO("Translating Pick Problem3");
     this->coi_->setAdjacencyMap();
+        ROS_INFO("Translating Pick Problem4");
     insertPlanners(planner_);
-
+    ROS_INFO("Translating Pick Problem5");
     // extract pose information
     BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
+        ROS_INFO("Translating Pick Problem6");
     Eigen::Isometry3d target_pos = attach_location_ptr->world_joint_origin_transform;
+        ROS_INFO("Translating Pick Problem7");
 
     this->l_obj = {LinkDesiredPose(env.getEndEffectorLink(), target_pos)};
+        ROS_INFO("Translating Pick Problem8");
     this->j_obj.clear();
-
+    ROS_INFO("Translating Pick Problem9");
     return getStartAndGoalState(env, act->getManipulatorID());
   }
 
@@ -346,7 +363,12 @@ namespace vkc
     ROS_INFO("Translating Place Problem");
 
     setupParams(env, act);
-
+    ROS_INFO("[%s]link_names: ", __func__);
+    for(auto& link : kin->getLinkNames())
+    {
+      std::cout << "\t" << link.c_str() << std::endl;
+    }
+    
     this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseract()->getEnvironmentConst(), this->kin);
     this->coi_->setAdjacencyMap();
 

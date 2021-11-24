@@ -1,8 +1,60 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="scene">
   <!-- <xacro:include filename="$(find scene_builder)/output/vkc_demo/main.xacro" /> -->
-  <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e.urdf.xacro" />
+  <!-- <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e.urdf.xacro" /> -->
+ 
+ <!-- ridgeback robot begin -->
+  <!-- <xacro:include filename="$(find ridgeback_dual_arm_description)/urdf/ridgeback_dual_arm.urdf.xacro" /> -->
   
+  <!-- Arguments -->
+  <!-- <xacro:arg name="base_locx" default="0.0"/>
+  <xacro:arg name="base_locy" default="0.0"/>
+  <xacro:arg name="base_orient" default="0.0"/>
+  <xacro:arg name="robot_prefix" default=""/> -->
+
+  <!-- Setup Environment -->
+  <!-- 
+    link order: world link -> virtual_base_x -> virtual_base_y -> virtual_base_theta -> base_link 
+  -->
+
+  <!-- <link name="$(arg robot_prefix)virtual_base_theta"/>
+  <joint name="$(arg robot_prefix)base_link_base_theta" type="revolute">
+    <parent link="$(arg robot_prefix)virtual_base_theta" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="base_link" />
+    <axis xyz="0 0 1"/>
+    <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14"/>
+  </joint>
+
+  <link name="$(arg robot_prefix)virtual_base_y"/>
+  <joint name="$(arg robot_prefix)base_theta_base_y" type="prismatic">
+    <parent link="$(arg robot_prefix)virtual_base_y" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="$(arg robot_prefix)virtual_base_theta" />
+    <axis xyz="0 1 0"/>
+    <limit effort="20" velocity="5.0" lower="-10" upper="10"/>
+  </joint>
+
+  <link name="$(arg robot_prefix)virtual_base_x"/>
+  <joint name="$(arg robot_prefix)base_y_base_x" type="prismatic">
+    <parent link="$(arg robot_prefix)virtual_base_x" />
+    <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+    <child link="$(arg robot_prefix)virtual_base_y" />
+    <axis xyz="1 0 0"/>
+    <limit effort="20" velocity="5.0" lower="-10" upper="10"/>
+  </joint>
+
+
+  <link name="world"/>
+  <joint name="world_to_base_footprint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="world"/>
+    <child link="$(arg robot_prefix)virtual_base_x"/>
+  </joint> -->
+  <!-- ridgeback robot end -->
+
+  <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e.urdf.xacro" />
+
   <!-- Arguments -->
   <xacro:arg name="husky_locx" default="0.0"/>
   <xacro:arg name="husky_locy" default="0.0"/>
@@ -10,11 +62,5 @@
 
   <!-- Setup Environment -->
   <link name="world"/>
-  <!-- <joint name="world_to_room" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="world"/>
-    <child link="Room_0_link"/>
-  </joint> -->
-
   <xacro:deploy prefix="" attach_to_world="true" loc_x="$(arg husky_locx)" loc_y="$(arg husky_locy)" orientation="$(arg husky_orient)" />
 </robot>

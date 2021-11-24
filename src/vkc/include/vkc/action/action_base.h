@@ -127,9 +127,9 @@ protected:
   // added: wanglei@bigai.ai
   // time: 2021-08-27
   // reason: mark and specify these action need init trajectory
-  bool init_traj_required_;
   std::string name_;   // action name string value
   VKCTraj init_traj_;
+  bool init_traj_required_;
 };
 
 // added: wanglei@bigai.ai 

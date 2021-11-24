@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>pan_tilt_description</name>
+  <version>1.0.0</version>
+  <description>The pan_tilt_description package</description>
+
+  <!-- Author -->
+  <maintainer email="lei.yan@iquotient-robotics.com">QuartzYan</maintainer>
+
+  <!-- License -->
+  <license>MIT</license>
+  
+  <!-- depend -->
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>urdf</build_depend>
+  <build_export_depend>urdf</build_export_depend>
+  <exec_depend>urdf</exec_depend>
+
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

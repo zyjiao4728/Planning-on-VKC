@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<robot name="ridgeback_dual_arm" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926535897931"/>
+
+  <!-- include ridgeback -->
+  <xacro:include filename="$(find ridgeback_description)/urdf/ridgeback.urdf.xacro"/>
+
+  <!-- include ur 5e arm -->
+  <xacro:include filename="$(find ur_description)/urdf/inc/ur5e_macro.xacro"/>
+
+  <!-- include kinect dk -->
+  <xacro:include filename="$(find ridgeback_dual_arm_description)/urdf/kinect_dk.xacro"/>
+
+  <!-- include pan tilt -->
+  <xacro:include filename="$(find pan_tilt_description)/urdf/pan_tilt.urdf.xacro"/>
+  
+  <!-- gripper -->
+  <xacro:include filename="$(find robotiq_3f_gripper_visualization)/cfg/robotiq-3f-gripper_articulated_macro.xacro" />
+
+  <link name="base_footprint" />
+  <joint name="footprint_joint" type="fixed">
+      <origin xyz="0 0 -0.01965" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="base_footprint"/>
+  </joint>
+
+  <!-- include pan tilt -->
+  <!-- <xacro:pan_tilt parent="base_footprint">
+    <origin xyz="0.25 0 1.02221" rpy="0 0 0"/>
+  </xacro:pan_tilt> -->
+
+  <!-- kinect dk -->
+  <!-- <xacro:kinect_dk parent="pan_tilt_surface">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:kinect_dk> -->
+
+  <!-- body -->
+  <link name="body_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ridgeback_dual_arm_description/mesh/ridgeback_2xur5-sup-simp-urdf.stl"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="body_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
+      <parent link="base_footprint"/>
+      <child link="body_link"/>
+  </joint>
+
+  <!-- left arm -->
+  <!-- <xacro:ur5e_robot prefix="left_arm_" />
+  <joint name="left_arm_joint" type="fixed">
+      <origin xyz="0.25 0.208336 0.957336" rpy="-${M_PI/4*3} 0 0"/>
+      <parent link="base_footprint"/>
+      <child link="left_arm_base_link"/>
+  </joint> -->
+
+  <!-- left gipper flange -->
+  <!-- <link name="left_gripper_flange">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ridgeback_dual_arm_description/mesh/3-finger-gripper_fixed-urdf.stl"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="left_gripper_flange_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="left_arm_tool0"/>
+      <child link="left_gripper_flange"/>
+  </joint> -->
+
+  <!-- left gripper -->
+  <!-- <xacro:robotiq-3f-gripper_articulated prefix="left_gripper_"/>
+  <joint name="left_gripper_joint" type="fixed">
+      <origin xyz="0 0 0.068825" rpy="${M_PI/2} 0 0"/>
+      <parent link="left_gripper_flange"/>
+      <child link="left_gripper_palm"/>
+  </joint> -->
+
+  <!-- right arm -->
+  <xacro:ur5e_robot prefix="right_arm_" />
+  <joint name="right_arm_joint" type="fixed">
+      <origin xyz="0.25 -0.208336 0.957336" rpy="${M_PI/4*3} 0 0"/>
+      <parent link="base_footprint"/>
+      <child link="right_arm_base_link"/>
+  </joint>
+
+  <!-- right gipper flange -->
+  <link name="right_gripper_flange">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ridgeback_dual_arm_description/mesh/3-finger-gripper_fixed-urdf.stl"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.2 0.2 0.2 1"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="right_gripper_flange_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="right_arm_tool0"/>
+      <child link="right_gripper_flange"/>
+  </joint>
+
+  <!-- right gripper -->
+  <xacro:robotiq-3f-gripper_articulated prefix="right_gripper_"/>
+  <joint name="right_gripper_joint" type="fixed">
+      <origin xyz="0 0 0.068825" rpy="${M_PI/2} 0 0"/>
+      <parent link="right_gripper_flange"/>
+      <child link="right_gripper_palm"/>
+  </joint>  
+</robot>

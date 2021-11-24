@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ridgeback_dual_arm_description</name>
+  <version>1.1.0</version>
+  <description>The ridgeback_dual_arm_description package</description>
+
+  <maintainer email="ye.tian@iquotient-robotics.com">Ye Tian</maintainer>
+
+  <license>MIT</license>
+
+  <author email="ye.tian@iquotient-robotics.com">Ye Tian</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+
+  <depend>urdf</depend>
+  <depend>rviz</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher_gui</depend>
+</package>

@@ -46,13 +46,14 @@ bool ArenaEnv::createEnvironment()
   double arena_y = 8.0;
   double arena_z = 2.1;
 
+  ROS_INFO("create table0...");
   vkc::BaseTable table0("table0", 0.8, 3, 1.6);
   table0.createObject();
   table0.createWorldJoint(Eigen::Vector4d(-0.5, arena_y / 2.0 - 0.5, 0, 0));
   table0.addToEnvironment(plot_tesseract_->getTesseract());
   table0.addToEnvironment(tesseract_->getTesseract());
 
-
+  ROS_INFO("create cabinet0...");
   vkc::BaseCabinet cabinet0("cabinet0");
   cabinet0.createObject();
   cabinet0.createWorldJoint(Eigen::Vector4d(0, -arena_y / 2.0 + 1.7, 0, -1.57));
@@ -61,7 +62,7 @@ bool ArenaEnv::createEnvironment()
   cabinet0.addToEnvironment(plot_tesseract_->getTesseract());
   cabinet0.addToEnvironment(tesseract_->getTesseract());
 
-
+  ROS_INFO("create stick0...");
   vkc::BaseStick stick0("stick0", 0.5);
   stick0.createObject();
   stick0.createWorldJoint(Eigen::Vector4d(2.5, 1, 0.8, -1.57));
@@ -70,16 +71,17 @@ bool ArenaEnv::createEnvironment()
   stick0.addToEnvironment(plot_tesseract_->getTesseract());
   stick0.addToEnvironment(tesseract_->getTesseract());
 
-
+  ROS_INFO("create marker0...");
   vkc::BaseMarker marker0("marker0", 0.2);
   marker0.createObject();
   marker0.createWorldJoint(Eigen::Vector4d(-1, 4, 0.1, 1.57));
-  
-  marker0.inverseRootTip("world", marker0.getName() + "_marker_link");
+  std::string new_tip(marker0.getName() + "_marker_link");
+  ROS_INFO("inverse marker0 link between %s and %s...", new_tip.c_str(), "world");
+  marker0.inverseRootTip(marker0.getName() + "_marker_link", "world");
   marker0.addToEnvironment(plot_tesseract_->getTesseract());
   marker0.addToEnvironment(tesseract_->getTesseract());
 
-
+  ROS_INFO("create table1...");
   vkc::BaseTable table1("table1", 0.72, 1, 2);
   table1.createObject();
   table1.createWorldJoint(Eigen::Vector4d(2.5, 1, 0, 0));
