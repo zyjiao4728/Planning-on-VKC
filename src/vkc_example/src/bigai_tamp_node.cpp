@@ -31,31 +31,31 @@ void Run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
     vkc::OmplPlanParameters params; // use all default parameters for our beginning
     params.plan_params.n_steps = n_steps;
     params.inv_attp_max = 1000;
-    params.planner = OMPLPlanners::RRT_Star;
-    // ProbTranslator prob_translator(params);
+    params.planner = OMPLPlanners::RRT_Connect;
+    ProbTranslator prob_translator(params);
 
     ProbGenerator prob_generator;
     for (auto &action : actions)
     {
 
         PlannerResponse response;
-        if(action->RequireInitTraj())
-        {
-            // // solve by OMPL to get an init trajectory
-            // std::vector<std::vector<double>> res_traj;
-            // prob_translator.transProb(env, action);
+        // if(action->RequireInitTraj())
+        // {
+        //     // solve by OMPL to get an init trajectory
+        //     std::vector<std::vector<double>> res_traj;
+        //     prob_translator.transProb(env, action);
 
-            // prob_translator.solveProblem(response, res_traj);
-            // if (response.status_code)
-            // {
-            //     ROS_INFO("OMPL planning plan successfully");
-            //     action->setInitTrajectory(response.trajectory);
-            // }
-            // else
-            // {
-            //     ROS_INFO("OMPL planning plan failed     ");
-            // }
-        }
+        //     prob_translator.solveProblem(response, res_traj);
+        //     if (response.status_code)
+        //     {
+        //         ROS_INFO("OMPL planning plan successfully");
+        //         action->setInitTrajectory(response.trajectory);
+        //     }
+        //     else
+        //     {
+        //         ROS_INFO("OMPL planning plan failed     ");
+        //     }
+        // }
 
         ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseractEnvironment());
 
@@ -103,48 +103,52 @@ void GenerateActions(ActionSeq &actions, const std::string& robot)
 {
     // TODO
     Eigen::Isometry3d dst_tf;
-    std::vector<LinkDesiredPose> link_objectives;
-    std::vector<JointDesiredPose> joint_objectives;
     PlaceAction::Ptr place_action;
 
  
-    // // action: pick up cup_1
-    // actions.emplace_back(make_shared<PickAction>(robot, "attach_cup_1"));
-    // (*actions.rbegin())->RequireInitTraj(true);
+    /** pick up cup_1 and place it onto plate_1 **/
+    // action: pick up cup_1
+    actions.emplace_back(make_shared<PickAction>(robot, "attach_cup_1"));
+    (*actions.rbegin())->RequireInitTraj(true);
 
-    // /** pick up cup_1 and place it onto plate_1 **/
-    // // action: place cup_1 onto plate_1
-    // link_objectives.clear();
-    // dst_tf.translation() = Eigen::Vector3d(-0.20, 3.48, 0.8);
-    // dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
+    // action: place cup_1 onto plate_1
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    // link_objectives.emplace_back("Cup_1_link", dst_tf);
-    // place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives, false);
-    // place_action->setNewAttachObject("Plate_1_link");
-    // place_action->RequireInitTraj(true);
-    // actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(-0.21, 3.50, 0.83);
+        dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
+
+        link_objectives.emplace_back("Cup_1_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Plate_1_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
+
+    /** pick up cup_2 and place it onto plate_1 **/
+    // action 3: pick up cup_2
+    actions.emplace_back(make_shared<PickAction>(robot, "attach_cup_2"));
+    (*actions.rbegin())->RequireInitTraj(true);
+
+    // action 4: place cup_2 onto plate_1
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        dst_tf.translation() = Eigen::Vector3d(-0.19, 3.34, 0.83);
+        dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
+        // dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
+        link_objectives.emplace_back("Cup_2_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Plate_1_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
 
 
 
-    // /** pick up cup_2 and place it onto plate_1 **/
-    // // action 3: pick up cup_2
-    // actions.emplace_back(make_shared<PickAction>(robot, "attach_cup_2"));
-    // (*actions.rbegin())->RequireInitTraj(true);
-
-    // // action 4: place cup_2 onto plate_1
-    // link_objectives.clear();
-    // dst_tf.translation() = Eigen::Vector3d(-0.19, 3.34, 0.8);
-    // // dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
-    // dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
-
-    // link_objectives.emplace_back("Cup_2_link", dst_tf);
-    // place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives, false);
-    // place_action->setNewAttachObject("Plate_1_link");
-    // place_action->RequireInitTraj(true);
-    // actions.emplace_back(place_action);
-
-
- 
     /** pick up tape_1 and place it onto plate_1 **/
     // action 5: pick up tape_1
     actions.emplace_back(make_shared<PickAction>(robot, "attach_tape_1"));
@@ -152,16 +156,22 @@ void GenerateActions(ActionSeq &actions, const std::string& robot)
 
 
     // action 6: place tape_1 onto plate_1
-    link_objectives.clear();
-    dst_tf.translation() = Eigen::Vector3d(-0.069, 3.47, 0.95);
-    // dst_tf.linear() = Eigen::Quaterniond(0.0, 0.0, 0.0, -1.0).matrix();   // cylindrical surface attached to plate
-    dst_tf.linear() = Eigen::Quaterniond(0.0, 0.0, 1.0, 0.0).matrix();   // cylindrical surface attached to plate
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    link_objectives.emplace_back("Tape_1_link", dst_tf);
-    place_action = make_shared<PlaceAction>(robot, "attach_tape_1", link_objectives, joint_objectives, false);
-    place_action->setNewAttachObject("Plate_1_link");
-    place_action->RequireInitTraj(true);
-    actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(-0.07, 3.345, 0.88);
+        dst_tf.linear() = Eigen::Quaterniond(0.707, 0.0, 0.0, -0.707).matrix(); // cylindrical surface attached to plate
+        // dst_tf.linear() = Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix(); // cylindrical surface attached to plate
+
+        link_objectives.emplace_back("Tape_1_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_tape_1", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Plate_1_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
+
+
 
     /** pick up stick_1 and then use it to pick up rubik_cube_1 and place onto plate_1 **/
     // action 7: pick up stick_1
@@ -174,80 +184,116 @@ void GenerateActions(ActionSeq &actions, const std::string& robot)
     (*actions.rbegin())->RequireInitTraj(true);
 
     // action 9: place rubik_cube_1 onto plate_1
-    link_objectives.clear();
-    dst_tf.translation() = Eigen::Vector3d(-0.07, 3.345, 0.85);
-    dst_tf.linear() = Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();  // 
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    link_objectives.emplace_back("Rubik_cube_1_link", dst_tf);
-    place_action = make_shared<PlaceAction>(robot, "attach_rubik_cube_1", link_objectives, joint_objectives, false);
-    place_action->setNewAttachObject("Plate_1_link");
-    place_action->RequireInitTraj(true);
-    actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(-0.069, 3.47, 0.89);
+        dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix(); //
+
+        link_objectives.emplace_back("Rubik_cube_1_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_rubik_cube_1", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Plate_1_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
 
 
     // action 10: place stick_1 onto plate_1
-    link_objectives.clear();
-    dst_tf.translation() = Eigen::Vector3d(-0.02, 3.7, 0.95);
-    dst_tf.linear() = Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();
-    // dst_tf.linear() = Eigen::Quaterniond(0.5, -0.5, 0.5, -0.5).matrix();
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    link_objectives.emplace_back("Stick_1_link", dst_tf);
-    place_action = make_shared<PlaceAction>(robot, "attach_stick_1", link_objectives, joint_objectives, false);
-    place_action->setNewAttachObject("Plate_1_link");
-    place_action->RequireInitTraj(true);
-    actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(0.0, 3.7, 0.92);
+        dst_tf.linear() = Eigen::Quaterniond(0.707, 0.0, 0.0, -0.707).matrix();
+        // dst_tf.linear() = Eigen::Quaterniond(0.707, -0.0, 0.0, 0.707).matrix();
+
+        link_objectives.emplace_back("Stick_1_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_stick_1", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Plate_1_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
+
+
+    /** open cabinet_417 and then place plate_1 into it **/
+    // action 11: pick the door of cabinet_417 
+    actions.emplace_back(make_shared<PickAction>(robot, "attach_cabinet_417_door"));
+    (*actions.rbegin())->RequireInitTraj(true);
+
+    // action 12: open door of cabinet_417
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.2);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action->RequireInitTraj(false);
+        place_action->setOperationObjectType(false);
+        actions.emplace_back(place_action);
+    }
 
 
 
-    // action 9: pick plate_1
+    // action 12: pick plate_1
     actions.emplace_back(make_shared<PickAction>(robot, "attach_plate_1"));
     (*actions.rbegin())->RequireInitTraj(true);
 
 
-    // action 10: place plate_1 and things on it onto table_5
-    link_objectives.clear();
-    dst_tf.translation() = Eigen::Vector3d(0.45, 3.4, 0.80);
-    dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
+    // action 13: place plate_1 and things on it into cabinet_417
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    link_objectives.emplace_back("Plate_1_link", dst_tf);
-    place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
-    place_action->setNewAttachObject("Table_5_link");
-    place_action->RequireInitTraj(true);
-    actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(2.35, 2.45, 1.10);
+        // dst_tf.linear() = Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();   // plate's bottow is upright
+        dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();   // ok
+
+        link_objectives.emplace_back("Plate_1_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("Cabinet_417_link");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
 
 
-    /** open cabinet_417 and then place plate_1 into it **/
-    // // action 11: pick plate_1
-    // actions.emplace_back(make_shared<PickAction>(robot, "attach_cabinet_417_door"));
-    // (*actions.rbegin())->RequireInitTraj(true);
+    /** close cabinet_417 after placing plate_1 into it **/
+    // action 14: pick the door of cabinet_417 
+    actions.emplace_back(make_shared<PickAction>(robot, "attach_cabinet_417_door"));
+    (*actions.rbegin())->RequireInitTraj(true);
 
-    // // action 12: pick plate_1
-    // link_objectives.clear();
-    // joint_objectives.clear();
-    // joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 1.5);
-    // place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
-    // //place_action->setNewAttachObject("Table_5_link");
-    // place_action->RequireInitTraj(false);
-    // place_action->setOperationObjectType(false);
-    // actions.emplace_back(place_action);
+    // action 15: close door of cabinet_417
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
+        joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action->RequireInitTraj(false);
+        place_action->setOperationObjectType(false);
+        actions.emplace_back(place_action);
+    }
 
 
     /** move away chair which blocks the robot to pick something **/
-    // // action 13: pick plate_1
-    // actions.emplace_back(make_shared<PickAction>(robot, "attach_chair_645"));
-    // (*actions.rbegin())->RequireInitTraj(true);
+    // action 16: pick the chair
+    actions.emplace_back(make_shared<PickAction>(robot, "attach_chair_645"));
+    (*actions.rbegin())->RequireInitTraj(true);
 
-    // // action 14: place plate_1 and things on it onto table_5
-    // link_objectives.clear();
-    // dst_tf.translation() = Eigen::Vector3d(-1.5, 1.0, 0.54);
-    // dst_tf.linear() = Eigen::Quaterniond(1.0, 0, 0.0, 0.0).matrix();
+    // action 17: place chair_645 to a free place
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
 
-    // link_objectives.emplace_back("Chair_645_link", dst_tf);
-    // place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives, false);
-    // place_action->setNewAttachObject("world");
-    // place_action->RequireInitTraj(true);
-    // actions.emplace_back(place_action);
+        dst_tf.translation() = Eigen::Vector3d(-1.2, 1.0, 0.535);
+        dst_tf.linear() = Eigen::Quaterniond(1.0, 0, 0.0, 0.0).matrix();
+
+        link_objectives.emplace_back("Chair_645_link", dst_tf);
+        place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives, false);
+        place_action->setNewAttachObject("world");
+        place_action->RequireInitTraj(true);
+        actions.emplace_back(place_action);
+    }
 }
 
 void InitEnvState(VKCEnvBasic &env)
@@ -256,7 +302,7 @@ void InitEnvState(VKCEnvBasic &env)
     // vector<double> base_values({0, 0, 1.57});
     // env.getVKCEnv()->getTesseractEnvironment()->setState(base_joints, base_values);
     
-    //env.getVKCEnv()->getTesseractEnvironment()->addAllowedCollision("Cabinet_417_link", "Cabinet_417_link_dof_rootd_Bb001_r", "Never");
+    env.getVKCEnv()->getTesseractEnvironment()->addAllowedCollision("Cabinet_417_link", "Cabinet_417_link_dof_rootd_Bb001_r", "Never");
     //env.getVKCEnv()->getTesseractEnvironment()->addAllowedCollision("hook_1_link", "hook_1_head_link", "Adjacent");
 }
 
@@ -296,85 +342,59 @@ int main(int argc, char** argv)
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cup_1",
                                                          "Cup_1_link",
                                                          "Cup_1_link",
-                                                         {0.0, 0.33, 0.0},  // joint origin is {1.18 -0.3 0.445}, box height is ${scale} 0.1
-                                                         {0.0, 0.0, 0.0, 1.0},
+                                                         {0.0, 0.33, 0.0},  // Y-Axis is stright up
+                                                         {0.0, 0.0, 0.0, 1.0},   // this gripper's y_axis is parallelling with the axis of gripper palm
                                                          false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cup_2",
                                                          "Cup_2_link",
                                                          "Cup_2_link",
-                                                         {-0, 0.33, 0.0}, // joint origin is {1.18 -0.3 0.445}, box height is ${scale} 0.1
+                                                         {-0, 0.33, 0.0}, // Y-Axis is stright up
                                                          {0.0, 0.0, 0.0, 1.0},
                                                          false});
 
-    // attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cup_3",
-    //                                                      "Cup_3_link",
-    //                                                      "Cup_3_link",
-    //                                                      {-0, 0.3, 0.0}, // joint origin is {1.18 -0.3 0.445}, box height is ${scale} 0.1
-    //                                                      {1, 0, 0, .0},
-    //                                                      false});
-
-    // attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cup_4",
-    //                                                      "Cup_4_link",
-    //                                                      "Cup_4_link",
-    //                                                      {-0, 0.3, 0.0}, // joint origin is {1.18 -0.3 0.445}, box height is ${scale} 0.1
-    //                                                      {1, 0, 0, .0},
-    //                                                      false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_tape_1",
                                                          "Tape_1_link",
                                                          "Tape_1_link",
-                                                         {-0, 0.0, 0.25}, // joint origin is {1.18 -0.3 0.445}, box height is ${scale} 0.1
-                                                         {0.707, -0.707, 0.0, 0.0},
+                                                         {-0, 0.0, 0.25}, // Z-Axis is stright up
+                                                         {0.0, 0.0, 0.707, -0.707},   // {0.707, -0.707, 0.0, 0.0},
                                                          false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_rubik_cube_1",
                                                          "Rubik_cube_1_link",
                                                          "Rubik_cube_1_link",
-                                                         {0.0, 0.0, 0.2}, // joint origin is {1.18 -0.3 0.445}, plate height is ${scale} 0.1
-                                                         {0.707, 0, 0.707, 0},
+                                                         {0.0, 0.1, 0.0}, // Y-Axis is stright up
+                                                         {0.0, 0, 1.0, 0},
                                                          false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_plate_1",
                                                          "Plate_1_link",
                                                          "Plate_1_link",
-                                                         {0.0, 0.40, 0.25}, // joint origin is {1.18 -0.3 0.445}, plate height is ${scale} 0.1
-                                                         {0.0, 0, 0, 1.0},
+                                                         {0.0, 0.10, 0.35}, // Y-Axis is stright up
+                                                         {0.707, -0.707, 0, 0},   // {0.0, 0, 0, 1.0},
                                                          false});
 
-    // attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_trash_can_1",
-    //                                                      "Trash_can_1_link",
-    //                                                      "Trash_can_1_link",
-    //                                                      {0.0, -55.0, 0.0}, // joint origin is {1.18 -0.3 0.445}, plate height is ${scale} 0.1
-    //                                                      {1, 0, 0, 0},
-    //                                                      false});
-
-    // attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_bucket_1",
-    //                                                      "Bucket_1_link",
-    //                                                      "Bucket_1_link",
-    //                                                      {0.0, -55.0, 0.0}, // joint origin is {1.18 -0.3 0.445}, plate height is ${scale} 0.1
-    //                                                      {1, 0, 0, 0},
-    //                                                      false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_stick_1",
                                                          "Stick_1_link",
                                                          "Stick_1_link",
-                                                         {-0.15, 0.0, -0.7}, 
-                                                         {0.707, 0, 0, -0.707},
+                                                         {0.0, 0.15, -0.65},   // Y-Axis is stright up
+                                                         {0.0, 1.0, 0, 0.0},
                                                          false});
 
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_chair_645",
                                                          "Chair_645_link",
                                                          "Chair_645_link",
-                                                         {-0.5, 0.0, 0.4}, 
-                                                         {1.0, 0.0, 0, 0.0},
-                                                         true});
+                                                         {-0.5, 0.0, 0.4},   // Z-Axis is stright up, and the attach point at the outside of chair's right handrail
+                                                         {0.707, 0.0, 0, -0.707},
+                                                         false});
 
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cabinet_417_door",
-                                                         "Cabinet_417_link_dof_rootd_Bb001_r",
+                                                         "Cabinet_417_link_dof_rootd_Bb001_r",  // Z-Axis is stright up, and set the attach point is a little distatnce away to  of door knob
                                                          "Cabinet_417_link",
-                                                         {0.2, -0.45, 0.0}, 
+                                                         {0.2, -0.75, 0.0}, 
                                                          {0.707, 0, 0, 0.707},
                                                          true});
 

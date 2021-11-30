@@ -172,7 +172,7 @@ void TrajectoryVisualize(vkc::VKCEnvBasic& env,
 
     ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getPlotVKCEnv()->getTesseract()->getEnvironment());
     plotter->plotTrajectory(joint_traj_iter->joint_names, refined_traj);
-    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 3000000.0 / max_traj_len));
+    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 2500000.0 / max_traj_len));
 
     // ROS_INFO("%s: Update Env, action: ", __func__);
     // std::cout << *action_iter << "\t";

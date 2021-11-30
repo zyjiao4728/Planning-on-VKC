@@ -78,11 +78,12 @@ public:
         std::vector<JointDesiredPose> joint_objectives;
         joint_objectives.emplace_back(joint_name_,
                                       joint_poses_[pose_name]);
-
-        return std::make_shared<PlaceAction>(manipulator,
+        auto open_door = std::make_shared<PlaceAction>(manipulator,
                                              attach_handle_name_,
                                              link_objectives,
                                              joint_objectives);
+        open_door->setOperationObjectType(false);
+        return open_door;
     }
 
     PlaceAction::Ptr CreateOpenDoorAction(const std::string &manipulator)

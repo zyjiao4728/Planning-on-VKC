@@ -52,7 +52,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
     // create OMPL planner specified problem translator
     vkc::OmplPlanParameters params; // use all default parameters for our beginning
     params.plan_params.n_steps = n_steps;
-    params.inv_attp_max = 10000;
+    params.inv_attp_max = 1000;
     ProbTranslator prob_translator(params);
     for (auto &action : actions)
     {
@@ -68,7 +68,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
          
         // articulated body planning together with robot is still has problem
-        if(ActionType::PlaceAction != action->getActionType() || string::npos == env.getEndEffectorLink().find("cabinet"))
+        if (ActionType::PlaceAction != action->getActionType() || std::dynamic_pointer_cast<PlaceAction>(action)->isRigidObject())
         {
             // solve by OMPL to get an init trajectory
             std::vector<std::vector<double>> res_traj;
@@ -76,12 +76,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
             prob_translator.solveProblem(response, res_traj);
             if (response.status_code)
             {
-                ROS_INFO("OMPL planning plan successfully");
+                ROS_INFO("[%s]OMPL planning plan successfully!", __func__);
                 action->setInitTrajectory(response.trajectory);
             }
             else
             {
-                ROS_INFO("OMPL planning plan failed     ");
+                ROS_INFO("OMPL planning plan failed");
             }
         }
         else
@@ -89,6 +89,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
             ROS_INFO("Skipped OMPL planning stage");
         }
 
+        ROS_INFO("[%s]press Enter key to go on...", __func__);
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         int tries = 0;

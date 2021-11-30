@@ -428,7 +428,7 @@ public:
       new_object_scene_graph->addJoint(*current_joint);
     }
 
-std::string attach("attach_" + new_root);
+    std::string attach("attach_" + new_root);
     ROS_DEBUG("set attach transform: %s...", attach.c_str());
     setAttachLocationWorldTransform(tip_root_transform, "attach_" + new_root);
 

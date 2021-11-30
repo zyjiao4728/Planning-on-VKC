@@ -334,7 +334,17 @@ namespace vkc
                                     trajopt::TrajArray &init_traj, int n_steps)
   {
     // srand(time(NULL));
+    ROS_WARN("[%s]init trajectory, link_objectives size: %d, joint_objective size: %d",
+             __func__, link_objectives.size(), joint_objectives.size());
 
+    for(auto& objective : link_objectives)
+    {
+      std::cout << "name: " << objective.link_name << std::endl
+                << "transform: " << std::endl
+                << objective.tf.linear() << std::endl
+                << "translation: " << std::endl
+                << objective.tf.translation().transpose() << std::endl;
+    }
     int max_iter = 1000;
 
     tesseract::InverseKinematicsManager::Ptr inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
@@ -376,6 +386,7 @@ namespace vkc
     bool satisfy_limit = false;
     bool desired_base_pose = false;
 
+
     if (link_objectives.size() > 0)
     {
       for (auto &link_obj : link_objectives)
@@ -391,11 +402,10 @@ namespace vkc
         }
         else if (link_obj.link_name == inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName())
         {
-
           initFinalJointSeed(joint_name_idx, joint_objectives, seed);
-
           Eigen::MatrixX2d joint_limits = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getLimits();
-          // std::cout << joint_limits << std::endl;
+          std::cout << "joint limits: " << std::endl
+                    << joint_limits.transpose() << std::endl;
 
           while (satisfy_collision > 0 || inv_iter == 0 || !inv_suc || !satisfy_limit)
           {
@@ -403,22 +413,29 @@ namespace vkc
 
             for (auto &jnt : joint_name_idx)
             {
-              if (jnt.second >= 0) // jnt.second != 2 &&
-              {
-                if (jnt.second == 4 || jnt.second == 6 || jnt.second == 7)
-                {
-                  seed[jnt.second] = rand() % (int(joint_limits(jnt.second, 1))) - int(0.5 * joint_limits(jnt.second, 1));
-                }
-                else
-                {
-                  seed[jnt.second] = rand() % (2 * int(joint_limits(jnt.second, 1))) - int(joint_limits(jnt.second, 1));
-                }
-              }
+              // if (jnt.second >= 0) // jnt.second != 2 &&
+              // {
+                // if (jnt.second == 4 || jnt.second == 6 || jnt.second == 7)
+                // {
+                //   seed[jnt.second] = rand() % (int(joint_limits(jnt.second, 1))) - int(0.5 * joint_limits(jnt.second, 1));
+                // }
+                // else
+                // {
+                //   seed[jnt.second] = rand() % (2 * int(joint_limits(jnt.second, 1))) - int(joint_limits(jnt.second, 1));
+                // }
+                // wanglei @2021-11-26   
+                // theory: seed = joint_lower_limit + double_rand * (joint_upper_limit - joint_lower_limit)
+                seed[jnt.second] = joint_limits(jnt.second, 0) +
+                                   (double(rand()) / double((RAND_MAX))) *           // get a float value ranging in [0, 1] with the highest precision
+                                   (joint_limits(jnt.second, 1) - joint_limits(jnt.second, 0));   // range of current joint limits
+              // }
+
             }
             inv_suc = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->calcInvKin(sol, link_obj.tf, seed);
 
+
             tesseract_environment::EnvState::Ptr env_state =
-                env.getVKCEnv()->getTesseract()->getEnvironment()->getState(joint_names, sol);
+                env.getVKCEnv()->getTesseractEnvironment()->getState(joint_names, sol);
             contact_results.clear();
             disc_cont_mgr_->setCollisionObjectsTransform(env_state->transforms);
 
@@ -489,6 +506,7 @@ namespace vkc
             }
             base_final_pose.translation() = Eigen::Vector3d(base_values[0], base_values[1], 0.13);
           }
+
           base_pose.push_back(LinkDesiredPose("base_link", base_final_pose));
           initBaseTrajectory(env, base_pose, map);
         }
@@ -554,6 +572,7 @@ namespace vkc
         init_traj(i, 1) = base_pose.back().tf.translation()[1];
       }
     }
+
     //std::cout << "Initial trajectory:" << std::endl;
     //std::cout << init_traj << std::endl;
     return init_traj;

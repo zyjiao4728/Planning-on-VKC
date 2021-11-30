@@ -251,15 +251,15 @@ trajopt::ProblemConstructionInfo ProbGenerator::genPickProb_test(VKCEnvBasic &en
 
 TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps)
 {
+  ROS_INFO("[%s]generate a place problem with given data.", __func__);
   ProblemConstructionInfo pci(env.getVKCEnv()->getTesseract());
 
   int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.0001, 10);  
-  
-  BaseObject::AttachLocation::Ptr detach_location_ptr = env.getAttachLocation(act->getDetachedObject());
 
+  BaseObject::AttachLocation::Ptr detach_location_ptr = env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr->fixed_base)
   {
     for (int i = 0; i < pci.basic_info.n_steps; ++i)
@@ -270,8 +270,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
       BasePose->link = detach_location_ptr->base_link_;
       BasePose->timestep = i;
       BasePose->xyz = env.getVKCEnv()
-                          ->getTesseract()
-                          ->getEnvironment()
+                          ->getTesseractEnvironment()
                           ->getLinkTransform(detach_location_ptr->base_link_)
                           .translation();
       BasePose->wxyz = getQuatFromIso(
@@ -284,9 +283,10 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
     }
 
     Eigen::Isometry3d ee_pose =
-        env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
+        env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
     act->addLinkObjectives(LinkDesiredPose(detach_location_ptr->base_link_, ee_pose));
   }
+
 
   if (detach_location_ptr->connection.parent_link_name.find("stick") != std::string::npos)
   {
@@ -298,12 +298,11 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
       BasePose->link = detach_location_ptr->base_link_;
       BasePose->timestep = i;
       BasePose->xyz = env.getVKCEnv()
-                          ->getTesseract()
-                          ->getEnvironment()
+                          ->getTesseractEnvironment()
                           ->getLinkTransform(detach_location_ptr->base_link_)
                           .translation();
       BasePose->wxyz = getQuatFromIso(
-          env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
+          env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
       BasePose->pos_coeffs = Eigen::Vector3d(0.0, 0.0, 10.0);
       BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 0.0);
       // BasePose->pos_coeffs = Eigen::Vector3d(1,1,1);
@@ -311,7 +310,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
       pci.cnt_infos.push_back(BasePose);
     }
     Eigen::Isometry3d ee_pose =
-        env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
+        env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
     act->addLinkObjectives(LinkDesiredPose(detach_location_ptr->base_link_, ee_pose));
 
     for (auto &link_obj : act->getLinkObjectives())
@@ -332,7 +331,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
     addTargetTerm(pci, joint_obj, joint_num, 100);
   }
 
-  
+
   // if (detach_location_ptr->link_name_.find("cabinet") != std::string::npos || detach_location_ptr->link_name_.find("dishwasher") != std::string::npos)
   if(!act->isRigidObject())
   {
@@ -354,7 +353,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
     }
     pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
     pci.init_info.data = end_pos;
-    std::cout << "end pose: " << end_pos << std::endl;
+    std::cout << "end pose: " << end_pos.transpose() << std::endl;
   }
   // else if (detach_location_ptr->connection.parent_link_name.find("marker") != std::string::npos)
   // {
@@ -904,7 +903,7 @@ void ProbGenerator::addTargetCost(ProblemConstructionInfo &pci, LinkDesiredPose 
 //     }
 //     pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
 //     pci.init_info.data = end_pos;
-//     std::cout << "end pose: " << end_pos << std::endl;
+//     std::cout << "end pose: " << end_pos.transpose() << std::endl;
 //   }
 //   // else if (detach_location_ptr->connection.parent_link_name.find("marker") != std::string::npos)
 //   // {

@@ -75,9 +75,7 @@ bool ArenaEnv::createEnvironment()
   vkc::BaseMarker marker0("marker0", 0.2);
   marker0.createObject();
   marker0.createWorldJoint(Eigen::Vector4d(-1, 4, 0.1, 1.57));
-  std::string new_tip(marker0.getName() + "_marker_link");
-  ROS_INFO("inverse marker0 link between %s and %s...", new_tip.c_str(), "world");
-  marker0.inverseRootTip(marker0.getName() + "_marker_link", "world");
+  marker0.inverseRootTip("world", marker0.getName() + "_marker_link");
   marker0.addToEnvironment(plot_tesseract_->getTesseract());
   marker0.addToEnvironment(tesseract_->getTesseract());
 

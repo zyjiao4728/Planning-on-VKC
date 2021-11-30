@@ -27,6 +27,9 @@ namespace vkc
 UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
   : VKCEnvBasic(nh, plotting, rviz), steps_(steps)
 {
+  // for generating random numbers, and 12345 is our seed.
+  srand(12345);
+
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 
@@ -391,7 +394,7 @@ SceneGraph::Ptr UrdfSceneEnv::inverseEnvChain_(SceneGraph::ConstPtr sg, std::str
  */
 tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(SceneGraph::ConstPtr sg, std::string src, std::string dst)
 {
-  DOUT("Inverting link `" << src << "` and `" << dst << "`");
+  DOUT("inverting link `" << src << "` and `" << dst << "`");
 
   std::cout <<  "\tsg.name: " << sg->getName() << ", sg.root: " << sg->getRoot() << std::endl; 
   SceneGraph::Ptr tmp_sg = deepcopySceneGraph(sg);
@@ -551,7 +554,7 @@ void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name)
   Joint::ConstPtr root_parent_joint = getLinkParentJoint_(sg, root_name);
   Link::ConstPtr link = sg->getLink(root_name);
 
-  DOUT("Add link: " << link->getName() << ", Joint: " << root_parent_joint->getName());
+  DOUT("add link: " << link->getName() << ", Joint: " << root_parent_joint->getName());
   tesseract_->getTesseractEnvironment()->addLink(*link, *root_parent_joint);
   plot_tesseract_->getTesseractEnvironment()->addLink(*link, *root_parent_joint);
 
