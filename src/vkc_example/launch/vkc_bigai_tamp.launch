@@ -21,7 +21,7 @@
 
   <!-- Load universal environment description format (URDF) -->
   <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_bigai_tamp.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)"/>
-  <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find scene_builder)/output/bigai_tamp_demo_v2/main.xacro'" />
+  <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find scene_builder)/output/bigai_tamp_demo/main.xacro'" />
 
   <!-- The semantic description that corresponds to the URDF -->
   <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" />

@@ -77,7 +77,12 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        Bucket_1_link:
+        Cabinet_417_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        Cabinet_417_link_dof_rootd_Bb001_r:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -98,11 +103,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         Cup_2_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Cup_3_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -145,11 +145,6 @@ Visualization Manager:
           Show Trail: false
           Value: true
         Tape_1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        Trash_can_1_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -221,10 +216,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7297967076301575
+      Pitch: 1.0297966003417969
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.853569507598877
+      Yaw: 4.403570175170898
     Saved: ~
 Window Geometry:
   Displays:

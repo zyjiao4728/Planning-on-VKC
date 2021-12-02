@@ -413,23 +413,11 @@ namespace vkc
 
             for (auto &jnt : joint_name_idx)
             {
-              // if (jnt.second >= 0) // jnt.second != 2 &&
-              // {
-                // if (jnt.second == 4 || jnt.second == 6 || jnt.second == 7)
-                // {
-                //   seed[jnt.second] = rand() % (int(joint_limits(jnt.second, 1))) - int(0.5 * joint_limits(jnt.second, 1));
-                // }
-                // else
-                // {
-                //   seed[jnt.second] = rand() % (2 * int(joint_limits(jnt.second, 1))) - int(joint_limits(jnt.second, 1));
-                // }
                 // wanglei @2021-11-26   
                 // theory: seed = joint_lower_limit + double_rand * (joint_upper_limit - joint_lower_limit)
                 seed[jnt.second] = joint_limits(jnt.second, 0) +
                                    (double(rand()) / double((RAND_MAX))) *           // get a float value ranging in [0, 1] with the highest precision
                                    (joint_limits(jnt.second, 1) - joint_limits(jnt.second, 0));   // range of current joint limits
-              // }
-
             }
             inv_suc = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->calcInvKin(sol, link_obj.tf, seed);
 
@@ -445,7 +433,7 @@ namespace vkc
             satisfy_limit = checkJointLimit(sol, inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getLimits(),
                                             inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints());
 
-            std::cout << satisfy_collision << ", " << inv_suc << ", " << satisfy_limit << std::endl;
+            std::cout << "collision satisfied: " << satisfy_collision << ", ik succeeded: " << inv_suc << ", limit satisfied: " << satisfy_limit << std::endl;
             if (satisfy_collision > 0)
             {
               for (auto &collision : contact_results)
@@ -483,7 +471,7 @@ namespace vkc
               idx += 1;
               init_base_position = true;
 
-              double r = (rand() % 100) / 100.0 * 0.7;
+              double r = (rand() % 100) / 100.0 * 0.1;   // origional value: 0.7
               double a = (rand() % 100) / 100.0 * 6.18;
 
               base_values[0] = link_obj.tf.translation()[0] + r * cos(a);
@@ -512,7 +500,7 @@ namespace vkc
         }
         else
         {
-          ROS_WARN("Unsupported trajectory initialization for given link desired pose:\t%s, tiplink: %s",
+          ROS_WARN("Unsupported trajectory initialization for given tip link: %s, actural tip link: %s",
                    link_obj.link_name.c_str(), 
                    inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName().c_str());
           return init_traj;

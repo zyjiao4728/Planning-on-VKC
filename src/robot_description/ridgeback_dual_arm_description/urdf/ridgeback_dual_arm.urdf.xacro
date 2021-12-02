@@ -25,14 +25,14 @@
   </joint>
 
   <!-- include pan tilt -->
-  <!-- <xacro:pan_tilt parent="base_footprint">
+  <xacro:pan_tilt parent="base_footprint">
     <origin xyz="0.25 0 1.02221" rpy="0 0 0"/>
-  </xacro:pan_tilt> -->
+  </xacro:pan_tilt>
 
   <!-- kinect dk -->
-  <!-- <xacro:kinect_dk parent="pan_tilt_surface">
+  <xacro:kinect_dk parent="pan_tilt_surface">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-  </xacro:kinect_dk> -->
+  </xacro:kinect_dk>
 
   <!-- body -->
   <link name="body_link">
@@ -111,6 +111,12 @@
         <color rgba="0.2 0.2 0.2 1"/>
       </material>
     </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ridgeback_dual_arm_description/mesh/3-finger-gripper_fixed-urdf.stl"/>
+      </geometry>
+    </collision>
   </link>
   <joint name="right_gripper_flange_joint" type="fixed">
       <origin xyz="0 0 0" rpy="0 0 0"/>

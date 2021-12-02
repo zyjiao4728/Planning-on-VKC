@@ -142,6 +142,7 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
   PickPose->term_type = TT_CNT;
   PickPose->name = "PickGoal";
   PickPose->link = env.getEndEffectorLink();
+  ROS_INFO("[%s]current end effector for pick action: %s.", __func__, env.getEndEffectorLink().c_str());
   PickPose->timestep = pci.basic_info.n_steps - 1;
   PickPose->xyz = attach_location_ptr->world_joint_origin_transform.translation();
   PickPose->wxyz = getQuatFromIso(attach_location_ptr->world_joint_origin_transform);
@@ -274,7 +275,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
                           ->getLinkTransform(detach_location_ptr->base_link_)
                           .translation();
       BasePose->wxyz = getQuatFromIso(
-          env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
+          env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
       BasePose->pos_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
       BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
       // BasePose->pos_coeffs = Eigen::Vector3d(1,1,1);
@@ -288,42 +289,47 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
   }
 
 
-  if (detach_location_ptr->connection.parent_link_name.find("stick") != std::string::npos)
-  {
-    for (int i = 0; i < pci.basic_info.n_steps; ++i)
-    {
-      std::shared_ptr<CartPoseTermInfo> BasePose = std::shared_ptr<CartPoseTermInfo>(new CartPoseTermInfo);
-      BasePose->term_type = TT_CNT;
-      BasePose->name = "BaseGoal_" + std::to_string(i);
-      BasePose->link = detach_location_ptr->base_link_;
-      BasePose->timestep = i;
-      BasePose->xyz = env.getVKCEnv()
-                          ->getTesseractEnvironment()
-                          ->getLinkTransform(detach_location_ptr->base_link_)
-                          .translation();
-      BasePose->wxyz = getQuatFromIso(
-          env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
-      BasePose->pos_coeffs = Eigen::Vector3d(0.0, 0.0, 10.0);
-      BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 0.0);
-      // BasePose->pos_coeffs = Eigen::Vector3d(1,1,1);
-      // BasePose->rot_coeffs = Eigen::Vector3d(1,1,1);
-      pci.cnt_infos.push_back(BasePose);
-    }
-    Eigen::Isometry3d ee_pose =
-        env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
-    act->addLinkObjectives(LinkDesiredPose(detach_location_ptr->base_link_, ee_pose));
+  // if (detach_location_ptr->connection.parent_link_name.find("stick") != std::string::npos)
+  // {
+  //   for (int i = 0; i < pci.basic_info.n_steps; ++i)
+  //   {
+  //     std::shared_ptr<CartPoseTermInfo> BasePose = std::shared_ptr<CartPoseTermInfo>(new CartPoseTermInfo);
+  //     BasePose->term_type = TT_CNT;
+  //     BasePose->name = "BaseGoal_" + std::to_string(i);
+  //     BasePose->link = detach_location_ptr->base_link_;
+  //     BasePose->timestep = i;
+  //     BasePose->xyz = env.getVKCEnv()
+  //                         ->getTesseractEnvironment()
+  //                         ->getLinkTransform(detach_location_ptr->base_link_)
+  //                         .translation();
+  //     BasePose->wxyz = getQuatFromIso(
+  //         env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_));
+  //     BasePose->pos_coeffs = Eigen::Vector3d(0.0, 0.0, 10.0);
+  //     BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 0.0);
+  //     // BasePose->pos_coeffs = Eigen::Vector3d(1,1,1);
+  //     // BasePose->rot_coeffs = Eigen::Vector3d(1,1,1);
+  //     pci.cnt_infos.push_back(BasePose);
+  //   }
+  //   Eigen::Isometry3d ee_pose =
+  //       env.getVKCEnv()->getTesseractEnvironment()->getLinkTransform(detach_location_ptr->base_link_);
+  //   act->addLinkObjectives(LinkDesiredPose(detach_location_ptr->base_link_, ee_pose));
 
-    for (auto &link_obj : act->getLinkObjectives())
-    {
-      addTargetTerm(pci, link_obj, Eigen::Vector3d(0.0, 10.0, 0.0), Eigen::Vector3d(10.0, 10.0, 0.0));
-    }
-  }
-  else
+  //   for (auto &link_obj : act->getLinkObjectives())
+  //   {
+  //     addTargetTerm(pci, link_obj, Eigen::Vector3d(0.0, 10.0, 0.0), Eigen::Vector3d(10.0, 10.0, 0.0));
+  //   }
+  // }
+  // else
+  // {
+  //   for (auto &link_obj : act->getLinkObjectives())
+  //   {
+  //     addTargetTerm(pci, link_obj, Eigen::Vector3d(10.0, 10.0, 10.0), Eigen::Vector3d(10.0, 0.0, 10.0));
+  //   }
+  // }
+
+  for (auto &link_obj : act->getLinkObjectives())
   {
-    for (auto &link_obj : act->getLinkObjectives())
-    {
-      addTargetTerm(pci, link_obj, Eigen::Vector3d(10.0, 10.0, 10.0), Eigen::Vector3d(10.0, 0.0, 10.0));
-    }
+    addTargetTerm(pci, link_obj, Eigen::Vector3d(10.0, 10.0, 10.0), Eigen::Vector3d(10.0, 10.0, 10.0));
   }
 
   for (auto &joint_obj : act->getJointObjectives())

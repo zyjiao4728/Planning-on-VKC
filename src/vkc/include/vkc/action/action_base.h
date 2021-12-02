@@ -100,7 +100,6 @@ public:
 
   bool RequireInitTraj()const
   {
-    std::cout << __func__ << "@" << __FILE__ << ": " << init_traj_required_ << std::endl;
     return init_traj_required_;
   }
 

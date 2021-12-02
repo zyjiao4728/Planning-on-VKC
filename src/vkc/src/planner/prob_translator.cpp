@@ -107,12 +107,16 @@ namespace vkc
   bool ProbTranslator::solveProblem(PlannerResponse &response, std::vector<std::vector<double>> &res_traj)
   {
     ROS_INFO("[%s]OMPL starts planning...", __func__);
-    if (start_waypoint == nullptr || goal_waypoint == nullptr)
+    if (nullptr == start_waypoint || nullptr == goal_waypoint)
     {
       response.status_code = 0;
-      ROS_WARN("[%s]invalid start state or goal state, OMPL terminate the motion plan!", __func__);
+      ROS_WARN("[%s]invalid %s %s, OMPL terminate the motion plan!",
+               __func__, 
+               nullptr == start_waypoint ? "start state" : "",
+               nullptr == goal_waypoint ? "goal state" : "");
       return false;
     }
+    
 
     boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint->getPositions(), goal_waypoint->getPositions(), params_);
 
@@ -223,7 +227,7 @@ namespace vkc
     auto inv_kin_solver = inv_kin_mgr->getInvKinematicSolver(manipulator);
     if (inv_kin_solver)
     {
-      ROS_INFO("[%s]try to get a collision free solution, ik solver name: %s",__func__, inv_kin_solver->getSolverName().c_str());
+      ROS_INFO("[%s]try to get a collision free waypoint, ik solver name: %s",__func__, inv_kin_solver->getSolverName().c_str());
 
       solutions.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());
       seed.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());

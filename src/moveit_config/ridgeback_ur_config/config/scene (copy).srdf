@@ -10,7 +10,7 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="vkc">
-        <chain base_link="world" tip_link="right_arm_tool0" />
+        <chain base_link="world" tip_link="right_gripper_palm" />
     </group>
     <group name="base">
         <chain base_link="world" tip_link="base_link" />
@@ -23,15 +23,15 @@
     </group>
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="home" group="vkc">
-        <joint name="base_link_base_theta" value="0" />
+        <joint name="base_link_base_theta" value="0.0" />
         <joint name="base_theta_base_y" value="0" />
-        <joint name="base_y_base_x" value="1.75" />
-        <joint name="right_arm_elbow_joint" value="0" />
-        <joint name="right_arm_shoulder_lift_joint" value="0" />
-        <joint name="right_arm_shoulder_pan_joint" value="1.75" />
-        <joint name="right_arm_wrist_1_joint" value="0.2" />
-        <joint name="right_arm_wrist_2_joint" value="0.3" />
-        <joint name="right_arm_wrist_3_joint" value="0" />
+        <joint name="base_y_base_x" value="0" />
+        <joint name="right_arm_elbow_joint" value="-2.7597" />
+        <joint name="right_arm_shoulder_lift_joint" value="-1.3538" />
+        <joint name="right_arm_shoulder_pan_joint" value="3.2283" />
+        <joint name="right_arm_wrist_1_joint" value="1.1455" />
+        <joint name="right_arm_wrist_2_joint" value="1.5621" />
+        <joint name="right_arm_wrist_3_joint" value="2.3952" />
         <!-- <joint name="right_gripper_finger_middle_joint_1" value="0" />
         <joint name="right_gripper_finger_middle_joint_2" value="0" />
         <joint name="right_gripper_finger_middle_joint_3" value="0" /> -->
@@ -66,7 +66,19 @@
     <disable_collisions link1="axle_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="axle_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="axle_link" link2="right_arm_upper_arm_link" reason="Never" />
-    <disable_collisions link1="axle_link" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="axle_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="axle_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="axle_link" link2="top_link" reason="Never" />
     <disable_collisions link1="body_link" link2="chassis_link" reason="Adjacent" />
@@ -85,12 +97,26 @@
     <disable_collisions link1="body_link" link2="rear_rocker_link" reason="Never" />
     <disable_collisions link1="body_link" link2="right_arm_base_link_inertia" reason="Adjacent" />
     <disable_collisions link1="body_link" link2="right_arm_shoulder_link" reason="Never" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="body_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="body_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="body_link" link2="top_link" reason="Default" />
     <disable_collisions link1="chassis_link" link2="front_cover_link" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="front_left_wheel_link" reason="Default" />
     <disable_collisions link1="chassis_link" link2="front_lights_link" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="front_right_wheel_link" reason="Default" />
+    <disable_collisions link1="chassis_link" link2="front_rocker_link" reason="Default" />
     <disable_collisions link1="chassis_link" link2="left_arm_base_link_inertia" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="left_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="chassis_link" link2="left_arm_upper_arm_link" reason="Never" />
@@ -99,9 +125,22 @@
     <disable_collisions link1="chassis_link" link2="rear_left_wheel_link" reason="Default" />
     <disable_collisions link1="chassis_link" link2="rear_lights_link" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="rear_right_wheel_link" reason="Default" />
-    <disable_collisions link1="chassis_link" link2="rear_rocker_link" reason="Never" />
+    <disable_collisions link1="chassis_link" link2="rear_rocker_link" reason="Default" />
     <disable_collisions link1="chassis_link" link2="right_arm_base_link_inertia" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="right_arm_shoulder_link" reason="Never" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="chassis_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="chassis_link" link2="right_arm_upper_arm_link" reason="Never" />
     <disable_collisions link1="chassis_link" link2="right_side_cover_link" reason="Adjacent" />
     <disable_collisions link1="chassis_link" link2="top_link" reason="Adjacent" />
@@ -121,6 +160,19 @@
     <disable_collisions link1="front_cover_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="front_cover_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="front_cover_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="front_cover_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="front_cover_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="front_cover_link" link2="top_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="front_lights_link" reason="Never" />
@@ -139,15 +191,22 @@
     <disable_collisions link1="front_left_wheel_link" link2="right_arm_forearm_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_2" reason="User" />
     <disable_collisions link1="front_left_wheel_link" link2="right_arm_wrist_1_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="right_arm_wrist_3_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_2" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_3" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_0" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_1" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_2" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_3" reason="Never" />
-    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_flange" reason="Never" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="front_left_wheel_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="front_left_wheel_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="front_left_wheel_link" link2="top_link" reason="Never" />
     <disable_collisions link1="front_lights_link" link2="front_right_wheel_link" reason="Never" />
@@ -164,6 +223,19 @@
     <disable_collisions link1="front_lights_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="front_lights_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="front_lights_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="front_lights_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="front_lights_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="front_lights_link" link2="top_link" reason="Never" />
     <disable_collisions link1="front_right_wheel_link" link2="front_rocker_link" reason="Adjacent" />
@@ -181,6 +253,19 @@
     <disable_collisions link1="front_right_wheel_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="front_right_wheel_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="front_right_wheel_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="front_right_wheel_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="front_right_wheel_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="front_right_wheel_link" link2="top_link" reason="Never" />
     <disable_collisions link1="front_rocker_link" link2="left_arm_base_link_inertia" reason="Never" />
@@ -195,6 +280,19 @@
     <disable_collisions link1="front_rocker_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="front_rocker_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="front_rocker_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="front_rocker_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="front_rocker_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="front_rocker_link" link2="top_link" reason="Never" />
     <disable_collisions link1="left_arm_base_link_inertia" link2="left_arm_shoulder_link" reason="Adjacent" />
@@ -421,8 +519,19 @@
     <disable_collisions link1="left_side_cover_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="left_side_cover_link" link2="right_arm_upper_arm_link" reason="Never" />
     <disable_collisions link1="left_side_cover_link" link2="right_arm_wrist_1_link" reason="Never" />
-    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_middle_link_0" reason="Never" />
-    <disable_collisions link1="left_side_cover_link" link2="right_gripper_flange" reason="Never" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="left_side_cover_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="left_side_cover_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="left_side_cover_link" link2="top_link" reason="Never" />
     <disable_collisions link1="rear_cover_link" link2="rear_left_wheel_link" reason="Never" />
@@ -432,6 +541,19 @@
     <disable_collisions link1="rear_cover_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="rear_cover_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="rear_cover_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="rear_cover_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="rear_cover_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="rear_cover_link" link2="top_link" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="rear_lights_link" reason="Never" />
@@ -445,17 +567,17 @@
     <disable_collisions link1="rear_left_wheel_link" link2="right_arm_wrist_2_link" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_arm_wrist_3_link" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_0" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_1" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_2" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_3" reason="Never" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_1_link_3" reason="User" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_0" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_1" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_2" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_3" reason="Never" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_2_link_3" reason="User" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_0" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_1" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_2" reason="Never" />
-    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_3" reason="Never" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_gripper_palm" reason="Never" />
     <disable_collisions link1="rear_left_wheel_link" link2="right_side_cover_link" reason="Never" />
@@ -465,8 +587,19 @@
     <disable_collisions link1="rear_lights_link" link2="right_arm_base_link_inertia" reason="Never" />
     <disable_collisions link1="rear_lights_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="rear_lights_link" link2="right_arm_upper_arm_link" reason="Never" />
-    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_1_link_0" reason="Never" />
-    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="rear_lights_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="rear_lights_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="rear_lights_link" link2="top_link" reason="Never" />
     <disable_collisions link1="rear_right_wheel_link" link2="rear_rocker_link" reason="Adjacent" />
@@ -474,6 +607,19 @@
     <disable_collisions link1="rear_right_wheel_link" link2="right_arm_forearm_link" reason="Never" />
     <disable_collisions link1="rear_right_wheel_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="rear_right_wheel_link" link2="right_arm_upper_arm_link" reason="Never" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="rear_right_wheel_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="rear_right_wheel_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="rear_right_wheel_link" link2="top_link" reason="Never" />
     <disable_collisions link1="rear_rocker_link" link2="right_arm_base_link_inertia" reason="Never" />
@@ -481,18 +627,83 @@
     <disable_collisions link1="rear_rocker_link" link2="right_arm_shoulder_link" reason="Never" />
     <disable_collisions link1="rear_rocker_link" link2="right_arm_upper_arm_link" reason="Never" />
     <disable_collisions link1="rear_rocker_link" link2="right_arm_wrist_1_link" reason="Never" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="rear_rocker_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="rear_rocker_link" link2="right_arm_wrist_2_link" reason="Never" />
     <disable_collisions link1="rear_rocker_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="rear_rocker_link" link2="top_link" reason="Never" />
     <disable_collisions link1="right_arm_base_link_inertia" link2="right_arm_shoulder_link" reason="Adjacent" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="right_arm_base_link_inertia" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="right_arm_base_link_inertia" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="right_arm_base_link_inertia" link2="top_link" reason="Never" />
     <disable_collisions link1="right_arm_forearm_link" link2="right_arm_upper_arm_link" reason="Adjacent" />
     <disable_collisions link1="right_arm_forearm_link" link2="right_arm_wrist_1_link" reason="Adjacent" />
     <disable_collisions link1="right_arm_forearm_link" link2="right_arm_wrist_2_link" reason="Never" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="right_arm_forearm_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="right_arm_shoulder_link" link2="right_arm_upper_arm_link" reason="Adjacent" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="right_arm_shoulder_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="right_arm_shoulder_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="right_arm_shoulder_link" link2="top_link" reason="Never" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_1_link_0" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_1_link_1" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_1_link_2" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_1_link_3" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_2_link_0" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_2_link_1" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_2_link_2" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_2_link_3" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_middle_link_0" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_finger_middle_link_3" reason="User" />
+    <disable_collisions link1="right_arm_upper_arm_link" link2="right_gripper_flange" reason="User" />
     <disable_collisions link1="right_arm_upper_arm_link" link2="right_side_cover_link" reason="Never" />
     <disable_collisions link1="right_arm_upper_arm_link" link2="top_link" reason="Never" />
     <disable_collisions link1="right_arm_wrist_1_link" link2="right_arm_wrist_2_link" reason="Adjacent" />
@@ -553,6 +764,8 @@
     <disable_collisions link1="right_gripper_finger_1_link_0" link2="right_gripper_finger_middle_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_0" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_0" link2="right_gripper_palm" reason="Adjacent" />
+    <disable_collisions link1="right_gripper_finger_1_link_0" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_0" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_1_link_2" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_1_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_2_link_0" reason="Never" />
@@ -561,22 +774,36 @@
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_2_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_middle_link_0" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_middle_link_1" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_gripper_palm" reason="Default" />
+    <disable_collisions link1="right_gripper_finger_1_link_1" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_1" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_1_link_3" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_2_link_0" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_2_link_1" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_2_link_2" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_2_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_gripper_palm" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_1_link_2" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_2" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_2_link_0" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_2_link_1" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_2_link_2" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_2_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_gripper_flange" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_1_link_3" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_1_link_3" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_finger_2_link_1" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_finger_2_link_2" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_finger_2_link_3" reason="Never" />
@@ -586,35 +813,64 @@
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_finger_middle_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_gripper_palm" reason="Adjacent" />
+    <disable_collisions link1="right_gripper_finger_2_link_0" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_0" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_2_link_2" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_2_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_middle_link_0" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_middle_link_1" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_gripper_palm" reason="Default" />
+    <disable_collisions link1="right_gripper_finger_2_link_1" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_1" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_finger_2_link_3" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_gripper_palm" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_2_link_2" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_2" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_gripper_finger_middle_link_0" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_gripper_finger_middle_link_1" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_gripper_finger_middle_link_2" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_gripper_finger_middle_link_3" reason="User" />
     <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_gripper_flange" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_2_link_3" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_2_link_3" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_gripper_finger_middle_link_1" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_gripper_finger_middle_link_2" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_gripper_finger_middle_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_gripper_palm" reason="Adjacent" />
+    <disable_collisions link1="right_gripper_finger_middle_link_0" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_middle_link_0" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_middle_link_1" link2="right_gripper_finger_middle_link_2" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_middle_link_1" link2="right_gripper_finger_middle_link_3" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_1" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_1" link2="right_gripper_palm" reason="Default" />
+    <disable_collisions link1="right_gripper_finger_middle_link_1" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_middle_link_1" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_middle_link_2" link2="right_gripper_finger_middle_link_3" reason="Adjacent" />
     <disable_collisions link1="right_gripper_finger_middle_link_2" link2="right_gripper_flange" reason="Never" />
     <disable_collisions link1="right_gripper_finger_middle_link_2" link2="right_gripper_palm" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_middle_link_2" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_middle_link_2" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_finger_middle_link_3" link2="right_gripper_flange" reason="Never" />
+    <disable_collisions link1="right_gripper_finger_middle_link_3" link2="right_gripper_palm" reason="User" />
+    <disable_collisions link1="right_gripper_finger_middle_link_3" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_finger_middle_link_3" link2="top_link" reason="User" />
     <disable_collisions link1="right_gripper_flange" link2="right_gripper_palm" reason="Adjacent" />
-    <disable_collisions link1="right_side_cover_link" link2="top_link" reason="Never" />    
+    <disable_collisions link1="right_side_cover_link" link2="top_link" reason="Never" />  
+    <disable_collisions link1="right_gripper_flange" link2="right_side_cover_link" reason="User" />
+    <disable_collisions link1="right_gripper_flange" link2="top_link" reason="User" />
+    <disable_collisions link1="right_side_cover_link" link2="top_link" reason="Never" />
     
     <!-- manually added -->
+
     <disable_collisions link1="left_arm_base_link_inertia" link2="left_gripper_finger_1_link_0" reason="Never" />           
     <disable_collisions link1="left_arm_base_link_inertia" link2="left_gripper_finger_1_link_1" reason="Never" />         
     <disable_collisions link1="left_arm_base_link_inertia" link2="left_gripper_finger_1_link_2" reason="Never" />         

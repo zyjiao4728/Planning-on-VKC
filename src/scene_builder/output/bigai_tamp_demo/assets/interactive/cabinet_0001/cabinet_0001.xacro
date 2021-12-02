@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+
+<robot name="cabinet_0001_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:macro name="cabinet_0001" params="ns_prefix parent joint_type xyz rpy scale_x scale_y scale_z mesh_dir:=assets/interactive/cabinet_0001">
+
+    <!-- cabinet_0001 -->
+    <link name="${ns_prefix}">
+        <inertial>
+            <origin xyz="0 0 0" />
+            <mass value="33.18129099222546" />
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://scene_builder/${mesh_dir}/none_motion.obj" rpy="0 0 0" scale="${scale_x} ${scale_y} ${scale_z}" />
+            </geometry>
+        </visual>
+        <!-- <collision>
+            <origin xyz="0 0 0" />
+            <geometry>
+                <mesh filename="package://scene_builder/${mesh_dir}/none_motion.dae" rpy="0 0 0" scale="${scale_x} ${scale_y} ${scale_z}" />
+            </geometry>
+        </collision> -->
+    </link>
+
+
+    <joint name="${ns_prefix}_joint_structure" type="${joint_type}">
+        <origin xyz="${xyz}" rpy="${rpy}" />
+        <parent link="${parent}" />
+        <child link="${ns_prefix}" />
+    </joint>
+
+    
+    <link name="${ns_prefix}_dof_rootd_Bb001_r">
+        <inertial>
+            <origin xyz="${-0.129865 * scale_x} ${-0.138132 * scale_y} ${-0.0233064 * scale_z}" />
+            <mass value="4.60682560178928" />
+            <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="${-0.129865 * scale_x} ${-0.138132 * scale_y} ${-0.0233064 * scale_z}" />
+            <geometry>
+                <mesh filename="package://scene_builder/${mesh_dir}/dof_rootd_Bb001_r.obj" rpy="0 0 0" scale="${scale_x} ${scale_y} ${scale_z}" />
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="${-0.129865 * scale_x} ${-0.138132 * scale_y} ${-0.0233064 * scale_z}" />
+            <geometry>
+                <mesh filename="package://scene_builder/${mesh_dir}/dof_rootd_Bb001_r.obj" rpy="0 0 0" scale="${scale_x} ${scale_y} ${scale_z}" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="${ns_prefix}_dof_rootd_Bb001_r_joint" type="revolute">
+        <origin xyz="${0.129865 * scale_x} ${0.138132 * scale_y} ${0.0233064 * scale_z}" rpy="0 0 0" />
+        <parent link="${ns_prefix}" />
+        <child link="${ns_prefix}_dof_rootd_Bb001_r" />
+        <axis xyz="0.0 2.22045e-16 1.0" />
+        <dynamics friction="0.4794564749794503" />
+        <limit effort="0.0" velocity="0.5" lower="0.0" upper="3.14"/>
+    </joint>
+    
+</xacro:macro>
+
+</robot>
+        

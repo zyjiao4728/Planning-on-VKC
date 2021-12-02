@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<robot name="free_13_cabinet_floor_none_motion_z_up" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:macro name="fixed_13_cabinet" params="ns_prefix parent joint_type xyz rpy scale mesh_dir:=assets/interactive/fixed_13_cabinet">
+
+    <link name="${ns_prefix}">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.6752158403396606 * scale} ${1.5139155387878418 * scale} ${-0.4068157374858856 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_none_motion_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.6752158403396606 * scale} ${1.5139155387878418 * scale} ${-0.4068157374858856 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_none_motion_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+
+    <joint name="${ns_prefix}_${ns_prefix}_joint_structure_joint" type="${joint_type}">
+        <origin xyz="${xyz}" rpy="${rpy}" />
+        <parent link="${parent}" />
+        <child link="${ns_prefix}" />
+    </joint>
+    
+    <link name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa001_t_z_up">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.3222781419754028 * scale} ${1.0830146074295044 * scale} ${-0.6871412396430969 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa001_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.3222781419754028 * scale} ${1.0830146074295044 * scale} ${-0.6871412396430969 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa001_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+    
+<joint name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa001_t_z_up_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="${-0.3529376983642578 * scale} ${0.4309009313583374 * scale} ${0.2803255021572113 * scale}"/>
+    <parent link="${ns_prefix}"/>
+    <child link="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa001_t_z_up"/>
+     <axis xyz="1 0 0"/>
+     <limit effort="0.0" lower="-0.2" upper="0.2" velocity="0.5"/>
+</joint>
+
+
+    <link name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa002_t_z_up">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.3222788572311401 * scale} ${1.9080175161361694 * scale} ${-0.6871416568756104 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa002_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.3222788572311401 * scale} ${1.9080175161361694 * scale} ${-0.6871416568756104 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa002_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+    
+<joint name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa002_t_z_up_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="${-0.3529369831085205 * scale} ${-0.39410197734832764 * scale} ${0.28032591938972473 * scale}"/>
+    <parent link="${ns_prefix}"/>
+    <child link="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa002_t_z_up"/>
+    <axis xyz="1 0 0"/>
+     <limit effort="0.0" lower="-0.2" upper="0.2" velocity="0.5"/>
+</joint>
+
+
+    <link name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa003_t_z_up">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.3222801685333252 * scale} ${1.4955209493637085 * scale} ${-0.531002402305603 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa003_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.3222801685333252 * scale} ${1.4955209493637085 * scale} ${-0.531002402305603 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa003_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+    
+<joint name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa003_t_z_up_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="${-0.35293567180633545 * scale} ${0.0183945894241333 * scale} ${0.12418666481971741 * scale}"/>
+    <parent link="${ns_prefix}"/>
+    <child link="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa003_t_z_up"/>
+    <axis xyz="1 0 0"/>
+     <limit effort="0.0" lower="-0.2" upper="0.2" velocity="0.5"/>
+</joint>
+
+
+    <link name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa004_t_z_up">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.322278618812561 * scale} ${1.495520830154419 * scale} ${-0.35109809041023254 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa004_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.322278618812561 * scale} ${1.495520830154419 * scale} ${-0.35109809041023254 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa004_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+    
+<joint name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa004_t_z_up_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="${-0.3529372215270996 * scale} ${0.01839470863342285 * scale} ${-0.055717647075653076 * scale}"/>
+    <parent link="${ns_prefix}"/>
+    <child link="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa004_t_z_up"/>
+    <axis xyz="1 0 0"/>
+     <limit effort="0.0" lower="-0.2" upper="0.2" velocity="0.5"/>
+</joint>
+
+
+    <link name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa005_t_z_up">
+        <visual>
+          <origin rpy="0 0 0" xyz="${-1.321869969367981 * scale} ${1.4955335855484009 * scale} ${-0.17047324776649475 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa005_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin rpy="0 0 0" xyz="${-1.321869969367981 * scale} ${1.4955335855484009 * scale} ${-0.17047324776649475 * scale}"/>
+          <geometry>
+            <mesh filename="package://scene_builder/${mesh_dir}/free_13_cabinet_floor_dof_rootd_Aa005_t_z_up.obj" scale="${scale} ${scale} ${scale}"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="30.455"/>
+          <origin xyz="0 0 0"/>
+          <inertia ixx="0.6022" ixy="-0.02364" ixz="-0.1197" iyy="1.7386" iyz="-0.001544" izz="2.0296"/>
+        </inertial>
+    </link>
+    
+<joint name="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa005_t_z_up_joint" type="prismatic">
+    <origin rpy="0 0 0" xyz="${-0.3533458709716797 * scale} ${0.018381953239440918 * scale} ${-0.23634248971939087 * scale}"/>
+    <parent link="${ns_prefix}"/>
+    <child link="${ns_prefix}_free_13_cabinet_floor_dof_rootd_Aa005_t_z_up"/>
+    <axis xyz="1 0 0"/>
+     <limit effort="0.0" lower="-0.2" upper="0.2" velocity="0.5"/>
+</joint>
+
+</xacro:macro>
+
+</robot>
