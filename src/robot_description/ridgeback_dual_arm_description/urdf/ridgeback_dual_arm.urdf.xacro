@@ -25,14 +25,14 @@
   </joint>
 
   <!-- include pan tilt -->
-  <xacro:pan_tilt parent="base_footprint">
+  <!-- <xacro:pan_tilt parent="base_footprint">
     <origin xyz="0.25 0 1.02221" rpy="0 0 0"/>
-  </xacro:pan_tilt>
+  </xacro:pan_tilt> -->
 
   <!-- kinect dk -->
-  <xacro:kinect_dk parent="pan_tilt_surface">
+  <!-- <xacro:kinect_dk parent="pan_tilt_surface">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-  </xacro:kinect_dk>
+  </xacro:kinect_dk> -->
 
   <!-- body -->
   <link name="body_link">
@@ -48,7 +48,7 @@
     <collision>
       <origin xyz="0.25 0.68 0" rpy="0 0 0"/>
       <geometry>
-        <box size="0.16 0.46 0.2"/>
+        <box size="0.16 0.70 0.2"/>
       </geometry>
     </collision>
   </link>

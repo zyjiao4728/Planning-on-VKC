@@ -120,32 +120,34 @@ namespace vkc
   void initFinalJointSeed(std::unordered_map<std::string, int> &joint_name_idx,
                           std::vector<JointDesiredPose> &joint_objectives, Eigen::VectorXd &seed)
   {
-    if (joint_objectives.size() > 0)
+    if (joint_objectives.size() <= 0)
     {
-      for (auto &joint_obj : joint_objectives)
-      {
-        if (joint_name_idx.find(joint_obj.joint_name) != joint_name_idx.end())
-        {
-          if (joint_name_idx.at(joint_obj.joint_name) < 0 || joint_name_idx.at(joint_obj.joint_name) > seed.size())
-          {
-            ROS_WARN("[%s]joint_name: %s, joint_index: %d, seed size: %d",
-                     __func__,
-                     joint_obj.joint_name.c_str(),
-                     joint_name_idx.at(joint_obj.joint_name),
-                     seed.size());
-          }
+      return;
+    }
 
-          seed[joint_name_idx.at(joint_obj.joint_name)] = joint_obj.joint_angle;
-          // joint_name_idx[joint_obj.joint_name] = -1;
-        }
-        else
+    for (auto &joint_obj : joint_objectives)
+    {
+      if (joint_name_idx.find(joint_obj.joint_name) != joint_name_idx.end())
+      {
+        if (joint_name_idx.at(joint_obj.joint_name) < 0 || joint_name_idx.at(joint_obj.joint_name) > seed.size())
         {
-            ROS_ERROR("[%s]joint_name: %s, joint_index: %d, seed size: %d",
-                     __func__,
-                     joint_obj.joint_name.c_str(),
-                     joint_name_idx.at(joint_obj.joint_name),
-                     seed.size());
+          ROS_WARN("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+                   __func__,
+                   joint_obj.joint_name.c_str(),
+                   joint_name_idx.at(joint_obj.joint_name),
+                   seed.size());
         }
+
+        seed[joint_name_idx.at(joint_obj.joint_name)] = joint_obj.joint_angle;
+        // joint_name_idx[joint_obj.joint_name] = -1;
+      }
+      else
+      {
+        ROS_ERROR("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+                  __func__,
+                  joint_obj.joint_name.c_str(),
+                  joint_name_idx.at(joint_obj.joint_name),
+                  seed.size());
       }
     }
   }
@@ -165,9 +167,11 @@ namespace vkc
       // }
       // if (sol(i) < joint_limit(i, 0) + 0.1 || sol(i) > joint_limit(i, 1) - 0.1)
       //   return false;
-      if (i == 3 || i == 4 || i == 5 || i == 6 || i == 7)
+      //if (i == 3 || i == 4 || i == 5 || i == 6 || i == 7)
+      if(i >= 3)
       {
-        if (sol(i) < -3.14 + 0.1 || sol(i) > 3.14 - 0.1)
+        //if (sol(i) < -3.14 + 0.1 || sol(i) > 3.14 - 0.1)
+        if (sol(i) < joint_limit(i, 0) + 0.1 || sol(i) > joint_limit(i, 1) - 0.1)
         {
           return false;
         }
@@ -304,7 +308,7 @@ namespace vkc
 
             if (inv_iter > max_iter - 1)
             {
-              ROS_WARN("Exceed max inv kin iter!");
+              ROS_WARN("[%s]Exceed max inv kin iter!", __func__);
               break;
             }
           }
@@ -331,7 +335,7 @@ namespace vkc
 
   trajopt::TrajArray initTrajectory(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
                                     std::vector<JointDesiredPose> &joint_objectives, MapInfo map,
-                                    trajopt::TrajArray &init_traj, int n_steps)
+                                    trajopt::TrajArray &init_traj, int n_steps, const std::string& robot)
   {
     // srand(time(NULL));
     ROS_WARN("[%s]init trajectory, link_objectives size: %d, joint_objective size: %d",
@@ -339,15 +343,15 @@ namespace vkc
 
     for(auto& objective : link_objectives)
     {
-      std::cout << "name: " << objective.link_name << std::endl
-                << "transform: " << std::endl
+      std::cout << __func__ << ": link objective" << std::endl
+                << "\tname: " << objective.link_name << std::endl
+                << "\ttransform: " << std::endl
                 << objective.tf.linear() << std::endl
-                << "translation: " << std::endl
+                << "\ttranslation: " << std::endl
                 << objective.tf.translation().transpose() << std::endl;
     }
-    int max_iter = 1000;
 
-    tesseract::InverseKinematicsManager::Ptr inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
+    tesseract_kinematics::InverseKinematics::Ptr inv_kin = env.getVKCEnv()->getTesseract()->getInvKinematicsManager()->getInvKinematicSolver(robot);
     tesseract_collision::DiscreteContactManager::Ptr disc_cont_mgr_ =
         env.getVKCEnv()->getTesseract()->getEnvironment()->getDiscreteContactManager()->clone();
 
@@ -360,8 +364,8 @@ namespace vkc
     std::vector<LinkDesiredPose> base_pose;
     Eigen::VectorXd sol;
     Eigen::VectorXd seed;
-    sol.resize(inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints());
-    seed.resize(inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints());
+    sol.resize(inv_kin->numJoints());
+    seed.resize(inv_kin->numJoints());
     sol.setZero();
     seed.setZero();
 
@@ -369,7 +373,7 @@ namespace vkc
     int idx = 0;
 
     std::vector<std::string> joint_names;
-    joint_names = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getJointNames();
+    joint_names = inv_kin->getJointNames();
 
     for (auto &jnt : joint_names)
     {
@@ -378,7 +382,7 @@ namespace vkc
       ++idx;
     }
 
-    // std::cout << inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getLimits() << std::endl;
+    // std::cout << inv_kin->getLimits() << std::endl;
 
     int inv_iter = 0;
     bool inv_suc = false;
@@ -386,74 +390,107 @@ namespace vkc
     bool satisfy_limit = false;
     bool desired_base_pose = false;
 
+    Eigen::VectorXd best_sol;
+    size_t last_collision_count = 100000;
 
     if (link_objectives.size() > 0)
     {
+      int max_iter = 500;
       for (auto &link_obj : link_objectives)
       {
 
         if (link_obj.link_name == "base_link")
         {
+          ROS_WARN("[%s]init trajectory for base link...");
           base_pose.clear();
           base_pose.push_back(link_obj);
           desired_base_pose = true;
           initBaseTrajectory(env, base_pose, map);
           initFinalJointSeed(joint_name_idx, joint_objectives, sol);
         }
-        else if (link_obj.link_name == inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName())
+        else if (link_obj.link_name == inv_kin->getTipLinkName())
         {
           initFinalJointSeed(joint_name_idx, joint_objectives, seed);
-          Eigen::MatrixX2d joint_limits = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getLimits();
+          Eigen::MatrixX2d joint_limits = inv_kin->getLimits();
           std::cout << "joint limits: " << std::endl
                     << joint_limits.transpose() << std::endl;
 
-          while (satisfy_collision > 0 || inv_iter == 0 || !inv_suc || !satisfy_limit)
+          Eigen::VectorXd sol_cand;    // candiated solution of current best
+          unsigned int last_sol_collision_cnt = 0;
+          bool last_sol_inv = false;
+          bool last_limit_stisfy = false;
+
+          while (satisfy_collision > 0  || !inv_suc || !satisfy_limit)
           {
-            ++inv_iter;
+            ROS_WARN("[%s]iterating count: %d!", __func__, inv_iter);
+            if (inv_iter++ >= max_iter)
+            {
+              ROS_WARN("[%s]Exceed max inv kin iter: %d!", __func__, max_iter);
+              break;
+            }
 
             for (auto &jnt : joint_name_idx)
             {
                 // wanglei @2021-11-26   
                 // theory: seed = joint_lower_limit + double_rand * (joint_upper_limit - joint_lower_limit)
-                seed[jnt.second] = joint_limits(jnt.second, 0) +
+                // that's seed s.t. [joint_lower_limit + 0.1, joint_upper_limit - 0.1]
+                seed[jnt.second] = joint_limits(jnt.second, 0) + 0.1 +
                                    (double(rand()) / double((RAND_MAX))) *           // get a float value ranging in [0, 1] with the highest precision
-                                   (joint_limits(jnt.second, 1) - joint_limits(jnt.second, 0));   // range of current joint limits
+                                   (joint_limits(jnt.second, 1) - joint_limits(jnt.second, 0) - 0.2);   // range of current joint limits
             }
-            inv_suc = inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->calcInvKin(sol, link_obj.tf, seed);
+            inv_suc = inv_kin->calcInvKin(sol, link_obj.tf, seed);
+            if(!inv_suc)
+            {
+              ROS_WARN("[%s]no inverse kinematics solution is found!", __func__);
+              continue;
+            }
 
+            // check limits voilation 
+            satisfy_limit = checkJointLimit(sol, inv_kin->getLimits(), inv_kin->numJoints());
+            if(!satisfy_limit)
+            {
+              ROS_WARN("[%s]inverse kinematics solution voilates limits!", __func__);
+              continue;
+            }
 
+            // check collision 
+            contact_results.clear();
             tesseract_environment::EnvState::Ptr env_state =
                 env.getVKCEnv()->getTesseractEnvironment()->getState(joint_names, sol);
-            contact_results.clear();
             disc_cont_mgr_->setCollisionObjectsTransform(env_state->transforms);
-
             disc_cont_mgr_->contactTest(contact_results, tesseract_collision::ContactTestType::ALL);
-
             satisfy_collision = contact_results.size();
-            satisfy_limit = checkJointLimit(sol, inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getLimits(),
-                                            inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints());
 
-            std::cout << "collision satisfied: " << satisfy_collision << ", ik succeeded: " << inv_suc << ", limit satisfied: " << satisfy_limit << std::endl;
+            if(satisfy_collision < last_collision_count)
+            {
+              ROS_WARN("[%s]best solutioni updated! current collision: %d, last collision: %d",
+                       __func__, satisfy_collision, last_collision_count);
+              best_sol = sol;
+              last_collision_count = satisfy_collision;
+            }
+
             if (satisfy_collision > 0)
             {
+              ROS_WARN("[%s]totoal %d collision points detected:", __func__, satisfy_collision);
               for (auto &collision : contact_results)
               {
-                std::cout << collision.first.first << " and " << collision.first.second << " are in collision" << std::endl;
+                std::cout << "\t" << collision.first.first << " -->|<-- " << collision.first.second << std::endl;
               }
-              std::cout << "======================================================" << std::endl;
             }
-            // std::cout << "sol: " << sol.transpose() << std::endl;
-            if (inv_iter > max_iter - 1)
-            {
-              ROS_WARN("Exceed max inv kin iter!");
-              break;
-            }
+
+            std::cout << "sol: " << sol.transpose() << std::endl;
           }
-          // std::cout << "Iteration:\t" << inv_iter << std::endl;
+
+          // we choose the best among the all the failure cases, and this includes the case of last success 
+          if(best_sol.size() > 0)
+          {
+            sol = best_sol;  
+          }
+
           base_pose.clear();
           Eigen::Isometry3d base_final_pose;
           base_final_pose.setIdentity();
-          if (inv_suc && (satisfy_collision == 0) && (satisfy_limit == 1))
+          if (inv_suc && satisfy_limit && (0 == satisfy_collision))
           {
             ROS_INFO("[%s]init trajectory sucessfully!", __func__);
             // the third argument here is the z-offset of base frame referred to world frame
@@ -501,8 +538,7 @@ namespace vkc
         else
         {
           ROS_WARN("Unsupported trajectory initialization for given tip link: %s, actural tip link: %s",
-                   link_obj.link_name.c_str(), 
-                   inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->getTipLinkName().c_str());
+                   link_obj.link_name.c_str(), inv_kin->getTipLinkName().c_str());
           return init_traj;
         }
       }
@@ -517,7 +553,7 @@ namespace vkc
 
     std::vector<double> nsteps_remap;
 
-    for (int j = 0; j < inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints(); ++j)
+    for (int j = 0; j < inv_kin->numJoints(); ++j)
     {
       std::cout << sol[j] << ", ";
     }
@@ -541,7 +577,7 @@ namespace vkc
         init_traj(i, 1) = init_traj(i - 1, 1);
       }
 
-      for (int j = 2; j < inv_kin_mgr->getInvKinematicSolver(DEFAULT_VKC_GROUP_ID)->numJoints(); ++j)
+      for (int j = 2; j < inv_kin->numJoints(); ++j)
       {
         if ((sol[j] - init_traj(0, j)) > M_PI)
         {
@@ -567,35 +603,4 @@ namespace vkc
   }
 
 
-
-    // trajopt::TrajArray initTrajectoryByOMPL(VKCEnvBasic &env, ActionBase::Ptr act, int n_steps)
-    // {
-    //     vkc::OmplPlanParameters param;
-    //     param.planner = OMPLPlanners::Planners::RRT_Connect;
-    //     param.ik_option = Husky_IK::Option::Full;
-
-    //     param.inv_attp_max = 100;
-    //     param.plan_params.n_steps = n_steps;
-    //     param.plan_params.planning_time = 5.0;
-    //     param.plan_params.simplify = true;
-
-    //     ProbTranslator prob_translator(param);
-    //     prob_translator.transProb(env, act);
-
-    //     tesseract_motion_planners::PlannerResponse response;
-    //     std::vector<std::vector<double>> res_traj;
-    //     prob_translator.solveProblem(response, res_traj);
-
-    //     trajopt::TrajArray init_traj;
-    //     if (0 < response.status_code)
-    //     {
-    //         init_traj = response.trajectory;
-    //     }
-    //     else
-    //     {
-    //         std::cout << "[" << __func__ << "]failed to init trajectory" << std::endl;
-    //     }
-
-    //     return init_traj;
-    // }
 } // namespace vkc

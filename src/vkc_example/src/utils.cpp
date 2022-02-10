@@ -162,20 +162,18 @@ void TrajectoryVisualize(vkc::VKCEnvBasic& env,
   // plot current `action` trajectory data
   for (; joint_traj_iter != joint_trajs.end(); ++action_iter, ++joint_traj_iter)
   {
-    ROS_INFO("joints names number: %d, joint number: %d, joint states number: %d, revision: %d",
-             joint_traj_iter->joint_names.size(),
-             joint_traj_iter->trajectory.cols(),
-             joint_traj_iter->trajectory.rows(),
-             env.getPlotVKCEnv()->getTesseractEnvironment()->getRevision());
-    tesseract_common::TrajArray refined_traj = joint_traj_iter->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
-    //refineTrajectory(refined_traj);
+    // ROS_INFO("joints names number: %d, joint number: %d, joint states number: %d, revision: %d",
+    //          joint_traj_iter->joint_names.size(),
+    //          joint_traj_iter->trajectory.cols(),
+    //          joint_traj_iter->trajectory.rows(),
+    //          env.getPlotVKCEnv()->getTesseractEnvironment()->getRevision());
+    tesseract_common::TrajArray traj = joint_traj_iter->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
+    std::cout << "Traj:" << std::endl
+              << traj << std::endl;
 
     ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getPlotVKCEnv()->getTesseract()->getEnvironment());
-    plotter->plotTrajectory(joint_traj_iter->joint_names, refined_traj);
-    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 2500000.0 / max_traj_len));
-
-    // ROS_INFO("%s: Update Env, action: ", __func__);
-    // std::cout << *action_iter << "\t";
+    plotter->plotTrajectory(joint_traj_iter->joint_names, traj);
+    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 1500000.0 / max_traj_len));
 
     // update env according to the action
     // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

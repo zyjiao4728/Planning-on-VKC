@@ -4,26 +4,16 @@ const std::string DEFAULT_VKC_GROUP_ID = "vkc";
 
 namespace vkc
 {
-  // namespace vkc starts
+// namespace vkc starts
 
   VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz)
       : nh_(nh), plotting_(plotting), rviz_(rviz),
         tesseract_(std::make_shared<vkc::ConstructVKC>()),
         plot_tesseract_(std::make_shared<vkc::ConstructVKC>())
   {
-    // Initial number of past revisions
-    n_past_revisions_ = 0;
-    n_past_plot_revisions_ = 0;
-  }
-
-  bool VKCEnvBasic::reInit()
-  {
-    ROS_WARN("[%s]TODO: reset the rviz via call programming interface", __func__);
-    // attached_links_.clear();
-    end_effector_link_ = robot_end_effector_link_;
-    ROS_INFO("[%s]revision: %lu", __func__, plot_tesseract_->getTesseractEnvironment()->getRevision());
-    if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
-      return false;
+  // Initial number of past revisions
+  n_past_revisions_ = 0;
+  n_past_plot_revisions_ = 0;
   }
 
   void VKCEnvBasic::setEndEffector(std::string link_name)
@@ -298,7 +288,7 @@ namespace vkc
       // attach_locations_.at(attach_location_name)->local_joint_origin_transform.inverse();
       attach_locations_.at(attach_location_name)->connection.parent_link_name = getEndEffectorLink();
     }
-    std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
+    ROS_INFO("[%s]pre end-effector: %s", __func__, getEndEffectorLink().c_str());
 
     // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(getEndEffectorLink()).translation() << std::endl;
     // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(getEndEffectorLink()).linear() << std::endl;
@@ -310,7 +300,7 @@ namespace vkc
     tesseract->getTesseractEnvironment()->moveLink((attach_locations_.at(attach_location_name)->connection));
     end_effector_link_ = attach_locations_.at(attach_location_name)->base_link_;
 
-    std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
+    ROS_INFO("[%s]current end-effector: %s", __func__, getEndEffectorLink().c_str());
     addAttachedLink(attach_location_name);
   }
 
@@ -323,9 +313,9 @@ namespace vkc
 
     ROS_INFO("end_effector_link_: %s", end_effector_link_.c_str());
 
-    std::string link_name = attach_locations_.at(target_location_name)->link_name_;
-    std::string object_name = link_name.substr(0, link_name.rfind("_"));
-    ROS_INFO("[%s]object link name: %s, object_name: %s", __func__, link_name.c_str(), object_name.c_str());
+    const std::string attach_link_name = attach_locations_.at(target_location_name)->link_name_;
+    std::string object_name = attach_link_name.substr(0, attach_link_name.rfind("_"));
+    ROS_INFO("[%s]object link name: %s, object_name: %s", __func__, attach_link_name.c_str(), object_name.c_str());
 
     std::string new_parent_link { new_attach_link.empty() ? "world" : new_attach_link};
     Joint new_joint(object_name + "_" + new_parent_link);   // wanglei@2021-11-15, to optionally support container fill operation, such as put a egg into a basket
@@ -333,19 +323,30 @@ namespace vkc
              __func__, target_location_name.c_str(), end_effector_link_.c_str(), new_parent_link.c_str(), new_attach_link.c_str());
 
     new_joint.parent_link_name = new_parent_link;
-    new_joint.child_link_name = link_name;
+    new_joint.child_link_name = attach_link_name;
     new_joint.type = JointType::FIXED;
     new_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
     new_joint.parent_to_joint_origin_transform = tesseract->getTesseractEnvironment()->getLinkTransform(new_parent_link).inverse() *
-        tesseract->getTesseractEnvironment()->getLinkTransform(link_name);
+        tesseract->getTesseractEnvironment()->getLinkTransform(attach_link_name);
     bool link_moved = tesseract->getTesseractEnvironment()->moveLink(new_joint);
-    ROS_INFO("[%s]detach action, move link %s: %s", __func__, link_name.c_str(), link_moved ? "true" : "false");
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(link_name).translation() << std::endl;
-    attach_locations_.at(target_location_name)->world_joint_origin_transform =
-        tesseract->getTesseractEnvironment()->getLinkTransform(link_name) *
-        attach_locations_.at(target_location_name)->local_joint_origin_transform;
+    ROS_INFO("[%s]detach action, move link %s: %s", __func__, attach_link_name.c_str(), link_moved ? "true" : "false");
+    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(attach_link_name).translation() << std::endl;
 
-    
+    // author: wanglei@bigai.ai
+    // date: 2021-12-08
+    // reason: update attach location transformation for the object having two attach locations 
+    const std::string target_object_base_link = attach_locations_.at(target_location_name)->base_link_;
+    for(auto& attach_location : attach_locations_)
+    {
+      if(target_object_base_link == attach_location.second->base_link_)
+      {
+        attach_location.second->world_joint_origin_transform = tesseract->getTesseractEnvironment()->getLinkTransform(attach_location.second->link_name_) *
+                                                               attach_location.second->local_joint_origin_transform;
+      }
+      // attach_locations_.at(target_location_name)->world_joint_origin_transform =
+      //     tesseract->getTesseractEnvironment()->getLinkTransform(attach_link_name) *
+      //     attach_locations_.at(target_location_name)->local_joint_origin_transform;
+    }
   }
 
   void VKCEnvBasic::detachObject(std::string detach_location_name, vkc::ConstructVKC::Ptr tesseract, const std::string& new_attach_link)
@@ -459,6 +460,14 @@ namespace vkc
     }
 
     return isfound_group;
+  }
+
+  bool VKCEnvBasic::reInit()
+  {
+    end_effector_link_ = robot_end_effector_link_;
+    ROS_INFO("[%s]revision: %lu", __func__, plot_tesseract_->getTesseractEnvironment()->getRevision());
+    if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
+      return false;
   }
 
 } // namespace vkc

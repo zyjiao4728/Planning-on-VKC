@@ -3,7 +3,7 @@
 
   <xacro:include filename="$(find husky_ur_description)/urdf/husky_ur5_e_description.urdf.xacro" />
 
-  <xacro:macro name="deploy" params="prefix attach_to_world loc_x loc_y orientation">
+  <xacro:macro name="deploy" params="prefix attach_to_world loc_x loc_y orientation has_gripper">
 
     <!-- Virtual Link Starts -->
     <link name="${prefix}virtual_base_x">
@@ -74,6 +74,39 @@
         <origin xyz="${loc_x} ${loc_y} 0.13" rpy="0 0 ${orientation}" />
       </joint>
     </xacro:if>
+    
+    <xacro:if value="${has_gripper}">
+      <!-- gipper flange -->
+      <link name="gripper_flange">
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://husky_ur_description/meshes/3-finger-gripper_fixed-urdf.stl"/>
+          </geometry>
+          <material name="">
+            <color rgba="0.2 0.2 0.2 1"/>
+          </material>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://husky_ur_description/meshes/3-finger-gripper_fixed-urdf.stl"/>
+          </geometry>
+        </collision>
+      </link>
+      <joint name="gripper_flange_joint" type="fixed">
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <parent link="ur_arm_tool0"/>
+          <child link="gripper_flange"/>
+      </joint>
 
+      <!-- gripper -->
+      <xacro:robotiq-3f-gripper_articulated prefix="gripper_"/>
+      <joint name="gripper_joint" type="fixed">
+          <origin xyz="0 0 0.068825" rpy="${M_PI/2} 0 0"/>
+          <parent link="gripper_flange"/>
+          <child link="gripper_palm"/>
+      </joint>  
+    </xacro:if>
   </xacro:macro>
 </robot>

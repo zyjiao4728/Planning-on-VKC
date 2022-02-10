@@ -27,39 +27,29 @@ namespace vkc
 UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
   : VKCEnvBasic(nh, plotting, rviz), steps_(steps)
 {
-  // for generating random numbers, and 12345 is our seed.
-  srand(12345);
-
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
+
   initTesseractConfig(MODIFY_ENVIRONMENT_SERVICE, GET_ENVIRONMENT_CHANGES_SERVICE);
 
   // set robot initial pose in scene graph
   setHomePose();
+
   ROS_INFO("Sucessfully load the robot model, now creating environment...");
 
-
-  DOUT("Before Create Environment SceneGraph:");
-  printSceneGraph(tesseract_->getTesseractSceneGraph());
-
-  configAttachLocations_();
-  configInverseChains_();
-
-  DOUT("After Create Environment SceneGraph:");
-  printSceneGraph(tesseract_->getTesseractSceneGraph());
-
-
   createEnvironment();
-  ROS_INFO("sucessfully create the environment, now creating optimization problem...");
+
+  ROS_INFO("Sucessfully create the environment, now creating optimization problem...");
 }
 
 UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps,
                            const AttachObjectInfos &attaches,
                            const InverseChainsInfos &inverse_chains)
     : VKCEnvBasic(nh, plotting, rviz), steps_(steps),
-      attaches_for_reset_(attaches)
+      attaches_(attaches),
+      inverse_chains_(inverse_chains)
 {
     // Set Log Level
   util::gLogLevel = util::LevelInfo;
@@ -71,15 +61,6 @@ UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int ste
   setHomePose();
   ROS_INFO("Sucessfully load the robot model, now creating environment...");
 
-  DOUT("Before Create Environment SceneGraph:");
-  printSceneGraph(tesseract_->getTesseractSceneGraph());
-
-  configAttachLocations_(attaches);
-  configInverseChains_(inverse_chains);
-
-  DOUT("After Create Environment SceneGraph:");
-  printSceneGraph(tesseract_->getTesseractSceneGraph());
-
 
   createEnvironment();
   ROS_INFO("sucessfully create the environment, now creating optimization problem...");
@@ -87,26 +68,34 @@ UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz, int ste
 
 bool UrdfSceneEnv::createEnvironment()
 {
+  DOUT("Before Create Environment SceneGraph:");
+  printSceneGraph(tesseract_->getTesseractSceneGraph());
+
+  configAttachLocations_(attaches_);
+  configInverseChains_(inverse_chains_);
+
+  DOUT("After Create Environment SceneGraph:");
+  printSceneGraph(tesseract_->getTesseractSceneGraph());
+
   DOUT("Before RVIZ Changed");
-  auto start = std::chrono::system_clock::now();
 
   for (auto& it : attach_locations_)
   {
     it.second->world_joint_origin_transform = tesseract_->getTesseract()->getEnvironment()->getLinkTransform(it.second->link_name_) *
                                               it.second->local_joint_origin_transform;
+    std::cout << "translation of attachment " << it.second->name_ << " in world frame: " << std::endl;
+    std::cout << it.second->world_joint_origin_transform.translation() << std::endl;
+    std::cout << "rotation matrix of attachment " << it.second->name_ << " in world frame: " << std::endl;
+    std::cout << it.second->world_joint_origin_transform.rotation() << std::endl;
   }
-  std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - start;
-  ROS_INFO("[%s]It takes %f sec to alert the environment!", __func__, elapsed_seconds.count());
 
-  start = std::chrono::system_clock::now();
   if (rviz_)
   {
     // Now update rviz environment
     if (!sendRvizChanges(n_past_revisions_, tesseract_))
       return false;
   }
-  elapsed_seconds = std::chrono::system_clock::now() - start;
-  ROS_INFO("[%s]It takes %f sec to update the environment in rviz!", __func__, elapsed_seconds.count());
+
   DOUT("RVIZ Changed");
 
   return true;
@@ -146,7 +135,7 @@ bool UrdfSceneEnv::reInit()
 {
   //TODO
   attached_links_.clear();
-  configAttachLocations_(attaches_for_reset_);
+  configAttachLocations_(attaches_);
 
   VKCEnvBasic::reInit();
 }
@@ -155,99 +144,6 @@ bool UrdfSceneEnv::reInit()
  * 
  * Add AttachLocations in to the UrdfSceneEnv
  */
-void UrdfSceneEnv::configAttachLocations_()
-{
-  newAttachLocation_(
-    "attach_fridge_handle",
-    "fridge_0001_dof_rootd_Aa002_r",
-    "fridge_0001", 
-    {0.61, -0.30, -0.60},
-    {0.0, 0.7071, 0.7071, 0.0},
-    true
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_fridge_handle",
-                                                    "fridge_0001_dof_rootd_Aa002_r",
-                                                    "fridge_0001",
-                                                    {0.61, -0.30, -0.60},
-                                                    {0.0, 0.7071, 0.7071, 0.0},
-                                                    true});
-
-  newAttachLocation_(
-    "attach_bottle",
-    "bottle_link_0",
-    "bottle",
-    {-0.05,0,-0.17},
-    {0.5, 0.5, -0.5, 0.5},
-    false
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_bottle",
-                                                    "bottle_link_0",
-                                                    "bottle",
-                                                    {-0.05, 0, -0.17},
-                                                    {0.5, 0.5, -0.5, 0.5},
-                                                    false});
-
-  newAttachLocation_(
-    "attach_drawer",
-    "cabinet_45290_2_link_0",
-    "cabinet_45290_2_base",
-    {-0.05,0,-0.17},
-    {1, 0, 0, 0},
-    true
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_drawer",
-                                                    "cabinet_45290_2_link_0",
-                                                    "cabinet_45290_2_base",
-                                                    {-0.05, 0, -0.17},
-                                                    {1, 0, 0, 0},
-                                                    true});
-
-  newAttachLocation_(
-    "attach_door",
-    "door_8966_link_2",
-    "door_8966_base",
-    {0,0,-0.3},
-    {0.7071,0,-0.7071,0},
-    true
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_door",
-                                                    "door_8966_link_2",
-                                                    "door_8966_base",
-                                                    {0, 0, -0.3},
-                                                    {0.7071, 0, -0.7071, 0},
-                                                    true});
-
-  newAttachLocation_(
-    "attach_dishwasher",
-    "dishwasher_12065_link_0",
-    "dishwasher_12065",
-    {0.0,-0.2,0.35},
-    {0.7071,0,0.7071,0},
-    true
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_dishwasher",
-                                                    "dishwasher_12065_link_0",
-                                                    "dishwasher_12065",
-                                                    {0.0, -0.2, 0.35},
-                                                    {0.7071, 0, 0.7071, 0},
-                                                    true});
-
-  newAttachLocation_(
-    "attach_cabinet",
-    "link_1",
-    "cabinet_44781",
-    {0.6,-0.65,0.2},
-    {0.5,0.5,0.5,-0.5},
-    true
-  );
-  attaches_for_reset_.emplace_back(AttachObjectInfo{"attach_cabinet",
-                                                    "link_1",
-                                                    "cabinet_44781",
-                                                    {0.6, -0.65, 0.2},
-                                                    {0.5, 0.5, 0.5, -0.5},
-                                                    true});
-}
-
 void UrdfSceneEnv::configAttachLocations_(const std::vector<AttachObjectInfo> &attaches)
 {
   for(const auto& attach : attaches)
@@ -265,6 +161,7 @@ void UrdfSceneEnv::configAttachLocations_(const std::vector<AttachObjectInfo> &a
         attach.fixed_base);
   }
 }
+
 
 void UrdfSceneEnv::newAttachLocation_(
   std::string attach_name,
@@ -295,72 +192,31 @@ void UrdfSceneEnv::newAttachLocation_(
 }
 
 
-/*******************************************************************
- * Configurate Inserve Kinematics Chains
- * 
- * Inserve the chain of the manipulated object
- ******************************************************************/
-tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::configInverseChains_()
-{
-  SceneGraph::Ptr iscene_sg = loadSceneGraphFromURDF_(INTERACTIVE_SCENE_DESC_PARAM);
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "fridge_0001",
-    "fridge_0001_dof_rootd_Aa002_r"
-  );
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "bottle",
-    "bottle_link_0"
-  );
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "cabinet_45290_2_base",
-    "cabinet_45290_2_link_0"
-  );
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "door_8966_base",
-    "door_8966_link_2"
-  );
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "dishwasher_12065",
-    "dishwasher_12065_link_0"
-  );
-
-  iscene_sg = inverseEnvChain_(
-    iscene_sg,
-    "cabinet_44781",
-    "link_1"
-  );
-
-  updateInvertedEnv_(iscene_sg);
-
-  return iscene_sg;
-}
-
+// /*******************************************************************
+//  * Configurate Inserve Kinematics Chains
+//  * 
+//  * Inserve the chain of the manipulated object
+//  ******************************************************************/
 TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(const std::vector<InverseChainsInfo> &inverse_chains)
 {
   SceneGraph::Ptr iscene_sg = loadSceneGraphFromURDF_(INTERACTIVE_SCENE_DESC_PARAM);
+
   for(const auto& chain : inverse_chains)
   {
-    ROS_INFO("[%s]inversing chain, origin root: %s, destination root: %s",
+    ROS_INFO("[%s][Debug]inversing chain, origin root: %s, destination root: %s",
              __func__, chain.ori_root_link.c_str(), 
              chain.dst_root_link.c_str());
+
+    
     iscene_sg = inverseEnvChain_(iscene_sg, chain.ori_root_link, chain.dst_root_link);
+    ROS_INFO("root has changed: %s", iscene_sg->getLinkChildrenNames(chain.dst_root_link).size() > 0 ? "yes" : "no");
   }
 
   updateInvertedEnv_(iscene_sg);
 
   return iscene_sg;
 }
-/*****************************************************************8
+/*****************************************************************
  * Inserve a kinematic chain inside the Environment
  * 
  * After inserving the kinematic chain, the original source node
@@ -375,7 +231,7 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(const std::vector<Inve
 SceneGraph::Ptr UrdfSceneEnv::inverseEnvChain_(SceneGraph::ConstPtr sg, std::string src, std::string dst)
 {
   // #todo
-  DOUT("inverse chain: `" << src << "`, `" << dst << "`");
+  DOUT("inverse chain: `" << src << "` -----> `" << dst << "`");
 
   SceneGraph::Ptr inv_sg = inverseEnvChainHelper_(sg, src, dst);
 
@@ -394,16 +250,17 @@ SceneGraph::Ptr UrdfSceneEnv::inverseEnvChain_(SceneGraph::ConstPtr sg, std::str
  */
 tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(SceneGraph::ConstPtr sg, std::string src, std::string dst)
 {
-  DOUT("inverting link `" << src << "` and `" << dst << "`");
+  DOUT("[" << __func__ << "]inverting link `" << src << "` and `" << dst << "`");
 
-  std::cout <<  "\tsg.name: " << sg->getName() << ", sg.root: " << sg->getRoot() << std::endl; 
   SceneGraph::Ptr tmp_sg = deepcopySceneGraph(sg);
   std::string src_parent_name = getLinkParentName_(sg, src);
   Joint::Ptr src_parent_joint = getLinkParentJoint_(sg, src);
 
+
   // find a path from `src` link to `dst` link
-  // path.second: return JSON-type jonit_name list
+  // path.second: return JSON-type joint_name list
   vector<string> path = findPath(sg, src_parent_name, dst);
+  
   
   // new_tip location in the global world frame
   Eigen::Isometry3d tip_root_transform;
@@ -415,10 +272,9 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
   Eigen::Isometry3d prev_old_joint_tf_inv;
   prev_old_joint_tf_inv.setIdentity();
 
-
   // each iteractor `it` is a string that describes a joint name
   reverse(path.begin(), path.end());
-  ROS_INFO("[%s]path size: %d", __func__, path.size());
+
   for(auto &it : path)
   {
     Joint::ConstPtr sg_joint = sg->getJoint(it);
@@ -426,8 +282,10 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
     {
       // new_tip location in the global world frame
       tip_root_transform = src_parent_joint->parent_to_joint_origin_transform * tip_root_transform;
+      ROS_INFO("[%s]link_name: %s, outbound joints:", __func__, sg_joint->child_link_name.c_str());
       for (auto& child_it : sg->getOutboundJoints(sg_joint->child_link_name))
       {
+        ROS_INFO("\t\t%s", child_it->getName().c_str());
         if(std::find(path.begin(), path.end(), child_it->getName()) == path.end())
         {
           Joint::Ptr outbound_joint = std::make_shared<Joint>(*sg->getJoint(child_it->getName()));
@@ -477,17 +335,16 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
     // Get the link that to be modified
     Link::Ptr modified_link = tmp_sg->getEditableLink(sg_joint->parent_link_name);
 
-    ROS_INFO("[%s]check modified_link: %s", __func__, modified_link ? "ok" : "bad");
     // reverse inertial transform
     if (nullptr == modified_link || modified_link->inertial == nullptr)
     {
       ROS_DEBUG("No inertial info");
-      return tmp_sg;
     }
     else
     {
       modified_link->inertial->origin = prev_old_joint_tf_inv * modified_link->inertial->origin;
     }
+
     // reverse visual transform
     for (auto &element : modified_link->visual)
     {
@@ -498,6 +355,7 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
       }
       element->origin = prev_old_joint_tf_inv * element->origin;
     }
+
     // reverse collision transform
     for (auto &element : modified_link->collision)
     {
@@ -508,6 +366,7 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
       }
       element->origin = prev_old_joint_tf_inv * element->origin;
     }
+
     if (new_joint->type == JointType::REVOLUTE || new_joint->type == JointType::PRISMATIC)
     {
       ROS_DEBUG("Inverting joint limit...");
@@ -518,6 +377,7 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(Scen
         new_joint->limits->lower = -old_upper_limit;
       }
     }
+
     // update new scene graph
     tmp_sg->removeJoint(it);
     tmp_sg->addJoint(*new_joint);

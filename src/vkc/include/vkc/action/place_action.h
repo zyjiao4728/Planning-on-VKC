@@ -13,17 +13,17 @@ public:
   using Ptr = std::shared_ptr<PlaceAction>;
 
   PlaceAction(
-    std::string manipulator_id, 
-    std::string detached_object_id,
-    std::vector<LinkDesiredPose> link_objectives,
-    std::vector<JointDesiredPose> joint_objectives
-    // LinkDesiredPose base_objective
-  ):
-    ActionBase(ActionType::PlaceAction, manipulator_id, "PlaceAction"), 
-    detached_object_id_(detached_object_id),
-    link_objectives_(link_objectives),
-    joint_objectives_(joint_objectives)
-    // base_objective_(base_objective)
+      std::string manipulator_id,
+      std::string detached_object_id,
+      std::vector<LinkDesiredPose> link_objectives,
+      std::vector<JointDesiredPose> joint_objectives
+      // LinkDesiredPose base_objective
+      ) : ActionBase(ActionType::PlaceAction, manipulator_id, "PlaceAction"),
+          detached_object_id_(detached_object_id),
+          link_objectives_(link_objectives),
+          joint_objectives_(joint_objectives),
+          is_rigid_object_(true)
+  // base_objective_(base_objective)
   {
   }
 
@@ -102,6 +102,7 @@ public:
         << "action: PlaceAction" << std::endl
         << "detached_link: " << act.getDetachedObject() << std::endl
         << "manipulator: " << act.getManipulatorID() << std::endl
+        << "object type: " << (act.isRigidObject() ? "rigid" : "articulate") << std::endl
         << "joint objectives: " << std::endl
         << act.getJointObjectives() << std::endl
         << "link target_pose: " << std::endl

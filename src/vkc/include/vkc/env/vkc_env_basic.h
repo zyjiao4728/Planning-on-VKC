@@ -66,24 +66,18 @@ public:
   std::string updatePlotEnv(const std::vector<std::string>& joint_names, const Eigen::VectorXd& joint_states, ActionBase::Ptr action);
 
   std::string getEndEffectorLink();
-
-  
-
   
 
 protected:
   ros::NodeHandle nh_;
   bool plotting_; /**< @brief Enable plotting so data is published for rviz if available */
   bool rviz_;     /**< @brief Enable rviz updating */
-  
-  std::unordered_map<std::string, double> home_pose_; /**< @brief Home pose of robot model */
-
   unsigned long n_past_revisions_;
+  std::unordered_map<std::string, double> home_pose_; /**< @brief Home pose of robot model */
   vkc::ConstructVKC::Ptr tesseract_;                  /**< @brief Tesseract Manager Class */
 
   unsigned long n_past_plot_revisions_;
   vkc::ConstructVKC::Ptr plot_tesseract_;                  /**< @brief Tesseract Manager Class */
-
   ros::ServiceClient modify_env_rviz_;                /**< @brief Service for modifying tesseract environment in rviz */
   ros::ServiceClient get_env_changes_rviz_;           /**< @brief Get the environment changes from rviz */
   // current end effector link of the whole body, which could be changed over time
@@ -127,7 +121,6 @@ protected:
   );
 
   bool isGroupExist(std::string group_id);
-
 
   void attachObject(std::string attach_location_name, vkc::ConstructVKC::Ptr tesseract, Eigen::Isometry3d* tf = nullptr);
 

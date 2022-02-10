@@ -70,8 +70,8 @@ public:
              const std::string &name)
       : action_type_(action_type),
         manipulator_id_(manipulator_id),
-        init_traj_required_(false), // initial trajectory for this action is required,  added: wanglei@bigai.ai, time: 2021-08-27
-        name_(name) // to print action's name easily,  added: wanglei@bigai.ai, time: 2021-10-22 
+        name_(name), // to print action's name easily,  added: wanglei@bigai.ai, time: 2021-10-22 
+        init_traj_required_(false) // initial trajectory for this action is required,  added: wanglei@bigai.ai, time: 2021-08-27
   {
   }
 
@@ -112,6 +112,8 @@ public:
   {
     init_traj_ = init_traj;
     init_traj_required_ = true;
+
+    return  true;
   }
 
   const VKCTraj& getInitTraj()const 

@@ -3,8 +3,9 @@
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
   <!-- The name of the parameter under which the URDF is loaded -->
   <arg name="env_description" default="env_description"/>
+  <!-- end_effector_link's value depends on the value of arg has_gripper. if has_gripper is true, end_effector_link must be gripper_palm -->
+  <!-- <arg name="end_effector_link" default="gripper_palm"/> -->
   <arg name="end_effector_link" default="ur_arm_ee_link"/>
-  <!-- <arg name="end_effector_link" default="r_gripper_palm_link"/> -->
 
   <arg name="plotting" default="true"/>
   <arg name="rviz" default="true"/>
@@ -16,9 +17,10 @@
   <arg name="husky_locx" default="0.0"/>
   <arg name="husky_locy" default="0.0"/>
   <arg name="husky_orient" default="0.0"/>
+  <arg name="has_gripper" default="false"/>
 
   <!-- Load universal environment description format (URDF) -->
-  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/env.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient)" />
+  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/env.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) has_gripper:=$(arg has_gripper)" />
 
   <!-- The semantic description that corresponds to the URDF -->
   <param name="$(arg env_description)_semantic" textfile="$(find env)/config/env.srdf" />
@@ -39,5 +41,5 @@
   </node>
 
   <!-- Launch visualization -->
-  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vkc_example_arena_env_rviz" args="-d $(find vkc_example)/config/env.rviz" output="screen"  />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vkc_example_arena_env_rviz" args="-d $(find vkc_example)/config/env.rviz" output="screen"/>
 </launch>

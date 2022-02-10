@@ -94,7 +94,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
         int tries = 0;
         bool converged = false;
-        while (!converged && tries < 1)
+        while (!converged && tries < 5)
         {
             TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
 
@@ -111,7 +111,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
                 }
             }
 
-            // ROS_WARN("solve problem has tried %d times", tries);
+            ROS_WARN("[%s]tried %d times to solve problem", __func__, tries);
             // if (rviz_enabled)
             // {
             //     ROS_WARN("Created optimization problem. Press <Enter> to start optimization");

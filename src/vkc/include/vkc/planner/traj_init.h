@@ -48,7 +48,7 @@ namespace vkc
 
   trajopt::TrajArray initTrajectory(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
                                     std::vector<JointDesiredPose> &joint_objectives, MapInfo map,
-                                    trajopt::TrajArray &init_traj, int n_steps);
+                                    trajopt::TrajArray &init_traj, int n_steps, const std::string& robot);
 
   std::vector<double> initIK(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
                              std::vector<JointDesiredPose> &joint_objectives, MapInfo map, int n_steps);

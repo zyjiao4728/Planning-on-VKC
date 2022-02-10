@@ -88,12 +88,12 @@ private:
    *    parsed scene
    */
   tesseract_scene_graph::SceneGraph::Ptr loadSceneGraphFromURDF_(const std::string &scene_description);
-  /*****************************************************************8
-   * Configurate AttachLocations in the URDF scene
-   * 
-   * Add AttachLocations in to the UrdfSceneEnv
-   */
-  void configAttachLocations_();
+  // /*****************************************************************8
+  //  * Configurate AttachLocations in the URDF scene
+  //  * 
+  //  * Add AttachLocations in to the UrdfSceneEnv
+  //  */
+  // void configAttachLocations_();
 
   /*****************************************************************8
    * Configurate AttachLocations in the URDF scene
@@ -102,12 +102,12 @@ private:
    */
   void configAttachLocations_(const AttachObjectInfos &attaches);
 
-  /*******************************************************************
-   * Configurate Inserve Kinematics Chains
-   * 
-   * Inserve the chain of the manipulated object
-   ******************************************************************/
-  tesseract_scene_graph::SceneGraph::Ptr configInverseChains_();
+  // /*******************************************************************
+  //  * Configurate Inserve Kinematics Chains
+  //  * 
+  //  * Inserve the chain of the manipulated object
+  //  ******************************************************************/
+  // tesseract_scene_graph::SceneGraph::Ptr configInverseChains_();
 
   /*******************************************************************
    * Configurate Inserve Kinematics Chains
@@ -164,7 +164,8 @@ private:
 
 private:
   int steps_;
-  AttachObjectInfos attaches_for_reset_;
+  AttachObjectInfos attaches_;
+  InverseChainsInfos inverse_chains_;
 };
 
 }  // namespace vkc

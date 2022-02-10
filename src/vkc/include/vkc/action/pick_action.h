@@ -51,9 +51,9 @@ public:
   friend std::ostream &operator<<(std::ostream &oss, PickAction &act)
   {
     oss << ">>>" << std::endl
-        << "action: PickAction" << std::endl
-        << "manipulator: " << act.getManipulatorID() << std::endl
-        << "attached_link: " << act.getAttachedObject() << std::endl;
+        << "\taction: PickAction" << std::endl
+        << "\tmanipulator: " << act.getManipulatorID() << std::endl
+        << "\tattached_link: " << act.getAttachedObject();
 
     return oss;
   }

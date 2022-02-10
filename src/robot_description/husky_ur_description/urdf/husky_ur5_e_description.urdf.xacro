@@ -3,6 +3,9 @@
 
   <xacro:include filename="$(find ur_e_description)/urdf/ur5e.urdf.xacro" />
   <xacro:include filename="$(find husky_description)/urdf/husky.urdf.xacro" />
+  <!-- gripper -->
+  <xacro:include filename="$(find robotiq_3f_gripper_visualization)/cfg/robotiq-3f-gripper_articulated_macro.xacro" />
+
 
   <joint name="arm_mount_joint" type="fixed">
     <parent link="top_plate_link" />
@@ -11,4 +14,5 @@
   </joint>
 
   <xacro:ur5e_robot prefix="ur_arm_" joint_limited="true"/>
+ 
 </robot>

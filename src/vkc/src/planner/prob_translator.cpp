@@ -227,7 +227,8 @@ namespace vkc
     auto inv_kin_solver = inv_kin_mgr->getInvKinematicSolver(manipulator);
     if (inv_kin_solver)
     {
-      ROS_INFO("[%s]try to get a collision free waypoint, ik solver name: %s",__func__, inv_kin_solver->getSolverName().c_str());
+      ROS_INFO("[%s]it will try %d times to get a collision free waypoint, ik solver name: %s",
+               __func__, inv_attp_max_, inv_kin_solver->getSolverName().c_str());
 
       solutions.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());
       seed.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());
@@ -248,6 +249,8 @@ namespace vkc
 
       while (attempts < inv_attp_max_)
       {
+        ROS_WARN("[%s]%d times try to get a collision free waypoint",
+               __func__, attempts);
         // calculate IK and make sure the solution satisfy joint limits
         if (inverseKinematics(inv_kin_solver, solutions, pose, seed) && checkJointLimits(solutions, joint_limits))
         {
@@ -268,7 +271,7 @@ namespace vkc
           }
           else
           {
-            ROS_INFO("[%s]the solution results in at least one collision: %s <--------> %s",
+            ROS_INFO("[%s]the solution results in at least one collision:\n\t%s <--------> %s",
               __func__, collisions.begin()->second[0].link_names[0].c_str(), 
               collisions.begin()->second[0].link_names[1].c_str());
           }
@@ -320,7 +323,7 @@ namespace vkc
     {
       if(solution[i] < limits(i, 0) || solution[i] > limits(i, 1))
       {
-        ROS_INFO("[%s]joint limits violation, joint %d limit: [%f, %f], current value: %f",
+        ROS_INFO("[%s]joint %d exceeds limits, expected: [%f, %f], actual: %f",
                  __func__, i + 1, limits(i, 0), limits(i, 1), solution[i]);
         return false;
       }
@@ -340,7 +343,7 @@ namespace vkc
     // extract pose information
     BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
     Eigen::Isometry3d target_pos = attach_location_ptr->world_joint_origin_transform;
-
+    
 
     this->l_obj = {LinkDesiredPose(env.getEndEffectorLink(), target_pos)};
     this->j_obj.clear();
@@ -354,11 +357,6 @@ namespace vkc
     ROS_INFO("Translating Place Problem");
 
     setupParams(env, act);
-    ROS_INFO("[%s]link_names: ", __func__);
-    for(auto& link : kin->getLinkNames())
-    {
-      std::cout << "\t" << link.c_str() << std::endl;
-    }
     
     this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
     this->coi_->setAdjacencyMap();

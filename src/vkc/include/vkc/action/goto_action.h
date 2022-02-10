@@ -41,7 +41,7 @@ public:
   friend std::ostream &operator<<(std::ostream &oss, GotoAction &act)
   {
     oss << ">>>" << std::endl
-        << "action: GtoAction" << std::endl
+        << "action: GotoAction" << std::endl
         << "manipulator: " << act.getManipulatorID() << std::endl
         << "joint objectives: " << std::endl
         << act.getLinkObjectives() << std::endl
