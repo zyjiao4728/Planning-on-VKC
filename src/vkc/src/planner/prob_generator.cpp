@@ -660,9 +660,9 @@ void ProbGenerator::addCollisionTerm(ProblemConstructionInfo &pci, double margin
   std::shared_ptr<CollisionTermInfo> collision = std::shared_ptr<CollisionTermInfo>(new CollisionTermInfo);
   collision->name = "collision";
   collision->term_type = TT_CNT;
-  collision->continuous = false;
+  collision->continuous = true;
   collision->first_step = 0;
-  collision->last_step = pci.basic_info.n_steps - 1;
+  collision->last_step = pci.basic_info.n_steps - 2;
   // collision->gap = 1;
   collision->info = createSafetyMarginDataVector(pci.basic_info.n_steps, margin, coeff);
   pci.cnt_infos.push_back(collision);

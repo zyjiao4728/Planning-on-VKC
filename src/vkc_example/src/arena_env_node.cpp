@@ -94,7 +94,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
         int tries = 0;
         bool converged = false;
-        while (!converged && tries < 5)
+        while (!converged && tries++ < 5)
         {
             TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
 
@@ -131,9 +131,6 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
         }
 
         
-        // record planning result
-        tesseract_common::JointTrajectory joint_traj{response.joint_names, response.trajectory}; 
-        joint_trajs.push_back(joint_traj);
 
         // refine the orientation of the move base
         tesseract_common::TrajArray refined_traj =
@@ -142,6 +139,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
         //std::cout << "Refined traj:" << std::endl;
         //std::cout << refined_traj << std::endl;
+
+        // record planning result
+        tesseract_common::JointTrajectory joint_traj{response.joint_names, refined_traj}; 
+        joint_trajs.push_back(joint_traj);
 
         // plot current `action` result
          plotter->plotTrajectory(response.joint_names, refined_traj);
@@ -155,6 +156,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
 
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
     ros::init(argc, argv, "open_door_env_node");
     ros::NodeHandle pnh("~");
     ros::NodeHandle nh;

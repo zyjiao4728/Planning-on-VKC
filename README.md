@@ -65,26 +65,21 @@ The demo shows how a robot tries to pick things with a tool and operates articul
 source <path-to-src>/devel/setup.bash
 roslaunch vkc_example arena_env.launch
 ```
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_pick_stick.gif)
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_move_ball_with_stick.gif)
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_open_cabinet_door.gif)
+![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_pick_stick.gif)   ![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_move_ball_with_stick.gif)    ![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_open_cabinet_door.gif)
 #### 2.2.2 Example of loading scene URDF with build-in module:
 The demo shows vkc being able to modify scene graph after loading it from urdf to iverse the kinematics chain, and plan a motion task basing on the new scene graph.
 ``` bash
 source <path-to-src>/devel/setup.bash
 roslaunch vkc_example load_vkc.launch
 ```
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_urdf_pick_bottle_with_gripper.gif)
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_urdf_move_bottle_with_gripper.gif)
+![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_urdf_pick_bottle_with_gripper.gif)    ![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_urdf_move_bottle_with_gripper.gif)
 #### 2.2.2 Example of big task planning for complex tasks:
 The demo provides as many as five scenarios of motion planning tasks, and they shows different abilities of motion planning to finish one sub-task. Using tool-like objects, containers, as well as clear objects lies on the moving path are the main idea of the demo wants to convey.  Without modifying the source code and recompile the project, it is still possible switch among demo scenarios by changing the value of arg demo_index in the launch file vkc_big_task.launch. Comments are there to help you make decision. 
 ``` bash
 source <path-to-src>/devel/setup.bash
 roslaunch vkc_example vkc_big_task.launch
 ```
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_cup_with_plate.gif)
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_all_cups_with_plate_into_cabinet.gif)
-![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_chair_away_from_path_way.gif)
+![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_cup_with_plate.gif)    ![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_all_cups_with_plate_into_cabinet.gif)    ![image](https://github.com/zyjiao4728/VKC-Demo/blob/tamp_dev/src/pictures/vkc_big_task_move_chair_away_from_path_way.gif)
 ## 3. Trouble Shooting
 
 ### 3.1 Trajopt build test error:

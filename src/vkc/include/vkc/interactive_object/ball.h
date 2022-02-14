@@ -27,7 +27,7 @@ public:
         poses_.emplace("loc_under_table1", std::vector<double>(link_init_pose_, link_init_pose_ + sizeof(link_init_pose_) / sizeof(link_init_pose_[0])));
 
         // set default fetch_pose, where the ball will be placed after feteched from the under of the table
-        double link_fetch_pose_[7]{-1, 1.5, 0.1, 1.0, 0.0, 0.0, 0.0}; // 0~2: xyz  3~6: quateraion
+        double link_fetch_pose_[7]{-1, 1.5, 0.1, 0, 0.0, 0.0, 1.0}; // 0~2: xyz  3~6: quateraion
         poses_.emplace("loc_on_ground", std::vector<double>(link_fetch_pose_, link_fetch_pose_ + sizeof(link_fetch_pose_) / sizeof(link_fetch_pose_[0])));
 
         // set default temp_place_pose, where the ball will be placed finally

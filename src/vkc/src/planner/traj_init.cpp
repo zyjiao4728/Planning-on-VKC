@@ -502,10 +502,8 @@ namespace vkc
             int idx = 0;
             std::vector<std::string> base_joints({"base_y_base_x", "base_theta_base_y"});
             std::vector<double> base_values({0, 0});
-            while (!init_base_position && idx < 100)
+            while (!init_base_position && idx++ < 100)
             {
-              std::cout << idx << " ";
-              idx += 1;
               init_base_position = true;
 
               double r = (rand() % 100) / 100.0 * 0.1;   // origional value: 0.7
@@ -552,11 +550,12 @@ namespace vkc
     }
 
     std::vector<double> nsteps_remap;
-
+    std::cout << "solution: " << std::endl;
     for (int j = 0; j < inv_kin->numJoints(); ++j)
     {
-      std::cout << sol[j] << ", ";
+      std::cout << sol[j] << " ";
     }
+    std::cout << std::endl;
 
     for (int i = 0; i < n_steps; ++i)
     {

@@ -260,7 +260,7 @@ namespace vkc
           collision_manager->setCollisionObjectsTransform(state->transforms);
 
           collisions.clear();
-          collision_manager->setContactDistanceThreshold(0.02);  // wanglei@2021-11-12
+          collision_manager->setContactDistanceThreshold(0.01);  // wanglei@2021-11-12
           collision_manager->contactTest(collisions, tesseract_collision::ContactTestType::FIRST);
 
           // collisions.size() = zero means no collisioin
