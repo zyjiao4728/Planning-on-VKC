@@ -252,7 +252,7 @@ LinkWidget::LinkWidget(VisualizationWidget* env, const tesseract_scene_graph::Li
   collision_end_node_ = env_->getCollisionNode()->createChildSceneNode();
 
   // create material for coloring links
-  color_material_ = Ogre::MaterialManager::getSingleton().create(material_name_generator.generate(), "rviz");
+  color_material_ = Ogre::MaterialManager::getSingleton().create(material_name_generator.generate(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   color_material_->setReceiveShadows(false);
   color_material_->getTechnique(0)->setLightingEnabled(true);
 
@@ -667,7 +667,7 @@ Ogre::MaterialPtr LinkWidget::getMaterialForLink(const tesseract_scene_graph::Li
     return Ogre::MaterialManager::getSingleton().getByName("RVIZ/ShadedRed");
   }
 
-  Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().create(material_name_generator.generate(), "rviz");
+  Ogre::MaterialPtr mat = Ogre::MaterialManager::getSingleton().create(material_name_generator.generate(), Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
   mat->getTechnique(0)->setLightingEnabled(true);
 
   tesseract_scene_graph::Visual::Ptr visual = nullptr;

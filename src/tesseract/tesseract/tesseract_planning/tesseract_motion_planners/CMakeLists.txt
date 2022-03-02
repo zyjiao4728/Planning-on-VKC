@@ -5,7 +5,8 @@ find_package(ompl REQUIRED)
 find_package(trajopt REQUIRED)
 find_package(tesseract REQUIRED)
 find_package(console_bridge REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost COMPONENTS python REQUIRED)
+# find_package(Boost COMPONENTS python2.7 REQUIRED)
 
 list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
 

@@ -6,7 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   tesseract_rosutils
 )
-find_package(Boost COMPONENTS system REQUIRED)
+find_package(Boost COMPONENTS system python REQUIRED)
 find_package(console_bridge REQUIRED)
 find_package(tesseract_scene_graph REQUIRED)
 find_package(tesseract_collision REQUIRED)

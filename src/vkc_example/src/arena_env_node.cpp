@@ -148,6 +148,9 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
          plotter->plotTrajectory(response.joint_names, refined_traj);
 
 
+        ROS_INFO("[%s]press Enter key to continue...", __func__);
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
         // // update env according to the action
         env.updateEnv(response.joint_names, response.trajectory.bottomRows(1).transpose(), action);
         plotter->clear();
