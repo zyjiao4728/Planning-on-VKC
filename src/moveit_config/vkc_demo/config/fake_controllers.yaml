@@ -1,0 +1,15 @@
+controller_list:
+  - name: fake_vkc_controller
+    joints:
+      - base_y_base_x
+      - base_theta_base_y
+      - base_link_base_theta
+      - ur_arm_shoulder_pan_joint
+      - ur_arm_shoulder_lift_joint
+      - ur_arm_elbow_joint
+      - ur_arm_wrist_1_joint
+      - ur_arm_wrist_2_joint
+      - ur_arm_wrist_3_joint
+initial:  # Define initial robot poses.
+  - group: vkc
+    pose: home

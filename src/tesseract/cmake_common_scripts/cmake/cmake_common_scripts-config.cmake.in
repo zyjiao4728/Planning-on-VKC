@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+set(@PROJECT_NAME@_FOUND ON)
+
+include("${CMAKE_CURRENT_LIST_DIR}/cmake_tools.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/code_coverage.cmake")

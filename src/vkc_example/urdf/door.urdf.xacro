@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="door" params="prefix door_width attach_to_world loc_x loc_y orientation">
+
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+    <xacro:property name="handle_height" value="1.00" />
+    <xacro:property name="handle_length" value="0.14" />
+
+    <xacro:if value="${attach_to_world}">
+      <joint name="${prefix}world" type="fixed">
+        <child link="${prefix}base_link" />
+        <parent link="world" />
+        <origin xyz="${loc_x} ${loc_y} 0.0" rpy="0.0 0.0 ${orientation}"/>
+      </joint>
+    </xacro:if>
+
+    <link name="${prefix}base_link">
+      <visual>
+        <origin xyz="0 0 1.05" rpy="0 0 0" />
+        <geometry name="${prefix}base_geom">
+          <box size="0.1 0.15 2.1" />
+        </geometry>
+        <material name="${prefix}base_color">
+          <color rgba="0.4 0.2 0.0 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+    <joint name="${prefix}door_joint" type="revolute">
+      <origin xyz="0 0 0.05" rpy="0 0 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="${-M_PI/2.0}" upper="${M_PI/2.0}" effort="1000" velocity="10" />
+      <safety_controller soft_lower_limit="${-M_PI+0.1}" soft_upper_limit="${M_PI-0.1}" k_position="100.0" k_velocity="10.0" />
+      <dynamics damping="100" friction="0.0" />
+
+      <parent link="${prefix}base_link" />
+      <child link="${prefix}door_link" />
+    </joint>
+
+    <link name="${prefix}door_link">
+      <inertial >
+        <mass value="30" />
+        <com xyz="0.0 ${-door_width/2.0} 1.0" />
+        <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="3.0" />
+      </inertial>
+      <visual >
+        <origin xyz="0.0 ${-door_width/2.0} 1.0" rpy="0 0 ${M_PI}" />
+        <geometry name="${prefix}sholder_roll_mesh_file">
+          <box size="0.1 ${door_width} 2.0" />
+        </geometry>
+        <material name="${prefix}door_color">
+          <color rgba="0.4 0.2 0.0 1.0"/>
+        </material>
+      </visual>
+      <collision >
+        <origin xyz="0.0 ${-door_width/2.0} 1.0" rpy="0 0 ${M_PI}" />
+        <geometry name="${prefix}door_collision_geom">
+          <box size="0.1 ${door_width} 2.0" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}handle_joint" type="revolute">
+      <axis xyz="1 0 0" />
+      <origin xyz="-0.11 ${-door_width+0.2} ${handle_height-0.05}" rpy="${0*M_PI/2.0} 0 0" />
+      <limit lower="${-M_PI/1.0}" upper="${M_PI/1.0}" effort="1000" velocity="10" />
+      <safety_controller soft_lower_limit="${-M_PI/4+0.01}" soft_upper_limit="${M_PI/4-0.1}" k_position="100.0" k_velocity="10.0" />
+      <dynamics damping="10" friction="0.0" />
+      <parent link="${prefix}door_link" />
+      <child link="${prefix}handle_link" />
+    </joint>
+    <link name="${prefix}handle_link">
+      <inertial >
+        <mass value="0.3" />
+        <com xyz="0.0 ${handle_length/2-0.01} 0.0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+      </inertial>
+      <visual >
+        <origin xyz="0.0 ${handle_length/2-0.01} 0.0" rpy="${1*M_PI/2} 0 0" />
+        <geometry name="${prefix}sholder_roll_mesh_file">
+          <cylinder radius="0.013" length="${handle_length}" />
+        </geometry>
+        <material name="${prefix}handle_color">
+          <color rgba="0.9 0.9 0.9 1.0"/>
+        </material>
+      </visual>
+      <collision >
+        <origin xyz="0.0 ${handle_length/2-0.01} 0.0" rpy="${1*M_PI/2} 0 0" />
+        <geometry name="${prefix}handle_collision_geom">
+          <cylinder radius="0.013" length="${handle_length}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}handle1_joint" type="fixed">
+      <parent link="${prefix}handle_link" />
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <child link="${prefix}handle1_link" />
+    </joint>
+    <link name="${prefix}handle1_link">
+      <inertial >
+        <mass value="0.1" />
+        <com xyz="0.0 0.0 0.0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.001" />
+      </inertial>
+      <visual >
+        <origin xyz="0.025 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}sholder_roll_mesh_file">
+          <cylinder radius="0.01" length="0.05" />
+        </geometry>
+        <material name="${prefix}handle1_color">
+          <color rgba="0.9 0.9 0.9 1.0"/>
+        </material>
+      </visual>
+      <collision >
+        <origin xyz="0.025 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}handle1_collision_geom">
+          <cylinder radius="0.01" length="0.05" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}handle2_joint" type="fixed">
+      <parent link="${prefix}handle_link" />
+      <origin xyz="0.0 0.12 0" rpy="0 0 0" />
+      <child link="${prefix}handle2_link" />
+    </joint>
+    <link name="${prefix}handle2_link">
+      <inertial >
+        <mass value="0.1" />
+        <com xyz="0.0 0.0 0.0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.001" />
+      </inertial>
+      <visual >
+        <origin xyz="0.025 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}sholder_roll_mesh_file">
+          <cylinder radius="0.01" length="0.05" />
+        </geometry>
+        <material name="${prefix}handle2_color">
+          <color rgba="0.9 0.9 0.9 1.0"/>
+        </material>
+      </visual>
+      <collision >
+        <origin xyz="0.025 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}handle2_collision_geom">
+          <cylinder radius="0.01" length="0.05" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}handle3_joint" type="fixed">
+      <parent link="${prefix}handle_link" />
+      <origin xyz="0.0 0.0 0" rpy="0 0 0" />
+      <child link="${prefix}handle3_link" />
+    </joint>
+    <link name="${prefix}handle3_link">
+      <inertial >
+        <mass value="0.1" />
+        <com xyz="0.0 0.0 0.0" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.001" />
+      </inertial>
+      <visual >
+        <origin xyz="0.06 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}sholder_roll_mesh_file">
+          <cylinder radius="0.03" length="0.02" />
+        </geometry>
+        <material name="${prefix}handle3_color">
+          <color rgba="0.9 0.9 0.9 1.0"/>
+        </material>
+      </visual>
+      <collision >
+        <origin xyz="0.06 0.0 0.0" rpy="0 ${1*M_PI/2.0} 0" />
+        <geometry name="${prefix}handle3_collision_geom">
+          <cylinder radius="0.03" length="0.02" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+</robot>

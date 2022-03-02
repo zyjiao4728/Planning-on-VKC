@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="wall" params="prefix wall_width wall_length wall_height attach_to_world loc_x loc_y orientation">
+
+    <xacro:if value="${attach_to_world}">
+      <joint name="${prefix}world" type="fixed">
+        <child link="${prefix}base_link" />
+        <parent link="world" />
+        <origin xyz="${loc_x} ${loc_y} 0.0" rpy="0.0 0.0 ${orientation}"/>
+      </joint>
+    </xacro:if>
+
+    <link name="${prefix}base_link"/>
+    <joint name="${prefix}wall_joint" type="fixed">
+      <parent link="${prefix}base_link" />
+      <origin xyz="0.0 0.0 ${wall_height/2.0}" rpy="0 0 0" />
+      <child link="${prefix}wall_link" />
+    </joint>
+    <link name="${prefix}wall_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry name="${prefix}wall1_visual_geom">
+          <box size="${wall_width} ${wall_length} ${wall_height}" />
+        </geometry>
+        <material name="${prefix}wall1_color">
+          <color rgba="0.99 0.99 0.99 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0.0 0.0 0.0" />
+        <geometry name="${prefix}wall1_collision_geom">
+          <box size="${wall_width} ${wall_length} ${wall_height}" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+</robot>

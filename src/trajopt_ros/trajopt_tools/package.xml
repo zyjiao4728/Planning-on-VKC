@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>trajopt_tools</name>
+  <version>0.1.0</version>
+  <description>This package contains tool useful to trajopt like ConvexDecomposition.</description>
+  <maintainer email="Armstrong@todo.todo">Levi Armstrong</maintainer>
+  <license>Apache 2.0</license>
+  <author >Levi Armstrong</author>
+
+  <depend>vhacd</depend>
+  <depend>bullet3</depend>
+  <depend>trajopt_utils</depend>
+  <depend>libconsole-bridge-dev</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>

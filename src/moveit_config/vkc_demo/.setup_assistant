@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: vkc_example
+    relative_path: env/vkc_demo.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/scene.srdf
+  CONFIG:
+    author_name: zyjiao
+    author_email: zyjiao@ucla.edu
+    generated_timestamp: 1644287721

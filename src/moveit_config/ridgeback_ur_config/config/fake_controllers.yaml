@@ -1,0 +1,31 @@
+controller_list:
+  - name: fake_vkc_controller
+    type: $(arg execution_type)
+    joints:
+      - base_y_base_x
+      - base_theta_base_y
+      - base_link_base_theta
+      - right_arm_shoulder_pan_joint
+      - right_arm_shoulder_lift_joint
+      - right_arm_elbow_joint
+      - right_arm_wrist_1_joint
+      - right_arm_wrist_2_joint
+      - right_arm_wrist_3_joint
+  - name: fake_base_controller
+    type: $(arg execution_type)
+    joints:
+      - base_y_base_x
+      - base_theta_base_y
+      - base_link_base_theta
+  - name: fake_arm_controller
+    type: $(arg execution_type)
+    joints:
+      - right_arm_shoulder_pan_joint
+      - right_arm_shoulder_lift_joint
+      - right_arm_elbow_joint
+      - right_arm_wrist_1_joint
+      - right_arm_wrist_2_joint
+      - right_arm_wrist_3_joint
+initial:  # Define initial robot poses.
+  - group: vkc
+    pose: home

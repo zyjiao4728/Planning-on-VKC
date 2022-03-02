@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="chair" params="prefix attach_to_world loc_x loc_y orientation">
+
+    <xacro:property name="chair_height" value="0.45" />
+    <xacro:property name="chair_width" value="0.4" />
+    <xacro:property name="chair_depth" value="0.4" />
+    <xacro:property name="chair_y" value="0.0" />
+    <xacro:property name="chair_z" value="0.0" />
+    <xacro:property name="rest_height" value="0.5" />
+
+    <xacro:property name="chair_top_thickness" value="0.02"/>
+
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+
+    <xacro:if value="${attach_to_world}">
+      <joint name="${prefix}world" type="fixed">
+        <child link="${prefix}base_link" />
+        <parent link="world" />
+        <origin xyz="${loc_x} ${loc_y} 0.0" rpy="0.0 0.0 ${orientation}"/>
+      </joint>
+    </xacro:if>
+
+    <link name="${prefix}base_link">
+      <inertial>
+        <mass value="5.0" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+      </inertial>
+      <visual>
+        <origin xyz="0.0 0.0 ${chair_z+chair_height-chair_top_thickness/2}" />
+        <geometry>
+          <box size="${chair_width} ${chair_depth} ${chair_top_thickness}" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 ${chair_z+chair_height-chair_top_thickness/2}" />
+        <geometry>
+          <box size="${chair_width} ${chair_depth} ${chair_top_thickness}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <link name="${prefix}chair_rest_link">
+      <inertial>
+        <mass value="5.0" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+      </inertial>
+      <visual>
+        <origin xyz="0.0 0.0 0.0" />
+        <geometry>
+          <box size="${chair_width} ${chair_top_thickness} ${rest_height}" />
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0.0 0.0 0.0" />
+        <geometry>
+          <box size="${chair_width} ${chair_top_thickness} ${rest_height}" />
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="${prefix}chair_rest_joint" type="fixed">
+      <parent link="${prefix}base_link" />
+      <origin xyz="0.0 ${chair_depth/2} ${chair_z+chair_height+rest_height/2}" rpy="0 0 0" />
+      <child link="${prefix}chair_rest_link" />
+    </joint>
+
+    <xacro:macro name="legs" params="suffix parent pos1 pos2">
+
+      <link name="${prefix}leg_${suffix}_link">
+        <inertial>
+          <origin xyz="0 0 0" />
+          <mass value="3" />
+          <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+        </inertial>
+
+        <visual>
+          <origin xyz="0 0 0" />
+          <geometry>
+            <box size="0.055 0.055 ${chair_height-chair_top_thickness}" />
+          </geometry>
+        </visual>
+
+        <collision>
+          <origin xyz="0 0 0" />
+          <geometry>
+            <box size="0.055 0.055 ${chair_height-chair_top_thickness}" />
+          </geometry>
+        </collision>
+      </link>
+
+      <joint name="${prefix}leg_${suffix}_joint" type="fixed">
+        <parent link="${prefix}base_link" />
+        <origin xyz="${0.0+pos1*(chair_width/2-0.0375)} ${chair_y+pos2*(chair_depth/2-0.0375)} ${chair_z+chair_height/2}" rpy="0 0 0" />
+        <child link="${prefix}leg_${suffix}_link" />
+      </joint>
+
+
+    </xacro:macro>
+    <legs suffix="left_front" parent="${prefix}base_link" pos1="1" pos2="1"/>
+    <legs suffix="left_back" parent="${prefix}base_link" pos1="-1" pos2="1"/>
+    <legs suffix="right_front" parent="${prefix}base_link" pos1="1" pos2="-1"/>
+    <legs suffix="right_back" parent="${prefix}base_link" pos1="-1" pos2="-1"/>
+
+  </xacro:macro>
+
+
+</robot>

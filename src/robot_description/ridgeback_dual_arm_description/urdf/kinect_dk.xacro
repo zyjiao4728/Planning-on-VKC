@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kinect_dk">
+
+  <xacro:arg name="dk_tf_prefix" default=""/>
+
+  <material name="grey">
+    <color rgba="0.6 0.6 0.6 1"/>
+  </material>
+
+  <xacro:macro name="kinect_dk" params="parent *origin">
+    <link name="$(arg dk_tf_prefix)camera_mount"/>
+    <joint name="$(arg dk_tf_prefix)camera_mount_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="$(arg dk_tf_prefix)camera_mount"/>
+      <xacro:insert_block name="origin"/>
+    </joint>
+
+    <link name="$(arg dk_tf_prefix)camera_body">
+      <visual>
+        <origin xyz="0.0 0.0 0.0"/>
+        <geometry>
+          <box size="0.10046 0.10230 0.0260"/>
+        </geometry>
+        <material name="white"/>
+      </visual>
+    </link>
+    <joint name="$(arg dk_tf_prefix)mount_to_camera_body" type="fixed">
+      <parent link="$(arg dk_tf_prefix)camera_mount"/>
+      <child link="$(arg dk_tf_prefix)camera_body"/>
+      <origin xyz="-0.01485 0.0 0.0130" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <link name="$(arg dk_tf_prefix)camera_base">
+      <visual>
+        <origin xyz="-0.013 0.0 0.0"/>
+        <geometry>
+          <box size="0.026 0.103 0.039"/>
+        </geometry>
+        <material name="grey"/>
+      </visual>
+    </link>
+    <joint name="$(arg dk_tf_prefix)camera_body_to_base" type="fixed">
+      <parent link="$(arg dk_tf_prefix)camera_body"/>
+      <child link="$(arg dk_tf_prefix)camera_base"/>
+      <origin xyz="0.07715 0.0 -0.0065" rpy="0.0 0.0 0.0"/>
+    </joint>
+
+    <link name="$(arg dk_tf_prefix)camera_visor">
+      <visual>
+        <origin xyz="-0.0128 0.0 0.0"/>
+        <geometry>
+          <box size="0.026 0.101 0.037"/>
+        </geometry>
+        <material name="black"/>
+      </visual>
+    </link>
+    <joint name="$(arg dk_tf_prefix)camera_base_to_visor" type="fixed">
+      <parent link="$(arg dk_tf_prefix)camera_base"/>
+      <child link="$(arg dk_tf_prefix)camera_visor"/>
+      <origin xyz="0.0 0.0 0." rpy="0.0 0.0 0.0"/>
+    </joint>
+  </xacro:macro>
+
+</robot>

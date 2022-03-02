@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot name="iqr_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Include accessories -->
+  <xacro:include filename="$(find pan_tilt_description)/urdf/kinect_dk.xacro"/>
+  <xacro:include filename="$(find pan_tilt_description)/urdf/pan_tilt.urdf.xacro"/>
+
+  <link name="base_link"/>
+  <xacro:pan_tilt parent="base_link">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:pan_tilt>
+
+  <!-- Kineck DK -->
+  <xacro:kinect_dk parent="pan_tilt_surface">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:kinect_dk>
+</robot>

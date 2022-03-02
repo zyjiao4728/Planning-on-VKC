@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>descartes_samplers</name>
+  <version>0.1.0</version>
+  <description>The descartes_samplers package</description>
+
+  <author email="michael.ripperger@swri.org">Michael Ripperger</author>
+  <author email="levi.armstrong@swri.org">Levi Armstrong</author>
+  <author email="jmeyer1292@github.com">Jon Meyer</author>
+  <maintainer email="michael.ripperger@swri.org">Michael Ripperger</maintainer>
+
+  <license>Apache 2.0</license>
+  <depend>descartes_light</depend>
+  <depend>eigen</depend>
+  <build_depend>cmake_common_scripts</build_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
