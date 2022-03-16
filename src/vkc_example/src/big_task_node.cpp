@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     std::string robot{"vkc"};
 
     // Get ROS Parameters
-    pnh.param<int>("robot", nruns, nruns);
+    pnh.param<std::string>("robot", robot, robot);
     pnh.param("plotting", plotting, plotting);
     pnh.param("rviz", rviz, rviz);
     pnh.param<int>("steps", steps, steps);

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="pog_env">
+  <!-- <xacro:include filename="$(find scene_builder)/output/vkc_demo/main.xacro" /> -->
+  <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e_2f_85.urdf.xacro" />
+  <!-- <xacro:include filename="$(find scene_builder)/output/pog_env/main.xacro" /> -->
+
+  <!-- Arguments -->
+  <xacro:arg name="husky_locx" default="0.3" />
+  <xacro:arg name="husky_locy" default="-1.9" />
+  <xacro:arg name="husky_orient" default="0.0" />
+
+  <!-- Setup Environment -->
+  <link name="world" />
+  <xacro:deploy prefix="" attach_to_world="true" loc_x="$(arg husky_locx)" loc_y="$(arg husky_locy)" orientation="$(arg husky_orient)" />
+
+</robot>

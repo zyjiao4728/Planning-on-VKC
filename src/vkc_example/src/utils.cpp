@@ -78,6 +78,9 @@ void refineTrajectory(tesseract_common::TrajArray &traj)
 
     if (delta_orientation > 3.14159265359)
       delta_orientation -= 3.14159265359;
+    
+    if (delta_orientation < -3.14159265359)
+      delta_orientation += 3.14159265359;
 
     if (n_cols > 3)
     {

@@ -138,12 +138,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
               <mesh filename="package://husky_description/meshes/large_top_plate.dae" />
             </geometry>
           </visual>
-          <collision>
+          <!-- <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
               <mesh filename="package://husky_description/meshes/large_top_plate_collision.stl" />
             </geometry>
-          </collision>
+          </collision> -->
         </link>
         <!-- Attach top plate -->
         <joint name="top_plate_joint" type="fixed">
@@ -173,12 +173,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
               <mesh filename="package://husky_description/meshes/top_plate.dae" />
             </geometry>
           </visual>
-          <collision>
+          <!-- <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
               <mesh filename="package://husky_description/meshes/top_plate.dae" />
             </geometry>
-          </collision>
+          </collision> -->
         </link>
         <!-- Attach top plate -->
         <joint name="top_plate_joint" type="fixed">
