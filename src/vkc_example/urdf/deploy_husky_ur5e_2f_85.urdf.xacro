@@ -48,7 +48,7 @@
       <joint name="${prefix}world" type="fixed">
         <child link="${prefix}virtual_base_x" />
         <parent link="world" />
-        <origin xyz="${loc_x} ${loc_y} 0.20" rpy="0 0 ${orientation}" />
+        <origin xyz="${loc_x} ${loc_y} 0.145" rpy="0 0 ${orientation}" />
       </joint>
     </xacro:if>
 

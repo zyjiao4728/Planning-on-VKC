@@ -377,7 +377,7 @@ namespace vkc
                                       vkc::ConstructVKC::Ptr tesseract,
                                       unsigned long &past_revision)
   {
-    std::cout << __func__ << ": actioin" << std::endl
+    std::cout << __func__ << ": action" << std::endl
               << action << std::endl;
 
     // Set the current state to the last state of the pick trajectory

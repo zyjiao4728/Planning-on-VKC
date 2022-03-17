@@ -41,8 +41,8 @@ public:
 
     Visual::Ptr base_link_visual = std::make_shared<Visual>();
     base_link_visual->origin = Eigen::Isometry3d::Identity();
-    base_link_visual->origin.translation() += Eigen::Vector3d(0, 0, 1.05);
-    base_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(0.1, 0.15, door_height_+0.1);
+    base_link_visual->origin.translation() += Eigen::Vector3d(0, 0, 1.03);
+    base_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(0.1, 0.15, door_height_);
     material_name = base_link.getName() + "_color";
     base_link_visual->material = std::make_shared<Material>(material_name);
     base_link_visual->material->color = Eigen::Vector4d(0.4, 0.2, 0.0, 1.0);
@@ -79,7 +79,7 @@ public:
     Inertial::Ptr handle_link_inertial = std::make_shared<Inertial>();
     handle_link_inertial->mass = 0.3;
     handle_link_inertial->origin = Eigen::Isometry3d::Identity();
-    handle_link_inertial->origin.translation() += Eigen::Vector3d(0, mir_ * (handle_length_ / 2.0 - 0.01), 0.0);
+    handle_link_inertial->origin.translation() += Eigen::Vector3d(0, mir_ * (handle_length_ / 2.0), 0.0);
     handle_link_inertial->ixx = 0.01;
     handle_link_inertial->iyy = 0.01;
     handle_link_inertial->izz = 0.01;
@@ -87,7 +87,7 @@ public:
 
     Visual::Ptr handle_link_visual = std::make_shared<Visual>();
     handle_link_visual->origin = Eigen::Isometry3d::Identity();
-    handle_link_visual->origin.translation() += Eigen::Vector3d(0, mir_ * (handle_length_ / 2.0 - 0.01), 0.0);
+    handle_link_visual->origin.translation() += Eigen::Vector3d(0, mir_ * (handle_length_ / 2.0), 0.0);
     handle_link_visual->origin.linear() = Eigen::AngleAxisd(pi_ / 2, Eigen::Vector3d::UnitX()).toRotationMatrix();
     handle_link_visual->geometry = std::make_shared<tesseract_geometry::Cylinder>(0.013, handle_length_);
     material_name = handle_link.getName() + "_color";
@@ -179,12 +179,12 @@ public:
     door_joint.parent_link_name = base_link.getName();
     door_joint.child_link_name = door_link.getName();
     door_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
-    door_joint.parent_to_joint_origin_transform.translation() += Eigen::Vector3d(0, 0, 0.05);
+    door_joint.parent_to_joint_origin_transform.translation() += Eigen::Vector3d(0, 0.00, 0.0);
     door_joint.type = JointType::REVOLUTE;
     door_joint.axis = Eigen::Vector3d(0, 0, 1);
     door_joint.limits = std::make_shared<JointLimits>();
     door_joint.limits->lower = -pi_ / 2.0;
-    door_joint.limits->upper = pi_ / 2.0;
+    door_joint.limits->upper = 0;
     door_joint.limits->effort = 1000;
     door_joint.limits->velocity = 10;
     door_joint.dynamics = std::make_shared<JointDynamics>();
@@ -196,17 +196,17 @@ public:
     handle_joint.child_link_name = handle_link.getName();
     handle_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
     handle_joint.parent_to_joint_origin_transform.translation() +=
-        Eigen::Vector3d(-0.11, mir_ * (-door_width_ + 0.15), handle_height_ - 0.05);
-    handle_joint.type = JointType::REVOLUTE;
-    handle_joint.axis = Eigen::Vector3d(1, 0, 0);
-    handle_joint.limits = std::make_shared<JointLimits>();
-    handle_joint.limits->lower = -pi_/2;
-    handle_joint.limits->upper = pi_/2;
-    handle_joint.limits->effort = 1000;
-    handle_joint.limits->velocity = 10;
-    handle_joint.dynamics = std::make_shared<JointDynamics>();
-    handle_joint.dynamics->damping = 100;
-    handle_joint.dynamics->friction = 0.0;
+        Eigen::Vector3d(-0.125, mir_ * (-door_width_ + 0.08), handle_height_);
+    handle_joint.type = JointType::FIXED;
+    // handle_joint.axis = Eigen::Vector3d(1, 0, 0);
+    // handle_joint.limits = std::make_shared<JointLimits>();
+    // handle_joint.limits->lower = -pi_/2;
+    // handle_joint.limits->upper = pi_/2;
+    // handle_joint.limits->effort = 1000;
+    // handle_joint.limits->velocity = 10;
+    // handle_joint.dynamics = std::make_shared<JointDynamics>();
+    // handle_joint.dynamics->damping = 100;
+    // handle_joint.dynamics->friction = 0.0;
 
     Joint handle1_joint(object_name_ + "_handle1_joint");
     handle1_joint.parent_link_name = handle_link.getName();
@@ -230,15 +230,15 @@ public:
     link_map_[base_link.getName()] = std::make_shared<Link>(std::move(base_link));
     link_map_[door_link.getName()] = std::make_shared<Link>(std::move(door_link));
     link_map_[handle_link.getName()] = std::make_shared<Link>(std::move(handle_link));
-    link_map_[handle1_link.getName()] = std::make_shared<Link>(std::move(handle1_link));
-    link_map_[handle2_link.getName()] = std::make_shared<Link>(std::move(handle2_link));
-    link_map_[handle3_link.getName()] = std::make_shared<Link>(std::move(handle3_link));
+    // link_map_[handle1_link.getName()] = std::make_shared<Link>(std::move(handle1_link));
+    // link_map_[handle2_link.getName()] = std::make_shared<Link>(std::move(handle2_link));
+    // link_map_[handle3_link.getName()] = std::make_shared<Link>(std::move(handle3_link));
 
     joint_map_[door_joint.getName()] = std::make_shared<Joint>(std::move(door_joint));
     joint_map_[handle_joint.getName()] = std::make_shared<Joint>(std::move(handle_joint));
-    joint_map_[handle1_joint.getName()] = std::make_shared<Joint>(std::move(handle1_joint));
-    joint_map_[handle2_joint.getName()] = std::make_shared<Joint>(std::move(handle2_joint));
-    joint_map_[handle3_joint.getName()] = std::make_shared<Joint>(std::move(handle3_joint));
+    // joint_map_[handle1_joint.getName()] = std::make_shared<Joint>(std::move(handle1_joint));
+    // joint_map_[handle2_joint.getName()] = std::make_shared<Joint>(std::move(handle2_joint));
+    // joint_map_[handle3_joint.getName()] = std::make_shared<Joint>(std::move(handle3_joint));
 
     // Add an attach location
     AttachLocation attach_location("attach_" + handle_link.getName(), handle_link.getName());
@@ -286,9 +286,9 @@ public:
 
 private:
   double pi_ = 3.1415926535897931;
-  double door_height_ = 1.9;
-  double handle_height_ = door_height_/2;
-  double handle_length_ = 0.14;
+  double door_height_ = 2.06;
+  double handle_height_ = 1.0;
+  double handle_length_ = 0.10;
   double door_width_;
   std::string dir_;
   int mir_;

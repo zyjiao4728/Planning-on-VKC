@@ -146,6 +146,7 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
   // addCollisionTerm(pci, 0.01, 10);   // wanglei@bigai.ai, 2021-12-14
 
   BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
+  Eigen::Isometry3d object_world_transform = env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(attach_location_ptr->link_name_);
   Eigen::Isometry3d pick_pose_world_transform = env.getVKCEnv()->getTesseract()->getEnvironment()->getLinkTransform(attach_location_ptr->link_name_) *
                                               attach_location_ptr->local_joint_origin_transform;
 
@@ -163,6 +164,8 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
   ROS_INFO("[%s]grasp pose: %f, %f, %f, grasp posture(wxyz): %f, %f, %f, %f",
            __func__, PickPose->xyz.x(), PickPose->xyz.y(), PickPose->xyz.z(),
            PickPose->wxyz.w(), PickPose->wxyz.x(), PickPose->wxyz.y(), PickPose->wxyz.z());
+
+  ROS_INFO("[%s]object pose: %f, %f, %f",       __func__, object_world_transform.translation().x(), object_world_transform.translation().y(), object_world_transform.translation().z());
 
   std::vector<LinkDesiredPose> link_objs;
   std::vector<JointDesiredPose> joint_objs;
@@ -349,7 +352,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
   }
   else
   {
-    // if (act->RequireInitTraj())
+    if (act->RequireInitTraj())
     {
       ROS_INFO("[%s]init trajectory for rigid object.", __func__);
       pci.init_info.type = InitInfo::GIVEN_TRAJ;
