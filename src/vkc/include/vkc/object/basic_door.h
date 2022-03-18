@@ -41,7 +41,7 @@ public:
 
     Visual::Ptr base_link_visual = std::make_shared<Visual>();
     base_link_visual->origin = Eigen::Isometry3d::Identity();
-    base_link_visual->origin.translation() += Eigen::Vector3d(0, 0, 1.03);
+    base_link_visual->origin.translation() += Eigen::Vector3d(0, 0, door_height_/2);
     base_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(0.1, 0.15, door_height_);
     material_name = base_link.getName() + "_color";
     base_link_visual->material = std::make_shared<Material>(material_name);
@@ -53,7 +53,7 @@ public:
     Inertial::Ptr door_link_inertial = std::make_shared<Inertial>();
     door_link_inertial->mass = 30.0;
     door_link_inertial->origin = Eigen::Isometry3d::Identity();
-    door_link_inertial->origin.translation() += Eigen::Vector3d(0, -mir_ * door_width_ / 2.0, 1.0);
+    door_link_inertial->origin.translation() += Eigen::Vector3d(0, -mir_ * door_width_ / 2.0, door_height_/2);
     door_link_inertial->ixx = 1.0;
     door_link_inertial->iyy = 1.0;
     door_link_inertial->izz = 3.0;
@@ -61,7 +61,7 @@ public:
 
     Visual::Ptr door_link_visual = std::make_shared<Visual>();
     door_link_visual->origin = Eigen::Isometry3d::Identity();
-    door_link_visual->origin.translation() += Eigen::Vector3d(0, -mir_ * door_width_ / 2.0, 1.0);
+    door_link_visual->origin.translation() += Eigen::Vector3d(0, -mir_ * door_width_ / 2.0, door_height_/2);
     door_link_visual->origin.linear() = Eigen::AngleAxisd(pi_, Eigen::Vector3d::UnitZ()).toRotationMatrix();
     door_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(0.1, door_width_, door_height_);
     material_name = door_link.getName() + "_color";
@@ -184,7 +184,7 @@ public:
     door_joint.axis = Eigen::Vector3d(0, 0, 1);
     door_joint.limits = std::make_shared<JointLimits>();
     door_joint.limits->lower = -pi_ / 2.0;
-    door_joint.limits->upper = 0;
+    door_joint.limits->upper =  pi_ / 2.0;
     door_joint.limits->effort = 1000;
     door_joint.limits->velocity = 10;
     door_joint.dynamics = std::make_shared<JointDynamics>();
@@ -242,7 +242,7 @@ public:
 
     // Add an attach location
     AttachLocation attach_location("attach_" + handle_link.getName(), handle_link.getName());
-    attach_location.local_joint_origin_transform.translation() += Eigen::Vector3d(-0.15, mir_ * 0.05, 0.0);
+    attach_location.local_joint_origin_transform.translation() += Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     attach_location.local_joint_origin_transform.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
     attach_location.fixed_base = true;
 
@@ -287,7 +287,7 @@ public:
 private:
   double pi_ = 3.1415926535897931;
   double door_height_ = 2.06;
-  double handle_height_ = 1.0;
+  double handle_height_ = 0.95;
   double handle_length_ = 0.10;
   double door_width_;
   std::string dir_;

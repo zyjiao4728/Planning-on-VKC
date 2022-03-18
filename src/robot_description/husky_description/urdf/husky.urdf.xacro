@@ -61,7 +61,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:property name="wheel_vertical_offset" value="0.03282" />
 
   <!-- Wheel Properties -->
-  <xacro:property name="wheel_length" value="0.1143" />
+  <!-- 0.1143 -->
+  <xacro:property name="wheel_length" value="0.15" /> 
   <xacro:property name="wheel_radius" value="0.1651" />
 
   <!-- Base link is the center of the robot's bottom plate -->

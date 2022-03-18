@@ -24,8 +24,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
   ProbGenerator prob_generator;
 
   int j = 0;
-  ROS_WARN("optimization is ready. Press <Enter> to start next action");
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   for (auto &action : actions)
   {
@@ -37,6 +35,10 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
     while (try_cnt++ < nruns)
     {
       TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
+
+      ROS_WARN("optimization is ready. Press <Enter> to start next action");
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
       CostInfo cost = solveProb_cost(prob_ptr, response, n_iter);
 
       if (sco::OptStatus::OPT_CONVERGED == response.status_code)
@@ -66,7 +68,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
     ROS_WARN("Finished optimization. Press <Enter> to start next action");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    saveTrajToFile(refined_traj.topRows(n_steps), "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_env.csv");
+    saveTrajToFile(refined_traj.topRows(n_steps), "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
 
     env.updateEnv(response.joint_names, refined_traj.bottomRows(1).transpose(), action);
     plotter->clear();

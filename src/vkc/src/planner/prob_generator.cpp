@@ -142,7 +142,7 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
   int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
   addJointTerm(pci, joint_num);
-  addCollisionTerm(pci, 0.0001, 10);
+  addCollisionTerm(pci, 0.001, 10);
   // addCollisionTerm(pci, 0.01, 10);   // wanglei@bigai.ai, 2021-12-14
 
   BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
@@ -165,7 +165,7 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
            __func__, PickPose->xyz.x(), PickPose->xyz.y(), PickPose->xyz.z(),
            PickPose->wxyz.w(), PickPose->wxyz.x(), PickPose->wxyz.y(), PickPose->wxyz.z());
 
-  ROS_INFO("[%s]object pose: %f, %f, %f",       __func__, object_world_transform.translation().x(), object_world_transform.translation().y(), object_world_transform.translation().z());
+  ROS_INFO("[%s]object pose: %f, %f, %f",  __func__, object_world_transform.translation().x(), object_world_transform.translation().y(), object_world_transform.translation().z());
 
   std::vector<LinkDesiredPose> link_objs;
   std::vector<JointDesiredPose> joint_objs;
@@ -279,7 +279,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
   int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
   addJointTerm(pci, joint_num);
-  addCollisionTerm(pci, 0.0001, 10);  
+  addCollisionTerm(pci, 0.001, 10);  
   
   BaseObject::AttachLocation::Ptr detach_location_ptr = env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr->fixed_base)
