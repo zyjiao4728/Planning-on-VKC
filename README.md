@@ -14,16 +14,6 @@ Firstly, following dependencies need to be manually installed and set up.
 
 After installing the aforementioned dependencies, follow steps below to setup the environment
 
-Create a ROS workspace: 
-
-```bash
-mkdir -p <ros-workspace-name>
-```
-
-where `<ros-workspace-name>` is the name of your newly created ROS workspace.
-
-
-
 Before compiling our package, several system dependencies needs to be installed, use following command to install
 
 ```bash
@@ -32,13 +22,12 @@ ros-noetic-ompl ros-noetic-octomap-ros ros-noetic-lms1xx ros-noetic-ifopt
 ```
 
 
-
 Then download our package
 
 ```bash
-cd <ros-workspace-name>/src
+cd projects
 git clone --recursive <github-package-url>
-cd ../
+cd <github-package-folder>
 rosdep install --from-paths src --ignore-src -r -y
 catkin build --force-cmake -DTESSERACT_ENABLE_TESTING_ALL=OFF -DTESSERACT_ENABLE_TESTING_ALL=OFF
 ```
