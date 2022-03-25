@@ -1,0 +1,6 @@
+*
+!.gitignore
+!profiles
+profiles/*
+!profiles/default
+!profiles/default/config.yaml
