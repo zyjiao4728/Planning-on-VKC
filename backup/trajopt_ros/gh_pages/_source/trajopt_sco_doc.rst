@@ -1,2 +1,0 @@
-Tesseract Collison Package
-==========================
