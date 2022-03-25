@@ -19,7 +19,7 @@ devel_isolated/
 
 # Workspace settings
 .catkin_tools/
-src/.vscode/
+**/.vscode/*
 
 # Dependencies
 # src/baxter_common/
