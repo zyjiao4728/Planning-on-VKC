@@ -118,7 +118,7 @@ namespace vkc
     }
     
 
-    boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint->getPositions(), goal_waypoint->getPositions(), params_);
+    // boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint->getPositions(), goal_waypoint->getPositions(), params_);
 
     if (maybe_path)
     {
@@ -184,17 +184,17 @@ namespace vkc
     {
     case OMPLPlanners::Planners::RRT_Connect:
     {
-      this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRTConnect>(this->coi_->spaceInformation()));
+      // this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRTConnect>(this->coi_->spaceInformation()));
     }
     break;
     case OMPLPlanners::Planners::RRT_Star:
     {
-      this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRTstar>(this->coi_->spaceInformation()));
+      // this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRTstar>(this->coi_->spaceInformation()));
     }
     break;
 
     default:
-      this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRT>(this->coi_->spaceInformation()));
+      // this->coi_->ss_->setPlanner(std::make_shared<ompl::geometric::RRT>(this->coi_->spaceInformation()));
       break;
     }
 
@@ -335,8 +335,8 @@ namespace vkc
     ROS_INFO("Translating Pick Problem");
 
     setupParams(env, act);
-    this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
-    this->coi_->setAdjacencyMap();
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_->setAdjacencyMap();
 
     insertPlanners(planner_);
 
@@ -358,8 +358,8 @@ namespace vkc
 
     setupParams(env, act);
     
-    this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
-    this->coi_->setAdjacencyMap();
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_->setAdjacencyMap();
 
     this->l_obj = act->getLinkObjectives();
     this->j_obj = act->getJointObjectives();
@@ -387,10 +387,10 @@ namespace vkc
     }
     else
     {
-      this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-          this->coi_->spaceInformation(),
-          env.getVKCEnv()->getTesseractEnvironment(),
-          kin));
+      // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+      //     this->coi_->spaceInformation(),
+      //     env.getVKCEnv()->getTesseractEnvironment(),
+      //     kin));
     }
 
     insertPlanners(planner_);
@@ -405,13 +405,13 @@ namespace vkc
     // translate the problem info to ompl
     setupParams(env, act);
 
-    this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
 
-    ompl::base::MotionValidatorPtr mv = std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-        this->coi_->spaceInformation(),
-        env.getVKCEnv()->getTesseractEnvironment(),
-        kin);
-    this->coi_->setMotionValidator(mv);
+    // ompl::base::MotionValidatorPtr mv = std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+    //     this->coi_->spaceInformation(),
+    //     env.getVKCEnv()->getTesseractEnvironment(),
+    //     kin);
+    // this->coi_->setMotionValidator(mv);
 
     insertPlanners(planner_);
 

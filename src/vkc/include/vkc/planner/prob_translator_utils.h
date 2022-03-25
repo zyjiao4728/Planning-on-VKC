@@ -19,7 +19,8 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #include <ompl/geometric/planners/rrt/RRTstar.h>
 
 
-#include <tesseract_motion_planners/ompl/chain_ompl_interface.h>
+// #include <tesseract_motion_planners/ompl/chain_ompl_interface.h>
+#include <tesseract_motion_planners/default_planner_namespaces.h>
 #include <tesseract_motion_planners/ompl/continuous_motion_validator.h>
 
 #include <iostream>

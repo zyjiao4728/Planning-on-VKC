@@ -21,7 +21,8 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #include <ompl/control/planners/sst/SST.h>
 #include <ompl/base/StateValidityChecker.h>
 
-#include <tesseract_motion_planners/ompl/chain_ompl_interface.h>
+// #include <tesseract_motion_planners/ompl/chain_ompl_interface.h>
+#include <tesseract_motion_planners/default_planner_namespaces.h>
 #include <tesseract_motion_planners/ompl/continuous_motion_validator.h>
 
 #include <iostream>
@@ -151,7 +152,7 @@ namespace vkc
     // bool generateIK(VKCEnvBasic &env, int n_steps, Husky_IK::Option ik_option);
 
   private:
-    tesseract_motion_planners::ChainOmplInterface::Ptr coi_;
+    // tesseract_motion_planners::ChainOmplInterface::Ptr coi_;
     tesseract_kinematics::ForwardKinematics::ConstPtr kin;
     tesseract_motion_planners::JointWaypoint::Ptr start_waypoint;
     tesseract_motion_planners::JointWaypoint::Ptr goal_waypoint;

@@ -1,6 +1,11 @@
 #ifndef VKC_CONSTRUCTVKC_H
 #define VKC_CONSTRUCTVKC_H
 
+#include <tesseract_common/macros.h>
+#include <tesseract_scene_graph/graph.h>
+#include <tesseract_common/resource_locator.h>
+#include <tesseract_srdf/srdf_model.h>
+#include <tesseract_environment/environment.h>
 #include <tesseract/tesseract.h>
 
 namespace vkc
@@ -17,7 +22,7 @@ public:
 
   // Load URDF and SRDF file to scene graph
   bool loadURDFtoSceneGraph(const std::string& urdf_xml_file, const std::string& srdf_xml_file,
-                            tesseract_scene_graph::ResourceLocator::Ptr& locator);
+                            tesseract_common::ResourceLocator::Ptr& locator);
 
 
   // Initialize a tesseract environment that capatible to optimization framework;
@@ -28,7 +33,7 @@ public:
   // Return private members
   tesseract::Tesseract::Ptr getTesseract();
   tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
-  tesseract_scene_graph::SRDFModel::Ptr getSRDFModel();
+  tesseract_srdf::SRDFModel::Ptr getSRDFModel();
 
   const tesseract_scene_graph::SceneGraph::ConstPtr& getTesseractSceneGraph();
   const tesseract_environment::Environment::Ptr& getTesseractEnvironment();
@@ -38,7 +43,7 @@ public:
 
 private:
   tesseract_scene_graph::SceneGraph::Ptr scene_graph_;
-  tesseract_scene_graph::SRDFModel::Ptr srdf_model_;
+  tesseract_srdf::SRDFModel::Ptr srdf_model_;
   tesseract::Tesseract::Ptr tesseract_;
 
   // Copy a link and all its child links/joints to a new scene graph
