@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.0)
 project(trajopt_sco VERSION 0.1.0 LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
-find_package(GUROBI REQUIRED)
+find_package(GUROBI)
 find_package(osqp QUIET)
 find_package(qpOASES QUIET)
 find_package(Eigen3 REQUIRED)
