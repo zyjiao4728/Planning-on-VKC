@@ -1,0 +1,3 @@
+[submodule "src/tesseract_ros"]
+	path = src/tesseract_ros
+	url = ssh://git@gitlab.bigai.ai:2222/robotics/tesseract_ros.git
