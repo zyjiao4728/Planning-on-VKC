@@ -75,8 +75,8 @@ public:
     }
     object_scene_graph_->setName(object_name_);
     object_scene_graph_->setRoot(base_link.getName());
-
-    addAttachLocation(attach_location);
+    AttachLocation::Ptr attach_location_ptr = std::make_shared<AttachLocation>(std::move(attach_location));
+    addAttachLocation(attach_location_ptr);
 
     return true;
   }
