@@ -23,7 +23,7 @@ namespace vkc
 
     // Load URDF and SRDF file to scene graph
     bool loadURDFtoSceneGraph(const std::string &urdf_xml_file, const std::string &srdf_xml_file,
-                              tesseract_common::ResourceLocator::Ptr &locator);
+                              const tesseract_common::ResourceLocator::ConstPtr &locator);
 
     // Initialize a tesseract environment that capatible to optimization framework;
     bool initTesseract();

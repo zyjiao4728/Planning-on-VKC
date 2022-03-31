@@ -22,7 +22,7 @@ namespace vkc
   }
 
   bool ConstructVKC::loadURDFtoSceneGraph(const std::string &urdf_xml_file, const std::string &srdf_xml_file,
-                                          tesseract_common::ResourceLocator::Ptr &locator)
+                                          const tesseract_common::ResourceLocator::ConstPtr &locator)
   {
     clear();
 

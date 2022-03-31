@@ -188,7 +188,9 @@ void UrdfSceneEnv::newAttachLocation_(
 
   // add AttachLocation object into the Env
   // The name ID of the AttachLocation will be AttachLocation.name_
-  addAttachLocation(attach_location);
+  AttachLocation::Ptr attach_location_ptr = std::make_shared<AttachLocation>(std::move(attach_location));
+
+addAttachLocation(attach_location_ptr);
 }
 
 
