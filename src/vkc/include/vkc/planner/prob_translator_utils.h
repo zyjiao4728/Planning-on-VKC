@@ -28,12 +28,10 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #include <vector>
 
 using namespace trajopt;
-using namespace tesseract;
 using namespace tesseract_environment;
 using namespace tesseract_scene_graph;
 using namespace tesseract_collision;
 using namespace tesseract_rosutils;
-using namespace tesseract_motion_planners;
 
 namespace vkc
 {
@@ -42,7 +40,7 @@ namespace vkc
     std::vector<double> HuskeyIK(VKCEnvBasic& env, std::vector<LinkDesiredPose>& link_objectives,
                                   std::vector<JointDesiredPose>& joint_objectives, MapInfo map, int n_steps, Eigen::MatrixX2d & joint_limits);
 
-    void solveOptProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter);
+    // void solveOptProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter);
 
     // std::vector<double> BaseFirstIK(VKCEnvBasic& env, std::vector<LinkDesiredPose>& link_objectives,
     //                               std::vector<JointDesiredPose>& joint_objectives, MapInfo map,

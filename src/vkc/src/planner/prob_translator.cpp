@@ -121,24 +121,24 @@ namespace vkc
       return false;
     }
 
-    boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint.getPositions(), goal_waypoint->getPositions(), params_);
+    // boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint.getPositions(), goal_waypoint->getPositions(), params_);
 
-    if (maybe_path)
-    {
-      response.data = std::make_shared<tesseract_common::TrajArray>(vkc::toTrajArray(*maybe_path));
-      response.joint_names = kin->getJointNames();
-      response.status_code = 1;
+    // if (maybe_path)
+    // {
+    //   response.data = std::make_shared<tesseract_common::TrajArray>(vkc::toTrajArray(*maybe_path));
+    //   response.joint_names = kin->getJointNames();
+    //   response.status_code = 1;
 
-      ompl::geometric::PathGeometric path = *maybe_path;
+    //   ompl::geometric::PathGeometric path = *maybe_path;
 
-      for (int i = 0; i < response.trajectory.rows(); ++i)
-      {
-        const double *begin = &response.trajectory.row(i).data()[0];
-        res_traj.push_back(std::vector<double>(begin, begin + response.trajectory.cols()));
-      }
+    //   for (int i = 0; i < response.trajectory.rows(); ++i)
+    //   {
+    //     const double *begin = &response.trajectory.row(i).data()[0];
+    //     res_traj.push_back(std::vector<double>(begin, begin + response.trajectory.cols()));
+    //   }
 
-      return true;
-    }
+    //   return true;
+    // }
     response.status = tesseract_common::StatusCode(0);
     ROS_WARN("No results from OMPL");
     return false;
@@ -204,13 +204,13 @@ namespace vkc
     return;
   }
 
-  tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed)
+  tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr &kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed)
   {
     tesseract_kinematics::KinGroupIKInput ik_input(pose, "world", kin_->getAllPossibleTipLinkNames()[0]);
     return kin_->calcInvKin(ik_input, seed);
   }
 
-  void ProbTranslator::getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr kin, std::unordered_map<std::string, int> &joint_name_idx)
+  void ProbTranslator::getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr &kin, std::unordered_map<std::string, int> &joint_name_idx)
   {
     joint_name_idx.clear();
     int idx = 0;
@@ -252,10 +252,11 @@ namespace vkc
         ROS_WARN("[%s]%d times try to get a collision free waypoint",
                  __func__, attempts);
         // calculate IK and make sure the solution satisfy joint limits
-        if (inverseKinematics(kin_, solutions, pose, seed) && checkJointLimits(solutions, joint_limits))
+        auto solutions = inverseKinematics(kin_, pose, seed);
+        if (!solutions.empty() && checkJointLimits(solutions[0], joint_limits))
         {
           auto state =
-              env.getVKCEnv()->getTesseractEnvironment().getState(kin_->getJointNames(), solutions);
+              env.getVKCEnv()->getTesseractEnvironment().getState(kin_->getJointNames(), solutions[0]);
 
           collision_manager->setCollisionObjectsTransform(state.link_transforms);
 
@@ -291,7 +292,7 @@ namespace vkc
     }
   }
 
-  void ProbTranslator::genRandState(tesseract_kinematics::KinematicGroup::UPtr kin, Eigen::VectorXd &seed)
+  void ProbTranslator::genRandState(tesseract_kinematics::KinematicGroup::UPtr &kin, Eigen::VectorXd &seed)
   {
     Eigen::MatrixX2d joint_limits = kin->getLimits().joint_limits;
     std::vector<std::string> joint_names;
@@ -309,7 +310,7 @@ namespace vkc
   {
     start_waypoint = setupStartWaypoint(env, manipulator);
     goal_waypoint = setupGoalWaypoint(env, manipulator);
-    if (goal_waypoint == nullptr)
+    if (!goal_waypoint.isToleranced())
     {
       return false;
     }
@@ -320,10 +321,10 @@ namespace vkc
   {
     for (size_t i = 0; i < solution.size(); ++i)
     {
-      if (solution[i] < limits(i, 0) || solution[i] > limits(i, 1))
+      if (solution[i] < limits.joint_limits(i, 0) || solution[i] > limits.joint_limits(i, 1))
       {
         ROS_INFO("[%s]joint %d exceeds limits, expected: [%f, %f], actual: %f",
-                 __func__, i + 1, limits(i, 0), limits(i, 1), solution[i]);
+                 __func__, i + 1, limits.joint_limits(i, 0), limits.joint_limits(i, 1), solution[i]);
         return false;
       }
     }

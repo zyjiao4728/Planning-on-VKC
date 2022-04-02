@@ -1,4 +1,6 @@
 #include <vkc/planner/prob_translator_utils.h>
+#include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
+using namespace tesseract_planning;
 
 namespace vkc
 {
@@ -19,8 +21,6 @@ namespace vkc
         }
         return result;
     }
-
-
 
     std::vector<double> HuskeyIK(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
                                  std::vector<JointDesiredPose> &joint_objectives, MapInfo map, int n_steps, Eigen::MatrixX2d &joint_limits)
@@ -62,30 +62,26 @@ namespace vkc
         return res;
     }
 
-    void solveOptProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
-    {
-        // Set the optimization parameters (Most are being left as defaults)
-        TrajOptPlannerConfig config(prob_ptr);
-        config.params.max_iter = n_iter;
-        config.params.cnt_tolerance = 1e-3;
-        config.params.trust_expand_ratio = 1.5;
-        config.params.trust_shrink_ratio = 0.5;
-        config.params.min_trust_box_size = 1e-3;
-        config.params.min_approx_improve = 1e-3;
+    // void solveOptProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
+    // {
+    //     // Set the optimization parameters (Most are being left as defaults)
 
-        // Create the planner and the responses that will store the results
-        TrajOptMotionPlanner planner;
+    //     auto trajopt_solver_profile = std::make_shared<TrajOptDefaultSolverProfile>();
+    //     trajopt_solver_profile->opt_info.max_iter = n_iter;
+    //     trajopt_solver_profile->opt_info.cnt_tolerance = 1e-3;
+    //     trajopt_solver_profile->opt_info.trust_expand_ratio = 1.5;
+    //     trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.5;
+    //     trajopt_solver_profile->opt_info.min_trust_box_size = 1e-3;
+    //     trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
 
-        // Set Planner Configuration
-        planner.setConfiguration(config);
 
-        ROS_WARN("Using TrajOpt to solve for IK");
+    //     ROS_WARN("Using TrajOpt to solve for IK");
 
-        // Solve problem. Results are stored in the response
-        planner.solve(response);
+    //     // Solve problem. Results are stored in the response
+    //     planner.solve(response);
 
-        return;
-    }
+    //     return;
+    // }
 
     void cleanState(std::vector<double> &state)
     {

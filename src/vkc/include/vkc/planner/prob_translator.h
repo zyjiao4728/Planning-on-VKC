@@ -91,13 +91,13 @@ namespace vkc
      */
     bool solveProblem(tesseract_planning::PlannerResponse &response, std::vector<std::vector<double>> &res_traj);
 
-    tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
+    tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr &kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
     bool collisionFreeInverseKinematics(VKCEnvBasic &env, std::string manipulator, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
-    void getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr kin, std::unordered_map<std::string, int> &joint_name_idx);
+    void getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr &kin, std::unordered_map<std::string, int> &joint_name_idx);
 
-    void genRandState(tesseract_kinematics::KinematicGroup::UPtr kin, Eigen::VectorXd &seed);
+    void genRandState(tesseract_kinematics::KinematicGroup::UPtr &kin, Eigen::VectorXd &seed);
 
     tesseract_kinematics::KinematicGroup::ConstPtr getKinematics();
 
