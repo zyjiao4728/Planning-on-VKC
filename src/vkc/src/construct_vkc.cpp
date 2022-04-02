@@ -13,6 +13,9 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 #include <vkc/construct_vkc.h>
 
+/** @brief RViz Example Namespace */
+const std::string VKC_MONITOR_NAMESPACE = "tesseract_vkc";
+
 namespace vkc
 {
   ConstructVKC::ConstructVKC()
@@ -70,20 +73,21 @@ namespace vkc
 
   bool ConstructVKC::initTesseract()
   {
-    if (monitor_ == nullptr)
+    if (monitor_ != nullptr)
     {
-      // ROS_WARN("Null pointer to tesseract!");
-      monitor_ = std::make_shared<tesseract_monitoring::EnvironmentMonitor>();
+      return true;
     }
     if (scene_graph_ == nullptr || srdf_model_ == nullptr)
     {
       ROS_ERROR("Null scene graph or srdf model!");
     }
-    if (!monitor_->getEnvironment().init(*scene_graph_, srdf_model_)) // init(scene_graph_, srdf_model_))
+    auto env_ = std::make_shared<tesseract_environment::Environment>();
+    if (!env_->init(*scene_graph_, srdf_model_))
     {
       ROS_INFO("Failed to initialize tesseract environment");
       return false;
     }
+    monitor_ = std::make_shared<tesseract_monitoring::EnvironmentMonitor>(env_, VKC_MONITOR_NAMESPACE);
     return true;
   }
 

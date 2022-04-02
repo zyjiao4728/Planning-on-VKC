@@ -5,8 +5,9 @@
 #include <tesseract_scene_graph/graph.h>
 #include <tesseract_common/resource_locator.h>
 #include <tesseract_srdf/srdf_model.h>
-#include <tesseract_environment/environment.h>
 #include <tesseract_common/types.h>
+#include <tesseract_rosutils/utils.h>
+#include <tesseract_environment/environment.h>
 #include <tesseract_monitoring/environment_monitor.h>
 
 namespace vkc
