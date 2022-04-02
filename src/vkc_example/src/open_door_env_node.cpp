@@ -58,7 +58,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
     // refine the orientation of the move base
     tesseract_common::TrajArray refined_traj =
         response.trajectory.leftCols(response.joint_names.size());
-    refineTrajectory(refined_traj);
+    // refineTrajectory(refined_traj);
 
     std::cout << "optimized trajectory: " << std::endl
               << refined_traj << std::endl;
@@ -144,7 +144,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot)
     place_action = make_shared<PlaceAction>(robot, "attach_door_north_handle_link", link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->RequireInitTraj(false);
+    place_action->RequireInitTraj(true);
 
     actions.emplace_back(place_action);
   }
@@ -170,7 +170,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot)
     place_action = make_shared<PlaceAction>(robot, "attach_door_north_handle_link", link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->RequireInitTraj(false);
+    place_action->RequireInitTraj(true);
 
     actions.emplace_back(place_action);
   }
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pullDoor(actions, robot);
+  pushDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 

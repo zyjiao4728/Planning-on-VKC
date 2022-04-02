@@ -3,7 +3,7 @@
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
   <!-- The name of the parameter under which the URDF is loaded -->
   <arg name="env_description" default="env_description" />
-  <arg name="end_effector_link" default="ur_arm_ee_link" />
+  <!-- <arg name="end_effector_link" default="ur_arm_ee_link" /> -->
 
   <arg name="plotting" default="true" />
   <arg name="rviz" default="true" />
@@ -16,10 +16,20 @@
   <arg name="husky_orient" default="-0.0" />
 
   <!-- Load universal environment description format (URDF) -->
-  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/pog_env.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) --inorder" />
+  <!-- <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/pog_env.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient)" /> -->
 
   <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg env_description)_semantic" textfile="$(find pog_env)/config/pog_env.srdf" />
+  <!-- <param name="$(arg env_description)_semantic" textfile="$(find pog_env)/config/pog_env.srdf" /> -->
+
+  <arg name="loc_x" default="0.0"/>
+  <arg name="loc_y" default="0.0"/>
+  <arg name="orient" default="0.0"/>
+
+  <arg name="end_effector_link" default="left_gripper_flange"/>
+
+  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_big_task.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)"/>
+
+  <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" />
 
   <param name="end_effector_link" type="str" value="$(arg end_effector_link)" />
 

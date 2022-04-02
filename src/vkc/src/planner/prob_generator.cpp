@@ -142,7 +142,7 @@ TrajOptProb::Ptr ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr ac
   int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
   addJointTerm(pci, joint_num);
-  addCollisionTerm(pci, 0.001, 10);
+  addCollisionTerm(pci, 0.0001, 10);
   // addCollisionTerm(pci, 0.01, 10);   // wanglei@bigai.ai, 2021-12-14
 
   BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
@@ -279,7 +279,7 @@ TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr 
   int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
   addJointTerm(pci, joint_num);
-  addCollisionTerm(pci, 0.001, 10);  
+  addCollisionTerm(pci, 0.0001, 10);  
   
   BaseObject::AttachLocation::Ptr detach_location_ptr = env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr->fixed_base)
@@ -621,6 +621,7 @@ void ProbGenerator::addJointTerm(ProblemConstructionInfo &pci, int joint_num)
   jv_cost->coeffs = std::vector<double>(static_cast<unsigned long int>(joint_num), 5);
   jv_cost->coeffs[0] = 30; //(rand() % 100) / 5 + 30;
   jv_cost->coeffs[1] = jv_cost->coeffs[0];
+  jv_cost->coeffs[2] = 50;
   jv_cost->targets = std::vector<double>(static_cast<unsigned long int>(joint_num), 0.0);
   jv_cost->first_step = 0;
   jv_cost->last_step = pci.basic_info.n_steps - 1;

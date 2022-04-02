@@ -105,6 +105,8 @@ namespace vkc
         tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_west_wall_link", "wall_south_wall_link", "Never");
         tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_east_wall_link", "wall_south_wall_link", "Never");
 
+        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("door_north_handle_link", "left_gripper_palm", "Never");
+
         // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_left", false);
         // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_right", false);
         // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_link", false);

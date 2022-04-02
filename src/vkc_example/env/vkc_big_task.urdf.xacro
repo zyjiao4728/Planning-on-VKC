@@ -7,7 +7,7 @@
   <!-- Arguments -->
   <xacro:arg name="base_loc_x" default="0.0"/>
   <xacro:arg name="base_loc_y" default="0.0"/>
-  <xacro:arg name="base_loc_orient" default="1.57"/>
+  <xacro:arg name="base_loc_orient" default="0.0"/>
   <xacro:arg name="robot_prefix" default=""/>
 
   <!-- Setup Environment -->

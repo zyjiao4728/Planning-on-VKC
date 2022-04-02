@@ -242,8 +242,10 @@ public:
 
     // Add an attach location
     AttachLocation attach_location("attach_" + handle_link.getName(), handle_link.getName());
-    attach_location.local_joint_origin_transform.translation() += Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
-    attach_location.local_joint_origin_transform.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
+    // attach_location.local_joint_origin_transform.translation() += Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
+    // attach_location.local_joint_origin_transform.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
+    attach_location.local_joint_origin_transform.translation() += Eigen::Vector3d(-0.2, mir_ * 0.08, 0.0);
+    attach_location.local_joint_origin_transform.linear() = Eigen::Quaterniond(0.707, 0, 0.707, 0).matrix();
     attach_location.fixed_base = true;
 
     // Define connection joint
