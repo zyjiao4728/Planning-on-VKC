@@ -2,30 +2,29 @@
 #include <tesseract_kinematics/kdl/kdl_inv_kin_chain_lma.h>
 
 using namespace trajopt;
-using namespace tesseract;
 using namespace tesseract_environment;
 using namespace tesseract_scene_graph;
 using namespace tesseract_collision;
 using namespace tesseract_rosutils;
-using namespace tesseract_motion_planners;
+using namespace tesseract_planning;
 
 namespace vkc
 {
   ProbTranslator::ProbTranslator(OmplPlanParameters params)
   {
     inv_attp_max_ = params.inv_attp_max;
-    params_ = params.plan_params;
+    // params_ = params.;
     ik_option_ = params.ik_option;
     planner_ = params.planner;
     // srand((unsigned int)time(NULL));   // if this expression is commented on, we use the default random seed 1
   }
 
-  tesseract_motion_planners::JointWaypoint::Ptr ProbTranslator::setupStartWaypoint(VKCEnvBasic &env, std::string manipulator)
+  tesseract_planning::JointWaypoint ProbTranslator::setupStartWaypoint(VKCEnvBasic &env, std::string manipulator)
   {
-    auto kin_ = env.getVKCEnv()->getTesseract()->getFwdKinematicsManager()->getFwdKinematicSolver(manipulator);
+    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
     // getFwdKinematicsManager(manipulator);
 
-    EnvState::ConstPtr current_state = env.getVKCEnv()->getTesseractEnvironment()->getCurrentState();
+    auto current_state = env.getVKCEnv()->getTesseractEnvironment().getState();
     Eigen::VectorXd start_pos;
     start_pos.resize(kin_->numJoints());
     int joint_num = 0;
@@ -33,26 +32,28 @@ namespace vkc
 
     for (const auto &j : kin_->getJointNames())
     {
-      start_pos[joint_num] = current_state->joints.at(j);
+      start_pos[joint_num] = current_state.joints.at(j);
       ++joint_num;
     }
 
-    if(!checkJointLimits(start_pos, kin_->getLimits()))
+    if (!checkJointLimits(start_pos, kin_->getLimits()))
     {
       ROS_ERROR("[%s]Oho, start waypoint is invalid!", __func__);
     }
-
-    return std::make_shared<tesseract_motion_planners::JointWaypoint>(start_pos, kin_->getJointNames());
+    tesseract_planning::JointWaypoint jw(kin_->getJointNames(), start_pos);
+    return jw;
   }
 
-  tesseract_kinematics::ForwardKinematics::ConstPtr ProbTranslator::getKinematics()
+  tesseract_kinematics::KinematicGroup::ConstPtr ProbTranslator::getKinematics()
   {
     return kin;
   }
 
-  tesseract_motion_planners::JointWaypoint::Ptr ProbTranslator::setupGoalWaypoint(VKCEnvBasic &env, std::string manipulator)
+  tesseract_planning::JointWaypoint ProbTranslator::setupGoalWaypoint(VKCEnvBasic &env, std::string manipulator)
   {
-    auto kin_ = env.getVKCEnv()->getTesseract()->getFwdKinematicsManager()->getFwdKinematicSolver(manipulator);
+
+    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
+
     if (l_obj.size())
     {
       if (j_obj.size())
@@ -60,11 +61,12 @@ namespace vkc
         ROS_ERROR("2 types of objectives detected, using link objectives only");
       }
       Eigen::VectorXd solutions;
-      auto seed = (start_waypoint == nullptr) ? Eigen::VectorXd::Zero(kin_->getJointNames().size()) : start_waypoint->getPositions();
+      auto seed = (start_waypoint.isToleranced()) ? Eigen::VectorXd::Zero(kin_->getJointNames().size()) : start_waypoint.waypoint;
       auto pose = l_obj[0].tf;
       if (collisionFreeInverseKinematics(env, manipulator, solutions, pose, seed))
       {
-        return std::make_shared<tesseract_motion_planners::JointWaypoint>(solutions, kin_->getJointNames());
+        tesseract_planning::JointWaypoint jw(kin_->getJointNames(), solutions);
+        return jw;
       }
       ROS_ERROR("Failed to find collision free solution!");
     }
@@ -80,12 +82,14 @@ namespace vkc
           idx++;
         }
 
-        return std::make_shared<tesseract_motion_planners::JointWaypoint>(solutions, kin_->getJointNames());
+        tesseract_planning::JointWaypoint jw(kin_->getJointNames(), solutions);
+
+        return jw;
       }
       ROS_ERROR("Joint objectives detected size mismatched");
     }
 
-    return nullptr;
+    return;
   }
 
   void ProbTranslator::setupParams(VKCEnvBasic &env, vkc::ActionBase::Ptr act)
@@ -95,7 +99,7 @@ namespace vkc
 
     this->tesseract_ = env.getVKCEnv()->getTesseract();
 
-    this->kin = env.getVKCEnv()->getTesseract()->getFwdKinematicsManager()->getFwdKinematicSolver(act->getManipulatorID());
+    this->kin = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(act->getManipulatorID());
 
     // // there has got to be a better way to do this
     // this->kin_base = env.getVKCEnv()->getTesseract()->getFwdKinematicsManager()->getFwdKinematicSolver("base");
@@ -107,22 +111,21 @@ namespace vkc
   bool ProbTranslator::solveProblem(PlannerResponse &response, std::vector<std::vector<double>> &res_traj)
   {
     ROS_INFO("[%s]OMPL starts planning...", __func__);
-    if (nullptr == start_waypoint || nullptr == goal_waypoint)
+    if (!start_waypoint.isToleranced() || !goal_waypoint.isToleranced())
     {
-      response.status_code = 0;
+      response.status = tesseract_common::StatusCode(0);
       ROS_WARN("[%s]invalid %s %s, OMPL terminate the motion plan!",
-               __func__, 
-               nullptr == start_waypoint ? "start state" : "",
-               nullptr == goal_waypoint ? "goal state" : "");
+               __func__,
+               !start_waypoint.isToleranced() ? "start state" : "",
+               !goal_waypoint.isToleranced() ? "goal state" : "");
       return false;
     }
-    
 
-    // boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint->getPositions(), goal_waypoint->getPositions(), params_);
+    boost::optional<ompl::geometric::PathGeometric> maybe_path = coi_->plan(start_waypoint.getPositions(), goal_waypoint->getPositions(), params_);
 
     if (maybe_path)
     {
-      response.trajectory = vkc::toTrajArray(*maybe_path);
+      response.data = std::make_shared<tesseract_common::TrajArray>(vkc::toTrajArray(*maybe_path));
       response.joint_names = kin->getJointNames();
       response.status_code = 1;
 
@@ -136,7 +139,7 @@ namespace vkc
 
       return true;
     }
-    response.status_code = 0;
+    response.status = tesseract_common::StatusCode(0);
     ROS_WARN("No results from OMPL");
     return false;
   }
@@ -201,12 +204,13 @@ namespace vkc
     return;
   }
 
-  bool ProbTranslator::inverseKinematics(tesseract_kinematics::InverseKinematics::Ptr solver, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed)
+  tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed)
   {
-    return solver->calcInvKin(solutions, pose, seed);
+    tesseract_kinematics::KinGroupIKInput ik_input(pose, "world", kin_->getAllPossibleTipLinkNames()[0]);
+    return kin_->calcInvKin(ik_input, seed);
   }
 
-  void ProbTranslator::getJointNameIndexMap(tesseract_kinematics::ForwardKinematics::Ptr kin, std::unordered_map<std::string, int> &joint_name_idx)
+  void ProbTranslator::getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr kin, std::unordered_map<std::string, int> &joint_name_idx)
   {
     joint_name_idx.clear();
     int idx = 0;
@@ -219,48 +223,44 @@ namespace vkc
     }
   }
 
-
-
   bool ProbTranslator::collisionFreeInverseKinematics(VKCEnvBasic &env, std::string manipulator, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed)
   {
-    auto inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
-    auto inv_kin_solver = inv_kin_mgr->getInvKinematicSolver(manipulator);
-    if (inv_kin_solver)
+    // auto inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
+    // auto inv_kin_solver = inv_kin_mgr->getInvKinematicSolver(manipulator);
+    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
+    if (kin_)
     {
-      ROS_INFO("[%s]it will try %d times to get a collision free waypoint, ik solver name: %s",
-               __func__, inv_attp_max_, inv_kin_solver->getSolverName().c_str());
+      // ROS_INFO("[%s]it will try %d times to get a collision free waypoint, ik solver name: %s",
+      //          __func__, inv_attp_max_, kin_->getsolvername() c_str());
 
-      solutions.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());
-      seed.resize(inv_kin_mgr->getInvKinematicSolver(manipulator)->numJoints());
+      solutions.resize(kin_->numJoints());
+      seed.resize(kin_->numJoints());
 
-      auto state_og = env.getVKCEnv()->getTesseractEnvironment()->getCurrentState();
-      auto kin_ = env.getVKCEnv()->getTesseract()->getFwdKinematicsManagerConst()->getFwdKinematicSolver(manipulator);
-      auto adj_map = std::make_shared<tesseract_environment::AdjacencyMap>(
-          env.getVKCEnv()->getTesseractEnvironment()->getSceneGraph(), kin_->getActiveLinkNames(), state_og->transforms);
+      auto state_og = env.getVKCEnv()->getTesseractEnvironment().getState();
+      auto adj_map = env.getVKCEnv()->getSceneGraph()->getAdjacencyMap(kin_->getActiveLinkNames());
 
-
-      auto collision_manager = env.getVKCEnv()->getTesseractEnvironment()->getDiscreteContactManager()->clone();
-      collision_manager->setActiveCollisionObjects(adj_map->getActiveLinkNames());
+      auto collision_manager = env.getVKCEnv()->getTesseractEnvironment().getDiscreteContactManager()->clone();
+      collision_manager->setActiveCollisionObjects(kin_->getActiveLinkNames());
 
       int attempts = 0;
       bool satisfied = false;
       tesseract_collision::ContactResultMap collisions;
-      Eigen::MatrixX2d joint_limits = kin_->getLimits();
+      tesseract_common::KinematicLimits joint_limits = kin_->getLimits();
 
       while (attempts < inv_attp_max_)
       {
         ROS_WARN("[%s]%d times try to get a collision free waypoint",
-               __func__, attempts);
+                 __func__, attempts);
         // calculate IK and make sure the solution satisfy joint limits
-        if (inverseKinematics(inv_kin_solver, solutions, pose, seed) && checkJointLimits(solutions, joint_limits))
+        if (inverseKinematics(kin_, solutions, pose, seed) && checkJointLimits(solutions, joint_limits))
         {
-          tesseract_environment::EnvState::Ptr state =
-              env.getVKCEnv()->getTesseractEnvironment()->getState(kin_->getJointNames(), solutions);
+          auto state =
+              env.getVKCEnv()->getTesseractEnvironment().getState(kin_->getJointNames(), solutions);
 
-          collision_manager->setCollisionObjectsTransform(state->transforms);
+          collision_manager->setCollisionObjectsTransform(state.link_transforms);
 
           collisions.clear();
-          collision_manager->setContactDistanceThreshold(0.01);  // wanglei@2021-11-12
+          collision_manager->setDefaultCollisionMarginData(0.01); // wanglei@2021-11-12
           collision_manager->contactTest(collisions, tesseract_collision::ContactTestType::FIRST);
 
           // collisions.size() = zero means no collisioin
@@ -272,8 +272,8 @@ namespace vkc
           else
           {
             ROS_INFO("[%s]the solution results in at least one collision:\n\t%s <--------> %s",
-              __func__, collisions.begin()->second[0].link_names[0].c_str(), 
-              collisions.begin()->second[0].link_names[1].c_str());
+                     __func__, collisions.begin()->second[0].link_names[0].c_str(),
+                     collisions.begin()->second[0].link_names[1].c_str());
           }
         }
 
@@ -289,12 +289,11 @@ namespace vkc
       ROS_ERROR("[%s]Unable to find inverse kinematics solver for  %s.", __func__, manipulator.c_str());
       return false;
     }
-
   }
 
-  void ProbTranslator::genRandState(tesseract_kinematics::ForwardKinematics::Ptr kin, Eigen::VectorXd &seed)
+  void ProbTranslator::genRandState(tesseract_kinematics::KinematicGroup::UPtr kin, Eigen::VectorXd &seed)
   {
-    Eigen::MatrixX2d joint_limits = kin->getLimits();
+    Eigen::MatrixX2d joint_limits = kin->getLimits().joint_limits;
     std::vector<std::string> joint_names;
     std::unordered_map<std::string, int> joint_name_idx;
 
@@ -317,11 +316,11 @@ namespace vkc
     return true;
   }
   // wanglei@2021-10-28 to check whether solution satisfy joints limits
-  bool ProbTranslator::checkJointLimits(const Eigen::VectorXd &solution, const Eigen::MatrixX2d& limits)
+  bool ProbTranslator::checkJointLimits(const Eigen::VectorXd &solution, const tesseract_common::KinematicLimits limits)
   {
-    for(size_t i = 0; i < solution.size(); ++i)
+    for (size_t i = 0; i < solution.size(); ++i)
     {
-      if(solution[i] < limits(i, 0) || solution[i] > limits(i, 1))
+      if (solution[i] < limits(i, 0) || solution[i] > limits(i, 1))
       {
         ROS_INFO("[%s]joint %d exceeds limits, expected: [%f, %f], actual: %f",
                  __func__, i + 1, limits(i, 0), limits(i, 1), solution[i]);
@@ -343,7 +342,6 @@ namespace vkc
     // extract pose information
     BaseObject::AttachLocation::Ptr attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
     Eigen::Isometry3d target_pos = attach_location_ptr->world_joint_origin_transform;
-    
 
     this->l_obj = {LinkDesiredPose(env.getEndEffectorLink(), target_pos)};
     this->j_obj.clear();
@@ -357,7 +355,7 @@ namespace vkc
     ROS_INFO("Translating Place Problem");
 
     setupParams(env, act);
-    
+
     // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
     // this->coi_->setAdjacencyMap();
 

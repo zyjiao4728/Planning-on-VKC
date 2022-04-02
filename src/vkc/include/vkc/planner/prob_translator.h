@@ -46,60 +46,60 @@ namespace vkc
 
   public:
     /**
-    * @brief Get the start and goal states and save them internally
-    * @param env tesseract environment before planning
-    * @param manipulator string of manipulator name
-    */
+     * @brief Get the start and goal states and save them internally
+     * @param env tesseract environment before planning
+     * @param manipulator string of manipulator name
+     */
     bool getStartAndGoalState(VKCEnvBasic &env, std::string manipulator);
 
     /**
-    * @brief Copy the start state
-    * @param env tesseract environment before planning
-    * @param manipulator string of manipulator name
-    */
-    tesseract_motion_planners::JointWaypoint::Ptr setupStartWaypoint(VKCEnvBasic &env, std::string manipulator);
+     * @brief Copy the start state
+     * @param env tesseract environment before planning
+     * @param manipulator string of manipulator name
+     */
+    tesseract_planning::JointWaypoint setupStartWaypoint(VKCEnvBasic &env, std::string manipulator);
 
     /**
-    * @brief Find the goal state of the manipulator, will use IK if link objective is given
-    * @param env tesseract environment before planning
-    * @param manipulator string of manipulator name
-    */
-    tesseract_motion_planners::JointWaypoint::Ptr setupGoalWaypoint(VKCEnvBasic &env, std::string manipulator);
+     * @brief Find the goal state of the manipulator, will use IK if link objective is given
+     * @param env tesseract environment before planning
+     * @param manipulator string of manipulator name
+     */
+    tesseract_planning::JointWaypoint setupGoalWaypoint(VKCEnvBasic &env, std::string manipulator);
 
     /**
-    * @brief Set up planning parameters
-    * @param env tesseract environment before planning
-    */
+     * @brief Set up planning parameters
+     * @param env tesseract environment before planning
+     */
     void setupParams(VKCEnvBasic &env, vkc::ActionBase::Ptr act);
 
     /**
-    * @brief Translate problems into OMPL tasks
-    * @param env tesseract environment before planning
-    * @param act action 
-    */
+     * @brief Translate problems into OMPL tasks
+     * @param env tesseract environment before planning
+     * @param act action
+     */
     bool transProb(VKCEnvBasic &env, vkc::ActionBase::Ptr act);
 
     /**
-    * @brief Use this planner for OMPL
-    * @param option Planner enum, only RRT related planners are implemented
-    */
+     * @brief Use this planner for OMPL
+     * @param option Planner enum, only RRT related planners are implemented
+     */
     void insertPlanners(OMPLPlanners::Planners option);
 
     /**
-    * @brief Use this planner for OMPL
-    * @param option Planner enum, only RRT related planners are implemented
-    */
-    bool solveProblem(PlannerResponse &response, std::vector<std::vector<double>> &res_traj);
+     * @brief Use this planner for OMPL
+     * @param option Planner enum, only RRT related planners are implemented
+     */
+    bool solveProblem(tesseract_planning::PlannerResponse &response, std::vector<std::vector<double>> &res_traj);
 
-    bool inverseKinematics(tesseract_kinematics::InverseKinematics::Ptr solver, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
+    tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
     bool collisionFreeInverseKinematics(VKCEnvBasic &env, std::string manipulator, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
-    void getJointNameIndexMap(tesseract_kinematics::ForwardKinematics::Ptr kin, std::unordered_map<std::string, int> &joint_name_idx);
+    void getJointNameIndexMap(tesseract_kinematics::KinematicGroup::UPtr kin, std::unordered_map<std::string, int> &joint_name_idx);
 
-    void genRandState(tesseract_kinematics::ForwardKinematics::Ptr kin, Eigen::VectorXd &seed);
+    void genRandState(tesseract_kinematics::KinematicGroup::UPtr kin, Eigen::VectorXd &seed);
 
-    tesseract_kinematics::ForwardKinematics::ConstPtr getKinematics();
+    tesseract_kinematics::KinematicGroup::ConstPtr getKinematics();
 
   protected:
     bool transPickProb(VKCEnvBasic &env, vkc::PickAction::Ptr act);
@@ -111,9 +111,8 @@ namespace vkc
     bool transUseProb(VKCEnvBasic &env, vkc::UseAction::Ptr act);
 
     // wanglei@2021-10-28 to check whether solution satisfy joints limits
-    bool checkJointLimits(const Eigen::VectorXd &solution, const Eigen::MatrixX2d& limits);
+    bool checkJointLimits(const Eigen::VectorXd &solution, const tesseract_common::KinematicLimits limits);
 
-    
     // struct BaseBias
     // {
     //   double reach_length;
@@ -153,11 +152,11 @@ namespace vkc
 
   private:
     // tesseract_motion_planners::ChainOmplInterface::Ptr coi_;
-    tesseract_kinematics::ForwardKinematics::ConstPtr kin;
-    tesseract_motion_planners::JointWaypoint::Ptr start_waypoint;
-    tesseract_motion_planners::JointWaypoint::Ptr goal_waypoint;
-    tesseract::Tesseract::Ptr tesseract_;
-    tesseract_motion_planners::OmplPlanParameters params_;
+    tesseract_kinematics::KinematicGroup::ConstPtr kin;
+    tesseract_planning::JointWaypoint start_waypoint;
+    tesseract_planning::JointWaypoint goal_waypoint;
+    tesseract_monitoring::EnvironmentMonitor::Ptr tesseract_;
+    tesseract_planning::OmplPlanParameters params_;
     Husky_IK::Option ik_option_;
     int inv_attp_max_;
     OMPLPlanners::Planners planner_;

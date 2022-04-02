@@ -44,12 +44,12 @@ public:
   trajopt::ProblemConstructionInfo genPlaceProb_test(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
   trajopt::ProblemConstructionInfo genUseProb_test(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
 
-  int initProbInfo(trajopt::ProblemConstructionInfo &pci, tesseract::Tesseract::Ptr tesseract, int n_steps,
+  int initProbInfo(trajopt::ProblemConstructionInfo &pci, tesseract_monitoring::EnvironmentMonitor::Ptr tesseract, int n_steps,
                    std::string manip);
 protected:
 
 
-  bool validateGroupID(tesseract::Tesseract::Ptr tesseract, const std::string &group_id);
+  bool validateGroupID(tesseract_monitoring::EnvironmentMonitor::Ptr tesseract, const std::string &group_id);
 
   Eigen::Vector4d getQuatFromIso(Eigen::Isometry3d iso);
 
