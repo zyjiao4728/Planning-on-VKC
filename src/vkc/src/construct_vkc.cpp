@@ -110,14 +110,9 @@ namespace vkc
     return srdf_model_;
   }
 
-  const tesseract_environment::Environment &ConstructVKC::getTesseractEnvironment()
+  tesseract_environment::Environment &ConstructVKC::getTesseractEnvironment()
   {
     return monitor_->getEnvironment();
-  }
-
-  const tesseract_scene_graph::SceneGraph::ConstPtr &ConstructVKC::getTesseractSceneGraph()
-  {
-    return monitor_->getEnvironment().getSceneGraph();
   }
 
   void ConstructVKC::clear()

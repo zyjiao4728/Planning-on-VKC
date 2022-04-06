@@ -240,7 +240,7 @@ namespace vkc
         for (const auto child_joint : object_scene_graph_->getOutboundJoints(link_name))
         {
           std::string child_link_name = object_scene_graph_->getTargetLink(child_joint->getName())->getName();
-          ROS_DEBUG("Child link %s has %i child joints", child_link_name.c_str(),
+          ROS_DEBUG("Child link %s has %li child joints", child_link_name.c_str(),
                     object_scene_graph_->getOutboundJoints(child_link_name).size());
           inverseRootTipHelper(new_object_scene_graph, child_link_name,
                                object_scene_graph_->getOutboundJoints(child_link_name).size());
@@ -332,7 +332,7 @@ namespace vkc
             {
               if (std::find(stem.joints.begin(), stem.joints.end(), it2->getName()) == stem.joints.end())
               {
-                Joint::Ptr outbound_joint = std::make_shared<Joint>(*(object_scene_graph_->getJoint(it2->getName())));
+                Joint::Ptr outbound_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it2->getName())->clone()));
                 outbound_joint->parent_to_joint_origin_transform =
                     prev_old_joint_tf.inverse() * outbound_joint->parent_to_joint_origin_transform;
                 new_object_scene_graph->removeJoint(it2->getName());
@@ -344,7 +344,7 @@ namespace vkc
         }
         ROS_DEBUG("Inverting Joint: %s", it.c_str());
 
-        Joint::Ptr current_joint = std::make_shared<Joint>(*(object_scene_graph_->getJoint(it)));
+        Joint::Ptr current_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it)->clone()));  // TODO! find ways to modify joint(delete&add?)
         std::string old_parent_link = current_joint->parent_link_name;
         std::string old_child_link = current_joint->child_link_name;
         current_joint->parent_link_name = old_child_link;
@@ -369,7 +369,7 @@ namespace vkc
             if (std::find(stem.joints.begin(), stem.joints.end(), it->getName()) == stem.joints.end())
             {
               // std::cout << it->getName().c_str() << std::endl;
-              Joint::Ptr outbound_joint = std::make_shared<Joint>(*(object_scene_graph_->getJoint(it->getName())));
+              Joint::Ptr outbound_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it->getName())->clone()));
               outbound_joint->parent_to_joint_origin_transform =
                   prev_old_joint_tf.inverse() * outbound_joint->parent_to_joint_origin_transform;
               new_object_scene_graph->removeJoint(it->getName());

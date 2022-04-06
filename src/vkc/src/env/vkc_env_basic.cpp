@@ -241,13 +241,13 @@ namespace vkc
 
     if (modify_env_rviz_.call(update_env))
     {
-      ROS_INFO("[%s]rviz environment updated, result: %d, revision: %llu, past revision: %lu, current_revision: %lu",
+      ROS_INFO("[%s]rviz environment updated, result: %d, revision: %lu, past revision: %lu, current_revision: %u",
                __func__, update_env.response.success, update_env.response.revision, past_revision,
                tesseract->getTesseractEnvironment().getRevision());
     }
     else
     {
-      ROS_INFO("[%s]failed to update rviz environment, result: %d, revision: %llu, past revision: %lu, current_revision: %lu",
+      ROS_INFO("[%s]failed to update rviz environment, result: %d, revision: %lu, past revision: %lu, current_revision: %u",
                __func__, update_env.response.success, update_env.response.revision, past_revision,
                tesseract->getTesseractEnvironment().getRevision());
       return false;
@@ -444,9 +444,10 @@ namespace vkc
       group.push_back(std::pair<std::string, std::string>("world", end_effector_link_));
       tesseract->getSRDFModel()->kinematics_information.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
 
-      tesseract->getTesseract()->clearKinematics();
-      tesseract->getTesseract()->registerDefaultFwdKinSolvers();
-      tesseract->getTesseract()->registerDefaultInvKinSolvers();
+      // tesseract->getTesseract()->clearKinematics();
+      // tesseract->getTesseract()->registerDefaultFwdKinSolvers();
+      // tesseract->getTesseract()->registerDefaultInvKinSolvers();
+      // TODO! need to restore functions
     }
 
     return DEFAULT_VKC_GROUP_ID;
@@ -469,9 +470,10 @@ namespace vkc
   bool VKCEnvBasic::reInit()
   {
     end_effector_link_ = robot_end_effector_link_;
-    ROS_INFO("[%s]revision: %lu", __func__, plot_tesseract_->getTesseractEnvironment().getRevision());
+    ROS_INFO("[%s]revision: %u", __func__, plot_tesseract_->getTesseractEnvironment().getRevision());
     if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
       return false;
+    return true;
   }
 
 } // namespace vkc

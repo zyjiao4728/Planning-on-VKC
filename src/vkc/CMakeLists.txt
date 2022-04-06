@@ -4,19 +4,23 @@ project(vkc VERSION 0.1.0 LANGUAGES CXX)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
+  std_srvs
   tesseract_rosutils
+  tesseract_monitoring
 )
 find_package(Boost COMPONENTS system python REQUIRED)
 find_package(console_bridge REQUIRED)
+find_package(tesseract_environment REQUIRED)
+find_package(tesseract_monitoring)
 find_package(tesseract_scene_graph REQUIRED)
 find_package(tesseract_collision REQUIRED)
-find_package(tesseract_environment REQUIRED)
+find_package(tesseract_command_language REQUIRED)
+find_package(tesseract_motion_planners REQUIRED)
+find_package(tesseract_process_managers REQUIRED)
 find_package(tesseract_kinematics REQUIRED)
 find_package(tesseract_common REQUIRED)
-find_package(tesseract REQUIRED)
-find_package(tesseract REQUIRED)
-find_package(tesseract_motion_planners REQUIRED)
-find_package(trajopt REQUIRED)
+find_package(trajopt_ifopt REQUIRED)
+find_package(trajopt_sqp REQUIRED)
 find_package(astar REQUIRED)
 find_package(ompl REQUIRED)
 
@@ -25,7 +29,7 @@ list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
 
 # Create target
 add_library(${PROJECT_NAME}_construct_vkc SHARED src/construct_vkc.cpp)
-target_link_libraries(${PROJECT_NAME}_construct_vkc PUBLIC tesseract::tesseract tesseract::tesseract_scene_graph tesseract::tesseract_collision_bullet tesseract::tesseract_environment_kdl tesseract::tesseract_kinematics_kdl console_bridge)
+target_link_libraries(${PROJECT_NAME}_construct_vkc PUBLIC tesseract::tesseract_scene_graph  tesseract::tesseract_environment tesseract::tesseract_collision_bullet tesseract::tesseract_kinematics_kdl console_bridge)
 target_compile_options(${PROJECT_NAME}_construct_vkc PRIVATE -Wall -Wextra -Wsuggest-override -Wconversion -Wsign-conversion)
 if(CXX_FEATURE_FOUND EQUAL "-1")
     target_compile_options(${PROJECT_NAME}_construct_vkc PUBLIC -std=c++11)
@@ -37,13 +41,13 @@ target_include_directories(${PROJECT_NAME}_construct_vkc PUBLIC
     "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME}_construct_vkc SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
     $<TARGET_PROPERTY:tesseract::tesseract_common,INTERFACE_INCLUDE_DIRECTORIES>) #tesseract::tesseract_common Due to bug in catkin, there is an open PR
 
 add_library(${PROJECT_NAME}_vkc_env_basic SHARED src/env/vkc_env_basic.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_construct_vkc
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -73,7 +77,6 @@ target_include_directories(
 #   ${PROJECT_NAME}_construct_vkc
 #   ${PROJECT_NAME}_vkc_env_basic
 #   ${PROJECT_NAME}_prob_generator
-#   tesseract::tesseract
 #   tesseract::tesseract_motion_planners_trajopt 
 #   tesseract::tesseract_motion_planners_ompl
 #   ${catkin_LIBRARIES}
@@ -103,7 +106,6 @@ target_link_libraries(
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -132,7 +134,6 @@ target_link_libraries(
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -192,7 +193,6 @@ target_link_libraries(${PROJECT_NAME}_prob_generator
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   astar
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}

@@ -36,8 +36,7 @@ namespace vkc
     tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
     tesseract_srdf::SRDFModel::Ptr getSRDFModel();
 
-    const tesseract_scene_graph::SceneGraph::ConstPtr &getTesseractSceneGraph();
-    const tesseract_environment::Environment &getTesseractEnvironment();
+    tesseract_environment::Environment &getTesseractEnvironment();
 
     // // Break scene graph and reconnect
     // bool construct(const std::string end_effector_link_name, const AttachLocation attach_location);

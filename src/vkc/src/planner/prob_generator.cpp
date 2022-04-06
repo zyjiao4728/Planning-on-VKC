@@ -138,7 +138,7 @@ namespace vkc
       assert(false);
     }
 
-    ProblemConstructionInfo pci(std::make_shared<tesseract_environment::Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<tesseract_environment::Environment>(env.getVKCEnv()->getTesseract()->getEnvironment().clone()));
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
     addJointTerm(pci, joint_num);
@@ -241,7 +241,7 @@ namespace vkc
 
   trajopt::ProblemConstructionInfo ProbGenerator::genPickProb_test(VKCEnvBasic &env, PickAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseract()->getEnvironment().clone()));
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.01, 50);
@@ -275,7 +275,7 @@ namespace vkc
   TrajOptProb::Ptr ProbGenerator::genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps)
   {
     ROS_INFO("[@%s]generate a place problem with given data.", __func__);
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseract()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseract()->getEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -383,7 +383,7 @@ namespace vkc
 
   trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -438,7 +438,7 @@ namespace vkc
 
   TrajOptProb::Ptr ProbGenerator::genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -480,7 +480,7 @@ namespace vkc
 
   trajopt::ProblemConstructionInfo ProbGenerator::genGotoProb_test(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -507,7 +507,7 @@ namespace vkc
 
   TrajOptProb::Ptr ProbGenerator::genUseProb(VKCEnvBasic &env, UseAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -544,7 +544,7 @@ namespace vkc
 
   trajopt::ProblemConstructionInfo ProbGenerator::genUseProb_test(VKCEnvBasic &env, UseAction::Ptr act, int n_steps)
   {
-    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment()));
+    ProblemConstructionInfo pci(std::make_shared<Environment>(env.getVKCEnv()->getTesseractEnvironment().clone()));
 
     int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
 
@@ -876,7 +876,7 @@ namespace vkc
   //     end_pos(1) = pci.init_info.data.bottomRows(1)(1);
   //     if (pci.kin->numJoints() > 8)
   //     {
-  //       end_pos(9) = act->getJointObjectives()[0].joint_angle;
+  //       end_pos(9) = act->Objectives()[0].joint_angle;
   //     }
   //     pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
   //     pci.init_info.data = end_pos;
