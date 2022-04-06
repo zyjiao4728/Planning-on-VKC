@@ -330,24 +330,24 @@ namespace vkc
       // pci.init_info.type = InitInfo::GIVEN_TRAJ;
       initTrajectory(env, act->getLinkObjectives(), act->getJointObjectives(), MapInfo(12, 12, 0.2),
                      pci.init_info.data, n_steps, act->getManipulatorID());
-      ROS_INFO("[%s]init trajectory size, rows: %d, colums: %d", __func__, pci.init_info.data.rows(), pci.init_info.data.cols());
+      ROS_INFO("[%s]init trajectory size, rows: %ld, colums: %d", __func__, pci.init_info.data.rows(), pci.init_info.data.cols());
 
       Eigen::VectorXd end_pos;
       end_pos.resize(pci.kin->numJoints());
       end_pos.setZero();
-      ROS_INFO("[%s](1)number of joints: %d", __func__, pci.kin->numJoints());
+      ROS_INFO("[%s](1)number of joints: %ld", __func__, pci.kin->numJoints());
       for (unsigned int j = 0; j < pci.kin->numJoints(); j++)
       {
         end_pos[j] = pci.init_info.data.topRows(1)(j);
       }
-      ROS_INFO("[%s](2)number of joints: %d", __func__, pci.kin->numJoints());
+      ROS_INFO("[%s](2)number of joints: %ld", __func__, pci.kin->numJoints());
       end_pos(0) = pci.init_info.data.bottomRows(1)(0);
       end_pos(1) = pci.init_info.data.bottomRows(1)(1);
       if (pci.kin->numJoints() > 8)
       {
         end_pos(9) = act->getJointObjectives()[0].joint_angle;
       }
-      ROS_INFO("[%s](3)number of joints: %d", __func__, pci.kin->numJoints());
+      ROS_INFO("[%s](3)number of joints: %ld", __func__, pci.kin->numJoints());
       pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
       pci.init_info.data = end_pos;
       std::cout << "end pose: " << end_pos.transpose() << std::endl;

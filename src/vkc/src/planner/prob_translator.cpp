@@ -323,7 +323,7 @@ namespace vkc
     {
       if (solution[i] < limits.joint_limits(i, 0) || solution[i] > limits.joint_limits(i, 1))
       {
-        ROS_INFO("[%s]joint %d exceeds limits, expected: [%f, %f], actual: %f",
+        ROS_INFO("[%s]joint %ld exceeds limits, expected: [%f, %f], actual: %f",
                  __func__, i + 1, limits.joint_limits(i, 0), limits.joint_limits(i, 1), solution[i]);
         return false;
       }
