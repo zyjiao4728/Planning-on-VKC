@@ -81,7 +81,7 @@ namespace vkc
     {
       ROS_ERROR("Null scene graph or srdf model!");
     }
-    auto env_ = std::make_shared<tesseract_environment::Environment>();
+    env_ = std::make_shared<tesseract_environment::Environment>();
     if (!env_->init(*scene_graph_, srdf_model_))
     {
       ROS_INFO("Failed to initialize tesseract environment");
@@ -108,6 +108,11 @@ namespace vkc
   tesseract_srdf::SRDFModel::Ptr ConstructVKC::getSRDFModel()
   {
     return srdf_model_;
+  }
+
+  tesseract_environment::Environment::Ptr ConstructVKC::getEnvironment()
+  {
+    return env_;
   }
 
   tesseract_environment::Environment &ConstructVKC::getTesseractEnvironment()

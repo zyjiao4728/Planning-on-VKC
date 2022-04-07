@@ -36,6 +36,7 @@ namespace vkc
     tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
     tesseract_srdf::SRDFModel::Ptr getSRDFModel();
 
+    tesseract_environment::Environment::Ptr getEnvironment();
     tesseract_environment::Environment &getTesseractEnvironment();
 
     // // Break scene graph and reconnect
@@ -45,6 +46,7 @@ namespace vkc
     tesseract_scene_graph::SceneGraph::Ptr scene_graph_;
     tesseract_srdf::SRDFModel::Ptr srdf_model_;
     tesseract_monitoring::EnvironmentMonitor::Ptr monitor_;
+    tesseract_environment::Environment::Ptr env_;
 
     // Copy a link and all its child links/joints to a new scene graph
     // tesseract_scene_graph::SceneGraph::Ptr breakSceneGraphatJoint(const std::string& scene_graph_name,
