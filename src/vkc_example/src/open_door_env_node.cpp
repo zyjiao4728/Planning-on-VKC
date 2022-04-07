@@ -12,7 +12,7 @@
 using namespace std;
 using namespace vkc;
 using namespace tesseract_rosutils;
-using namespace tesseract_motion_planners;
+using namespace tesseract_planning;
 using namespace trajopt;
 // using namespace vkc_example;
 

@@ -16,7 +16,6 @@ find_dependency(tesseract_collision)
 find_dependency(tesseract_environment)
 find_dependency(tesseract_kinematics)
 find_dependency(tesseract_common)
-find_dependency(tesseract)
 find_dependency(astar)
 
 

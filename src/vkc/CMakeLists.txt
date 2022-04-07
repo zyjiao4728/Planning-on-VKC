@@ -1,17 +1,20 @@
 cmake_minimum_required(VERSION 3.5.0)
+
+find_package(ros_industrial_cmake_boilerplate REQUIRED)
+extract_package_metadata(pkg)
+
 project(vkc VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   std_srvs
-  tesseract_rosutils
   tesseract_monitoring
+  tesseract_rosutils
 )
 find_package(Boost COMPONENTS system python REQUIRED)
 find_package(console_bridge REQUIRED)
 find_package(tesseract_environment REQUIRED)
-find_package(tesseract_monitoring)
 find_package(tesseract_scene_graph REQUIRED)
 find_package(tesseract_collision REQUIRED)
 find_package(tesseract_command_language REQUIRED)
@@ -24,6 +27,10 @@ find_package(trajopt_sqp REQUIRED)
 find_package(astar REQUIRED)
 find_package(ompl REQUIRED)
 
+catkin_package()
+
+# Load variable for clang tidy args, compiler options and cxx version
+tesseract_variables()
 
 list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
 

@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   tesseract_rosutils
   rospy
+  tesseract_monitoring
   roslib # added: wanglei@bigai.ai, to get package path
 )
 
@@ -20,7 +21,7 @@ find_package(Boost COMPONENTS system python REQUIRED)
 find_package(vkc REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(trajopt REQUIRED)
-find_package(tesseract REQUIRED)
+find_package(tesseract_environment REQUIRED)
 find_package(tesseract_motion_planners REQUIRED)
 find_package(ompl REQUIRED)
 
@@ -179,7 +180,7 @@ catkin_package(
 add_library(${PROJECT_NAME}_utils SHARED src/utils.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_utils
-  tesseract::tesseract
+  tesseract::tesseract_environment
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -334,12 +335,12 @@ install(PROGRAMS
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_open_door_env_node ${PROJECT_NAME}_arena_env_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-install(TARGETS ${PROJECT_NAME}_arena_env_node
+install(TARGETS ${PROJECT_NAME}_open_door_env_node 
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+# install(TARGETS ${PROJECT_NAME}_arena_env_node
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
