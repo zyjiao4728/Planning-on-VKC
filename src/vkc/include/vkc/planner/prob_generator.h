@@ -46,7 +46,7 @@ namespace vkc
     tesseract_planning::PlannerRequest genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
     tesseract_planning::PlannerRequest genUseProb(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
 
-    ProfileDictionary::Ptr genCartProfiles_(VKCEnvBasic &env, double collision_margin, int collision_coeff, Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
+    tesseract_planning::ProfileDictionary::Ptr genCartProfiles_(VKCEnvBasic &env, double collision_margin, int collision_coeff, Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
 
     trajopt::ProblemConstructionInfo genProbTest(VKCEnvBasic &env, ActionBase::Ptr action, int n_steps);
     trajopt::ProblemConstructionInfo genGotoProb_test(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
@@ -69,9 +69,9 @@ namespace vkc
 
     void setCompositeProfile(tesseract_planning::TrajOptDefaultCompositeProfile::Ptr profile, double margin, double coeff, int num_joints);
 
-    void setStartInstruction(CompositeInstruction &program, ros::V_string joint_names, Eigen::VectorXd joint_values);
+    void setStartInstruction(tesseract_planning::CompositeInstruction &program, ros::V_string joint_names, Eigen::VectorXd joint_values);
 
-    void addCartWaypoint(CompositeInstruction &program, Eigen::Isometry3d pose, std::string description);
+    void addCartWaypoint(tesseract_planning::CompositeInstruction &program, Eigen::Isometry3d pose, std::string description);
 
     void setSolverProfile(ProfileDictionary::Ptr profiles, int n_iter);
 
