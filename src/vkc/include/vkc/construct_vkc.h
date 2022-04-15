@@ -7,8 +7,7 @@
 #include <tesseract_srdf/srdf_model.h>
 #include <tesseract_common/types.h>
 #include <tesseract_rosutils/utils.h>
-#include <tesseract_environment/environment.h>
-#include <tesseract_environment/environment_monitor.h>
+#include <tesseract_monitoring/environment_monitor.h>
 
 namespace vkc
 {
@@ -45,7 +44,7 @@ namespace vkc
   private:
     tesseract_scene_graph::SceneGraph::Ptr scene_graph_;
     tesseract_srdf::SRDFModel::Ptr srdf_model_;
-    tesseract_environment::EnvironmentMonitor::Ptr monitor_;
+    tesseract_monitoring::ROSEnvironmentMonitor::Ptr monitor_;
     tesseract_environment::Environment::Ptr env_;
 
     // Copy a link and all its child links/joints to a new scene graph

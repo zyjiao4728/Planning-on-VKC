@@ -37,14 +37,14 @@ namespace vkc
     ProbGenerator();
 
   public:
-    PlannerRequest genRequest(VKCEnvBasic &env, ActionBase::Ptr action, int n_steps, int n_iter);
+    tesseract_planning::PlannerRequest genRequest(VKCEnvBasic &env, ActionBase::Ptr action, int n_steps, int n_iter);
 
-    PlannerRequest genPickProb(VKCEnvBasic &env, PickAction::Ptr act, int n_steps, int n_iter);
+    tesseract_planning::PlannerRequest genPickProb(VKCEnvBasic &env, PickAction::Ptr act, int n_steps, int n_iter);
     // trajopt::TrajOptProb::Ptr genPickProbOMPL(VKCEnvBasic &env, PickAction::Ptr act, int n_steps);
-    PlannerRequest genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps, int n_iter);
+    tesseract_planning::PlannerRequest genPlaceProb(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps, int n_iter);
     // trajopt::TrajOptProb::Ptr genPlaceProbOMPL(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
-    PlannerRequest genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
-    PlannerRequest genUseProb(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
+    tesseract_planning::PlannerRequest genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act, int n_steps);
+    tesseract_planning::PlannerRequest genUseProb(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
 
     ProfileDictionary::Ptr genCartProfiles_(VKCEnvBasic &env, double collision_margin, int collision_coeff, Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
 

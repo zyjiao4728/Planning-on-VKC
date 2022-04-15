@@ -13,8 +13,6 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 #include <vkc/construct_vkc.h>
 
-/** @brief RViz Example Namespace */
-const std::string VKC_MONITOR_NAMESPACE = "tesseract_vkc";
 
 namespace vkc
 {
@@ -87,7 +85,8 @@ namespace vkc
       ROS_INFO("Failed to initialize tesseract environment");
       return false;
     }
-    monitor_ = std::make_shared<tesseract_environment::EnvironmentMonitor>(env_, monitor_namespace);
+    monitor_ = std::make_shared<tesseract_monitoring::ROSEnvironmentMonitor>(env_, monitor_namespace);
+    monitor_->startPublishingEnvironment();
     return true;
   }
 
@@ -130,6 +129,7 @@ namespace vkc
   void ConstructVKC::clearTesseract()
   {
     monitor_ = nullptr;
+    env_ = nullptr;
   }
 
 } // namespace vkc

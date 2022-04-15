@@ -45,7 +45,7 @@ namespace vkc
 
   bool checkJointLimit(Eigen::VectorXd &sol, const Eigen::MatrixX2d &joint_limit, size_t num_joint);
 
-  double interpolate(std::vector<LinkDesiredPose> base_pose, std::vector<double> remap, int i, bool x);
+  double interpolate(std::vector<LinkDesiredPose> base_pose, std::vector<double> remap, unsigned int i, bool x);
 
   trajopt::TrajArray initTrajectory(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
                                     std::vector<JointDesiredPose> &joint_objectives, MapInfo map,

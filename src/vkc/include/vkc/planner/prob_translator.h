@@ -155,7 +155,7 @@ namespace vkc
     tesseract_kinematics::KinematicGroup::ConstPtr kin;
     tesseract_planning::JointWaypoint start_waypoint;
     tesseract_planning::JointWaypoint goal_waypoint;
-    tesseract_monitoring::EnvironmentMonitor::Ptr tesseract_;
+    tesseract_environment::Environment::Ptr tesseract_;
     // tesseract_planning::OmplPlanParameters params_;
     Husky_IK::Option ik_option_;
     int inv_attp_max_;

@@ -72,9 +72,11 @@ namespace vkc
   {
     // Initialize scene graph to tesseract environment
     ROS_INFO("Initializing tesseract...");
+    /** @brief RViz Example Namespace */
+    const std::string VKC_MONITOR_NAMESPACE = "tesseract_vkc";
 
-    tesseract_->initTesseract();
-    plot_tesseract_->initTesseract();
+    tesseract_->initTesseract(VKC_MONITOR_NAMESPACE);
+    plot_tesseract_->initTesseract("tesseract_vkc_plot");
 
     ROS_INFO("Tesseract initialized...");
 

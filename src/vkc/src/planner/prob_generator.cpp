@@ -293,7 +293,7 @@ namespace vkc
     BaseObject::AttachLocation::Ptr detach_location_ptr = env.getAttachLocation(act->getDetachedObject());
     ManipulatorInfo manip;
     manip.tcp_frame = detach_location_ptr->base_link_;
-    manip.working_frame = 'world';
+    manip.working_frame = "world";
     manip.manipulator = act->getManipulatorID();
 
     CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED, manip);

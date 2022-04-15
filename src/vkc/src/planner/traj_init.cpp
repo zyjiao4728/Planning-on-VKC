@@ -131,7 +131,7 @@ namespace vkc
       {
         if (joint_name_idx.at(joint_obj.joint_name) < 0 || joint_name_idx.at(joint_obj.joint_name) > seed.size())
         {
-          ROS_WARN("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+          ROS_WARN("[%s]joint_name: %s, joint_index: %d, seed size: %ld",
                    __func__,
                    joint_obj.joint_name.c_str(),
                    joint_name_idx.at(joint_obj.joint_name),
@@ -180,7 +180,7 @@ namespace vkc
     return true;
   }
 
-  double interpolate(std::vector<LinkDesiredPose> base_pose, std::vector<double> remap, int i, bool x)
+  double interpolate(std::vector<LinkDesiredPose> base_pose, std::vector<double> remap, unsigned int i, bool x)
   {
     double idx = remap[i];
     double idx_1 = 0;
@@ -308,7 +308,7 @@ namespace vkc
             satisfy_collision = contact_results.size();
 
             satisfy_limit = checkJointLimit(sol[0], vkc_kin_group->getLimits().joint_limits,
-                                            vkc_kin_group->numJoints());
+                                            size_t(vkc_kin_group->numJoints()));
 
             if (inv_iter > max_iter - 1)
             {
@@ -342,7 +342,7 @@ namespace vkc
                                     trajopt::TrajArray &init_traj, int n_steps, const std::string &robot)
   {
     // srand(time(NULL));
-    ROS_WARN("[%s]init trajectory, link_objectives size: %d, joint_objective size: %d",
+    ROS_WARN("[%s]init trajectory, link_objectives size: %d, joint_objective size: %ld",
              __func__, link_objectives.size(), joint_objectives.size());
 
     for (auto &objective : link_objectives)
@@ -406,7 +406,7 @@ namespace vkc
 
         if (link_obj.link_name == "base_link")
         {
-          ROS_WARN("[%s]init trajectory for base link...");
+          ROS_WARN("[%s]init trajectory for base link...", __func__);
           base_pose.clear();
           base_pose.push_back(link_obj);
           desired_base_pose = true;
@@ -473,7 +473,7 @@ namespace vkc
 
             if (satisfy_collision < last_collision_count)
             {
-              ROS_WARN("[%s]best solutioni updated! current collision: %d, last collision: %d",
+              ROS_WARN("[%s]best solutioni updated! current collision: %ld, last collision: %ld",
                        __func__, satisfy_collision, last_collision_count);
               best_sol = sol[0];
               last_collision_count = satisfy_collision;
