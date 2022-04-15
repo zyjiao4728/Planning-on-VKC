@@ -21,10 +21,10 @@ namespace vkc
 
   tesseract_planning::JointWaypoint ProbTranslator::setupStartWaypoint(VKCEnvBasic &env, std::string manipulator)
   {
-    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
+    auto kin_ = env.getVKCEnv()->getTesseract()->getKinematicGroup(manipulator);
     // getFwdKinematicsManager(manipulator);
 
-    auto current_state = env.getVKCEnv()->getTesseractEnvironment().getState();
+    auto current_state = env.getVKCEnv()->getTesseract()->getState();
     Eigen::VectorXd start_pos;
     start_pos.resize(kin_->numJoints());
     int joint_num = 0;
@@ -52,7 +52,7 @@ namespace vkc
   tesseract_planning::JointWaypoint ProbTranslator::setupGoalWaypoint(VKCEnvBasic &env, std::string manipulator)
   {
 
-    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
+    auto kin_ = env.getVKCEnv()->getTesseract()->getKinematicGroup(manipulator);
 
     if (l_obj.size())
     {
@@ -88,8 +88,8 @@ namespace vkc
       }
       ROS_ERROR("Joint objectives detected size mismatched");
     }
-
-    return;
+    JointWaypoint jw(kin_->getJointNames(), Eigen::VectorXd::Zero(kin_->numJoints())); // TODO! Potentially wrong, all the joints are zero.
+    return jw;
   }
 
   void ProbTranslator::setupParams(VKCEnvBasic &env, vkc::ActionBase::Ptr act)
@@ -99,7 +99,7 @@ namespace vkc
 
     this->tesseract_ = env.getVKCEnv()->getTesseract();
 
-    this->kin = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(act->getManipulatorID());
+    this->kin = env.getVKCEnv()->getTesseract()->getKinematicGroup(act->getManipulatorID());
 
     // // there has got to be a better way to do this
     // this->kin_base = env.getVKCEnv()->getTesseract()->getFwdKinematicsManager()->getFwdKinematicSolver("base");
@@ -227,7 +227,7 @@ namespace vkc
   {
     // auto inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
     // auto inv_kin_solver = inv_kin_mgr->getInvKinematicSolver(manipulator);
-    auto kin_ = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(manipulator);
+    auto kin_ = env.getVKCEnv()->getTesseract()->getKinematicGroup(manipulator);
     if (kin_)
     {
       // ROS_INFO("[%s]it will try %d times to get a collision free waypoint, ik solver name: %s",
@@ -236,10 +236,10 @@ namespace vkc
       solutions.resize(kin_->numJoints());
       seed.resize(kin_->numJoints());
 
-      auto state_og = env.getVKCEnv()->getTesseractEnvironment().getState();
+      auto state_og = env.getVKCEnv()->getTesseract()->getState();
       auto adj_map = env.getVKCEnv()->getSceneGraph()->getAdjacencyMap(kin_->getActiveLinkNames());
 
-      auto collision_manager = env.getVKCEnv()->getTesseractEnvironment().getDiscreteContactManager()->clone();
+      auto collision_manager = env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
       collision_manager->setActiveCollisionObjects(kin_->getActiveLinkNames());
 
       int attempts = 0;
@@ -256,7 +256,7 @@ namespace vkc
         if (!solutions.empty() && checkJointLimits(solutions[0], joint_limits))
         {
           auto state =
-              env.getVKCEnv()->getTesseractEnvironment().getState(kin_->getJointNames(), solutions[0]);
+              env.getVKCEnv()->getTesseract()->getState(kin_->getJointNames(), solutions[0]);
 
           collision_manager->setCollisionObjectsTransform(state.link_transforms);
 
@@ -335,7 +335,7 @@ namespace vkc
     ROS_INFO("Translating Pick Problem");
 
     setupParams(env, act);
-    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseract(), this->kin);
     // this->coi_->setAdjacencyMap();
 
     insertPlanners(planner_);
@@ -357,7 +357,7 @@ namespace vkc
 
     setupParams(env, act);
 
-    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseract(), this->kin);
     // this->coi_->setAdjacencyMap();
 
     this->l_obj = act->getLinkObjectives();
@@ -379,7 +379,7 @@ namespace vkc
 
       // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
       //     this->coi_->spaceInformation(),
-      //     env.getVKCEnv()->getTesseractEnvironment(),
+      //     env.getVKCEnv()->getTesseract(),
       //     this->kin, fix_link_name, fix_link_trans, 0.3));
 
       ROS_ERROR("Fixed based method is not valid with OMPL!");
@@ -388,7 +388,7 @@ namespace vkc
     {
       // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
       //     this->coi_->spaceInformation(),
-      //     env.getVKCEnv()->getTesseractEnvironment(),
+      //     env.getVKCEnv()->getTesseract(),
       //     kin));
     }
 
@@ -404,11 +404,11 @@ namespace vkc
     // translate the problem info to ompl
     setupParams(env, act);
 
-    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseractEnvironment(), this->kin);
+    // this->coi_ = std::make_shared<ChainOmplInterface>(env.getVKCEnv()->getTesseract(), this->kin);
 
     // ompl::base::MotionValidatorPtr mv = std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
     //     this->coi_->spaceInformation(),
-    //     env.getVKCEnv()->getTesseractEnvironment(),
+    //     env.getVKCEnv()->getTesseract(),
     //     kin);
     // this->coi_->setMotionValidator(mv);
 
@@ -502,8 +502,8 @@ namespace vkc
   //   // double a = (rand() % 1000) / 1000.0 * 3.14;
   //   // base_values[0] = 3.79 - r*sin(a);
   //   // base_values[1] = -0.4 + r*cos(a);
-  //   // env.getVKCEnv()->getTesseractEnvironment()->setState(base_joints, base_values);
-  //   // env.getVKCEnv()->getTesseractEnvironment()->getDiscreteContactManager()->contactTest( contact_results, tesseract_collision::ContactTestType::ALL); for (auto &collision : contact_results) { if (collision.first.first == "base_link" || collision.first.second == "base_link") { init_base_position = false; break; } } contact_results.clear(); }
+  //   // env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+  //   // env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest( contact_results, tesseract_collision::ContactTestType::ALL); for (auto &collision : contact_results) { if (collision.first.first == "base_link" || collision.first.second == "base_link") { init_base_position = false; break; } } contact_results.clear(); }
   // }
 
   // Eigen::VectorXd ProbTranslator::genBaseGoal(VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives, BaseBias &bias)
@@ -512,10 +512,10 @@ namespace vkc
   //   Eigen::VectorXd res;
 
   //   const int max_tries = 100;
-  //   EnvState::ConstPtr current_state = env.getVKCEnv()->getTesseractEnvironment()->getCurrentState();
+  //   EnvState::ConstPtr current_state = env.getVKCEnv()->getTesseract()->getCurrentState();
 
   //   tesseract_collision::DiscreteContactManager::Ptr disc_cont_mgr_ =
-  //       env.getVKCEnv()->getTesseractEnvironment()->getDiscreteContactManager()->clone();
+  //       env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
 
   //   // enable all collision
   //   // for (auto &active_link : disc_cont_mgr_->getActiveCollisionObjects())
@@ -564,7 +564,7 @@ namespace vkc
   //     // --------------------------------------------------
 
   //     tesseract_environment::EnvState::Ptr env_state =
-  //         env.getVKCEnv()->getTesseractEnvironment()->getState(this->kin_base->getJointNames(), base_pose);
+  //         env.getVKCEnv()->getTesseract()->getState(this->kin_base->getJointNames(), base_pose);
 
   //     contact_results.clear();
   //     disc_cont_mgr_->setCollisionObjectsTransform(env_state->transforms);
@@ -612,11 +612,11 @@ namespace vkc
   //   std::vector<std::string> total_joint_names;
   //   std::vector<std::string> base_joint_names = kin_base->getJointNames();
 
-  //   env.getVKCEnv()->getTesseractEnvironment()->setState(base_joint_names, base_pose);
+  //   env.getVKCEnv()->getTesseract()->setState(base_joint_names, base_pose);
 
   //   tesseract::InverseKinematicsManager::Ptr inv_kin_mgr = env.getVKCEnv()->getTesseract()->getInvKinematicsManager();
   //   tesseract_collision::DiscreteContactManager::Ptr disc_cont_mgr_ =
-  //       env.getVKCEnv()->getTesseractEnvironment()->getDiscreteContactManager()->clone();
+  //       env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
 
   //   // for (auto &active_link : disc_cont_mgr_->getActiveCollisionObjects())
   //   // {
@@ -726,7 +726,7 @@ namespace vkc
   //           // std::cout << sol << std::endl;
 
   //           tesseract_environment::EnvState::Ptr env_state =
-  //               env.getVKCEnv()->getTesseractEnvironment()->getState(joint_names, sol);
+  //               env.getVKCEnv()->getTesseract()->getState(joint_names, sol);
 
   //           if (inv_iter < 4)
   //           {
@@ -797,7 +797,7 @@ namespace vkc
 
   //   std::vector<std::string> base_joint_names = kin_base->getJointNames();
 
-  //   env.getVKCEnv()->getTesseractEnvironment()->setState(base_joint_names, base_pose);
+  //   env.getVKCEnv()->getTesseract()->setState(base_joint_names, base_pose);
 
   //   // Populate Init Info
   //   EnvState::ConstPtr current_state = a_pci.env->getCurrentState();
@@ -858,8 +858,8 @@ namespace vkc
   //   Eigen::VectorXd base_pose = genBaseGoal(env, link_objectives, bias);
 
   //   // set base to goal position
-  //   // env.getVKCEnv()->getTesseractEnvironment()->setState(this->kin_base->getJointNames(), base_pose);
-  //   // EnvState::ConstPtr state = env.getVKCEnv()->getTesseractEnvironment()->getCurrentState();
+  //   // env.getVKCEnv()->getTesseract()->setState(this->kin_base->getJointNames(), base_pose);
+  //   // EnvState::ConstPtr state = env.getVKCEnv()->getTesseract()->getCurrentState();
 
   //   // 2.5
   //   // Eigen::VectorXd base_pose = Eigen::VectorXd::Zero(3);
@@ -920,7 +920,7 @@ namespace vkc
 
   //   // std::cout << "finished 3" << std::endl;
 
-  //   env.getVKCEnv()->getTesseractEnvironment()->setState(this->kin->getJointNames(), start_waypoint);
+  //   env.getVKCEnv()->getTesseract()->setState(this->kin->getJointNames(), start_waypoint);
 
   //   // std::cout << "finished 4" << std::endl;
 

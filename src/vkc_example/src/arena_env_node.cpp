@@ -3,7 +3,6 @@
 // reason: for parsing task plan file
 #include "vkc/action/TaskPlanParser.h"
 
-
 #include "vkc/env/arena_env.h"
 #include "vkc/env/vkc_env_basic.h"
 #include "vkc/planner/prob_generator.h"
@@ -14,11 +13,9 @@
 #include <ros/package.h>
 #include <iomanip>
 
-
 #include <tesseract_collision/core/types.h>
 #include <tesseract_motion_planners/ompl/conversions.h>
 #include <tesseract_motion_planners/ompl/chain_ompl_interface.h>
-
 
 using namespace std;
 using namespace vkc;
@@ -30,24 +27,21 @@ using namespace trajopt;
 const static int SEED = 1;
 const static bool PLANNER_VERBOSE = false;
 
-
 static SceneObjects &GetSceneObjects()
 {
     static SceneObjects scene_objects = SceneObjects();
     return scene_objects;
 }
 
-
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled, int nruns,
-         vector<tesseract_common::JointTrajectory>& joint_trajs)
+         vector<tesseract_common::JointTrajectory> &joint_trajs)
 {
     // init base position of robot
     vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
     vector<double> base_values({0, 0});
-    env.getVKCEnv()->getTesseract()->getEnvironment()->setState(base_joints, base_values);
+    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
 
     ProbGenerator prob_generator;
-
 
     // create OMPL planner specified problem translator
     vkc::OmplPlanParameters params; // use all default parameters for our beginning
@@ -59,14 +53,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
         PlannerResponse response;
         ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
 
-
         ROS_INFO("[%s]current end effector: %s! action type: %s, init_traj_required: %s",
                  __func__,
-                 env.getEndEffectorLink().c_str(), 
+                 env.getEndEffectorLink().c_str(),
                  action->Name().c_str(),
                  (action->RequireInitTraj() ? "yes" : "no"));
 
-         
         // articulated body planning together with robot is still has problem
         if (ActionType::PlaceAction != action->getActionType() || std::dynamic_pointer_cast<PlaceAction>(action)->isRigidObject())
         {
@@ -96,14 +88,13 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
         bool converged = false;
         while (!converged && tries++ < 5)
         {
-            TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
+            TrajOptProb::Ptr prob_ptr = prob_generator.genRequest(env, action, n_steps);
 
-            // 6: is half size of the map 
-            bool on_map_border = (abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(0)) - 6) < 1e-6 
-            || abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(1)) - 6) < 1e-6);
+            // 6: is half size of the map
+            bool on_map_border = (abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(0)) - 6) < 1e-6 || abs(abs(prob_ptr->GetInitTraj().bottomRows(1)(1)) - 6) < 1e-6);
             if (on_map_border && string::npos == env.getEndEffectorLink().find("cabinet"))
             {
-                //std::cout << prob_ptr->GetInitTraj().bottomRows(1)(0) << " " << prob_ptr->GetInitTraj().bottomRows(1)(1) << std::endl;
+                // std::cout << prob_ptr->GetInitTraj().bottomRows(1)(0) << " " << prob_ptr->GetInitTraj().bottomRows(1)(1) << std::endl;
                 if (tries < 4)
                 {
                     ROS_INFO("unfornately got here before optimizing the trajectory!");
@@ -121,32 +112,28 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter, bool rvi
             auto start = std::chrono::system_clock::now();
             CostInfo cost = solveProb_cost(prob_ptr, response, n_iter, false);
             std::chrono::duration<double> elapsed_seconds = std::chrono::system_clock::now() - start;
-                    ROS_INFO("it takes %f sec optimizing the trajectory!", elapsed_seconds.count());
-        
-            converged = sco::OptStatus::OPT_CONVERGED == response.status_code;
+            ROS_INFO("it takes %f sec optimizing the trajectory!", elapsed_seconds.count());
 
+            converged = sco::OptStatus::OPT_CONVERGED == response.status_code;
 
             // update try counter
             tries += 1;
         }
-
-        
 
         // refine the orientation of the move base
         tesseract_common::TrajArray refined_traj =
             response.trajectory.leftCols(response.joint_names.size());
         refineTrajectory(refined_traj);
 
-        //std::cout << "Refined traj:" << std::endl;
-        //std::cout << refined_traj << std::endl;
+        // std::cout << "Refined traj:" << std::endl;
+        // std::cout << refined_traj << std::endl;
 
         // record planning result
-        tesseract_common::JointTrajectory joint_traj{response.joint_names, refined_traj}; 
+        tesseract_common::JointTrajectory joint_traj{response.joint_names, refined_traj};
         joint_trajs.push_back(joint_traj);
 
         // plot current `action` result
-         plotter->plotTrajectory(response.joint_names, refined_traj);
-
+        plotter->plotTrajectory(response.joint_names, refined_traj);
 
         ROS_INFO("[%s]press Enter key to continue...", __func__);
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -196,8 +183,7 @@ int main(int argc, char **argv)
     TaskPlanParser plan_parser(GetSceneObjects());
     plan_parser.Parse(actions, plan_file_path + plan_file);
     std::cout << actions << std::endl;
-    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
+    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     // cache the planning result for replaying
     vector<tesseract_common::JointTrajectory> joint_trajs;
@@ -206,8 +192,6 @@ int main(int argc, char **argv)
     // plan motion trajectory according to given task actions
     run(env, actions, steps, n_iter, rviz, nruns, joint_trajs);
 
-
     // visualize the trajectory as planned
     TrajectoryVisualize(env, actions, joint_trajs);
-
 }

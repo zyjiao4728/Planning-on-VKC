@@ -112,7 +112,7 @@ namespace vkc
       return true;
     }
 
-    bool setAttachLocationWorldTransform(EnvironmentMonitor::Ptr monitor_)
+    bool setAttachLocationWorldTransform(Environment::Ptr env_)
     {
       if (attach_locations_.size() == 0)
       {
@@ -122,7 +122,7 @@ namespace vkc
 
       for (auto &it : attach_locations_)
       {
-        it.second->world_joint_origin_transform = monitor_->getEnvironment().getLinkTransform(it.second->link_name_) *
+        it.second->world_joint_origin_transform = env_->getLinkTransform(it.second->link_name_) *
                                                   it.second->local_joint_origin_transform;
         // std::cout << "translation of attachment " << it.second->name_ << " in world frame: " << std::endl;
         // std::cout << it.second->world_joint_origin_transform.translation() << std::endl;
@@ -203,7 +203,7 @@ namespace vkc
 
   private:
     // Helper functions
-    void addToEnvironmentHelper(EnvironmentMonitor::Ptr &monitor, const std::string &link_name, long unsigned int child_joint_num)
+    void addToEnvironmentHelper(Environment::Ptr env_, const std::string &link_name, long unsigned int child_joint_num)
     {
       if (child_joint_num > 0)
       {
@@ -212,9 +212,9 @@ namespace vkc
           std::string child_link_name = object_scene_graph_->getTargetLink(child_joint->getName())->getName();
           ROS_DEBUG("Adding Link: %s to the environment.", child_link_name.c_str());
           Command::Ptr command = std::make_shared<AddLinkCommand>(*link_map_.at(child_link_name), *child_joint);
-          monitor->applyCommand(command);
+          env_->applyCommand(command);
           // monitor->getEnvironment()->addLink(*link_map_.at(child_link_name), *child_joint);
-          addToEnvironmentHelper(monitor, child_link_name,
+          addToEnvironmentHelper(env_, child_link_name,
                                  object_scene_graph_->getOutboundJoints(child_link_name).size());
         }
         return;
@@ -244,7 +244,6 @@ namespace vkc
                     object_scene_graph_->getOutboundJoints(child_link_name).size());
           inverseRootTipHelper(new_object_scene_graph, child_link_name,
                                object_scene_graph_->getOutboundJoints(child_link_name).size());
-
           ROS_DEBUG("Copying Joint:     %s to scene graph.", child_joint->getName().c_str());
           new_object_scene_graph->addJoint(*child_joint);
         }
@@ -258,7 +257,7 @@ namespace vkc
     }
 
   public:
-    bool addToEnvironment(EnvironmentMonitor::Ptr monitor_)
+    bool addToEnvironment(Environment::Ptr env_)
     {
       if (world_joint_ == nullptr)
       {
@@ -270,10 +269,8 @@ namespace vkc
         ROS_ERROR("Null object %s!", object_name_.c_str());
       }
       Command::Ptr command = std::make_shared<AddLinkCommand>(*(object_scene_graph_->getLink(object_scene_graph_->getRoot())), *world_joint_);
-      monitor_->applyCommand(command);
-      // monitor_->getEnvironment()->addLink(*(object_scene_graph_->getLink(object_scene_graph_->getRoot())),
-      //                                      *world_joint_);
-      addToEnvironmentHelper(monitor_, object_scene_graph_->getRoot(),
+      env_->applyCommand(command);
+      addToEnvironmentHelper(env_, object_scene_graph_->getRoot(),
                              object_scene_graph_->getOutboundJoints(object_scene_graph_->getRoot()).size());
 
       return true;
@@ -344,7 +341,7 @@ namespace vkc
         }
         ROS_DEBUG("Inverting Joint: %s", it.c_str());
 
-        Joint::Ptr current_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it)->clone()));  // TODO! find ways to modify joint(delete&add?)
+        Joint::Ptr current_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it)->clone())); // TODO! find ways to modify joint(delete&add?)
         std::string old_parent_link = current_joint->parent_link_name;
         std::string old_child_link = current_joint->child_link_name;
         current_joint->parent_link_name = old_child_link;
@@ -368,7 +365,7 @@ namespace vkc
           {
             if (std::find(stem.joints.begin(), stem.joints.end(), it->getName()) == stem.joints.end())
             {
-              // std::cout << it->getName().c_str() << std::endl;
+              // std::cout << it->getName()->c_str() << std::endl;
               Joint::Ptr outbound_joint = std::make_shared<Joint>(std::move(object_scene_graph_->getJoint(it->getName())->clone()));
               outbound_joint->parent_to_joint_origin_transform =
                   prev_old_joint_tf.inverse() * outbound_joint->parent_to_joint_origin_transform;

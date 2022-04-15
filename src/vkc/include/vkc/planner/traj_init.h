@@ -9,6 +9,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <trajopt/problem_description.hpp>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
+
 #include <ros/ros.h>
 #include <AStar.hpp>
 

@@ -31,7 +31,7 @@ namespace vkc
     double step_size = map.step_size;
     std::string base_link_name = "base_link";
 
-    Eigen::Isometry3d base_start = env.getVKCEnv()->getTesseract()->getEnvironment().getLinkTransform(base_link_name);
+    Eigen::Isometry3d base_start = env.getVKCEnv()->getTesseract()->getLinkTransform(base_link_name);
     Eigen::Isometry3d base_end = base_pose.back().tf;
 
     int base_x = int(round((base_start.translation()[0] + map_x / 2.0) / step_size));
@@ -46,12 +46,12 @@ namespace vkc
     Eigen::Isometry3d base_tf;
     tesseract_collision::ContactResultMap contact_results;
     tesseract_collision::DiscreteContactManager::Ptr discrete_contact_manager_ =
-        env.getVKCEnv()->getTesseract()->getEnvironment().getDiscreteContactManager()->clone();
+        env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
 
     // discrete_contact_manager_->setContactDistanceThreshold(0.05);
 
     std::vector<std::string> link_names =
-        env.getVKCEnv()->getTesseract()->getEnvironment().getKinematicGroup("vkc")->getLinkNames();
+        env.getVKCEnv()->getTesseract()->getKinematicGroup("vkc")->getLinkNames();
 
     for (auto &link_name : link_names)
     {
@@ -217,10 +217,10 @@ namespace vkc
 
     int max_iter = 1000;
 
-    tesseract_kinematics::KinematicGroup::UPtr vkc_kin_group = env.getVKCEnv()->getTesseractEnvironment().getKinematicGroup(DEFAULT_VKC_GROUP_ID);
+    tesseract_kinematics::KinematicGroup::UPtr vkc_kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(DEFAULT_VKC_GROUP_ID);
 
     tesseract_collision::DiscreteContactManager::Ptr disc_cont_mgr_ =
-        env.getVKCEnv()->getTesseract()->getEnvironment().getDiscreteContactManager()->clone();
+        env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
 
     for (auto &active_link : disc_cont_mgr_->getActiveCollisionObjects())
     {
@@ -299,7 +299,7 @@ namespace vkc
             inv_suc = !sol.empty();
 
             auto env_state =
-                env.getVKCEnv()->getTesseract()->getEnvironment().getState(joint_names, sol[0]);
+                env.getVKCEnv()->getTesseract()->getState(joint_names, sol[0]);
             contact_results.clear();
             disc_cont_mgr_->setCollisionObjectsTransform(env_state.link_transforms);
 
@@ -355,10 +355,10 @@ namespace vkc
                 << objective.tf.translation().transpose() << std::endl;
     }
 
-    tesseract_kinematics::KinematicGroup::UPtr robot_kin_group = env.getVKCEnv()->getTesseract()->getEnvironment().getKinematicGroup(robot);
+    tesseract_kinematics::KinematicGroup::UPtr robot_kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(robot);
     // tesseract_kinematics::InverseKinematics::Ptr inv_kin = env.getVKCEnv()->getTesseract()->getInvKinematicsManager()->getInvKinematicSolver(robot);
     tesseract_collision::DiscreteContactManager::Ptr disc_cont_mgr_ =
-        env.getVKCEnv()->getTesseract()->getEnvironment().getDiscreteContactManager()->clone();
+        env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->clone();
 
     for (auto &active_link : disc_cont_mgr_->getActiveCollisionObjects())
     {
@@ -466,7 +466,7 @@ namespace vkc
             // check collision
             contact_results.clear();
             auto env_state =
-                env.getVKCEnv()->getTesseractEnvironment().getState(joint_names, sol[0]);
+                env.getVKCEnv()->getTesseract()->getState(joint_names, sol[0]);
             disc_cont_mgr_->setCollisionObjectsTransform(env_state.link_transforms);
             disc_cont_mgr_->contactTest(contact_results, tesseract_collision::ContactTestType::ALL);
             satisfy_collision = contact_results.size();
@@ -525,7 +525,7 @@ namespace vkc
               base_values[1] = link_obj.tf.translation()[1] - r * sin(a);
 
               auto env_state =
-                  env.getVKCEnv()->getTesseract()->getEnvironment().getState(base_joints, base_values);
+                  env.getVKCEnv()->getTesseract()->getState(base_joints, base_values);
               contact_results.clear();
               disc_cont_mgr_->setCollisionObjectsTransform(env_state.link_transforms);
               disc_cont_mgr_->contactTest(contact_results, tesseract_collision::ContactTestType::ALL);

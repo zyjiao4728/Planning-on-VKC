@@ -1,69 +1,77 @@
 #include <vkc_example/utils.h>
+#include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
 
 using namespace std;
 using namespace tesseract_rosutils;
-using namespace tesseract_motion_planners;
+using namespace tesseract_planning;
 using namespace trajopt;
 
-void solveProb(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter)
+void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter)
 {
   // Set the optimization parameters (Most are being left as defaults)
-  TrajOptPlannerConfig config(prob_ptr);
-  config.params.max_iter = n_iter;
-  config.params.cnt_tolerance = 1e-3;
-  config.params.trust_expand_ratio = 1.2;
-  config.params.trust_shrink_ratio = 0.8;
-  config.params.min_trust_box_size = 1e-3;
-  config.params.min_approx_improve = 1e-3;
-
-  // Create the planner and the responses that will store the results
-  TrajOptMotionPlanner planner;
-
-  // Set Planner Configuration
-  planner.setConfiguration(config);
 
   ROS_WARN("Constructed optimization problem. Starting optimization.");
-  // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   // Solve problem. Results are stored in the response
-  planner.solve(response);
+  TrajOptMotionPlanner planner;
+
+  auto trajopt_status = planner.solve(request, response);
+  return;
 }
 
 CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response, int n_iter, bool enable_plotting)
 {
-  // Set the optimization parameters (Most are being left as defaults)
-  TrajOptPlannerConfig config(prob_ptr);
-  config.params.max_iter = n_iter;
-  config.params.cnt_tolerance = 1e-2;
-  config.params.trust_expand_ratio = 1.5;
-  config.params.trust_shrink_ratio = 0.5;
-  config.params.min_trust_box_size = 1e-3;
-  config.params.min_approx_improve = 1e-3;
+  // ProcessPlanningServer planning_server(std::make_shared<ROSProcessEnvironmentCache>(monitor_), 5);
+  // planning_server.loadDefaultProcessPlanners();
 
-  if(enable_plotting)
-  {
-    ROS_WARN("[%s]plotting is enabled, plot callback is configured.", __func__);
-    tesseract_rosutils::ROSPlottingPtr plotter =
-        std::make_shared<tesseract_rosutils::ROSPlotting>(prob_ptr->GetEnv());
+  // auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
 
-    config.callbacks.push_back(PlotCallback(*prob_ptr, plotter));
-  }
+  // auto trajopt_composite_profile = std::make_shared<TrajOptDefaultCompositeProfile>();
+  // trajopt_composite_profile->collision_constraint_config.enabled = false;
+  // trajopt_composite_profile->collision_cost_config.safety_margin = 0.005;
+  // trajopt_composite_profile->collision_cost_config.coeff = 50;
 
-  // Create the planner and the responses that will store the results
-  TrajOptMotionPlanner planner;
+  // // Set the optimization parameters (Most are being left as defaults)
+  // auto trajopt_solver_profile = std::make_shared<TrajOptDefaultSolverProfile>();
+  // // TrajOptPlannerConfig config(prob_ptr);
+  // trajopt_solver_profile->opt_info.max_iter = n_iter;
+  // trajopt_solver_profile->opt_info.cnt_tolerance = 1e-2;
+  // trajopt_solver_profile->opt_info.trust_expand_ratio = 1.5;
+  // trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.5;
+  // trajopt_solver_profile->opt_info.min_trust_box_size = 1e-3;
+  // trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
 
-  // Set Planner Configuration
-  planner.setConfiguration(config);
+  // planning_server.getProfiles()->addProfile<TrajOptPlanProfile>(
+  //     profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "CARTESIAN", trajopt_plan_profile);
+  // planning_server.getProfiles()->addProfile<TrajOptCompositeProfile>(
+  //     profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_composite_profile);
+  // planning_server.getProfiles()->addProfile<TrajOptSolverProfile>(
+  //     profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
 
-  ROS_WARN("Constructed optimization problem with cost constraint. Starting optimization.");
-  // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  // // Create the planner and the responses that will store the results
+  // TrajOptMotionPlanner planner;
+
+  // // Set Planner Configuration
+  // // planner.c(config);
+
+  // // ROS_WARN("Constructed optimization problem with cost constraint. Starting optimization.");
+  // // // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  // // CostInfo cost;
+  // // // Solve problem. Results are stored in the response
+  // // planner.solve(response, cost.cost_vals, cost.cnt_viols, cost.total_cost);
+
+  // // if(enable_plotting)
+  // // {
+  // //   ROS_WARN("[%s]plotting is enabled, plot callback is configured.", __func__);
+  // //   tesseract_rosutils::ROSPlottingPtr plotter =
+  // //       std::make_shared<tesseract_rosutils::ROSPlotting>(prob_ptr->GetEnv());
+
+  // //   config.callbacks.push_back(PlotCallback(*prob_ptr, plotter));
+  // // }
   CostInfo cost;
-  // Solve problem. Results are stored in the response
-  planner.solve(response, cost.cost_vals, cost.cnt_viols, cost.total_cost);
 
   return cost;
 }
-
 
 void refineTrajectory(tesseract_common::TrajArray &traj)
 {
@@ -78,7 +86,7 @@ void refineTrajectory(tesseract_common::TrajArray &traj)
 
     if (delta_orientation > 3.14159265359)
       delta_orientation -= 3.14159265359;
-    
+
     if (delta_orientation < -3.14159265359)
       delta_orientation += 3.14159265359;
 
@@ -104,8 +112,8 @@ int saveTrajToFile(const tesseract_common::TrajArray &traj, const std::string fi
 {
   ofstream fileout;
   fileout.open(filename, std::ios_base::app);
-  
-  if( !fileout.is_open() )
+
+  if (!fileout.is_open())
   {
     std::cout << "Cannot open file: " << filename << std::endl;
     return -1;
@@ -114,8 +122,10 @@ int saveTrajToFile(const tesseract_common::TrajArray &traj, const std::string fi
   size_t n_rows = traj.rows();
   size_t n_cols = traj.cols();
 
-  for(size_t i = 0; i < n_rows; i++){
-    for(size_t j = 0; j < n_cols; j++){
+  for (size_t i = 0; i < n_rows; i++)
+  {
+    for (size_t j = 0; j < n_cols; j++)
+    {
       fileout << traj(i, j) << ",\n"[j == n_cols - 1];
     }
   }
@@ -125,7 +135,6 @@ int saveTrajToFile(const tesseract_common::TrajArray &traj, const std::string fi
 
   return 0;
 }
-
 
 std::vector<vkc::JointDesiredPose> getJointHome(std::unordered_map<std::string, double> home_pose)
 {
@@ -139,7 +148,7 @@ std::vector<vkc::JointDesiredPose> getJointHome(std::unordered_map<std::string, 
   return joint_home;
 }
 
-void TrajectoryVisualize(vkc::VKCEnvBasic& env,
+void TrajectoryVisualize(vkc::VKCEnvBasic &env,
                          vkc::ActionSeq &actions,
                          vector<tesseract_common::JointTrajectory> &joint_trajs)
 {
@@ -153,7 +162,7 @@ void TrajectoryVisualize(vkc::VKCEnvBasic& env,
   long int max_traj_len{0};
   for (auto &traj : joint_trajs)
   {
-    max_traj_len = traj.trajectory.size() > max_traj_len ? traj.trajectory.size() : max_traj_len;
+    max_traj_len = traj.size() > max_traj_len ? traj.size() : max_traj_len;
     // std::cout << ">> traj details: " << std::endl
     //           << traj << std::endl;
   }
@@ -169,18 +178,18 @@ void TrajectoryVisualize(vkc::VKCEnvBasic& env,
     //          joint_traj_iter->joint_names.size(),
     //          joint_traj_iter->trajectory.cols(),
     //          joint_traj_iter->trajectory.rows(),
-    //          env.getPlotVKCEnv()->getTesseractEnvironment()->getRevision());
-    tesseract_common::TrajArray traj = joint_traj_iter->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
-    std::cout << "Traj:" << std::endl
-              << traj << std::endl;
+    //          env.getPlotVKCEnv()->getTesseract()->getRevision());
+    // tesseract_common::TrajArray traj = joint_traj_iter-> ->trajectory.leftCols(static_cast<long>(joint_traj_iter->joint_names.size()));
+    // std::cout << "Traj:" << std::endl
+    //           << traj << std::endl;
 
-    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getPlotVKCEnv()->getTesseract()->getEnvironment());
-    plotter->plotTrajectory(joint_traj_iter->joint_names, traj);
-    usleep((useconds_t)(joint_traj_iter->trajectory.size() * 1500000.0 / max_traj_len));
+    // ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getPlotVKCEnv()->getTesseract()->getEnvironment());
+    // plotter->plotTrajectory(joint_traj_iter->joint_names, traj);
+    // usleep((useconds_t)(joint_traj_iter->trajectory.size() * 1500000.0 / max_traj_len));
 
-    // update env according to the action
-    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    env.updatePlotEnv(joint_traj_iter->joint_names, joint_traj_iter->trajectory.bottomRows(1).transpose(), *action_iter);
-    plotter->clear();
+    // // update env according to the action
+    // // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    // env.updatePlotEnv(joint_traj_iter->joint_names, joint_traj_iter->trajectory.bottomRows(1).transpose(), *action_iter);
+    // plotter->clear();
   }
 }

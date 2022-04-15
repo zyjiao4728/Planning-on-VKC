@@ -1,7 +1,6 @@
 #include <vkc/env/open_door_env.h>
 
 using namespace trajopt;
-using namespace tesseract;
 using namespace tesseract_environment;
 using namespace tesseract_scene_graph;
 using namespace tesseract_collision;
@@ -94,38 +93,43 @@ namespace vkc
         // drawer0.addToEnvironment(tesseract_->getTesseract());
 
         // Disable minor collision detection
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("door_north_door_link",
-                                                                          "wall_north_right_wall_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("door_north_door_link", "wall_north_left_wall_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("door_north_door_link", "door_north_handle_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("robotiq_arg2f_base_link", "door_north_handle_link", "Never");
 
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_west_wall_link", "wall_north_left_wall_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_east_wall_link", "wall_north_right_wall_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_west_wall_link", "wall_south_wall_link", "Never");
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("wall_east_wall_link", "wall_south_wall_link", "Never");
+        Commands cmds;
+        cmds.clear();
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("door_north_door_link",
+                                                                    "wall_north_right_wall_link", "Never"));
 
-        tesseract_->getTesseract()->getEnvironment()->addAllowedCollision("door_north_handle_link", "left_gripper_palm", "Never");
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("door_north_door_link", "wall_north_left_wall_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("door_north_door_link", "door_north_handle_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("robotiq_arg2f_base_link", "door_north_handle_link", "Never"));
 
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_left", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_right", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_handle_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_left_wall", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_right_wall", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_top_wall", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_bottom_wall", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("drawer0_back_wall", false);
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("wall_west_wall_link", "wall_north_left_wall_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("wall_east_wall_link", "wall_north_right_wall_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("wall_west_wall_link", "wall_south_wall_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("wall_east_wall_link", "wall_south_wall_link", "Never"));
+        cmds.push_back(std::make_shared<AddAllowedCollisionCommand>("door_north_handle_link", "left_gripper_palm", "Never"));
 
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("ur_arm_ee_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("user_rail_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("top_chassis_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("top_plate_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("front_bumper_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("front_left_wheel_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("front_right_wheel_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("rear_bumper_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("rear_left_wheel_link", false);
-        // tesseract_->getTesseract()->getEnvironment()->setLinkCollisionEnabled("rear_right_wheel_link", false);
+        tesseract_->getTesseract()->applyCommands(cmds);
+
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_handle_left", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_handle_right", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_handle_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_left_wall", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_right_wall", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_top_wall", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_bottom_wall", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_back_wall", false);
+
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("ur_arm_ee_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("user_rail_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("top_chassis_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("top_plate_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("front_bumper_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("front_left_wheel_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("front_right_wheel_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("rear_bumper_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("rear_left_wheel_link", false);
+        // tesseract_->getTesseract()->setLinkCollisionEnabled("rear_right_wheel_link", false);
 
         if (rviz_)
         {

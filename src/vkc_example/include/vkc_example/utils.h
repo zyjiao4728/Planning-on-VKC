@@ -7,7 +7,6 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <trajopt/problem_description.hpp>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
-#include <tesseract_environment/core/utils.h>
 #include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_rosutils/plotting.h>
 #include <tesseract_rosutils/utils.h>
@@ -58,10 +57,10 @@ public:
   }
 };
 
-void solveProb(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_motion_planners::PlannerResponse &response, int n_iter);
+void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter);
 
-CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_motion_planners::PlannerResponse &response,
-                        int n_iter, bool enable_ploting = false);
+// CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_planning::PlannerResponse &response,
+//                         int n_iter, bool enable_ploting = false);
 
 void refineTrajectory(tesseract_common::TrajArray &traj);
 

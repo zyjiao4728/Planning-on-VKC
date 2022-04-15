@@ -36,7 +36,7 @@ namespace vkc
     int inv_attp_max = 100;
     OMPLPlanners::Planners planner = OMPLPlanners::Planners::RRT_Connect;
     Husky_IK::Option ik_option = Husky_IK::Option::Full;
-    tesseract_motion_planners::OmplPlanParameters plan_params;
+    // tesseract_motion_planners::OmplPlanParameters plan_params;
   };
 
   class ProbTranslator
@@ -91,7 +91,7 @@ namespace vkc
      */
     bool solveProblem(tesseract_planning::PlannerResponse &response, std::vector<std::vector<double>> &res_traj);
 
-    tesseract_kinematics::IKSolutions ProbTranslator::inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr &kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
+    tesseract_kinematics::IKSolutions inverseKinematics(tesseract_kinematics::KinematicGroup::UPtr &kin_, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
     bool collisionFreeInverseKinematics(VKCEnvBasic &env, std::string manipulator, Eigen::VectorXd &solutions, const Eigen::Isometry3d &pose, Eigen::VectorXd &seed);
 
@@ -156,7 +156,7 @@ namespace vkc
     tesseract_planning::JointWaypoint start_waypoint;
     tesseract_planning::JointWaypoint goal_waypoint;
     tesseract_monitoring::EnvironmentMonitor::Ptr tesseract_;
-    tesseract_planning::OmplPlanParameters params_;
+    // tesseract_planning::OmplPlanParameters params_;
     Husky_IK::Option ik_option_;
     int inv_attp_max_;
     OMPLPlanners::Planners planner_;

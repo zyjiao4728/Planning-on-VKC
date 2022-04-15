@@ -71,7 +71,7 @@ namespace vkc
     scene_graph_ = sg;
   }
 
-  bool ConstructVKC::initTesseract()
+  bool ConstructVKC::initTesseract(std::string monitor_namespace)
   {
     if (monitor_ != nullptr)
     {
@@ -87,17 +87,17 @@ namespace vkc
       ROS_INFO("Failed to initialize tesseract environment");
       return false;
     }
-    monitor_ = std::make_shared<tesseract_monitoring::EnvironmentMonitor>(env_, VKC_MONITOR_NAMESPACE);
+    monitor_ = std::make_shared<tesseract_environment::EnvironmentMonitor>(env_, monitor_namespace);
     return true;
   }
 
-  tesseract_monitoring::EnvironmentMonitor::Ptr ConstructVKC::getTesseract()
+  tesseract_environment::Environment::Ptr ConstructVKC::getTesseract()
   {
-    if (monitor_ == nullptr)
+    if (env_ == nullptr)
     {
       ROS_ERROR("Null tesseract!");
     }
-    return monitor_;
+    return env_;
   }
 
   tesseract_scene_graph::SceneGraph::Ptr ConstructVKC::getSceneGraph()
@@ -110,15 +110,15 @@ namespace vkc
     return srdf_model_;
   }
 
-  tesseract_environment::Environment::Ptr ConstructVKC::getEnvironment()
-  {
-    return env_;
-  }
+  // tesseract_environment::Environment::Ptr ConstructVKC::getEnvironment()
+  // {
+  //   return env_;
+  // }
 
-  tesseract_environment::Environment &ConstructVKC::getTesseractEnvironment()
-  {
-    return monitor_->getEnvironment();
-  }
+  // tesseract_environment::Environment::Ptr ConstructVKC::getTesseract()
+  // {
+  //   return monitor_->getEnvironment();
+  // }
 
   void ConstructVKC::clear()
   {

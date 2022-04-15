@@ -60,13 +60,13 @@ void Run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
         //     }
         // }
 
-        ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseractEnvironment());
+        ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract());
 
         unsigned int try_cnt = 0;
         bool converged = false;
         while (try_cnt++ < nruns)
         {
-            TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
+            TrajOptProb::Ptr prob_ptr = prob_generator.genRequest(env, action, n_steps);
             CostInfo cost = solveProb_cost(prob_ptr, response, n_iter);
 
             if (sco::OptStatus::OPT_CONVERGED == response.status_code)
@@ -93,7 +93,7 @@ void Run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
 
         record_traj << action << std::endl;
         record_traj << refined_traj << std::endl;
-        
+
         plotter->plotTrajectory(response.joint_names, refined_traj);
 
         ROS_WARN("Finished optimization. Press <Enter> to start next action");
@@ -111,7 +111,7 @@ void InitEnvState(VKCEnvBasic &env)
 {
     // vector<string> base_joints({"base_y_base_x", "base_theta_base_y", "base_link_base_theta"});
     // vector<double> base_values({-1, -1, 0});
-    // env.getVKCEnv()->getTesseractEnvironment()->setState(base_joints, base_values);
+    // env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
 
     // vector<string> furniture_joints({"wardrobe_joint6", "cabinet_joint6", "drawer_joint2"});
     // vector<double> furniture_values({0.72, 1.7, -0.49});
@@ -124,7 +124,7 @@ void InitEnvState(VKCEnvBasic &env)
 
 /**
  * @brief for pog demo, open three containers: wardrobe, cabinet and drawer.
- *        
+ *
  * @param actions output parameter, which carries the generated actions for motion planning
  * @param robot input parameter, which specifies the robot who will act the actions
  * @return
@@ -191,7 +191,7 @@ void OpenContainers(vkc::ActionSeq &actions, const std::string &robot)
         // joint_objectives.emplace_back("ur_arm_wrist_1_joint", -0.0347);
         // joint_objectives.emplace_back("ur_arm_wrist_2_joint", 1.6315);
         // joint_objectives.emplace_back("ur_arm_wrist_3_joint", -2.2043);
-        
+
         dst_tf.translation() = Eigen::Vector3d(0.5, -2.5, 1.0);
         dst_tf.linear() = Eigen::Quaterniond(0.7071, 0, 0, 0.7071).matrix();
         link_objectives.push_back(LinkDesiredPose("ur_arm_tool0", dst_tf));
@@ -224,7 +224,7 @@ void OpenContainers(vkc::ActionSeq &actions, const std::string &robot)
 
 /**
  * @brief for pog demo, close three containers: drawer, cabinet and wardrobe.
- *        
+ *
  * @param actions output parameter, which carries the generated actions for motion planning
  * @param robot input parameter, which specifies the robot who will act the actions
  * @return
@@ -270,7 +270,7 @@ void CloseContainers(vkc::ActionSeq &actions, const std::string &robot)
         // joint_objectives.emplace_back("ur_arm_wrist_1_joint", -0.0347);
         // joint_objectives.emplace_back("ur_arm_wrist_2_joint", 1.6315);
         // joint_objectives.emplace_back("ur_arm_wrist_3_joint", -2.2043);
-        
+
         dst_tf.translation() = Eigen::Vector3d(0.5, -2.5, 1.0);
         dst_tf.linear() = Eigen::Quaterniond(0.7071, 0, 0, 0.7071).matrix();
         link_objectives.push_back(LinkDesiredPose("ur_arm_tool0", dst_tf));
@@ -362,21 +362,21 @@ int main(int argc, char **argv)
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_wardrobe_handle",
                                                          "wardrobe_link8",
                                                          "wardrobe",
-                                                         {0.0, 0.0, 0.0},        // Y-Axis is stright up
+                                                         {0.0, 0.0, 0.0},  // Y-Axis is stright up
                                                          {1, 0, 0.0, 0.0}, // this gripper's y_axis is parallelling with the axis of gripper palm
                                                          true});
-    
+
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cabinet_handle",
                                                          "cabinet_link7",
                                                          "cabinet",
-                                                         {0.0, 0.0, 0.0},        // Y-Axis is stright up
+                                                         {0.0, 0.0, 0.0},  // Y-Axis is stright up
                                                          {1, 0, 0.0, 0.0}, // this gripper's y_axis is parallelling with the axis of gripper palm
                                                          true});
-    
+
     attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_drawer_handle",
                                                          "drawer_link6",
                                                          "drawer",
-                                                         {0.0, 0.0, 0.0},        // Y-Axis is stright up
+                                                         {0.0, 0.0, 0.0},  // Y-Axis is stright up
                                                          {1, 0, 0.0, 0.0}, // this gripper's y_axis is parallelling with the axis of gripper palm
                                                          true});
 

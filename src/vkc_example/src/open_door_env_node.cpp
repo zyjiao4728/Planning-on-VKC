@@ -8,6 +8,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tesseract_command_language/utils/utils.h>
 
 using namespace std;
 using namespace vkc;
@@ -27,21 +28,23 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
 
   for (auto &action : actions)
   {
-    PlannerResponse response;
-    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseractEnvironment());
 
+    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract());
+
+    PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns)
     {
-      TrajOptProb::Ptr prob_ptr = prob_generator.genProb(env, action, n_steps);
+      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       ROS_WARN("optimization is ready. Press <Enter> to start next action");
       std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-      CostInfo cost = solveProb_cost(prob_ptr, response, n_iter);
+      // CostInfo cost = solveProb(prob_ptr, response, n_iter);
+      solveProb(prob_ptr, response, n_iter);
 
-      if (sco::OptStatus::OPT_CONVERGED == response.status_code)
+      if (TrajOptMotionPlannerStatusCategory::SolutionFound == response.status.value()) // optimization converges
       {
         converged = true;
         break;
@@ -49,28 +52,33 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
       else
       {
         ROS_WARN("[%s]optimizationi could not converge, response code: %d, description: %s",
-                 __func__, response.status_code, response.status_description.c_str());
+                 __func__, response.status.value(), response.status.message().c_str());
       }
     }
 
-    joint_trajs.emplace_back(TesseractJointTraj{response.joint_names, response.trajectory});
+    const auto &ci = response.results;
+
+    tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
+    joint_trajs.emplace_back(refined_traj);
 
     // refine the orientation of the move base
-    tesseract_common::TrajArray refined_traj =
-        response.trajectory.leftCols(response.joint_names.size());
+
+    // tesseract_common::TrajArray refined_traj =
+    //     response.trajectory.leftCols(response.joint_names.size());
     // refineTrajectory(refined_traj);
 
-    std::cout << "optimized trajectory: " << std::endl
-              << refined_traj << std::endl;
+    // std::cout << "optimized trajectory: " << std::endl
+    //           << refined_traj << std::endl;
 
-    plotter->plotTrajectory(response.joint_names, refined_traj);
+    plotter->plotTrajectory(refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
 
     ROS_WARN("Finished optimization. Press <Enter> to start next action");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    saveTrajToFile(refined_traj.topRows(n_steps), "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
+    toDelimitedFile(ci, "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv", ',');
+    // saveTrajToFile(refined_traj, "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
 
-    env.updateEnv(response.joint_names, refined_traj.bottomRows(1).transpose(), action);
+    env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position, action);
     plotter->clear();
     ++j;
   }
@@ -87,7 +95,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
   //   TrajOptProb::Ptr prob_ptr = nullptr;
   //   plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
 
-  //   prob_ptr = prob_generator.genProb(env, action, n_steps);
+  //   prob_ptr = prob_generator.genRequest(env, action, n_steps);
 
   //   if (rviz_enabled)
   //   {
@@ -208,5 +216,4 @@ int main(int argc, char **argv)
   pushDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
-
 }

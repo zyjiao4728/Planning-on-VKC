@@ -68,13 +68,13 @@ namespace vkc
   bool UrdfSceneEnv::createEnvironment()
   {
     DOUT("Before Create Environment SceneGraph:");
-    printSceneGraph(tesseract_->getTesseractEnvironment().getSceneGraph());
+    printSceneGraph(tesseract_->getTesseract()->getSceneGraph());
 
     configAttachLocations_(attaches_);
     configInverseChains_(inverse_chains_);
 
     DOUT("After Create Environment SceneGraph:");
-    printSceneGraph(tesseract_->getTesseractEnvironment().getSceneGraph());
+    printSceneGraph(tesseract_->getTesseract()->getSceneGraph());
 
     DOUT("Before RVIZ Changed");
 

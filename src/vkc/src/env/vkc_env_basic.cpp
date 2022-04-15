@@ -174,15 +174,15 @@ namespace vkc
       ROS_WARN("No home pose defined!");
       return false;
     }
-    tesseract_->getTesseractEnvironment().setState(home_pose_);
-    plot_tesseract_->getTesseractEnvironment().setState(home_pose_);
+    tesseract_->getTesseract()->setState(home_pose_);
+    plot_tesseract_->getTesseract()->setState(home_pose_);
     return true;
   }
 
   bool VKCEnvBasic::setInitPose(std::unordered_map<std::string, double> init_pose)
   {
-    tesseract_->getTesseractEnvironment().setState(init_pose);
-    plot_tesseract_->getTesseractEnvironment().setState(init_pose);
+    tesseract_->getTesseract()->setState(init_pose);
+    plot_tesseract_->getTesseract()->setState(init_pose);
     return true;
   }
 
@@ -218,7 +218,7 @@ namespace vkc
   bool VKCEnvBasic::sendRvizChanges(unsigned long &past_revision, vkc::ConstructVKC::Ptr tesseract)
   {
     bool ret = sendRvizChanges_(past_revision, tesseract);
-    past_revision = (unsigned long)tesseract->getTesseractEnvironment().getRevision();
+    past_revision = (unsigned long)tesseract->getTesseract()->getRevision();
 
     return ret;
   }
@@ -228,11 +228,11 @@ namespace vkc
     ROS_INFO("[%s]start to update rviz environment...", __func__);
     modify_env_rviz_.waitForExistence();
     tesseract_msgs::ModifyEnvironment update_env;
-    update_env.request.id = tesseract->getTesseractEnvironment().getName();
+    update_env.request.id = tesseract->getTesseract()->getName();
     update_env.request.revision = past_revision;
 
     if (!tesseract_rosutils::toMsg(update_env.request.commands,
-                                   tesseract->getTesseractEnvironment().getCommandHistory(),
+                                   tesseract->getTesseract()->getCommandHistory(),
                                    update_env.request.revision))
     {
       ROS_ERROR("Failed to generate commands to update rviz environment!");
@@ -243,13 +243,13 @@ namespace vkc
     {
       ROS_INFO("[%s]rviz environment updated, result: %d, revision: %lu, past revision: %lu, current_revision: %u",
                __func__, update_env.response.success, update_env.response.revision, past_revision,
-               tesseract->getTesseractEnvironment().getRevision());
+               tesseract->getTesseract()->getRevision());
     }
     else
     {
       ROS_INFO("[%s]failed to update rviz environment, result: %d, revision: %lu, past revision: %lu, current_revision: %u",
                __func__, update_env.response.success, update_env.response.revision, past_revision,
-               tesseract->getTesseractEnvironment().getRevision());
+               tesseract->getTesseract()->getRevision());
       return false;
     }
 
@@ -276,24 +276,24 @@ namespace vkc
     if (tf != nullptr)
     {
       // attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform = (*tf).inverse();
-      attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform = tesseract->getTesseractEnvironment().getLinkTransform(getEndEffectorLink()).inverse() *
-                                                                                                tesseract->getTesseractEnvironment().getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name);
+      attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform = tesseract->getTesseract()->getLinkTransform(getEndEffectorLink()).inverse() *
+                                                                                                tesseract->getTesseract()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name);
       attach_locations_.at(attach_location_name)->connection.parent_link_name = getEndEffectorLink();
     }
     // default transform
     else
     {
-      attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform = tesseract->getTesseractEnvironment().getLinkTransform(getEndEffectorLink()).inverse() *
-                                                                                                tesseract->getTesseractEnvironment().getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name);
+      attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform = tesseract->getTesseract()->getLinkTransform(getEndEffectorLink()).inverse() *
+                                                                                                tesseract->getTesseract()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name);
       // attach_locations_.at(attach_location_name)->local_joint_origin_transform.inverse();
       attach_locations_.at(attach_location_name)->connection.parent_link_name = getEndEffectorLink();
     }
     ROS_INFO("[%s]pre end-effector: %s", __func__, getEndEffectorLink().c_str());
 
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(getEndEffectorLink()).translation() << std::endl;
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(getEndEffectorLink()).linear() << std::endl;
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name).translation() << std::endl;
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name).linear() << std::endl;
+    // std::cout << tesseract->getTesseract()->getLinkTransform(getEndEffectorLink()).translation() << std::endl;
+    // std::cout << tesseract->getTesseract()->getLinkTransform(getEndEffectorLink()).linear() << std::endl;
+    // std::cout << tesseract->getTesseract()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name).translation() << std::endl;
+    // std::cout << tesseract->getTesseract()->getLinkTransform(attach_locations_.at(attach_location_name)->connection.child_link_name).linear() << std::endl;
     // std::cout << attach_locations_.at(attach_location_name)->connection.parent_link_name << std::endl;
     // std::cout << attach_locations_.at(attach_location_name)->connection.child_link_name << std::endl;
 
@@ -327,13 +327,13 @@ namespace vkc
     new_joint.child_link_name = attach_link_name;
     new_joint.type = JointType::FIXED;
     new_joint.parent_to_joint_origin_transform = Eigen::Isometry3d::Identity();
-    new_joint.parent_to_joint_origin_transform = tesseract->getTesseractEnvironment().getLinkTransform(new_parent_link).inverse() *
-                                                 tesseract->getTesseractEnvironment().getLinkTransform(attach_link_name);
+    new_joint.parent_to_joint_origin_transform = tesseract->getTesseract()->getLinkTransform(new_parent_link).inverse() *
+                                                 tesseract->getTesseract()->getLinkTransform(attach_link_name);
     Command::Ptr move_new_joint = std::make_shared<MoveLinkCommand>(new_joint);
-    // bool link_moved = tesseract->getTesseractEnvironment().applyMoveLinkCommand(new_joint);
+    // bool link_moved = tesseract->getTesseract()->applyMoveLinkCommand(new_joint);
     bool link_moved = tesseract->getTesseract()->applyCommand(move_new_joint);
     ROS_INFO("[%s]detach action, move link %s: %s", __func__, attach_link_name.c_str(), link_moved ? "true" : "false");
-    // std::cout << tesseract->getTesseractEnvironment()->getLinkTransform(attach_link_name).translation() << std::endl;
+    // std::cout << tesseract->getTesseract()->getLinkTransform(attach_link_name).translation() << std::endl;
 
     // author: wanglei@bigai.ai
     // date: 2021-12-08
@@ -343,11 +343,11 @@ namespace vkc
     {
       if (target_object_base_link == attach_location.second->base_link_)
       {
-        attach_location.second->world_joint_origin_transform = tesseract->getTesseractEnvironment().getLinkTransform(attach_location.second->link_name_) *
+        attach_location.second->world_joint_origin_transform = tesseract->getTesseract()->getLinkTransform(attach_location.second->link_name_) *
                                                                attach_location.second->local_joint_origin_transform;
       }
       // attach_locations_.at(target_location_name)->world_joint_origin_transform =
-      //     tesseract->getTesseractEnvironment()->getLinkTransform(attach_link_name) *
+      //     tesseract->getTesseract()->getLinkTransform(attach_link_name) *
       //     attach_locations_.at(target_location_name)->local_joint_origin_transform;
     }
   }
@@ -384,7 +384,7 @@ namespace vkc
               << action << std::endl;
 
     // Set the current state to the last state of the pick trajectory
-    tesseract->getTesseractEnvironment().setState(joint_names, joint_states);
+    tesseract->getTesseract()->setState(joint_names, joint_states);
 
     if (action == nullptr)
     {
@@ -470,7 +470,7 @@ namespace vkc
   bool VKCEnvBasic::reInit()
   {
     end_effector_link_ = robot_end_effector_link_;
-    ROS_INFO("[%s]revision: %u", __func__, plot_tesseract_->getTesseractEnvironment().getRevision());
+    ROS_INFO("[%s]revision: %u", __func__, plot_tesseract_->getTesseract()->getRevision());
     if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
       return false;
     return true;

@@ -8,7 +8,7 @@
 #include <tesseract_common/types.h>
 #include <tesseract_rosutils/utils.h>
 #include <tesseract_environment/environment.h>
-#include <tesseract_monitoring/environment_monitor.h>
+#include <tesseract_environment/environment_monitor.h>
 
 namespace vkc
 {
@@ -27,17 +27,17 @@ namespace vkc
                               const tesseract_common::ResourceLocator::ConstPtr &locator);
 
     // Initialize a tesseract environment that capatible to optimization framework;
-    bool initTesseract();
+    bool initTesseract(std::string monitor_namespace);
 
     void updateSceneGraph(tesseract_scene_graph::SceneGraph::Ptr sg);
 
     // Return private members
-    tesseract_monitoring::EnvironmentMonitor::Ptr getTesseract();
+    tesseract_environment::Environment::Ptr getTesseract();
     tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
     tesseract_srdf::SRDFModel::Ptr getSRDFModel();
 
-    tesseract_environment::Environment::Ptr getEnvironment();
-    tesseract_environment::Environment &getTesseractEnvironment();
+    // tesseract_environment::Environment::Ptr getEnvironment();
+    // tesseract_environment::Environment::Ptr getTesseract();
 
     // // Break scene graph and reconnect
     // bool construct(const std::string end_effector_link_name, const AttachLocation attach_location);
@@ -45,7 +45,7 @@ namespace vkc
   private:
     tesseract_scene_graph::SceneGraph::Ptr scene_graph_;
     tesseract_srdf::SRDFModel::Ptr srdf_model_;
-    tesseract_monitoring::EnvironmentMonitor::Ptr monitor_;
+    tesseract_environment::EnvironmentMonitor::Ptr monitor_;
     tesseract_environment::Environment::Ptr env_;
 
     // Copy a link and all its child links/joints to a new scene graph
