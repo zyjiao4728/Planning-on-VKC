@@ -6,12 +6,13 @@ extract_package_metadata(pkg)
 project(vkc VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  roslib
-  std_srvs
-  tesseract_monitoring
-  tesseract_rosutils
+roscpp
+roslib
+std_srvs
+tesseract_monitoring
+tesseract_rosutils
 )
+find_package(Eigen3 REQUIRED)
 find_package(Boost COMPONENTS system python REQUIRED)
 find_package(console_bridge REQUIRED)
 find_package(tesseract_environment REQUIRED)
@@ -26,7 +27,7 @@ find_package(trajopt_sqp REQUIRED)
 find_package(astar REQUIRED)
 find_package(ompl REQUIRED)
 
-catkin_package()
+# catkin_package()
 
 # Load variable for clang tidy args, compiler options and cxx version
 tesseract_variables()
@@ -37,15 +38,15 @@ tesseract_variables()
 add_library(${PROJECT_NAME}_construct_vkc SHARED src/construct_vkc.cpp)
 target_link_libraries(${PROJECT_NAME}_construct_vkc
  tesseract::tesseract_scene_graph  tesseract::tesseract_environment 
- tesseract::tesseract_support tesseract::tesseract_collision_bullet tesseract::tesseract_kinematics_kdl console_bridge)
+ tesseract::tesseract_support tesseract::tesseract_collision_bullet tesseract::tesseract_process_managers tesseract::tesseract_kinematics_kdl console_bridge::console_bridge)
 target_compile_options(${PROJECT_NAME}_construct_vkc PUBLIC -Wall -Wextra -Wsuggest-override -Wconversion -Wsign-conversion)
 # if(CXX_FEATURE_FOUND EQUAL "-1")
-target_compile_options(${PROJECT_NAME}_construct_vkc PRIVATE -std=c++17)
+# target_compile_options(${PROJECT_NAME}_construct_vkc PRIVATE -std=c++17)
 # else()
 # target_compile_features(${PROJECT_NAME}_construct_vkc PUBLIC cxx_std_17)
 # endif()
-target_cxx_version(${PROJECT_NAME}_construct_vkc  PUBLIC VERSION ${TESSERACT_CXX_VERSION})
-target_include_directories(${PROJECT_NAME}_construct_vkc PRIVATE
+target_cxx_version(${PROJECT_NAME}_construct_vkc PUBLIC VERSION ${TESSERACT_CXX_VERSION})
+target_include_directories(${PROJECT_NAME}_construct_vkc PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME}_construct_vkc SYSTEM PUBLIC
@@ -63,14 +64,14 @@ target_compile_options(
   ${PROJECT_NAME}_vkc_env_basic 
   PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
 )
-target_cxx_version(${PROJECT_NAME}_vkc_env_basic  PUBLIC VERSION 17)
+target_cxx_version(${PROJECT_NAME}_vkc_env_basic PUBLIC VERSION ${TESSERACT_CXX_VERSION})
 # if(CXX_FEATURE_FOUND EQUAL "-1")
     target_compile_options(${PROJECT_NAME}_vkc_env_basic PRIVATE -std=c++17)
 # else()
     # target_compile_features(${PROJECT_NAME}_vkc_env_basic PUBLIC cxx_std_17)
 # endif()
 target_include_directories(
-  ${PROJECT_NAME}_vkc_env_basic PRIVATE
+  ${PROJECT_NAME}_vkc_env_basic PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
 )
@@ -109,33 +110,33 @@ target_include_directories(
 #   ${catkin_INCLUDE_DIRS}
 # )
 
-add_library(${PROJECT_NAME}_open_door_env SHARED src/env/open_door_env.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_open_door_env
-  ${PROJECT_NAME}_construct_vkc
-  ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract_motion_planners_trajopt 
-  ${catkin_LIBRARIES}
-)
-target_compile_options(
-  ${PROJECT_NAME}_open_door_env 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_open_door_env PUBLIC -std=c++17)
-else()
-    target_compile_features(${PROJECT_NAME}_open_door_env PUBLIC cxx_std_17)
-endif()
-target_include_directories(
-  ${PROJECT_NAME}_open_door_env PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>"
-)
-target_include_directories(
-  ${PROJECT_NAME}_open_door_env SYSTEM PUBLIC
-  ${catkin_INCLUDE_DIRS}
-)
+# add_library(${PROJECT_NAME}_open_door_env SHARED src/env/open_door_env.cpp)
+# target_link_libraries(
+#   ${PROJECT_NAME}_open_door_env
+#   ${PROJECT_NAME}_construct_vkc
+#   ${PROJECT_NAME}_vkc_env_basic
+#   ${PROJECT_NAME}_prob_generator
+#   tesseract::tesseract_motion_planners_trajopt 
+#   ${catkin_LIBRARIES}
+# )
+# target_compile_options(
+#   ${PROJECT_NAME}_open_door_env 
+#   PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
+# )
+# if(CXX_FEATURE_FOUND EQUAL "-1")
+#     target_compile_options(${PROJECT_NAME}_open_door_env PUBLIC -std=c++17)
+# else()
+#     target_compile_features(${PROJECT_NAME}_open_door_env PUBLIC cxx_std_17)
+# endif()
+# target_include_directories(
+#   ${PROJECT_NAME}_open_door_env PUBLIC
+#     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+#     "$<INSTALL_INTERFACE:include>"
+# )
+# target_include_directories(
+#   ${PROJECT_NAME}_open_door_env SYSTEM PUBLIC
+#   ${catkin_INCLUDE_DIRS}
+# )
 
 # add_library(${PROJECT_NAME}_arena_env SHARED src/env/arena_env.cpp)
 # target_link_libraries(
@@ -201,32 +202,28 @@ add_library(${PROJECT_NAME}_prob_generator SHARED
 )
 target_link_libraries(${PROJECT_NAME}_prob_generator
   tesseract::tesseract_environment
+  Eigen3::Eigen
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   astar
-  ${catkin_LIBRARIES}
+  # ${catkin_LIBRARIES}
 )
 target_compile_options(
   ${PROJECT_NAME}_prob_generator 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
+  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion -std=c++17
 )
-target_cxx_version(${PROJECT_NAME}_prob_generator  PUBLIC VERSION 17)
-
-target_compile_options(${PROJECT_NAME}_prob_generator PUBLIC -std=c++17)
-
-target_compile_features(${PROJECT_NAME}_prob_generator PUBLIC cxx_std_17)
-
+target_cxx_version(${PROJECT_NAME}_prob_generator PUBLIC VERSION ${TESSERACT_CXX_VERSION})
 target_include_directories(
   ${PROJECT_NAME}_prob_generator PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
-)
+) 
 target_include_directories(
   ${PROJECT_NAME}_prob_generator SYSTEM PUBLIC
   ${catkin_INCLUDE_DIRS}
   ${OMPL_INCLUDE_DIRS} 
+  ${PCL_INCLUDE_DIRS}
 )
-
 
 
 list(APPEND PACKAGE_LIBRARIES 
@@ -235,7 +232,7 @@ list(APPEND PACKAGE_LIBRARIES
   # ${PROJECT_NAME}_arena_env
   # ${PROJECT_NAME}_urdf_scene_env
   ${PROJECT_NAME}_prob_generator
-  ${PROJECT_NAME}_open_door_env
+  # ${PROJECT_NAME}_open_door_env
 )
 
 # Mark executables and/or libraries for installation
