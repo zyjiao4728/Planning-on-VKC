@@ -16,6 +16,12 @@ find_dependency(tesseract_collision)
 find_dependency(tesseract_environment)
 find_dependency(tesseract_kinematics)
 find_dependency(tesseract_common)
+find_dependency(tesseract_motion_planners)
+find_dependency(tesseract_command_language)
+find_dependency(tesseract_support)
+find_dependency(tesseract_process_managers)
+find_dependency(trajopt_sqp)
+find_dependency(trajopt_ifopt)
 find_dependency(astar)
 
 
