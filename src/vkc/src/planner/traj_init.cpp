@@ -143,7 +143,7 @@ namespace vkc
       }
       else
       {
-        ROS_ERROR("[%s]joint_name: %s, joint_index: %d, seed size: %d",
+        ROS_ERROR("[%s]joint_name: %s, joint_index: %d, seed size: %ld",
                   __func__,
                   joint_obj.joint_name.c_str(),
                   joint_name_idx.at(joint_obj.joint_name),
@@ -252,7 +252,7 @@ namespace vkc
 
     int inv_iter = 0;
     bool inv_suc = false;
-    int satisfy_collision = 1;
+    long unsigned int satisfy_collision = 1;
     bool satisfy_limit = false;
     bool desired_base_pose = false;
 
@@ -342,7 +342,7 @@ namespace vkc
                                     trajopt::TrajArray &init_traj, int n_steps, const std::string &robot)
   {
     // srand(time(NULL));
-    ROS_WARN("[%s]init trajectory, link_objectives size: %d, joint_objective size: %ld",
+    ROS_WARN("[%s]init trajectory, link_objectives size: %ld, joint_objective size: %ld",
              __func__, link_objectives.size(), joint_objectives.size());
 
     for (auto &objective : link_objectives)
@@ -481,7 +481,7 @@ namespace vkc
 
             if (satisfy_collision > 0)
             {
-              ROS_WARN("[%s]totoal %d collision points detected:", __func__, satisfy_collision);
+              ROS_WARN("[%s]totoal %ld collision points detected:", __func__, satisfy_collision);
               for (auto &collision : contact_results)
               {
                 std::cout << "\t" << collision.first.first << " -->|<-- " << collision.first.second << std::endl;

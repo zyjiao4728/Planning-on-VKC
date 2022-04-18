@@ -61,7 +61,7 @@ namespace vkc
         ROS_ERROR("2 types of objectives detected, using link objectives only");
       }
       Eigen::VectorXd solutions;
-      auto seed = (start_waypoint.isToleranced()) ? Eigen::VectorXd::Zero(kin_->getJointNames().size()) : start_waypoint.waypoint;
+      auto seed = (start_waypoint.size()) ? Eigen::VectorXd::Zero((long unsigned int)kin_->getJointNames().size()) : start_waypoint.waypoint;
       auto pose = l_obj[0].tf;
       if (collisionFreeInverseKinematics(env, manipulator, solutions, pose, seed))
       {
@@ -319,7 +319,7 @@ namespace vkc
   // wanglei@2021-10-28 to check whether solution satisfy joints limits
   bool ProbTranslator::checkJointLimits(const Eigen::VectorXd &solution, const tesseract_common::KinematicLimits limits)
   {
-    for (size_t i = 0; i < solution.size(); ++i)
+    for (long int i = 0; i < solution.size(); ++i)
     {
       if (solution[i] < limits.joint_limits(i, 0) || solution[i] > limits.joint_limits(i, 1))
       {

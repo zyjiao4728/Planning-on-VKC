@@ -42,7 +42,7 @@ namespace vkc
         if (link_objectives.size() == 1 && link_objectives[0].link_name == "base_link" && joint_objectives.size() == 0)
         {
             ROS_INFO("No Joint objective, only base objective");
-            for (size_t idx = 3; idx < joint_limits.rows(); idx++)
+            for (long idx = 3; idx < joint_limits.rows(); idx++)
                 // res[idx] = start_pos[idx];
 
                 if (idx == 6 || idx == 7)
