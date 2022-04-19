@@ -1,14 +1,13 @@
+#include <tesseract_command_language/utils/utils.h>
+#include <vkc/action/actions.h>
 #include <vkc/env/open_door_env.h>
 #include <vkc/env/vkc_env_basic.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc_example/utils.h>
 
-#include <vkc/action/actions.h>
-
 #include <iostream>
 #include <string>
 #include <vector>
-#include <tesseract_command_language/utils/utils.h>
 
 using namespace std;
 using namespace vkc;
@@ -19,23 +18,21 @@ using namespace trajopt;
 
 using TesseractJointTraj = tesseract_common::JointTrajectory;
 
-void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &actions,
-         int n_steps, int n_iter, bool rviz_enabled, unsigned int nruns)
-{
+void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
+         ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
+         unsigned int nruns) {
   ProbGenerator prob_generator;
 
   int j = 0;
 
-  for (auto &action : actions)
-  {
-
-    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
+  for (auto &action : actions) {
+    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(
+        env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
-    while (try_cnt++ < nruns)
-    {
+    while (try_cnt++ < nruns) {
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       ROS_WARN("optimization is ready. Press <Enter> to start next action");
@@ -44,15 +41,17 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       solveProb(prob_ptr, response, n_iter);
 
-      if (TrajOptMotionPlannerStatusCategory::SolutionFound == response.status.value()) // optimization converges
+      if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
+          response.status.value())  // optimization converges
       {
         converged = true;
         break;
-      }
-      else
-      {
-        ROS_WARN("[%s]optimizationi could not converge, response code: %d, description: %s",
-                 __func__, response.status.value(), response.status.message().c_str());
+      } else {
+        ROS_WARN(
+            "[%s]optimizationi could not converge, response code: %d, "
+            "description: %s",
+            __func__, response.status.value(),
+            response.status.message().c_str());
       }
     }
 
@@ -70,15 +69,21 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
     // std::cout << "optimized trajectory: " << std::endl
     //           << refined_traj << std::endl;
 
-    plotter->plotTrajectory(refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
+    plotter->plotTrajectory(refined_traj,
+                            *env.getVKCEnv()->getTesseract()->getStateSolver());
 
     ROS_WARN("Finished optimization. Press <Enter> to start next action");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    toDelimitedFile(ci, "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv", ',');
-    // saveTrajToFile(refined_traj, "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
+    toDelimitedFile(ci,
+                    "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
+                    "trajectory/open_door_pull.csv",
+                    ',');
+    // saveTrajToFile(refined_traj,
+    // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
 
-    env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position, action);
+    env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
+                  action);
     plotter->clear();
     ++j;
   }
@@ -93,13 +98,15 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
   // {
   //   PlannerResponse response;
   //   TrajOptProb::Ptr prob_ptr = nullptr;
-  //   plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
+  //   plotter =
+  //   std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
 
   //   prob_ptr = prob_generator.genRequest(env, action, n_steps);
 
   //   if (rviz_enabled)
   //   {
-  //     ROS_WARN("Created optimization problem. Press <Enter> to start optimization");
+  //     ROS_WARN("Created optimization problem. Press <Enter> to start
+  //     optimization");
   //     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   //   }
 
@@ -119,27 +126,28 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
 
   //   // plot current `action` result
 
-  //   plotter->plotTrajectory(prob_ptr->GetKin()->getJointNames(), refined_traj);
+  //   plotter->plotTrajectory(prob_ptr->GetKin()->getJointNames(),
+  //   refined_traj);
 
   //   ROS_WARN("Update Env");
   //   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
   //   // update env according to the action
-  //   env.updateEnv(response.joint_names, response.trajectory.bottomRows(1).transpose(), action);
-  //   plotter->clear();
+  //   env.updateEnv(response.joint_names,
+  //   response.trajectory.bottomRows(1).transpose(), action); plotter->clear();
 
   //   plotter->clear();
   // }
 }
 
-void pullDoor(vkc::ActionSeq &actions, const std::string &robot)
-{
+void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
   PlaceAction::Ptr place_action;
 
   /** open door **/
   // action 1: pick the door handle
   {
-    actions.emplace_back(make_shared<PickAction>(robot, "attach_door_north_handle_link"));
+    actions.emplace_back(
+        make_shared<PickAction>(robot, "attach_door_north_handle_link"));
     (*actions.rbegin())->RequireInitTraj(false);
   }
 
@@ -149,7 +157,9 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot)
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("door_north_door_joint", 1.5);
-    place_action = make_shared<PlaceAction>(robot, "attach_door_north_handle_link", link_objectives, joint_objectives, false);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
+                                 link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
     place_action->RequireInitTraj(true);
@@ -158,14 +168,14 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot)
   }
 }
 
-void pushDoor(vkc::ActionSeq &actions, const std::string &robot)
-{
+void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
   PlaceAction::Ptr place_action;
 
   /** open door **/
   // action 1: pick the door handle
   {
-    actions.emplace_back(make_shared<PickAction>(robot, "attach_door_north_handle_link"));
+    actions.emplace_back(
+        make_shared<PickAction>(robot, "attach_door_north_handle_link"));
     (*actions.rbegin())->RequireInitTraj(false);
   }
 
@@ -175,7 +185,9 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot)
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("door_north_door_joint", -1.5);
-    place_action = make_shared<PlaceAction>(robot, "attach_door_north_handle_link", link_objectives, joint_objectives, false);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
+                                 link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
     place_action->RequireInitTraj(true);
@@ -184,8 +196,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot)
   }
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   srand(time(NULL));
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");

@@ -7,24 +7,21 @@
 #include <vkc/action/place_action.h>
 #include <vkc/action/use_action.h>
 
-// added: wanglei@bigai.ai 
-// time: 2021-08-17 
+// added: wanglei@bigai.ai
+// time: 2021-08-17
 #include <iostream>
 
+namespace vkc {
+using ActionSeq = std::vector<vkc::ActionBase::Ptr>;
 
-namespace vkc{
-  using ActionSeq = std::vector<vkc::ActionBase::Ptr>;
+// added: wanglei@bigai.ai
+// time: 2021-08-17
+std::ostream& operator<<(std::ostream& oss, ActionBase::Ptr p_act);
 
+// added: wanglei@bigai.ai
+// time: 2021-08-17
+std::ostream& operator<<(std::ostream& oss, ActionSeq& actions);
 
-// added: wanglei@bigai.ai 
-// time: 2021-08-17 
-std::ostream& operator << (std::ostream& oss, ActionBase::Ptr p_act);
-
-
-// added: wanglei@bigai.ai 
-// time: 2021-08-17 
-std::ostream& operator << (std::ostream& oss, ActionSeq& actions);
- 
-}
+}  // namespace vkc
 
 #endif
