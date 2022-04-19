@@ -88,7 +88,8 @@ namespace vkc
 
       // Check RViz to make sure nothing has changed
       if (!checkRviz())
-        return false;
+        throw std::runtime_error("checkRviz failed");
+      // return false;
     }
 
     return true;

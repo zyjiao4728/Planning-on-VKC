@@ -29,7 +29,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq &a
   for (auto &action : actions)
   {
 
-    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract());
+    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
 
     PlannerResponse response;
     unsigned int try_cnt = 0;

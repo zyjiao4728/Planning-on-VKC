@@ -436,7 +436,8 @@ namespace vkc
   {
     ProblemConstructionInfo pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
 
-    int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
 
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.01, 50);
@@ -491,7 +492,8 @@ namespace vkc
   {
     ProblemConstructionInfo pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
 
-    int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
 
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.0001, 10);
@@ -535,7 +537,8 @@ namespace vkc
   {
     ProblemConstructionInfo pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
 
-    int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
 
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.01, 100);
@@ -562,7 +565,8 @@ namespace vkc
   {
     ProblemConstructionInfo pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
 
-    int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
 
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.0001, 10);
@@ -601,7 +605,8 @@ namespace vkc
   {
     ProblemConstructionInfo pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
 
-    int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps, act->getManipulatorID());
+    int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
 
     addJointTerm(pci, joint_num);
     addCollisionTerm(pci, 0.01, 50);
@@ -726,7 +731,7 @@ namespace vkc
 
   void ProbGenerator::addCartWaypoint(CompositeInstruction &program, Eigen::Isometry3d pose, std::string description)
   {
-    PlanInstruction pick_plan(pose, PlanInstructionType::FREESPACE, "FREESPACE");
+    PlanInstruction pick_plan(CartesianWaypoint(pose), PlanInstructionType::FREESPACE, "FREESPACE");
     pick_plan.setDescription(description);
     program.push_back(pick_plan);
   }

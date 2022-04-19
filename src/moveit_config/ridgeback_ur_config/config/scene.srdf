@@ -33,6 +33,7 @@
         <joint name="left_arm_wrist_2_joint" value="1.77"/>
         <joint name="left_arm_wrist_3_joint" value="0.0"/>
     </group_state>
+    <contact_managers_plugin_config filename="package://tesseract_support/urdf/contact_manager_plugins.yaml"/>
     <!-- <group_state name="left_arm_home" group="left_vkc">
         <joint name="base_link_base_theta" value="0"/>
         <joint name="base_theta_base_y" value="0"/>

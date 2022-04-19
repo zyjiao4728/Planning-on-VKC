@@ -57,7 +57,7 @@ public:
   }
 };
 
-void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter);
+void solveProb(tesseract_planning::PlannerRequest request, tesseract_planning::PlannerResponse &response, int n_iter);
 
 // CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr, tesseract_planning::PlannerResponse &response,
 //                         int n_iter, bool enable_ploting = false);

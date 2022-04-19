@@ -119,8 +119,8 @@ int saveTrajToFile(const tesseract_common::TrajArray &traj, const std::string fi
     return -1;
   }
 
-  size_t n_rows = traj.rows();
-  size_t n_cols = traj.cols();
+  long n_rows = traj.rows();
+  long n_cols = traj.cols();
 
   for (size_t i = 0; i < n_rows; i++)
   {
@@ -152,7 +152,7 @@ void TrajectoryVisualize(vkc::VKCEnvBasic &env,
                          vkc::ActionSeq &actions,
                          vector<tesseract_common::JointTrajectory> &joint_trajs)
 {
-  ROS_INFO("[%s]actions size: %d, traj size: %d", __func__, actions.size(), joint_trajs.size());
+  ROS_INFO("[%s]actions size: %ld, traj size: %ld", __func__, actions.size(), joint_trajs.size());
 
   // reset rviz
   ROS_INFO("[%s]please reset rviz and presss ENTER to go on...", __func__);

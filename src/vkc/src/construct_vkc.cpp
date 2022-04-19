@@ -83,7 +83,7 @@ namespace vkc
     if (!env_->init(*scene_graph_, srdf_model_))
     {
       ROS_INFO("Failed to initialize tesseract environment");
-      return false;
+      throw std::runtime_error("tesseract init failed");
     }
     monitor_ = std::make_shared<tesseract_monitoring::ROSEnvironmentMonitor>(env_, monitor_namespace);
     monitor_->startPublishingEnvironment();

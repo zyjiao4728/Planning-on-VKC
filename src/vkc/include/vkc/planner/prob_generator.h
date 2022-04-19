@@ -55,8 +55,8 @@ namespace vkc
     trajopt::ProblemConstructionInfo genPlaceProb_test(VKCEnvBasic &env, PlaceAction::Ptr act, int n_steps);
     trajopt::ProblemConstructionInfo genUseProb_test(VKCEnvBasic &env, UseAction::Ptr act, int n_steps);
 
-    int initProbInfo(trajopt::ProblemConstructionInfo &pci, tesseract_environment::Environment::Ptr tesseract, int n_steps,
-                     std::string manip);
+    // int initProbInfo(trajopt::ProblemConstructionInfo &pci, tesseract_environment::Environment::Ptr tesseract, int n_steps,
+    //                  std::string manip);
 
   protected:
     bool validateGroupID(tesseract_environment::Environment::Ptr tesseract, const std::string &group_id);
