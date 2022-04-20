@@ -32,7 +32,7 @@ catkin_package()
 # Load variable for clang tidy args, compiler options and cxx version
 tesseract_variables()
 
-list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
+list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_14 CXX_FEATURE_FOUND)
 
 # Create target
 add_library(${PROJECT_NAME}_construct_vkc SHARED src/construct_vkc.cpp)
@@ -55,6 +55,7 @@ add_library(${PROJECT_NAME}_vkc_env_basic SHARED src/env/vkc_env_basic.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_construct_vkc
+  fmt
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )

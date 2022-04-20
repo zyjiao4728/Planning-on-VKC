@@ -35,7 +35,7 @@ find_package(PCL REQUIRED COMPONENTS
   surface
 )
 
-list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
+list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_14 CXX_FEATURE_FOUND)
 
 
 ## System dependencies are found with CMake's conventions
