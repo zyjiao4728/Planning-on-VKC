@@ -26,8 +26,7 @@ ArenaEnv::ArenaEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
 
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
 
-  initTesseractConfig(MODIFY_ENVIRONMENT_SERVICE,
-                      GET_ENVIRONMENT_CHANGES_SERVICE);
+  initTesseractConfig();
 
   // set robot initial pose in scene graph
   setHomePose();
@@ -210,19 +209,6 @@ bool ArenaEnv::createEnvironment() {
 
   tesseract_->getTesseract()->applyCommands(cmds);
   plot_tesseract_->getTesseract()->applyCommands(cmds);
-
-  if (rviz_) {
-    // Now update rviz environment
-    if (!sendRvizChanges(n_past_revisions_, tesseract_)) return false;
-
-    // if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_))
-    //   return false;
-    // n_past_plot_revisions_ =
-    // plot_tesseract_->getTesseract()->getEnvironment()->getRevision();
-    // ROS_INFO("tesseract revision: %lu, plot_tesseract_revision: %lu",
-    // n_past_revisions_, n_past_plot_revisions_);
-    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
 
   return true;
 }

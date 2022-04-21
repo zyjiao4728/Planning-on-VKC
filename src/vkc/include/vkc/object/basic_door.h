@@ -72,7 +72,9 @@ class BaseDoor : public BaseObject {
     door_link_collision->geometry = door_link_visual->geometry;
     door_link.collision.push_back(door_link_collision);
 
-    Link handle_link(object_name_ + "_handle_link");
+    std::string handle_link_name = fmt::format("{}_handle_link", object_name_);
+
+    Link handle_link(handle_link_name);
 
     Inertial::Ptr handle_link_inertial = std::make_shared<Inertial>();
     handle_link_inertial->mass = 0.3;
@@ -92,7 +94,7 @@ class BaseDoor : public BaseObject {
         Eigen::AngleAxisd(pi_ / 2, Eigen::Vector3d::UnitX()).toRotationMatrix();
     handle_link_visual->geometry =
         std::make_shared<tesseract_geometry::Cylinder>(0.013, handle_length_);
-    material_name = handle_link.getName() + "_color";
+    material_name = fmt::format("{}_color", handle_link.getName());
     handle_link_visual->material = std::make_shared<Material>(material_name);
     handle_link_visual->material->color = Eigen::Vector4d(0.9, 0.9, 0.9, 1.0);
     handle_link.visual.push_back(handle_link_visual);
@@ -203,7 +205,7 @@ class BaseDoor : public BaseObject {
     door_joint.dynamics->damping = 100;
     door_joint.dynamics->friction = 0.0;
 
-    Joint handle_joint(object_name_ + "_handle_joint");
+    Joint handle_joint(fmt::format("{}_handle_joint", object_name_));
     handle_joint.parent_link_name = door_link.getName();
     handle_joint.child_link_name = handle_link.getName();
     handle_joint.parent_to_joint_origin_transform =
@@ -245,11 +247,12 @@ class BaseDoor : public BaseObject {
     handle3_joint.type = JointType::FIXED;
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
     link_map_[door_link.getName()] =
-        std::make_shared<Link>(std::move(door_link));
+        std::make_shared<Link>(std::move(door_link.clone()));
     link_map_[handle_link.getName()] =
-        std::make_shared<Link>(std::move(handle_link));
+        std::make_shared<Link>(std::move(handle_link.clone()));
+
     // link_map_[handle1_link.getName()] =
     // std::make_shared<Link>(std::move(handle1_link));
     // link_map_[handle2_link.getName()] =
@@ -258,9 +261,9 @@ class BaseDoor : public BaseObject {
     // std::make_shared<Link>(std::move(handle3_link));
 
     joint_map_[door_joint.getName()] =
-        std::make_shared<Joint>(std::move(door_joint));
+        std::make_shared<Joint>(std::move(door_joint.clone()));
     joint_map_[handle_joint.getName()] =
-        std::make_shared<Joint>(std::move(handle_joint));
+        std::make_shared<Joint>(std::move(handle_joint.clone()));
     // joint_map_[handle1_joint.getName()] =
     // std::make_shared<Joint>(std::move(handle1_joint));
     // joint_map_[handle2_joint.getName()] =
@@ -269,8 +272,9 @@ class BaseDoor : public BaseObject {
     // std::make_shared<Joint>(std::move(handle3_joint));
 
     // Add an attach location
-    AttachLocation attach_location("attach_" + handle_link.getName(),
-                                   handle_link.getName());
+    AttachLocation attach_location(
+        fmt::format("attach_{}", handle_link.getName()), handle_link.getName());
+
     // attach_location.local_joint_origin_transform.translation() +=
     // Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     // attach_location.local_joint_origin_transform.linear() =

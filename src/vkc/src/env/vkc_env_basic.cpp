@@ -1,4 +1,7 @@
+#include <tesseract_rosutils/plotting.h>
 #include <vkc/env/vkc_env_basic.h>
+
+using namespace tesseract_rosutils;
 
 const std::string DEFAULT_VKC_GROUP_ID = "vkc";
 
@@ -10,11 +13,7 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz)
       plotting_(plotting),
       rviz_(rviz),
       tesseract_(std::make_shared<vkc::ConstructVKC>()),
-      plot_tesseract_(std::make_shared<vkc::ConstructVKC>()) {
-  // Initial number of past revisions
-  n_past_revisions_ = 0;
-  n_past_plot_revisions_ = 0;
-}
+      plot_tesseract_(std::make_shared<vkc::ConstructVKC>()) {}
 
 void VKCEnvBasic::setEndEffector(std::string link_name) {
   end_effector_link_ = link_name;
@@ -60,8 +59,11 @@ bool VKCEnvBasic::loadRobotModel(const std::string& ENV_DESCRIPTION_PARAM,
   return true;
 }
 
-bool VKCEnvBasic::initTesseractConfig(const std::string& modify_env_srv,
-                                      const std::string& get_env_changes_srv) {
+tesseract_visualization::Visualization::Ptr VKCEnvBasic::getPlotter() {
+  return plotter_;
+}
+
+bool VKCEnvBasic::initTesseractConfig() {
   // Initialize scene graph to tesseract environment
   ROS_INFO("Initializing tesseract...");
   /** @brief RViz Example Namespace */
@@ -69,21 +71,29 @@ bool VKCEnvBasic::initTesseractConfig(const std::string& modify_env_srv,
 
   tesseract_->initTesseract(VKC_MONITOR_NAMESPACE);
   plot_tesseract_->initTesseract("tesseract_vkc_plot");
+  if (plotting_) {
+    plotter_ = std::make_shared<ROSPlotting>(
+        tesseract_->getTesseract()->getSceneGraph()->getRoot());
+    plotter_->waitForConnection();
+    if (plotter_ != nullptr && plotter_->isConnected())
+      plotter_->waitForInput();
+  }
 
   ROS_INFO("Tesseract initialized...");
 
   // These are used to keep visualization updated
-  if (rviz_) {
-    modify_env_rviz_ = nh_.serviceClient<tesseract_msgs::ModifyEnvironment>(
-        modify_env_srv, false);
-    get_env_changes_rviz_ =
-        nh_.serviceClient<tesseract_msgs::GetEnvironmentChanges>(
-            get_env_changes_srv, false);
+  // if (rviz_) {
+  //   modify_env_rviz_ = nh_.serviceClient<tesseract_msgs::ModifyEnvironment>(
+  //       fmt::format("/{}/{}", VKC_MONITOR_NAMESPACE, modify_env_srv), false);
+  //   get_env_changes_rviz_ =
+  //       nh_.serviceClient<tesseract_msgs::GetEnvironmentChanges>(
+  //           fmt::format("/{}/{}", VKC_MONITOR_NAMESPACE,
+  //           get_env_changes_srv), false);
 
-    // Check RViz to make sure nothing has changed
-    if (!checkRviz()) throw std::runtime_error("checkRviz failed");
-    // return false;
-  }
+  //   // Check RViz to make sure nothing has changed
+  //   if (!checkRviz()) throw std::runtime_error("checkRviz failed");
+  //   // return false;
+  // }
 
   return true;
 }
@@ -165,71 +175,6 @@ bool VKCEnvBasic::setInitPose(
   return true;
 }
 
-bool VKCEnvBasic::checkRviz() {
-  // Get the current state of the environment.
-  // Usually you would not be getting environment state from rviz
-  // this is just an example. You would be gettting it from the
-  // environment_monitor node. Need to update examples to launch
-  // environment_monitor node.
-  get_env_changes_rviz_.waitForExistence();
-  tesseract_msgs::GetEnvironmentChanges env_changes;
-  env_changes.request.revision = 0;
-  if (get_env_changes_rviz_.call(env_changes)) {
-    ROS_INFO("Retrieve current environment changes!");
-  } else {
-    ROS_ERROR("Failed to retrieve current environment changes!");
-    return false;
-  }
-
-  // There should not be any changes but check
-  if (env_changes.response.revision != 0) {
-    ROS_ERROR("The environment has changed externally!");
-    return false;
-  }
-  return true;
-}
-
-bool VKCEnvBasic::sendRvizChanges(unsigned long& past_revision,
-                                  vkc::ConstructVKC::Ptr tesseract) {
-  bool ret = sendRvizChanges_(past_revision, tesseract);
-  past_revision = (unsigned long)tesseract->getTesseract()->getRevision();
-
-  return ret;
-}
-
-bool VKCEnvBasic::sendRvizChanges_(unsigned long past_revision,
-                                   vkc::ConstructVKC::Ptr tesseract) {
-  ROS_INFO("[%s]start to update rviz environment...", __func__);
-  modify_env_rviz_.waitForExistence();
-  tesseract_msgs::ModifyEnvironment update_env;
-  update_env.request.id = tesseract->getTesseract()->getName();
-  update_env.request.revision = past_revision;
-
-  if (!tesseract_rosutils::toMsg(update_env.request.commands,
-                                 tesseract->getTesseract()->getCommandHistory(),
-                                 update_env.request.revision)) {
-    ROS_ERROR("Failed to generate commands to update rviz environment!");
-    return false;
-  }
-
-  if (modify_env_rviz_.call(update_env)) {
-    ROS_INFO(
-        "[%s]rviz environment updated, result: %d, revision: %lu, past "
-        "revision: %lu, current_revision: %u",
-        __func__, update_env.response.success, update_env.response.revision,
-        past_revision, tesseract->getTesseract()->getRevision());
-  } else {
-    ROS_INFO(
-        "[%s]failed to update rviz environment, result: %d, revision: %lu, "
-        "past revision: %lu, current_revision: %u",
-        __func__, update_env.response.success, update_env.response.revision,
-        past_revision, tesseract->getTesseract()->getRevision());
-    return false;
-  }
-
-  return true;
-}
-
 void VKCEnvBasic::updateAttachLocParentLink(std::string attach_loc_name,
                                             std::string parent_link_name) {
   if (ifAttachedLink(attach_loc_name)) {
@@ -297,6 +242,7 @@ void VKCEnvBasic::attachObject(std::string attach_location_name,
 
   Command::Ptr move_link = std::make_shared<MoveLinkCommand>(
       attach_locations_.at(attach_location_name)->connection);
+  // TODO! make things in parenthesis into a joint
   tesseract->getTesseract()->applyCommand(move_link);
   end_effector_link_ = attach_locations_.at(attach_location_name)->base_link_;
 
@@ -385,21 +331,18 @@ void VKCEnvBasic::detachObject(std::string detach_location_name,
 std::string VKCEnvBasic::updateEnv(const std::vector<std::string>& joint_names,
                                    const Eigen::VectorXd& joint_states,
                                    ActionBase::Ptr action) {
-  return updateEnv_(joint_names, joint_states, action, tesseract_,
-                    n_past_revisions_);
+  return updateEnv_(joint_names, joint_states, action, tesseract_);
 }
 std::string VKCEnvBasic::updatePlotEnv(
     const std::vector<std::string>& joint_names,
     const Eigen::VectorXd& joint_states, ActionBase::Ptr action) {
-  return updateEnv_(joint_names, joint_states, action, plot_tesseract_,
-                    n_past_plot_revisions_);
+  return updateEnv_(joint_names, joint_states, action, plot_tesseract_);
 }
 
 std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
                                     const Eigen::VectorXd& joint_states,
                                     ActionBase::Ptr action,
-                                    vkc::ConstructVKC::Ptr tesseract,
-                                    unsigned long& past_revision) {
+                                    vkc::ConstructVKC::Ptr tesseract) {
   std::cout << __func__ << ": action" << std::endl << action << std::endl;
 
   // Set the current state to the last state of the pick trajectory
@@ -408,7 +351,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   if (action == nullptr) {
     if (rviz_) {
       // Now update rviz environment
-      if (!sendRvizChanges(past_revision, tesseract)) exit(1);
+      tesseract_->getMonitor()->updateEnvironmentWithCurrentState();
     }
     return DEFAULT_VKC_GROUP_ID;
   }
@@ -441,7 +384,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
 
   if (rviz_) {
     // Now update rviz environment
-    if (!sendRvizChanges(past_revision, tesseract)) exit(1);
+    tesseract_->getMonitor()->updateEnvironmentWithCurrentState();
   }
 
   if (action->getActionType() != ActionType::GotoAction) {
@@ -484,7 +427,6 @@ bool VKCEnvBasic::reInit() {
   end_effector_link_ = robot_end_effector_link_;
   ROS_INFO("[%s]revision: %u", __func__,
            plot_tesseract_->getTesseract()->getRevision());
-  if (!sendRvizChanges(n_past_plot_revisions_, plot_tesseract_)) return false;
   return true;
 }
 

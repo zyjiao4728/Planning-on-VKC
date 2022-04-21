@@ -15,6 +15,9 @@ void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter) {
   TrajOptMotionPlanner planner;
 
   auto trajopt_status = planner.solve(request, response);
+
+  ROS_WARN("%d, %s", trajopt_status.value(), trajopt_status.message().c_str());
+
   return;
 }
 

@@ -1,3 +1,4 @@
+#include <ros/console.h>
 #include <tesseract_command_language/utils/utils.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/open_door_env.h>
@@ -26,8 +27,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
   int j = 0;
 
   for (auto &action : actions) {
-    ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(
-        env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
+    // ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(
+    //     env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -68,9 +69,11 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     // std::cout << "optimized trajectory: " << std::endl
     //           << refined_traj << std::endl;
-
-    plotter->plotTrajectory(refined_traj,
-                            *env.getVKCEnv()->getTesseract()->getStateSolver());
+    if (env.getPlotter() != nullptr) {
+      ROS_INFO("plotting result");
+      env.getPlotter()->plotTrajectory(
+          refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
+    }
 
     ROS_WARN("Finished optimization. Press <Enter> to start next action");
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -84,60 +87,9 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
                   action);
-    plotter->clear();
+    if (env.getPlotter() != nullptr) env.getPlotter()->clear();
     ++j;
   }
-
-  // ProbGenerator prob_generator;
-  // ROSPlottingPtr plotter;
-
-  // vector<vector<string>> joint_names_record;
-  // vector<PlannerResponse> planner_responses;
-
-  // for (auto &action : actions)
-  // {
-  //   PlannerResponse response;
-  //   TrajOptProb::Ptr prob_ptr = nullptr;
-  //   plotter =
-  //   std::make_shared<ROSPlotting>(env.getVKCEnv()->getTesseract()->getEnvironment());
-
-  //   prob_ptr = prob_generator.genRequest(env, action, n_steps);
-
-  //   if (rviz_enabled)
-  //   {
-  //     ROS_WARN("Created optimization problem. Press <Enter> to start
-  //     optimization");
-  //     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  //   }
-
-  //   solveProb(prob_ptr, response, n_iter);
-  //   // record planning result
-  //   planner_responses.push_back(response);
-  //   // record optimized joint names in this step
-  //   joint_names_record.push_back(prob_ptr->GetKin()->getJointNames());
-
-  //   // refine the orientation of the move base
-  //   tesseract_common::TrajArray refined_traj =
-  //       response.trajectory.leftCols(response.joint_names.size());
-  //   refineTrajectory(refined_traj);
-
-  //   std::cout << "Refined traj:" << std::endl;
-  //   std::cout << refined_traj << std::endl;
-
-  //   // plot current `action` result
-
-  //   plotter->plotTrajectory(prob_ptr->GetKin()->getJointNames(),
-  //   refined_traj);
-
-  //   ROS_WARN("Update Env");
-  //   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-  //   // update env according to the action
-  //   env.updateEnv(response.joint_names,
-  //   response.trajectory.bottomRows(1).transpose(), action); plotter->clear();
-
-  //   plotter->clear();
-  // }
 }
 
 void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
@@ -171,6 +123,8 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
 void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
   PlaceAction::Ptr place_action;
 
+  ROS_INFO("creating push door actions.");
+
   /** open door **/
   // action 1: pick the door handle
   {
@@ -194,10 +148,16 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 
     actions.emplace_back(place_action);
   }
+
+  ROS_INFO("push door actions created.");
 }
 
 int main(int argc, char **argv) {
   srand(time(NULL));
+
+  // console_bridge::setLogLevel(
+  //     console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
+
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
   ros::NodeHandle nh;

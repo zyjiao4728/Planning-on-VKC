@@ -27,8 +27,7 @@ OpenDoorEnv::OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz,
 
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
 
-  initTesseractConfig(MODIFY_ENVIRONMENT_SERVICE,
-                      GET_ENVIRONMENT_CHANGES_SERVICE);
+  initTesseractConfig();
 
   // set robot initial pose in scene graph
   setHomePose();
@@ -90,6 +89,8 @@ bool OpenDoorEnv::createEnvironment() {
 
   addAttachLocations(door_north.getAttachLocation());
 
+  ROS_INFO("add attach location success.");
+
   wall_north_left.addToEnvironment(tesseract_->getTesseract());
   wall_north_right.addToEnvironment(tesseract_->getTesseract());
   wall_west.addToEnvironment(tesseract_->getTesseract());
@@ -97,6 +98,8 @@ bool OpenDoorEnv::createEnvironment() {
   wall_south.addToEnvironment(tesseract_->getTesseract());
 
   door_north.addToEnvironment(tesseract_->getTesseract());
+
+  ROS_INFO("add objects to environment success");
 
   // drawer0.addToEnvironment(tesseract_->getTesseract());
 
@@ -124,6 +127,8 @@ bool OpenDoorEnv::createEnvironment() {
       "wall_east_wall_link", "wall_south_wall_link", "Never"));
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "door_north_handle_link", "left_gripper_palm", "Never"));
+
+  ROS_INFO("applying add collision commands");
 
   tesseract_->getTesseract()->applyCommands(cmds);
 
@@ -164,11 +169,6 @@ bool OpenDoorEnv::createEnvironment() {
   // false);
   // tesseract_->getTesseract()->setLinkCollisionEnabled("rear_right_wheel_link",
   // false);
-
-  if (rviz_) {
-    // Now update rviz environment
-    if (!sendRvizChanges(n_past_revisions_, tesseract_)) return false;
-  }
 
   return true;
 }

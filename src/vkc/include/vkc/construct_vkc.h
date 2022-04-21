@@ -33,6 +33,7 @@ class ConstructVKC {
   // Return private members
   tesseract_environment::Environment::Ptr getTesseract();
   tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
+  tesseract_monitoring::ROSEnvironmentMonitor::Ptr getMonitor();
   tesseract_srdf::SRDFModel::Ptr getSRDFModel();
 
   // tesseract_environment::Environment::Ptr getEnvironment();

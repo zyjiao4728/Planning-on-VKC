@@ -45,12 +45,12 @@ class BaseWall : public BaseObject {
         Eigen::Vector3d(0, 0, z_ / 2.0);
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
     link_map_[wall_link.getName()] =
-        std::make_shared<Link>(std::move(wall_link));
+        std::make_shared<Link>(std::move(wall_link.clone()));
 
     joint_map_[wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(wall_joint));
+        std::make_shared<Joint>(std::move(wall_joint.clone()));
 
     if (object_scene_graph_ == nullptr) {
       object_scene_graph_ = std::make_shared<SceneGraph>();

@@ -12,6 +12,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <memory>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
+#include <fmt/core.h>
 #include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_rosutils/conversions.h>
 #include <tesseract_rosutils/utils.h>
@@ -36,7 +37,8 @@ namespace vkc {
  */
 class VKCEnvBasic {
  public:
-  VKCEnvBasic(ros::NodeHandle nh_, bool plotting, bool rviz);
+  VKCEnvBasic(ros::NodeHandle nh_,
+              bool plotting, bool rviz);
 
   virtual ~VKCEnvBasic() = default;
 
@@ -61,6 +63,8 @@ class VKCEnvBasic {
   vkc::ConstructVKC::Ptr getVKCEnv();
   vkc::ConstructVKC::Ptr getPlotVKCEnv();
 
+  tesseract_visualization::Visualization::Ptr getPlotter();
+
   std::string updateEnv(const std::vector<std::string>& joint_names,
                         const Eigen::VectorXd& joint_states,
                         ActionBase::Ptr action);
@@ -72,22 +76,15 @@ class VKCEnvBasic {
 
  protected:
   ros::NodeHandle nh_;
-  bool plotting_; /**< @brief Enable plotting so data is published for rviz if
-                     available */
-  bool rviz_;     /**< @brief Enable rviz updating */
-  unsigned long n_past_revisions_;
+  bool rviz_; /**< @brief Enable rviz updating */
+  bool plotting_;
+
   std::unordered_map<std::string, double>
       home_pose_;                    /**< @brief Home pose of robot model */
   vkc::ConstructVKC::Ptr tesseract_; /**< @brief Tesseract Manager Class */
 
-  unsigned long n_past_plot_revisions_;
-  vkc::ConstructVKC::Ptr plot_tesseract_; /**< @brief Tesseract Manager Class */
-  ros::ServiceClient modify_env_rviz_;    /**< @brief Service for modifying
-                                             tesseract environment in rviz */
-  ros::ServiceClient get_env_changes_rviz_; /**< @brief Get the environment
-                                               changes from rviz */
-  // current end effector link of the whole body, which could be changed over
-  // time
+  vkc::ConstructVKC::Ptr plot_tesseract_;
+  tesseract_visualization::Visualization::Ptr plotter_;
   std::string end_effector_link_;
   // the robot end effctor
   std::string robot_end_effector_link_;
@@ -102,30 +99,11 @@ class VKCEnvBasic {
 
   bool setInitPose(std::unordered_map<std::string, double> init_pose);
 
-  /**
-   * @brief Check rviz and make sure the rviz environment revision number is
-   * zero.
-   * @return True if revision number is zero, otherwise false.
-   */
-  bool checkRviz();
-
-  bool sendRvizChanges(unsigned long& past_revision,
-                       vkc::ConstructVKC::Ptr tesseract);
-
-  /**
-   * @brief Send RViz the latest number of commands
-   * @param n The past revision number
-   * @return True if successful otherwise false
-   */
-  bool sendRvizChanges_(unsigned long past_revision,
-                        vkc::ConstructVKC::Ptr tesseract);
-
   bool loadRobotModel(const std::string& ENV_DESCRIPTION_PARAM,
                       const std::string& ENV_SEMANTIC_PARAM,
                       const std::string& END_EFFECTOR_LINK);
 
-  bool initTesseractConfig(const std::string& modify_env_srv,
-                           const std::string& get_env_changes_srv);
+  bool initTesseractConfig();
 
   bool isGroupExist(std::string group_id);
 
@@ -156,8 +134,7 @@ class VKCEnvBasic {
   std::string updateEnv_(const std::vector<std::string>& joint_names,
                          const Eigen::VectorXd& joint_states,
                          ActionBase::Ptr action,
-                         vkc::ConstructVKC::Ptr tesseract,
-                         unsigned long& past_revision);
+                         vkc::ConstructVKC::Ptr tesseract);
 };
 
 }  // namespace vkc

@@ -92,47 +92,6 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
 //   // return NULL;
 // }
 
-// int ProbGenerator::initProbInfo(ProblemConstructionInfo &pci,
-// tesseract_monitoring::EnvironmentMonitor::Ptr tesseract, int n_steps,
-//                                 std::string manip)
-// {
-//   // Populate Basic Info
-//   pci.basic_info.n_steps = n_steps;
-//   pci.basic_info.manip = manip;
-//   // pci.basic_info.start_fixed = true;
-//   pci.basic_info.use_time = false;
-//   // pci.basic_info.dofs_fixed = std::vector<int>({ 2 });  //
-//   jiao@2021-11-12, to disable rotation joint of mobile base
-
-//   // validate if group id exist in the tesseract env
-//   if (!validateGroupID(tesseract, pci.basic_info.manip))
-//     exit(1);
-
-//   // Create Kinematic Object
-//   pci.kin = tesseract->getEnvironment()->getJointGroup(manip);
-
-//   // Populate Init Info
-//   auto current_state = pci.env->getState();
-//   Eigen::VectorXd start_pos;
-//   start_pos.resize(pci.kin->numJoints());
-//   int joint_num = 0;
-//   planned_joints.clear();
-//   for (const auto &j : pci.kin->getJointNames())
-//   {
-//     start_pos[joint_num] = current_state.joints.at(j);
-//     planned_joints[j] = joint_num;
-//     ++joint_num;
-//   }
-
-//   pci.init_info.type = InitInfo::STATIONARY;
-
-//   // // [ToDo] how to init the initial trajectory
-//   pci.init_info.data =
-//   start_pos.transpose().replicate(pci.basic_info.n_steps, 1);
-
-//   return joint_num;
-// }
-
 ProfileDictionary::Ptr ProbGenerator::genCartProfiles_(
     VKCEnvBasic &env, double collision_margin, double collision_coeff,
     Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff) {
@@ -167,6 +126,8 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
     assert(false);
   }
 
+  ROS_DEBUG("generating pick problem");
+
   ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
   manip.working_frame = "world";
@@ -185,12 +146,18 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
                                    pos_coeff, rot_coeff);
   setSolverProfile(profiles, n_iter);
 
+  ROS_DEBUG("generating program");
+
   CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
                                manip);
 
+  auto joint_group = env.getVKCEnv()->getTesseract()->getJointGroup(
+      program.getManipulatorInfo().manipulator);
+
   // set initial pose
-  setStartInstruction(program, env_->getActiveJointNames(),
-                      env_->getCurrentJointValues());
+  setStartInstruction(
+      program, joint_group->getJointNames(),
+      env_->getCurrentJointValues(joint_group->getJointNames()));
 
   // set target pose
   BaseObject::AttachLocation::Ptr attach_location_ptr =
@@ -204,8 +171,12 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
+  ROS_DEBUG("generating seed");
+
   CompositeInstruction seed =
       generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+
+  ROS_INFO("composing request");
 
   // compose request
   PlannerRequest request;
@@ -214,6 +185,9 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   request.profiles = profiles;
   request.seed = seed;
   request.env_state = cur_state;
+  request.env = env.getVKCEnv()->getTesseract();
+
+  ROS_WARN("pick request generated.");
 
   return request;
   // ProblemConstructionInfo pci(env_);

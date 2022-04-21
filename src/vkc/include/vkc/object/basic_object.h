@@ -16,6 +16,8 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 // #include <vkc/construct_vkc.h>
 
+#include <fmt/core.h>
+
 #include <boost/range/adaptor/reversed.hpp>
 #include <cmath>
 #include <iostream>
@@ -68,8 +70,10 @@ class BaseObject {
         false; /**< @brief If base_link is physicallly fixed to groud */
 
     // Constructor
-    AttachLocation(std::string name, std::string link_name_)
-        : name_(name), link_name_(link_name_), connection(name + "_joint") {
+    AttachLocation(std::string name, std::string link_name)
+        : name_(name),
+          link_name_(std::move(link_name)),
+          connection(fmt::format("{}_joint", name)) {
       local_joint_origin_transform = Eigen::Isometry3d::Identity();
       world_joint_origin_transform = Eigen::Isometry3d::Identity();
     }

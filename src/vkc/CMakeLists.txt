@@ -32,7 +32,7 @@ catkin_package()
 # Load variable for clang tidy args, compiler options and cxx version
 tesseract_variables()
 
-list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_14 CXX_FEATURE_FOUND)
+list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
 
 # Create target
 add_library(${PROJECT_NAME}_construct_vkc SHARED src/construct_vkc.cpp)

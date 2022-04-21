@@ -94,6 +94,10 @@ tesseract_scene_graph::SceneGraph::Ptr ConstructVKC::getSceneGraph() {
   return scene_graph_;
 }
 
+tesseract_monitoring::ROSEnvironmentMonitor::Ptr ConstructVKC::getMonitor(){
+  return monitor_;
+}
+
 tesseract_srdf::SRDFModel::Ptr ConstructVKC::getSRDFModel() {
   return srdf_model_;
 }
