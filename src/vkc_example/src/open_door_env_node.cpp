@@ -1,5 +1,7 @@
 #include <ros/console.h>
 #include <tesseract_command_language/utils/utils.h>
+#include <tesseract_motion_planners/core/utils.h>
+#include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/open_door_env.h>
 #include <vkc/env/vkc_env_basic.h>
@@ -27,9 +29,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
   int j = 0;
 
   for (auto &action : actions) {
-    // ROSPlottingPtr plotter = std::make_shared<ROSPlotting>(
-    //     env.getVKCEnv()->getTesseract()->getSceneGraph()->getRoot());
-
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -71,6 +70,9 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     //           << refined_traj << std::endl;
     if (env.getPlotter() != nullptr) {
       ROS_INFO("plotting result");
+      tesseract_common::Toolpath toolpath =
+          toToolpath(ci, *env.getVKCEnv()->getTesseract());
+      env.getPlotter()->plotMarker(tesseract_visualization::ToolpathMarker(toolpath));
       env.getPlotter()->plotTrajectory(
           refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
     }
@@ -155,8 +157,8 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  // console_bridge::setLogLevel(
-  //     console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
+  console_bridge::setLogLevel(
+      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");

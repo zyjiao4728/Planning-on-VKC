@@ -91,14 +91,16 @@ bool OpenDoorEnv::createEnvironment() {
 
   ROS_INFO("add attach location success.");
 
+
   wall_north_left.addToEnvironment(tesseract_->getTesseract());
   wall_north_right.addToEnvironment(tesseract_->getTesseract());
   wall_west.addToEnvironment(tesseract_->getTesseract());
   wall_east.addToEnvironment(tesseract_->getTesseract());
   wall_south.addToEnvironment(tesseract_->getTesseract());
-
   door_north.addToEnvironment(tesseract_->getTesseract());
 
+  plotter_->waitForInput("wait for input");
+  
   ROS_INFO("add objects to environment success");
 
   // drawer0.addToEnvironment(tesseract_->getTesseract());

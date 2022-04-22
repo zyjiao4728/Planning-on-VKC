@@ -55,10 +55,6 @@ class ProbGenerator {
                                                 UseAction::Ptr act,
                                                 int n_steps);
 
-  tesseract_planning::ProfileDictionary::Ptr genCartProfiles_(
-      VKCEnvBasic &env, double collision_margin, double collision_coeff,
-      Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
-
   trajopt::ProblemConstructionInfo genProbTest(VKCEnvBasic &env,
                                                ActionBase::Ptr action,
                                                int n_steps);
@@ -84,6 +80,10 @@ class ProbGenerator {
                        const std::string &group_id);
 
   Eigen::Vector4d getQuatFromIso(Eigen::Isometry3d iso);
+
+  tesseract_planning::ProfileDictionary::Ptr genCartProfiles_(
+      VKCEnvBasic &env, tesseract_planning::ManipulatorInfo manip, double collision_margin, double collision_coeff,
+      Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
 
   void setJointPlanProfile(
       tesseract_planning::TrajOptDefaultPlanProfile::Ptr profile,

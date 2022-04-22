@@ -93,14 +93,15 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
 // }
 
 ProfileDictionary::Ptr ProbGenerator::genCartProfiles_(
-    VKCEnvBasic &env, double collision_margin, double collision_coeff,
-    Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff) {
+    VKCEnvBasic &env, ManipulatorInfo manip, double collision_margin,
+    double collision_coeff, Eigen::Vector3d pos_coeff,
+    Eigen::Vector3d rot_coeff) {
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   auto trajopt_composite_profile =
       std::make_shared<TrajOptDefaultCompositeProfile>();
-  setCompositeProfile(trajopt_composite_profile, collision_margin,
-                      collision_coeff,
-                      (long int)env_->getActiveJointNames().size());
+  setCompositeProfile(
+      trajopt_composite_profile, collision_margin, collision_coeff,
+      (long int)env_->getGroupJointNames(manip.manipulator).size());
 
   auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
   setCartPlanProfile(trajopt_plan_profile, pos_coeff, rot_coeff);
@@ -110,7 +111,7 @@ ProfileDictionary::Ptr ProbGenerator::genCartProfiles_(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT",
       trajopt_composite_profile);
   profiles->addProfile<TrajOptPlanProfile>(
-      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "CARTESIAN", trajopt_plan_profile);
+      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile);
 
   return profiles;
 }
@@ -132,6 +133,9 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   manip.tcp_frame = env.getEndEffectorLink();
   manip.working_frame = "world";
   manip.manipulator = act->getManipulatorID();
+  manip.manipulator_ik_solver = "KDLInvKinChainLMA";
+  auto joint_group =
+      env.getVKCEnv()->getTesseract()->getJointGroup(act->getManipulatorID());
 
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
 
@@ -142,17 +146,14 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
   auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
 
-  auto profiles = genCartProfiles_(env, collision_margin, collision_coeff,
-                                   pos_coeff, rot_coeff);
+  auto profiles = genCartProfiles_(env, manip, collision_margin,
+                                   collision_coeff, pos_coeff, rot_coeff);
   setSolverProfile(profiles, n_iter);
 
   ROS_DEBUG("generating program");
 
-  CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
+  CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
                                manip);
-
-  auto joint_group = env.getVKCEnv()->getTesseract()->getJointGroup(
-      program.getManipulatorInfo().manipulator);
 
   // set initial pose
   setStartInstruction(
@@ -308,8 +309,9 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   manip.tcp_frame = detach_location_ptr->base_link_;
   manip.working_frame = "world";
   manip.manipulator = act->getManipulatorID();
+  manip.manipulator_ik_solver = "KDLInvKinChainLMA";
 
-  CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
+  CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
                                manip);
 
   double collision_margin = 0.0001;
@@ -318,8 +320,8 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
   auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
 
-  auto profiles = genCartProfiles_(env, collision_margin, collision_coeff,
-                                   pos_coeff, rot_coeff);
+  auto profiles = genCartProfiles_(env, manip, collision_margin,
+                                   collision_coeff, pos_coeff, rot_coeff);
   setSolverProfile(profiles, n_iter);
 
   setStartInstruction(program, env_->getActiveJointNames(),
@@ -776,8 +778,7 @@ void ProbGenerator::setSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
 
   profiles->addProfile<TrajOptSolverProfile>(
-      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "FREESPACE",
-      trajopt_solver_profile);
+      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
 
   return;
 }
@@ -794,7 +795,7 @@ void ProbGenerator::addCartWaypoint(CompositeInstruction &program,
                                     Eigen::Isometry3d pose,
                                     std::string description) {
   PlanInstruction pick_plan(CartesianWaypoint(pose),
-                            PlanInstructionType::FREESPACE, "FREESPACE");
+                            PlanInstructionType::FREESPACE, "DEFAULT");
   pick_plan.setDescription(description);
   program.push_back(pick_plan);
 }

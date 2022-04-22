@@ -413,8 +413,8 @@ void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name) {
   DOUT("add link: " << link->getName()
                     << ", Joint: " << root_parent_joint->getName());
   tesseract_->getTesseractEnvironment()->addLink(*link, *root_parent_joint);
-  plot_tesseract_->getTesseractEnvironment()->addLink(*link,
-                                                      *root_parent_joint);
+  // plot_tesseract_->getTesseractEnvironment()->addLink(*link,
+  //                                                     *root_parent_joint);
 
   std::vector<Joint::ConstPtr> out_bound_joints =
       sg->getOutboundJoints(root_name);

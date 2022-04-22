@@ -213,9 +213,9 @@ class BaseObject {
                   child_link_name.c_str());
         Command::Ptr command = std::make_shared<AddLinkCommand>(
             *link_map_.at(child_link_name), *child_joint);
-        env_->applyCommand(command);
-        // monitor->getEnvironment()->addLink(*link_map_.at(child_link_name),
-        // *child_joint);
+        if (!env_->applyCommand(command)) {
+          ROS_WARN("add to environment helper: add to environment failed");
+        };
         addToEnvironmentHelper(
             env_, child_link_name,
             object_scene_graph_->getOutboundJoints(child_link_name).size());
@@ -273,7 +273,10 @@ class BaseObject {
     Command::Ptr command = std::make_shared<AddLinkCommand>(
         *(object_scene_graph_->getLink(object_scene_graph_->getRoot())),
         *world_joint_);
-    env_->applyCommand(command);
+    if (!env_->applyCommand(command)) {
+      ROS_WARN("add to environment failed");
+      return false;
+    }
     addToEnvironmentHelper(
         env_, object_scene_graph_->getRoot(),
         object_scene_graph_->getOutboundJoints(object_scene_graph_->getRoot())
@@ -293,13 +296,15 @@ class BaseObject {
   bool inverseRootTip(const std::string &new_tip, const std::string &new_root) {
     ROS_DEBUG("Inverting %s and %s of object %s", new_tip.c_str(),
               new_root.c_str(), object_name_.c_str());
-    SceneGraph::Ptr new_object_scene_graph = std::make_shared<SceneGraph>();
+
+    SceneGraph::Ptr new_object_scene_graph =
+        std::move(object_scene_graph_->clone());
 
     // deep copy a SceneGraph
-    inverseRootTipHelper(
-        new_object_scene_graph, object_scene_graph_->getRoot(),
-        object_scene_graph_->getOutboundJoints(object_scene_graph_->getRoot())
-            .size());
+    // inverseRootTipHelper(
+    //     new_object_scene_graph, object_scene_graph_->getRoot(),
+    //     object_scene_graph_->getOutboundJoints(object_scene_graph_->getRoot())
+    //         .size());
 
     // Add a dummy world link
     Link world("world");
@@ -411,7 +416,15 @@ class BaseObject {
           ROS_DEBUG("No visual info");
           continue;
         }
+        std::cout << it->origin.translation() << std::endl;
+        std::cout << it->origin.linear() << std::endl;
+        ROS_WARN("inv");
+        std::cout << prev_old_joint_tf_inv.translation() << std::endl;
+        std::cout << prev_old_joint_tf_inv.linear() << std::endl;
         it->origin = prev_old_joint_tf_inv * it->origin;
+        ROS_WARN("after inv");
+        std::cout << it->origin.translation() << std::endl;
+        std::cout << it->origin.linear() << std::endl;
         // it->origin.translation() += Eigen::Vector3d(0, 0, 2);
       }
 

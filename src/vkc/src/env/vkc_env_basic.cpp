@@ -50,11 +50,11 @@ bool VKCEnvBasic::loadRobotModel(const std::string& ENV_DESCRIPTION_PARAM,
     return false;
   }
 
-  if (!plot_tesseract_->loadURDFtoSceneGraph(env_urdf_xml_string,
-                                             env_srdf_xml_string, locator)) {
-    ROS_INFO("Failed to generate environment scene graph");
-    return false;
-  }
+  // if (!plot_tesseract_->loadURDFtoSceneGraph(env_urdf_xml_string,
+  //                                            env_srdf_xml_string, locator)) {
+  //   ROS_INFO("Failed to generate environment scene graph");
+  //   return false;
+  // }
 
   return true;
 }
@@ -70,7 +70,7 @@ bool VKCEnvBasic::initTesseractConfig() {
   const std::string VKC_MONITOR_NAMESPACE = "tesseract_vkc";
 
   tesseract_->initTesseract(VKC_MONITOR_NAMESPACE);
-  plot_tesseract_->initTesseract("tesseract_vkc_plot");
+  // plot_tesseract_->initTesseract("tesseract_vkc_plot");
   if (plotting_) {
     plotter_ = std::make_shared<ROSPlotting>(
         tesseract_->getTesseract()->getSceneGraph()->getRoot());
@@ -150,28 +150,31 @@ vkc::BaseObject::AttachLocation::Ptr VKCEnvBasic::getAttachLocation(
 
 bool VKCEnvBasic::setHomePose() {
   for (const auto& group_state :
-       tesseract_->getSRDFModel()->kinematics_information.group_states) {
+       tesseract_->getSRDFModel()->kinematics_information.group_states.at("vkc")) {
+    ROS_INFO("group state name: %s", group_state.first.c_str());
     if (std::string::npos == group_state.first.find("home")) {
       continue;
     }
-    for (auto const& val : group_state.second) {
-      // TODO: support for joints with multi-dofs, this may be currently wrong!!
-      home_pose_ = val.second;
-    }
+    home_pose_ = group_state.second;
+    // for (auto const& val : group_state.second) {
+    //   // TODO: support for joints with multi-dofs, this may be currently wrong!!
+    //   ROS_INFO(fmt::format("value: {}", val.first).c_str());
+    //   home_pose_ = val.second;
+    // }
   }
   if (home_pose_.size() <= 0) {
     ROS_WARN("No home pose defined!");
     return false;
   }
   tesseract_->getTesseract()->setState(home_pose_);
-  plot_tesseract_->getTesseract()->setState(home_pose_);
+  // plot_tesseract_->getTesseract()->setState(home_pose_);
   return true;
 }
 
 bool VKCEnvBasic::setInitPose(
     std::unordered_map<std::string, double> init_pose) {
   tesseract_->getTesseract()->setState(init_pose);
-  plot_tesseract_->getTesseract()->setState(init_pose);
+  // plot_tesseract_->getTesseract()->setState(init_pose);
   return true;
 }
 
@@ -336,7 +339,8 @@ std::string VKCEnvBasic::updateEnv(const std::vector<std::string>& joint_names,
 std::string VKCEnvBasic::updatePlotEnv(
     const std::vector<std::string>& joint_names,
     const Eigen::VectorXd& joint_states, ActionBase::Ptr action) {
-  return updateEnv_(joint_names, joint_states, action, plot_tesseract_);
+  return DEFAULT_VKC_GROUP_ID;
+  // return updateEnv_(joint_names, joint_states, action, plot_tesseract_);
 }
 
 std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
@@ -424,9 +428,9 @@ bool VKCEnvBasic::isGroupExist(std::string group_id) {
 }
 
 bool VKCEnvBasic::reInit() {
-  end_effector_link_ = robot_end_effector_link_;
-  ROS_INFO("[%s]revision: %u", __func__,
-           plot_tesseract_->getTesseract()->getRevision());
+  // end_effector_link_ = robot_end_effector_link_;
+  // ROS_INFO("[%s]revision: %u", __func__,
+  //          plot_tesseract_->getTesseract()->getRevision());
   return true;
 }
 
