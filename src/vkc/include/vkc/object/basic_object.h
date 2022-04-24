@@ -411,13 +411,7 @@ class BaseObject {
           ROS_DEBUG("No visual info");
           continue;
         }
-        // std::cout << prev_old_joint_tf_inv.translation() << std::endl;
-        // std::cout << prev_old_joint_tf_inv.linear() << std::endl;
         it->origin = prev_old_joint_tf_inv * it->origin;
-        ROS_WARN("after inv");
-        std::cout << it->origin.translation() << std::endl;
-        std::cout << it->origin.linear() << std::endl;
-        // it->origin.translation() += Eigen::Vector3d(0, 0, 2);
       }
 
       // reverse collision transform [ToDo]
