@@ -212,7 +212,7 @@ class BaseObject {
         ROS_DEBUG("Adding Link: %s to the environment.",
                   child_link_name.c_str());
         Command::Ptr command = std::make_shared<AddLinkCommand>(
-            *link_map_.at(child_link_name), *child_joint);
+            *object_scene_graph_->getLink(child_link_name), *child_joint);
         if (!env_->applyCommand(command)) {
           ROS_WARN("add to environment helper: add to environment failed");
         };
@@ -300,12 +300,6 @@ class BaseObject {
     SceneGraph::Ptr new_object_scene_graph =
         std::move(object_scene_graph_->clone());
 
-    // deep copy a SceneGraph
-    // inverseRootTipHelper(
-    //     new_object_scene_graph, object_scene_graph_->getRoot(),
-    //     object_scene_graph_->getOutboundJoints(object_scene_graph_->getRoot())
-    //         .size());
-
     // Add a dummy world link
     Link world("world");
     object_scene_graph_->addLink(world);
@@ -331,6 +325,7 @@ class BaseObject {
     //    Parent-child joint transform
     //    Joint type (prismatics, revolute) and axis
     for (auto &it : boost::adaptors::reverse(stem.joints)) {
+      ROS_DEBUG("joint name: %s", it.c_str());
       if (object_scene_graph_->getJoint(it)->parent_link_name == "world") {
         // new_tip location in the global world frame
         tip_root_transform =
@@ -398,7 +393,7 @@ class BaseObject {
       prev_old_joint_tf_inv = prev_old_joint_tf.inverse();
 
       // Get the link that to be modified
-      Link::ConstPtr modified_link =
+      Link::Ptr modified_link =
           new_object_scene_graph->getEditableLink(old_parent_link);
       // std::cout << modified_link->getName() << std::endl;
       // std::cout << prev_old_joint_tf_inv.translation() << std::endl;
@@ -416,11 +411,8 @@ class BaseObject {
           ROS_DEBUG("No visual info");
           continue;
         }
-        std::cout << it->origin.translation() << std::endl;
-        std::cout << it->origin.linear() << std::endl;
-        ROS_WARN("inv");
-        std::cout << prev_old_joint_tf_inv.translation() << std::endl;
-        std::cout << prev_old_joint_tf_inv.linear() << std::endl;
+        // std::cout << prev_old_joint_tf_inv.translation() << std::endl;
+        // std::cout << prev_old_joint_tf_inv.linear() << std::endl;
         it->origin = prev_old_joint_tf_inv * it->origin;
         ROS_WARN("after inv");
         std::cout << it->origin.translation() << std::endl;
@@ -456,6 +448,7 @@ class BaseObject {
 
     new_object_scene_graph->setRoot(new_root);
     object_scene_graph_ = new_object_scene_graph;
+
     Joint new_world_joint(object_name_ + "_world");
     new_world_joint.parent_link_name = "world";
     new_world_joint.child_link_name = new_root;
@@ -463,6 +456,7 @@ class BaseObject {
     new_world_joint.parent_to_joint_origin_transform = tip_root_transform;
     Joint::Ptr joint = std::make_shared<Joint>(std::move(new_world_joint));
     setWorldJoint(joint);
+
     // for (auto jnt : object_scene_graph_->getJoints())
     // {
     //   std::cout << jnt->getName() << ": " << std::endl;
