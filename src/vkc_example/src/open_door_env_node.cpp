@@ -35,8 +35,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     while (try_cnt++ < nruns) {
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
-      ROS_WARN("optimization is ready. Press <Enter> to start next action");
-      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      env.getPlotter()->waitForInput(
+          "optimization is ready. Press <Enter> to start next action");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       solveProb(prob_ptr, response, n_iter);
@@ -72,13 +72,14 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
       ROS_INFO("plotting result");
       tesseract_common::Toolpath toolpath =
           toToolpath(ci, *env.getVKCEnv()->getTesseract());
-      env.getPlotter()->plotMarker(tesseract_visualization::ToolpathMarker(toolpath));
+      env.getPlotter()->plotMarker(
+          tesseract_visualization::ToolpathMarker(toolpath));
       env.getPlotter()->plotTrajectory(
           refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
     }
 
-    ROS_WARN("Finished optimization. Press <Enter> to start next action");
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    env.getPlotter()->waitForInput(
+        "Finished optimization. Press <Enter> to start next action");
 
     toDelimitedFile(ci,
                     "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
@@ -89,6 +90,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
                   action);
+    // ROS_WARN("environment updated");
     if (env.getPlotter() != nullptr) env.getPlotter()->clear();
     ++j;
   }
