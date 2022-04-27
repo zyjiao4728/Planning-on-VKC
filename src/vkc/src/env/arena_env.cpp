@@ -48,40 +48,37 @@ bool ArenaEnv::createEnvironment() {
   vkc::BaseTable table0("table0", 0.8, 3, 1.6);
   table0.createObject();
   table0.createWorldJoint(Eigen::Vector4d(-0.5, arena_y / 2.0 - 0.5, 0, 0));
-  table0.addToEnvironment(plot_tesseract_->getTesseract());
-  table0.addToEnvironment(tesseract_->getTesseract());
 
   vkc::BaseCabinet cabinet0("cabinet0");
   cabinet0.createObject();
   cabinet0.createWorldJoint(Eigen::Vector4d(0, -arena_y / 2.0 + 1.7, 0, -1.57));
   cabinet0.inverseRootTip("world", cabinet0.getName() + "_handle_link");
-  cabinet0.addToEnvironment(plot_tesseract_->getTesseract());
-  cabinet0.addToEnvironment(tesseract_->getTesseract());
 
   vkc::BaseStick stick0("stick0", 0.5);
   stick0.createObject();
   stick0.createWorldJoint(Eigen::Vector4d(2.5, 1, 0.8, -1.57));
   stick0.inverseRootTip("world", stick0.getName() + "_stick_link");
-  stick0.addToEnvironment(plot_tesseract_->getTesseract());
-  stick0.addToEnvironment(tesseract_->getTesseract());
 
   vkc::BaseMarker marker0("marker0", 0.2);
   marker0.createObject();
   marker0.createWorldJoint(Eigen::Vector4d(-1, 4, 0.1, 1.57));
   marker0.inverseRootTip("world", marker0.getName() + "_marker_link");
-  marker0.addToEnvironment(plot_tesseract_->getTesseract());
-  marker0.addToEnvironment(tesseract_->getTesseract());
 
   vkc::BaseTable table1("table1", 0.72, 1, 2);
   table1.createObject();
   table1.createWorldJoint(Eigen::Vector4d(2.5, 1, 0, 0));
-  table1.addToEnvironment(plot_tesseract_->getTesseract());
-  table1.addToEnvironment(tesseract_->getTesseract());
 
-  vkc::BaseWall obs1("obs1", 2, 3, 2.1);
-  obs1.setColor(Eigen::Vector4d(0.5, 0.5, 0.5, 1));
-  obs1.createObject();
-  obs1.createWorldJoint(Eigen::Vector4d(2, -2, 0, 0));
+  //   vkc::BaseWall obs1("obs1", 2, 3, 2.1);
+  //   obs1.setColor(Eigen::Vector4d(0.5, 0.5, 0.5, 1));
+  //   obs1.createObject();
+  //   obs1.createWorldJoint(Eigen::Vector4d(2, -2, 0, 0));
+
+  ROS_ERROR("something wrong");
+  table0.addToEnvironment(tesseract_->getTesseract());
+  cabinet0.addToEnvironment(tesseract_->getTesseract());
+  stick0.addToEnvironment(tesseract_->getTesseract());
+  marker0.addToEnvironment(tesseract_->getTesseract());
+  table1.addToEnvironment(tesseract_->getTesseract());
 
   addAttachLocations(cabinet0.getAttachLocation());
   addAttachLocations(marker0.getAttachLocation());

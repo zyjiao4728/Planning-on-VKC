@@ -55,8 +55,9 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
         __func__, env.getEndEffectorLink().c_str(), action->Name().c_str(),
         (action->RequireInitTraj() ? "yes" : "no"));
 
-    ROS_INFO("[%s]press Enter key to go on...", __func__);
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    env.getPlotter()->waitForInput("press Enter key to go on...");
+    // ROS_INFO("[%s]press Enter key to go on...", __func__);
+    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     int tries = 0;
     bool converged = false;

@@ -22,7 +22,7 @@ class BaseStick : public BaseObject {
 
     Link base_link(object_name_ + "_base_link");
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
 
     Link stick_link(object_name_ + "_stick_link");
     Visual::Ptr stick_link_visual = std::make_shared<Visual>();
@@ -51,9 +51,9 @@ class BaseStick : public BaseObject {
         Eigen::Vector3d(0, 0, 0.05);
 
     link_map_[stick_link.getName()] =
-        std::make_shared<Link>(std::move(stick_link));
+        std::make_shared<Link>(std::move(stick_link).clone());
     joint_map_[stick_link_joint.getName()] =
-        std::make_shared<Joint>(std::move(stick_link_joint));
+        std::make_shared<Joint>(std::move(stick_link_joint).clone());
 
     // Link stick_tip_link(object_name_ + "_stick_tip_link");
     // Visual::Ptr stick_tip_link_visual = std::make_shared<Visual>();

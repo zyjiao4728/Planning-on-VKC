@@ -399,55 +399,55 @@ class BaseCabinet : public BaseObject {
         Eigen::Vector3d(-0.02, 0, -0.065);
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
     link_map_[cabinet_bottom_link.getName()] =
-        std::make_shared<Link>(std::move(cabinet_bottom_link));
+        std::make_shared<Link>(std::move(cabinet_bottom_link.clone()));
     link_map_[level1_link.getName()] =
-        std::make_shared<Link>(std::move(level1_link));
+        std::make_shared<Link>(std::move(level1_link.clone()));
     link_map_[level2_link.getName()] =
-        std::make_shared<Link>(std::move(level2_link));
+        std::make_shared<Link>(std::move(level2_link.clone()));
     link_map_[level3_link.getName()] =
-        std::make_shared<Link>(std::move(level3_link));
-    link_map_[top_link.getName()] = std::make_shared<Link>(std::move(top_link));
+        std::make_shared<Link>(std::move(level3_link.clone()));
+    link_map_[top_link.getName()] = std::make_shared<Link>(std::move(top_link.clone()));
     link_map_[cabinet_back_link.getName()] =
-        std::make_shared<Link>(std::move(cabinet_back_link));
+        std::make_shared<Link>(std::move(cabinet_back_link.clone()));
     link_map_[cabinet_left_link.getName()] =
-        std::make_shared<Link>(std::move(cabinet_left_link));
+        std::make_shared<Link>(std::move(cabinet_left_link.clone()));
     link_map_[cabinet_right_link.getName()] =
-        std::make_shared<Link>(std::move(cabinet_right_link));
+        std::make_shared<Link>(std::move(cabinet_right_link.clone()));
     link_map_[cabinet_door_link.getName()] =
-        std::make_shared<Link>(std::move(cabinet_door_link));
+        std::make_shared<Link>(std::move(cabinet_door_link.clone()));
     link_map_[knob1_link.getName()] =
-        std::make_shared<Link>(std::move(knob1_link));
+        std::make_shared<Link>(std::move(knob1_link.clone()));
     link_map_[knob2_link.getName()] =
-        std::make_shared<Link>(std::move(knob2_link));
+        std::make_shared<Link>(std::move(knob2_link.clone()));
     link_map_[handle_link.getName()] =
-        std::make_shared<Link>(std::move(handle_link));
+        std::make_shared<Link>(std::move(handle_link.clone()));
 
     joint_map_[cabinet_bottom_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_bottom_joint));
+        std::make_shared<Joint>(std::move(cabinet_bottom_joint.clone()));
     joint_map_[cabinet_door_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_door_joint));
+        std::make_shared<Joint>(std::move(cabinet_door_joint.clone()));
     joint_map_[cabinet_level1_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_level1_joint));
+        std::make_shared<Joint>(std::move(cabinet_level1_joint.clone()));
     joint_map_[cabinet_level2_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_level2_joint));
+        std::make_shared<Joint>(std::move(cabinet_level2_joint.clone()));
     joint_map_[cabinet_level3_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_level3_joint));
+        std::make_shared<Joint>(std::move(cabinet_level3_joint.clone()));
     joint_map_[cabinet_top_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_top_joint));
+        std::make_shared<Joint>(std::move(cabinet_top_joint.clone()));
     joint_map_[cabinet_back_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_back_joint));
+        std::make_shared<Joint>(std::move(cabinet_back_joint.clone()));
     joint_map_[cabinet_left_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_left_joint));
+        std::make_shared<Joint>(std::move(cabinet_left_joint.clone()));
     joint_map_[cabinet_right_joint.getName()] =
-        std::make_shared<Joint>(std::move(cabinet_right_joint));
+        std::make_shared<Joint>(std::move(cabinet_right_joint.clone()));
     joint_map_[knob1_joint.getName()] =
-        std::make_shared<Joint>(std::move(knob1_joint));
+        std::make_shared<Joint>(std::move(knob1_joint.clone()));
     joint_map_[knob2_joint.getName()] =
-        std::make_shared<Joint>(std::move(knob2_joint));
+        std::make_shared<Joint>(std::move(knob2_joint.clone()));
     joint_map_[knob3_joint.getName()] =
-        std::make_shared<Joint>(std::move(knob3_joint));
+        std::make_shared<Joint>(std::move(knob3_joint.clone()));
 
     AttachLocation attach_location("attach_" + handle_link.getName(),
                                    handle_link.getName());

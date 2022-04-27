@@ -159,24 +159,24 @@ class BaseTable : public BaseObject {
                         table_y - 1 * (d_ / 2 - 0.05), table_z + h_ / 2);
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
     link_map_[leg1_link.getName()] =
-        std::make_shared<Link>(std::move(leg1_link));
+        std::make_shared<Link>(std::move(leg1_link.clone()));
     link_map_[leg2_link.getName()] =
-        std::make_shared<Link>(std::move(leg2_link));
+        std::make_shared<Link>(std::move(leg2_link.clone()));
     link_map_[leg3_link.getName()] =
-        std::make_shared<Link>(std::move(leg3_link));
+        std::make_shared<Link>(std::move(leg3_link.clone()));
     link_map_[leg4_link.getName()] =
-        std::make_shared<Link>(std::move(leg4_link));
+        std::make_shared<Link>(std::move(leg4_link.clone()));
 
     joint_map_[leg1_joint.getName()] =
-        std::make_shared<Joint>(std::move(leg1_joint));
+        std::make_shared<Joint>(std::move(leg1_joint.clone()));
     joint_map_[leg2_joint.getName()] =
-        std::make_shared<Joint>(std::move(leg2_joint));
+        std::make_shared<Joint>(std::move(leg2_joint.clone()));
     joint_map_[leg3_joint.getName()] =
-        std::make_shared<Joint>(std::move(leg3_joint));
+        std::make_shared<Joint>(std::move(leg3_joint.clone()));
     joint_map_[leg4_joint.getName()] =
-        std::make_shared<Joint>(std::move(leg4_joint));
+        std::make_shared<Joint>(std::move(leg4_joint.clone()));
 
     if (object_scene_graph_ == nullptr) {
       object_scene_graph_ = std::make_shared<SceneGraph>();

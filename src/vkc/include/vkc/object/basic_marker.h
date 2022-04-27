@@ -47,12 +47,12 @@ class BaseMarker : public BaseObject {
         Eigen::Vector3d(0, 0, 0);
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
+        std::make_shared<Link>(std::move(base_link.clone()));
     link_map_[marker_link.getName()] =
-        std::make_shared<Link>(std::move(marker_link));
+        std::make_shared<Link>(std::move(marker_link.clone()));
 
     joint_map_[marker_joint.getName()] =
-        std::make_shared<Joint>(std::move(marker_joint));
+        std::make_shared<Joint>(std::move(marker_joint.clone()));
 
     // Add an attach location
     // AttachLocation attach_location("attach_" + marker_link.getName(),
