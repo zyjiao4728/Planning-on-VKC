@@ -1,3 +1,4 @@
+#include <fmt/ranges.h>
 #include <tesseract_rosutils/plotting.h>
 #include <vkc/env/vkc_env_basic.h>
 
@@ -13,7 +14,7 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz)
       plotting_(plotting),
       rviz_(rviz),
       tesseract_(std::make_shared<vkc::ConstructVKC>()),
-      plot_tesseract_(std::make_shared<vkc::ConstructVKC>()) {}
+      plot_tesseract_(nullptr) {}
 
 void VKCEnvBasic::setEndEffector(std::string link_name) {
   end_effector_link_ = link_name;
@@ -24,7 +25,7 @@ void VKCEnvBasic::setRobotEndEffector(std::string link_name) {
 }
 
 ConstructVKC::Ptr VKCEnvBasic::getVKCEnv() { return tesseract_; }
-ConstructVKC::Ptr VKCEnvBasic::getPlotVKCEnv() { return plot_tesseract_; }
+ConstructVKC::Ptr VKCEnvBasic::getPlotVKCEnv() { return nullptr; }
 
 bool VKCEnvBasic::loadRobotModel(const std::string& ENV_DESCRIPTION_PARAM,
                                  const std::string& ENV_SEMANTIC_PARAM,
@@ -76,7 +77,8 @@ bool VKCEnvBasic::initTesseractConfig() {
         tesseract_->getTesseract()->getSceneGraph()->getRoot());
     plotter_->waitForConnection();
     if (plotter_ != nullptr && plotter_->isConnected())
-      plotter_->waitForInput();
+      plotter_->waitForInput(
+          "tesseract plotter init success, press enter to continue");
   }
 
   ROS_INFO("Tesseract initialized...");
@@ -150,15 +152,15 @@ vkc::BaseObject::AttachLocation::Ptr VKCEnvBasic::getAttachLocation(
 
 bool VKCEnvBasic::setHomePose() {
   for (const auto& group_state :
-       tesseract_->getSRDFModel()->kinematics_information.group_states.at("vkc")) {
-    ROS_INFO("group state name: %s", group_state.first.c_str());
+       tesseract_->getSRDFModel()->kinematics_information.group_states.at(
+           "vkc")) {
     if (std::string::npos == group_state.first.find("home")) {
       continue;
     }
     home_pose_ = group_state.second;
     // for (auto const& val : group_state.second) {
-    //   // TODO: support for joints with multi-dofs, this may be currently wrong!!
-    //   ROS_INFO(fmt::format("value: {}", val.first).c_str());
+    //   // TODO: support for joints with multi-dofs, this may be currently
+    //   wrong!! ROS_INFO(fmt::format("value: {}", val.first).c_str());
     //   home_pose_ = val.second;
     // }
   }
@@ -355,7 +357,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   if (action == nullptr) {
     if (rviz_) {
       // Now update rviz environment
-      tesseract_->getMonitor()->updateEnvironmentWithCurrentState();
+      // tesseract_->getTesseract()->
     }
     return DEFAULT_VKC_GROUP_ID;
   }
@@ -392,25 +394,27 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   }
 
   if (action->getActionType() != ActionType::GotoAction) {
-    tesseract->getSRDFModel()->kinematics_information.removeLinkGroup(
-        DEFAULT_VKC_GROUP_ID);  // TODO: check remove link group correction(need
-                                // to compare with old one)
 
-    tesseract_srdf::ChainGroup group;
-    // group.name_ = DEFAULT_VKC_GROUP_ID;
-    group.push_back(
-        std::pair<std::string, std::string>("world", end_effector_link_));
-    tesseract->getSRDFModel()->kinematics_information.addChainGroup(
-        DEFAULT_VKC_GROUP_ID, group);
+    tesseract_srdf::KinematicsInformation kin_info;
+    {
+      tesseract_common::PluginInfo pi;
+      pi.class_name = "KDLInvKinChainLMAFactory";
+      pi.config["base_link"] = "world";
+      pi.config["tip_link"] = end_effector_link_;
+      kin_info.kinematics_plugin_info.inv_plugin_infos[DEFAULT_VKC_GROUP_ID]
+          .plugins = {std::make_pair("KDLFInvKinLMA", pi)};
+      tesseract_srdf::ChainGroup group;
+      group.push_back(std::make_pair("world", end_effector_link_));
+      kin_info.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
+    }
 
-    // tesseract->getTesseract()->clearKinematics();
-    // tesseract->getTesseract()->registerDefaultFwdKinSolvers();
-    // tesseract->getTesseract()->registerDefaultInvKinSolvers();
-    // TODO! need to restore functions
+    auto cmd = std::make_shared<AddKinematicsInformationCommand>(kin_info);
+
+    tesseract->getTesseract()->applyCommand(cmd);
   }
 
   return DEFAULT_VKC_GROUP_ID;
-}
+}  // namespace vkc
 
 bool VKCEnvBasic::isGroupExist(std::string group_id) {
   return tesseract_->getSRDFModel()->kinematics_information.hasChainGroup(

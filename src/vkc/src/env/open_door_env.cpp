@@ -98,11 +98,11 @@ bool OpenDoorEnv::createEnvironment() {
   wall_south.addToEnvironment(tesseract_->getTesseract());
   door_north.addToEnvironment(tesseract_->getTesseract());
 
-  plotter_->waitForInput("wait for input");
-
   ROS_INFO("add objects to environment success");
 
   // drawer0.addToEnvironment(tesseract_->getTesseract());
+
+  plotter_->waitForInput("wait for environment to update");
 
   // Disable minor collision detection
 

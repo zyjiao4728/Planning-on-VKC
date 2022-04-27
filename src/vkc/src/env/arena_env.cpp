@@ -22,7 +22,7 @@ namespace vkc {
 ArenaEnv::ArenaEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
     : VKCEnvBasic(nh, plotting, rviz), steps_(steps) {
   // Set Log Level
-  util::gLogLevel = util::LevelInfo;
+  util::gLogLevel = util::LevelDebug;
 
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
 
@@ -208,7 +208,6 @@ bool ArenaEnv::createEnvironment() {
   ;
 
   tesseract_->getTesseract()->applyCommands(cmds);
-  plot_tesseract_->getTesseract()->applyCommands(cmds);
 
   return true;
 }

@@ -36,7 +36,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
-          "optimization is ready. Press <Enter> to start next action");
+          "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       solveProb(prob_ptr, response, n_iter);
@@ -48,7 +48,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
         break;
       } else {
         ROS_WARN(
-            "[%s]optimizationi could not converge, response code: %d, "
+            "[%s]optimization could not converge, response code: %d, "
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
@@ -59,6 +59,11 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
     joint_trajs.emplace_back(refined_traj);
+
+    ROS_WARN("trajectory: ");
+    for (auto jo : refined_traj) {
+      std::cout << jo.position << std::endl;
+    }
 
     // refine the orientation of the move base
 
@@ -76,10 +81,9 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
           tesseract_visualization::ToolpathMarker(toolpath));
       env.getPlotter()->plotTrajectory(
           refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
+      env.getPlotter()->waitForInput(
+          "Finished optimization. Press <Enter> to start next action");
     }
-
-    env.getPlotter()->waitForInput(
-        "Finished optimization. Press <Enter> to start next action");
 
     toDelimitedFile(ci,
                     "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
@@ -188,7 +192,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pushDoor(actions, robot);
+  // pushDoor(actions, robot);
+  pullDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }
