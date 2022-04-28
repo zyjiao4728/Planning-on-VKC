@@ -59,15 +59,15 @@
   </joint>
 
   <!-- left arm -->
-  <!-- <xacro:ur5e_robot prefix="left_arm_" />
+  <xacro:ur5e_robot prefix="left_arm_" />
   <joint name="left_arm_joint" type="fixed">
       <origin xyz="0.25 0.208336 0.957336" rpy="-${M_PI/4*3} 0 0"/>
       <parent link="base_footprint"/>
       <child link="left_arm_base_link"/>
-  </joint> -->
+  </joint>
 
   <!-- left gipper flange -->
-  <!-- <link name="left_gripper_flange">
+  <link name="left_gripper_flange">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -82,26 +82,26 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="left_arm_tool0"/>
       <child link="left_gripper_flange"/>
-  </joint> -->
+  </joint>
 
   <!-- left gripper -->
-  <!-- <xacro:robotiq-3f-gripper_articulated prefix="left_gripper_"/>
+  <xacro:robotiq-3f-gripper_articulated prefix="left_gripper_"/>
   <joint name="left_gripper_joint" type="fixed">
       <origin xyz="0 0 0.068825" rpy="${M_PI/2} 0 0"/>
       <parent link="left_gripper_flange"/>
       <child link="left_gripper_palm"/>
-  </joint> -->
+  </joint>
 
   <!-- right arm -->
-  <xacro:ur5e_robot prefix="right_arm_" />
+  <!-- <xacro:ur5e_robot prefix="right_arm_" />
   <joint name="right_arm_joint" type="fixed">
       <origin xyz="0.25 -0.208336 0.957336" rpy="${M_PI/4*3} 0 0"/>
       <parent link="base_footprint"/>
       <child link="right_arm_base_link"/>
-  </joint>
+  </joint> -->
 
   <!-- right gipper flange -->
-  <link name="right_gripper_flange">
+  <!-- <link name="right_gripper_flange">
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
@@ -122,13 +122,13 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="right_arm_tool0"/>
       <child link="right_gripper_flange"/>
-  </joint>
+  </joint> -->
 
   <!-- right gripper -->
-  <xacro:robotiq-3f-gripper_articulated prefix="right_gripper_"/>
+  <!-- <xacro:robotiq-3f-gripper_articulated prefix="right_gripper_"/>
   <joint name="right_gripper_joint" type="fixed">
       <origin xyz="0 0 0.068825" rpy="${M_PI/2} 0 0"/>
       <parent link="right_gripper_flange"/>
       <child link="right_gripper_palm"/>
-  </joint>  
+  </joint>   -->
 </robot>

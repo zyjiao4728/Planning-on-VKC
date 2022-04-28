@@ -57,13 +57,15 @@
   <depend>roslib</depend>
   <depend>trajopt</depend>
   <depend>tesseract_collision</depend>
+  <depend>tesseract_monitoring</depend>
   <depend>tesseract_motion_planners</depend>
   <depend>tesseract_kinematics</depend>
   <depend>tesseract_environment</depend>
   <depend>tesseract_scene_graph</depend>
   <depend>tesseract_rosutils</depend>
-  <depend>tesseract</depend>
   <depend>vkc</depend>
+
+  <exec_depend>ridgeback_dual_arm_description</exec_depend>
 
   <exec_depend>xacro</exec_depend>
   <exec_depend>rviz</exec_depend>

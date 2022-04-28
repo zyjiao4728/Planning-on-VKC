@@ -1,31 +1,42 @@
 cmake_minimum_required(VERSION 3.5.0)
+
+find_package(ros_industrial_cmake_boilerplate REQUIRED)
+extract_package_metadata(pkg)
+
 project(vkc VERSION 0.1.0 LANGUAGES CXX)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
+  std_srvs
+  tesseract_monitoring
   tesseract_rosutils
 )
 find_package(Boost COMPONENTS system python REQUIRED)
 find_package(console_bridge REQUIRED)
+find_package(tesseract_environment REQUIRED)
 find_package(tesseract_scene_graph REQUIRED)
 find_package(tesseract_collision REQUIRED)
-find_package(tesseract_environment REQUIRED)
+find_package(tesseract_command_language REQUIRED)
+find_package(tesseract_motion_planners REQUIRED)
+find_package(tesseract_process_managers REQUIRED)
 find_package(tesseract_kinematics REQUIRED)
 find_package(tesseract_common REQUIRED)
-find_package(tesseract REQUIRED)
-find_package(tesseract REQUIRED)
-find_package(tesseract_motion_planners REQUIRED)
-find_package(trajopt REQUIRED)
+find_package(trajopt_ifopt REQUIRED)
+find_package(trajopt_sqp REQUIRED)
 find_package(astar REQUIRED)
 find_package(ompl REQUIRED)
 
+catkin_package()
+
+# Load variable for clang tidy args, compiler options and cxx version
+tesseract_variables()
 
 list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
 
 # Create target
 add_library(${PROJECT_NAME}_construct_vkc SHARED src/construct_vkc.cpp)
-target_link_libraries(${PROJECT_NAME}_construct_vkc PUBLIC tesseract::tesseract tesseract::tesseract_scene_graph tesseract::tesseract_collision_bullet tesseract::tesseract_environment_kdl tesseract::tesseract_kinematics_kdl console_bridge)
+target_link_libraries(${PROJECT_NAME}_construct_vkc PUBLIC tesseract::tesseract_scene_graph  tesseract::tesseract_environment tesseract::tesseract_collision_bullet tesseract::tesseract_kinematics_kdl console_bridge)
 target_compile_options(${PROJECT_NAME}_construct_vkc PRIVATE -Wall -Wextra -Wsuggest-override -Wconversion -Wsign-conversion)
 if(CXX_FEATURE_FOUND EQUAL "-1")
     target_compile_options(${PROJECT_NAME}_construct_vkc PUBLIC -std=c++11)
@@ -37,13 +48,14 @@ target_include_directories(${PROJECT_NAME}_construct_vkc PUBLIC
     "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME}_construct_vkc SYSTEM PUBLIC
     ${Boost_INCLUDE_DIRS}
+    ${catkin_INCLUDE_DIRS}
     $<TARGET_PROPERTY:tesseract::tesseract_common,INTERFACE_INCLUDE_DIRECTORIES>) #tesseract::tesseract_common Due to bug in catkin, there is an open PR
 
 add_library(${PROJECT_NAME}_vkc_env_basic SHARED src/env/vkc_env_basic.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_construct_vkc
-  tesseract::tesseract
+  fmt
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -67,37 +79,62 @@ target_include_directories(
 )
 
 
-add_library(${PROJECT_NAME}_urdf_scene_env SHARED src/env/urdf_scene_env.cpp)
+# add_library(${PROJECT_NAME}_urdf_scene_env SHARED src/env/urdf_scene_env.cpp)
+# target_link_libraries(
+#   ${PROJECT_NAME}_urdf_scene_env
+#   ${PROJECT_NAME}_construct_vkc
+#   ${PROJECT_NAME}_vkc_env_basic
+#   ${PROJECT_NAME}_prob_generator
+#   tesseract::tesseract_motion_planners_trajopt 
+#   tesseract::tesseract_motion_planners_ompl
+#   ${catkin_LIBRARIES}
+# )
+# target_compile_options(
+#   ${PROJECT_NAME}_urdf_scene_env 
+#   PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
+# )
+# if(CXX_FEATURE_FOUND EQUAL "-1")
+#     target_compile_options(${PROJECT_NAME}_urdf_scene_env PUBLIC -std=c++11)
+# else()
+#     target_compile_features(${PROJECT_NAME}_urdf_scene_env PUBLIC cxx_std_11)
+# endif()
+# target_include_directories(
+#   ${PROJECT_NAME}_urdf_scene_env PUBLIC
+#     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+#     "$<INSTALL_INTERFACE:include>"
+# )
+# target_include_directories(
+#   ${PROJECT_NAME}_urdf_scene_env SYSTEM PUBLIC
+#   ${catkin_INCLUDE_DIRS}
+# )
+
+add_library(${PROJECT_NAME}_open_door_env SHARED src/env/open_door_env.cpp)
 target_link_libraries(
-  ${PROJECT_NAME}_urdf_scene_env
+  ${PROJECT_NAME}_open_door_env
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
-  tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
 )
 target_compile_options(
-  ${PROJECT_NAME}_urdf_scene_env 
+  ${PROJECT_NAME}_open_door_env 
   PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
 )
 if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_urdf_scene_env PUBLIC -std=c++11)
+    target_compile_options(${PROJECT_NAME}_open_door_env PUBLIC -std=c++11)
 else()
-    target_compile_features(${PROJECT_NAME}_urdf_scene_env PUBLIC cxx_std_11)
+    target_compile_features(${PROJECT_NAME}_open_door_env PUBLIC cxx_std_11)
 endif()
 target_include_directories(
-  ${PROJECT_NAME}_urdf_scene_env PUBLIC
+  ${PROJECT_NAME}_open_door_env PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
 )
 target_include_directories(
-  ${PROJECT_NAME}_urdf_scene_env SYSTEM PUBLIC
+  ${PROJECT_NAME}_open_door_env SYSTEM PUBLIC
   ${catkin_INCLUDE_DIRS}
 )
-
-
 
 add_library(${PROJECT_NAME}_arena_env SHARED src/env/arena_env.cpp)
 target_link_libraries(
@@ -105,7 +142,6 @@ target_link_libraries(
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -165,7 +201,6 @@ target_link_libraries(${PROJECT_NAME}_prob_generator
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   astar
-  tesseract::tesseract
   tesseract::tesseract_motion_planners_trajopt 
   tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
@@ -196,8 +231,9 @@ list(APPEND PACKAGE_LIBRARIES
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_arena_env
-  ${PROJECT_NAME}_urdf_scene_env
+  # ${PROJECT_NAME}_urdf_scene_env
   ${PROJECT_NAME}_prob_generator
+  ${PROJECT_NAME}_open_door_env
 )
 
 # Mark executables and/or libraries for installation

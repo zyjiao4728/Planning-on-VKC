@@ -17,6 +17,9 @@ msg/_*.py
 build_isolated/
 devel_isolated/
 
+# soft link to ~/.ros/log/latest, created by `ln -s ~/.ros/log/latest log-latest`
+log-latest
+
 # Workspace settings
 .catkin_tools/
 **/.vscode/*
@@ -64,3 +67,4 @@ unused/
 # Catkin custom files
 CATKIN_IGNORE
 *.log
+*.txt

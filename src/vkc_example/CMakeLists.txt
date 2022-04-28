@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   tesseract_rosutils
   rospy
+  tesseract_monitoring
   roslib # added: wanglei@bigai.ai, to get package path
 )
 
@@ -20,7 +21,7 @@ find_package(Boost COMPONENTS system python REQUIRED)
 find_package(vkc REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(trajopt REQUIRED)
-find_package(tesseract REQUIRED)
+find_package(tesseract_environment REQUIRED)
 find_package(tesseract_motion_planners REQUIRED)
 find_package(ompl REQUIRED)
 
@@ -34,7 +35,7 @@ find_package(PCL REQUIRED COMPONENTS
   surface
 )
 
-list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_11 CXX_FEATURE_FOUND)
+list(FIND CMAKE_CXX_COMPILE_FEATURES cxx_std_14 CXX_FEATURE_FOUND)
 
 
 ## System dependencies are found with CMake's conventions
@@ -179,7 +180,7 @@ catkin_package(
 add_library(${PROJECT_NAME}_utils SHARED src/utils.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_utils
-  tesseract::tesseract
+  tesseract::tesseract_environment
   tesseract::tesseract_motion_planners_trajopt 
   ${catkin_LIBRARIES}
 )
@@ -224,79 +225,100 @@ target_include_directories(${PROJECT_NAME}_arena_env_node PUBLIC
 target_include_directories(${PROJECT_NAME}_arena_env_node SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS})
 
-
-add_executable(${PROJECT_NAME}_urdf_scene_env_node src/urdf_scene_env_node.cpp)
+add_executable(${PROJECT_NAME}_open_door_env_node src/open_door_env_node.cpp)
 target_link_libraries(
-    ${PROJECT_NAME}_urdf_scene_env_node
-    ${PROJECT_NAME}_utils 
-    vkc::vkc_construct_vkc
-    vkc::vkc_urdf_scene_env
-    vkc::vkc_prob_generator
-    vkc::vkc_vkc_env_basic
-    ${catkin_LIBRARIES}
+  ${PROJECT_NAME}_open_door_env_node
+  ${PROJECT_NAME}_utils 
+  vkc::vkc_construct_vkc
+  vkc::vkc_open_door_env
+  vkc::vkc_prob_generator
+  vkc::vkc_vkc_env_basic
+  tesseract::tesseract_motion_planners_ompl
+  ${catkin_LIBRARIES}
 )
 if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_urdf_scene_env_node PRIVATE -std=c++11)
+    target_compile_options(${PROJECT_NAME}_open_door_env_node PRIVATE -std=c++11)
 else()
-    target_compile_features(${PROJECT_NAME}_urdf_scene_env_node PRIVATE cxx_std_11)
+    target_compile_features(${PROJECT_NAME}_open_door_env_node PRIVATE cxx_std_11)
 endif()
-target_include_directories(${PROJECT_NAME}_urdf_scene_env_node PUBLIC
+target_include_directories(${PROJECT_NAME}_open_door_env_node PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME}_urdf_scene_env_node SYSTEM PUBLIC
+target_include_directories(${PROJECT_NAME}_open_door_env_node SYSTEM PUBLIC
     ${catkin_INCLUDE_DIRS})
 
+# add_executable(${PROJECT_NAME}_urdf_scene_env_node src/urdf_scene_env_node.cpp)
+# target_link_libraries(
+#     ${PROJECT_NAME}_urdf_scene_env_node
+#     ${PROJECT_NAME}_utils 
+#     vkc::vkc_construct_vkc
+#     vkc::vkc_urdf_scene_env
+#     vkc::vkc_prob_generator
+#     vkc::vkc_vkc_env_basic
+#     ${catkin_LIBRARIES}
+# )
+# if(CXX_FEATURE_FOUND EQUAL "-1")
+#     target_compile_options(${PROJECT_NAME}_urdf_scene_env_node PRIVATE -std=c++11)
+# else()
+#     target_compile_features(${PROJECT_NAME}_urdf_scene_env_node PRIVATE cxx_std_11)
+# endif()
+# target_include_directories(${PROJECT_NAME}_urdf_scene_env_node PUBLIC
+#     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+#     "$<INSTALL_INTERFACE:include>")
+# target_include_directories(${PROJECT_NAME}_urdf_scene_env_node SYSTEM PUBLIC
+#     ${catkin_INCLUDE_DIRS})
 
 
-add_executable(${PROJECT_NAME}_big_task_node 
-    src/big_task_node.cpp
-    src/motion_plan_actions.cpp
-)
-target_link_libraries(
-    ${PROJECT_NAME}_big_task_node
-    ${PROJECT_NAME}_utils 
-    vkc::vkc_construct_vkc
-    vkc::vkc_urdf_scene_env
-    vkc::vkc_prob_generator
-    vkc::vkc_vkc_env_basic
-    tesseract::tesseract_motion_planners_ompl
-    ${catkin_LIBRARIES}
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_big_task_node PRIVATE -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_big_task_node PRIVATE cxx_std_11)
-endif()
-target_include_directories(${PROJECT_NAME}_big_task_node PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME}_big_task_node SYSTEM PUBLIC
-    ${catkin_INCLUDE_DIRS}) 
+
+# add_executable(${PROJECT_NAME}_big_task_node 
+#     src/big_task_node.cpp
+#     src/motion_plan_actions.cpp
+# )
+# target_link_libraries(
+#     ${PROJECT_NAME}_big_task_node
+#     ${PROJECT_NAME}_utils 
+#     vkc::vkc_construct_vkc
+#     vkc::vkc_urdf_scene_env
+#     vkc::vkc_prob_generator
+#     vkc::vkc_vkc_env_basic
+#     tesseract::tesseract_motion_planners_ompl
+#     ${catkin_LIBRARIES}
+# )
+# if(CXX_FEATURE_FOUND EQUAL "-1")
+#     target_compile_options(${PROJECT_NAME}_big_task_node PRIVATE -std=c++11)
+# else()
+#     target_compile_features(${PROJECT_NAME}_big_task_node PRIVATE cxx_std_11)
+# endif()
+# target_include_directories(${PROJECT_NAME}_big_task_node PUBLIC
+#     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+#     "$<INSTALL_INTERFACE:include>")
+# target_include_directories(${PROJECT_NAME}_big_task_node SYSTEM PUBLIC
+#     ${catkin_INCLUDE_DIRS}) 
     
     
-add_executable(${PROJECT_NAME}_pog_env_node 
-    src/pog_env_node.cpp
-)
-target_link_libraries(
-    ${PROJECT_NAME}_pog_env_node
-    ${PROJECT_NAME}_utils 
-    vkc::vkc_construct_vkc
-    vkc::vkc_urdf_scene_env
-    vkc::vkc_prob_generator
-    vkc::vkc_vkc_env_basic
-    tesseract::tesseract_motion_planners_ompl
-    ${catkin_LIBRARIES}
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_pog_env_node PRIVATE -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_pog_env_node PRIVATE cxx_std_11)
-endif()
-target_include_directories(${PROJECT_NAME}_pog_env_node PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME}_pog_env_node SYSTEM PUBLIC
-    ${catkin_INCLUDE_DIRS})
+# add_executable(${PROJECT_NAME}_pog_env_node 
+#     src/pog_env_node.cpp
+# )
+# target_link_libraries(
+#     ${PROJECT_NAME}_pog_env_node
+#     ${PROJECT_NAME}_utils 
+#     vkc::vkc_construct_vkc
+#     vkc::vkc_urdf_scene_env
+#     vkc::vkc_prob_generator
+#     vkc::vkc_vkc_env_basic
+#     tesseract::tesseract_motion_planners_ompl
+#     ${catkin_LIBRARIES}
+# )
+# if(CXX_FEATURE_FOUND EQUAL "-1")
+#     target_compile_options(${PROJECT_NAME}_pog_env_node PRIVATE -std=c++11)
+# else()
+#     target_compile_features(${PROJECT_NAME}_pog_env_node PRIVATE cxx_std_11)
+# endif()
+# target_include_directories(${PROJECT_NAME}_pog_env_node PUBLIC
+#     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+#     "$<INSTALL_INTERFACE:include>")
+# target_include_directories(${PROJECT_NAME}_pog_env_node SYSTEM PUBLIC
+#     ${catkin_INCLUDE_DIRS})
 #############
 ## Install ##
 #############
@@ -313,9 +335,9 @@ install(PROGRAMS
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_open_door_env_node ${PROJECT_NAME}_arena_env_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS ${PROJECT_NAME}_open_door_env_node 
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 install(TARGETS ${PROJECT_NAME}_arena_env_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

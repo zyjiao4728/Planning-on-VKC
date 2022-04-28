@@ -3,48 +3,30 @@
 
 #include <vkc/action/action_base.h>
 
+namespace vkc {
 
-namespace vkc
-{
-
-class UseAction: public ActionBase
-{
-public:
+class UseAction : public ActionBase {
+ public:
   using Ptr = std::shared_ptr<UseAction>;
 
-  UseAction(
-    std::string manipulator_id, 
-    std::string attached_object_id,
-    Eigen::Isometry3d tf,
-    std::string end_effector_id=""
-  ):
-    ActionBase(ActionType::UseAction, manipulator_id, "UseAction"), 
-    attached_object_id_(attached_object_id),
-    tf_(tf),
-    end_effector_id_(end_effector_id)
-  {}
+  UseAction(std::string manipulator_id, std::string attached_object_id,
+            Eigen::Isometry3d tf, std::string end_effector_id = "")
+      : ActionBase(ActionType::UseAction, manipulator_id, "UseAction"),
+        attached_object_id_(attached_object_id),
+        tf_(tf),
+        end_effector_id_(end_effector_id) {}
 
   ~UseAction() = default;
 
-  std::string getAttachedObject()
-  {
-    return attached_object_id_;
-  }
+  std::string getAttachedObject() { return attached_object_id_; }
 
-  Eigen::Isometry3d& getTransform()
-  {
-    return tf_;
-  }
+  Eigen::Isometry3d &getTransform() { return tf_; }
 
-  std::string getEndEffectorID()
-  {
-    return end_effector_id_;
-  }
+  std::string getEndEffectorID() { return end_effector_id_; }
 
   // added: wanglei@bigai.ai
   // time: 2021-08-17
-  friend std::ostream &operator<<(std::ostream &oss, UseAction &act)
-  {
+  friend std::ostream &operator<<(std::ostream &oss, UseAction &act) {
     oss << ">>>" << std::endl
         << "action: UseAction" << std::endl
         << "attached_link: " << act.getAttachedObject() << std::endl
@@ -56,12 +38,12 @@ public:
     return oss;
   }
 
-private:
+ private:
   std::string attached_object_id_;
   Eigen::Isometry3d tf_;
   std::string end_effector_id_;
 };
 
-} // end of namespace vkc
+}  // end of namespace vkc
 
 #endif

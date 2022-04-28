@@ -54,29 +54,34 @@
   <exec_depend>roscpp</exec_depend>
   <depend>roslib</depend>
   <depend>trajopt</depend> -->
+  <build_depend>ros_industrial_cmake_boilerplate</build_depend>
+  <depend>libconsole-bridge-dev</depend> 
   <depend>tesseract_collision</depend>
-  <!-- <depend>tesseract_motion_planners</depend> -->
+  <depend>tesseract_command_language</depend>
+  <depend>tesseract_motion_planners</depend>
+  <depend>tesseract_process_managers</depend>
+  <depend>tesseract_monitoring</depend>
   <depend>tesseract_kinematics</depend>
   <depend>tesseract_environment</depend>
   <depend>tesseract_scene_graph</depend>
   <depend>tesseract_rosutils</depend>
-  <depend>tesseract</depend>
-  <depend>astar</depend>
-  <!-- <depend>tesseract_rosutils</depend> -->
   <depend>tesseract_common</depend>
-  <depend>libconsole-bridge-dev</depend>
+  <depend>tesseract_support</depend>
+  <depend>astar</depend>
+  <depend>trajopt_sqp</depend>
+  <depend>trajopt_ifopt</depend>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <depend>roslib</depend>
-  <depend>trajopt</depend>
-  <depend>tesseract_motion_planners</depend>
-
   <exec_depend>xacro</exec_depend>
   <exec_depend>rviz</exec_depend>
   <exec_depend>tf</exec_depend>
+
+  <build_depend>fmt</build_depend>
+  <exec_depend>fmt</exec_depend>
 
   <test_depend>rostest</test_depend>
 

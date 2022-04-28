@@ -20,7 +20,7 @@ finger(i.e. finger_1, etc...).
 				</material>
 			</visual>
 			
-			<collision>	
+			<!-- <collision>	
 				<origin xyz="0.020 0 0" rpy="0 0 0"/>
 				<geometry>
                                         <mesh filename="package://robotiq_3f_gripper_visualization/meshes/robotiq-3f-gripper_articulated/collision/link_0.STL" />
@@ -28,7 +28,7 @@ finger(i.e. finger_1, etc...).
 				<material name="yellow">
 					<color rgba="0 1 1 1"/>
 				</material>
-			</collision>
+			</collision> -->
        
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -45,13 +45,13 @@ finger(i.e. finger_1, etc...).
 				<material name="gray"/>
 			</visual>
 		
-			<collision>
+			<!-- <collision>
 				<origin xyz="0.050 -.028 0" rpy="0 0 -0.52"/>
 				<geometry>
                                         <mesh filename="package://robotiq_3f_gripper_visualization/meshes/robotiq-3f-gripper_articulated/collision/link_1.STL" />
 				</geometry>
 				<material name="yellow"/>
-			</collision>
+			</collision> -->
 		
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -73,13 +73,13 @@ finger(i.e. finger_1, etc...).
 				<material name="gray"/>
 			</visual>
 		
-			<collision>
+			<!-- <collision>
 				<origin xyz="0.039 0 0.0075" rpy="0 0 0"/>
 				<geometry>
                                         <mesh filename="package://robotiq_3f_gripper_visualization/meshes/robotiq-3f-gripper_articulated/collision/link_2.STL" />
 				</geometry>
 				<material name="yellow"/>
-			</collision>
+			</collision> -->
 		
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -96,13 +96,13 @@ finger(i.e. finger_1, etc...).
 				<material name="gray"/>
 			</visual>
 		
-			<collision>
+			<!-- <collision>
 				<origin xyz="0 0 0" rpy="0 0 0.52"/>
 				<geometry>
                                         <mesh filename="package://robotiq_3f_gripper_visualization/meshes/robotiq-3f-gripper_articulated/collision/link_3.STL" />
 				</geometry>
 				<material name="yellow"/>
-			</collision>
+			</collision> -->
 		
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>

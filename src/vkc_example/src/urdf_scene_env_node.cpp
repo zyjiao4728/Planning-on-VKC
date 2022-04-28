@@ -81,7 +81,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env, ActionSeq ac
     while (!converged && tries < 5)
     {
       tries += 1;
-      prob_ptr = prob_generator.genProb(env, action, n_steps);
+      prob_ptr = prob_generator.genRequest(env, action, n_steps);
 
       if (rviz_enabled)
       {

@@ -1,14 +1,18 @@
-#ifndef VIRTUAL_KINEMATIC_CHAIN_ARENA_ENV_H
-#define VIRTUAL_KINEMATIC_CHAIN_ARENA_ENV_H
+#ifndef VIRTUAL_KINEMATIC_CHAIN_OPEN_DOOR_ENV_H
+#define VIRTUAL_KINEMATIC_CHAIN_OPEN_DOOR_ENV_H
 
 #include <tesseract_common/macros.h>
 TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
+#include <ros/ros.h>
+
 #include <trajopt/problem_description.hpp>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
-#include <tesseract_environment/utils.h>
+#include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_rosutils/plotting.h>
+#include <tesseract_rosutils/utils.h>
 #include <vkc/env/vkc_env_basic.h>
+#include <vkc/object/objects.h>
 
 #include <string>
 #include <trajopt/plot_callback.hpp>
@@ -18,13 +22,13 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 namespace vkc {
 /**
- * @brief Load robot model for multiple tasks.
+ * @brief Load single ur5e husky for door opening task.
  */
-class ArenaEnv : public VKCEnvBasic {
+class OpenDoorEnv : public VKCEnvBasic {
  public:
-  ArenaEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps);
+  OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps);
 
-  ~ArenaEnv() = default;
+  ~OpenDoorEnv() = default;
 
   bool createEnvironment() override;
 
@@ -34,4 +38,4 @@ class ArenaEnv : public VKCEnvBasic {
 
 }  // namespace vkc
 
-#endif  // VIRTUAL_KINEMATIC_CHAIN_ARENA_ENV_H
+#endif  // VIRTUAL_KINEMATIC_CHAIN_OPEN_DOOR_ENV_H
