@@ -138,7 +138,6 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
       env.getVKCEnv()->getTesseract()->getJointGroup(act->getManipulatorID());
 
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  std::cout << env_->getLinkTransform("base_link").translation() << std::endl;
 
   // set profiles
   double collision_margin = 0.0001;
@@ -178,8 +177,8 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   CompositeInstruction seed =
       generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
-  program.print("pick program");
-  seed.print("pick seed");
+  ROS_INFO("number of move instructions in place seed: %d",
+           getMoveInstructionCount(seed));
   ROS_INFO("composing request.");
 
   // compose request
@@ -244,7 +243,6 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   ROS_INFO("[@%s]generate a place problem with given data.", __func__);
 
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  std::cout << env_->getLinkTransform("base_link").translation() << std::endl;
 
   BaseObject::AttachLocation::Ptr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
@@ -275,19 +273,29 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
 
-  auto detach_pose = env_->getLinkTransform(detach_location_ptr->base_link_);
-  addCartWaypoint(program, detach_pose, "place object");
+  if (detach_location_ptr->fixed_base) {
+    auto detach_pose = env_->getLinkTransform(detach_location_ptr->base_link_);
+    addCartWaypoint(program, detach_pose, "place object(fixed base)");
+    act->addLinkObjectives(
+        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+  }
 
-  act->addLinkObjectives(
-      LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+  for (auto jo : act->getJointObjectives()) {
+    std::cout << jo.joint_angle << std::endl;
+  }
+
+  for (auto lo : act->getLinkObjectives()) {
+    addCartWaypoint(program, lo.tf, "place object");
+  }
 
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
   CompositeInstruction seed =
       generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
-  program.print("place program");
-  seed.print("place seed");
+  ROS_INFO("number of move instructions in place seed: %d",
+           getMoveInstructionCount(seed));
+
   // compose request
   PlannerRequest request;
   request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
