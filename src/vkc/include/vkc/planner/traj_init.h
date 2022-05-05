@@ -5,6 +5,7 @@
 #include <tesseract_common/macros.h>
 #include <tesseract_environment/environment.h>
 #include <tesseract_environment/utils.h>
+#include <tesseract_motion_planners/core/utils.h>
 TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <trajopt/problem_description.hpp>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
@@ -48,6 +49,11 @@ bool checkJointLimit(Eigen::VectorXd &sol, const Eigen::MatrixX2d &joint_limit,
 
 double interpolate(std::vector<LinkDesiredPose> base_pose,
                    std::vector<double> remap, unsigned int i, bool x);
+
+tesseract_planning::CompositeInstruction generateMixedSeed(
+    const tesseract_planning::CompositeInstruction &instructions,
+    const tesseract_scene_graph::SceneState &current_state,
+    tesseract_environment::Environment::ConstPtr &env, int min_steps = 1);
 
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,

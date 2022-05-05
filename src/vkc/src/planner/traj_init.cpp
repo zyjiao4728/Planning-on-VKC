@@ -5,6 +5,7 @@
 #define UNUSED(x) (void)(x)
 const std::string DEFAULT_VKC_GROUP_ID = "vkc";
 
+using namespace tesseract_planning;
 namespace vkc {
 
 bool isEmptyCell(
@@ -339,6 +340,13 @@ std::vector<double> initIK(VKCEnvBasic &env,
   std::vector<double> res(sol.data(), sol.data() + sol.size());
   return res;
 }
+
+CompositeInstruction generateMixedSeed(
+    const CompositeInstruction &instructions,
+    const tesseract_scene_graph::SceneState &current_state,
+    tesseract_environment::Environment::ConstPtr &env, int min_steps = 1) {
+      
+    }
 
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
