@@ -290,8 +290,10 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
 
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
-  CompositeInstruction seed =
-      generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+  CompositeInstruction seed = generateMixedSeed(
+      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
+  // CompositeInstruction seed =
+  //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
   ROS_INFO("number of move instructions in place seed: %d",
            getMoveInstructionCount(seed));

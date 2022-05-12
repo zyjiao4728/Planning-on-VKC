@@ -17,4 +17,6 @@
   <depend>rviz</depend>
   <depend>robot_state_publisher</depend>
   <depend>joint_state_publisher_gui</depend>
+
+  <depend>ridgeback_description</depend>
 </package>

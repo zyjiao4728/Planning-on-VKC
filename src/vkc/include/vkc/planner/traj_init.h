@@ -53,7 +53,7 @@ double interpolate(std::vector<LinkDesiredPose> base_pose,
 tesseract_planning::CompositeInstruction generateMixedSeed(
     const tesseract_planning::CompositeInstruction &instructions,
     const tesseract_scene_graph::SceneState &current_state,
-    tesseract_environment::Environment::ConstPtr &env, int min_steps = 1);
+    const tesseract_environment::Environment::ConstPtr &env, int min_steps = 30);
 
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,

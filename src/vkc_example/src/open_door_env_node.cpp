@@ -60,10 +60,10 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
     joint_trajs.emplace_back(refined_traj);
 
-    ROS_WARN("trajectory: ");
-    for (auto jo : refined_traj) {
-      std::cout << jo.position << std::endl;
-    }
+    // ROS_WARN("trajectory: ");
+    // for (auto jo : refined_traj) {
+    //   std::cout << jo.position << std::endl;
+    // }
 
     // refine the orientation of the move base
 

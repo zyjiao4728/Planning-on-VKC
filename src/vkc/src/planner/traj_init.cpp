@@ -1,4 +1,6 @@
 
+#include <tesseract_motion_planners/3mo/3mo_motion_planner.h>
+#include <tesseract_motion_planners/3mo/profile/3mo_planner_plan_profile.h>
 #include <vkc/planner/traj_init.h>
 //#include "vkc/planner/prob_translator.h"
 
@@ -341,13 +343,6 @@ std::vector<double> initIK(VKCEnvBasic &env,
   return res;
 }
 
-CompositeInstruction generateMixedSeed(
-    const CompositeInstruction &instructions,
-    const tesseract_scene_graph::SceneState &current_state,
-    tesseract_environment::Environment::ConstPtr &env, int min_steps = 1) {
-      
-    }
-
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
     std::vector<JointDesiredPose> &joint_objectives, MapInfo map,
@@ -619,6 +614,38 @@ trajopt::TrajArray initTrajectory(
   // std::cout << "Initial trajectory:" << std::endl;
   // std::cout << init_traj << std::endl;
   return init_traj;
+}
+
+CompositeInstruction generateMixedSeed(
+    const CompositeInstruction &instructions,
+    const tesseract_scene_graph::SceneState &current_state,
+    const tesseract_environment::Environment::ConstPtr &env, int min_steps) {
+  // srand(time(NULL));
+  ROS_WARN("generating mixed seed");
+  PlannerRequest request;
+  request.instructions = instructions;
+  request.env_state = current_state;
+  request.env = env;
+  PlannerResponse response;
+
+  tesseract_planning::MMMOMotionPlanner planner;
+  MapInfo map(12, 12, 0.5);
+  auto profile = std::make_shared<MMMOPlannerPlanProfile>(
+      12, 12, 0.5, 30, 5 * M_PI / 180, 0.1, 5 * M_PI / 180);
+  auto profiles = std::make_shared<ProfileDictionary>();
+  profiles->addProfile<MMMOPlannerPlanProfile>(
+      planner.getName(), instructions.getProfile(), profile);
+  auto flat = flattenProgram(instructions);
+  // for (const auto &i : flat) {
+  //   if (isPlanInstruction(i.get()))
+  //     profiles->addProfile<MMMOPlannerPlanProfile>(
+  //         planner.getName(), i.get().as<PlanInstruction>().getProfile(),
+  //         profile);
+  // }
+  request.profiles = profiles;
+  planner.solve(request, response);
+  response.results.print("mixed seed: ");
+  return response.results;
 }
 
 }  // namespace vkc
