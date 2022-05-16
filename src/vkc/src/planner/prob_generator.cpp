@@ -177,7 +177,7 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   CompositeInstruction seed =
       generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
-  ROS_INFO("number of move instructions in place seed: %d",
+  ROS_INFO("number of move instructions in pick seed: %d",
            getMoveInstructionCount(seed));
   ROS_INFO("composing request.");
 
@@ -273,20 +273,30 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
 
+  MixedWaypoint waypoint(kinematic_group->getJointNames());
+
   if (detach_location_ptr->fixed_base) {
     auto detach_pose = env_->getLinkTransform(detach_location_ptr->base_link_);
-    addCartWaypoint(program, detach_pose, "place object(fixed base)");
+    // waypoint.addLinkTarget(manip.tcp_frame, detach_pose);
+    // addCartWaypoint(program, detach_pose, "place object(fixed base)");
     act->addLinkObjectives(
         LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
   }
 
   for (auto jo : act->getJointObjectives()) {
     std::cout << jo.joint_angle << std::endl;
+    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
   }
 
   for (auto lo : act->getLinkObjectives()) {
-    addCartWaypoint(program, lo.tf, "place object");
+    waypoint.addLinkTarget(lo.link_name, lo.tf);
+    // addCartWaypoint(program, lo.tf, "place object");
   }
+
+  PlanInstruction place_plan(waypoint, PlanInstructionType::FREESPACE,
+                             "DEFAULT");
+  place_plan.setDescription("waypoint for place");
+  program.push_back(place_plan);
 
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
