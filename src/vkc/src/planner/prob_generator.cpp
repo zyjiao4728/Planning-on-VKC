@@ -181,6 +181,8 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
            getMoveInstructionCount(seed));
   ROS_INFO("composing request.");
 
+  seed.print("pick seed: ");
+
   // compose request
   PlannerRequest request;
   request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
