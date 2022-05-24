@@ -283,6 +283,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
     // addCartWaypoint(program, detach_pose, "place object(fixed base)");
     act->addLinkObjectives(
         LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+    waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
   }
 
   for (auto jo : act->getJointObjectives()) {
@@ -307,6 +308,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
+  // seed.print("place problem seed: ");
   ROS_INFO("number of move instructions in place seed: %d",
            getMoveInstructionCount(seed));
 
