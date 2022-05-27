@@ -57,6 +57,7 @@ target_link_libraries(
   ${PROJECT_NAME}_construct_vkc
   fmt
   tesseract::tesseract_motion_planners_trajopt 
+  tesseract::tesseract_motion_planners_3mo
   ${catkin_LIBRARIES}
 )
 target_compile_options(
@@ -115,6 +116,7 @@ target_link_libraries(
   ${PROJECT_NAME}_vkc_env_basic
   ${PROJECT_NAME}_prob_generator
   tesseract::tesseract_motion_planners_trajopt 
+  tesseract::tesseract_motion_planners_3mo
   ${catkin_LIBRARIES}
 )
 target_compile_options(
