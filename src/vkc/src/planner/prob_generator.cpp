@@ -311,7 +311,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
   CompositeInstruction seed = generateMixedSeed(
-      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
+      program, cur_state, env.getVKCEnv()->getTesseract(), n_steps);
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
 
