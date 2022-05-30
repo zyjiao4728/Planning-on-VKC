@@ -5,6 +5,7 @@
 #include <vkc/action/actions.h>
 #include <vkc/env/open_door_env.h>
 #include <vkc/env/vkc_env_basic.h>
+#include <vkc/planner/long_horizon.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc_example/utils.h>
 
@@ -24,6 +25,8 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
+  LongHorizonSeedGenerator seed_generator;
+  seed_generator.generate(env, actions, 3);
   ProbGenerator prob_generator;
 
   int j = 0;

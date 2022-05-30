@@ -31,9 +31,6 @@ class OpenDoorEnv : public VKCEnvBasic {
   ~OpenDoorEnv() = default;
 
   bool createEnvironment() override;
-
- private:
-  int steps_;
 };
 
 }  // namespace vkc

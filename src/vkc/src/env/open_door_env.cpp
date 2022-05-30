@@ -21,7 +21,7 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 namespace vkc {
 OpenDoorEnv::OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz,
                          int steps)
-    : VKCEnvBasic(nh, plotting, rviz), steps_(steps) {
+    : VKCEnvBasic(nh, plotting, rviz, steps) {
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 

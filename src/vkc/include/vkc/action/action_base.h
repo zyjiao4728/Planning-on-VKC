@@ -3,6 +3,7 @@
 
 #include <Eigen/Eigen>
 #include <string>
+#include <tesseract_command_language/command_language.h>
 
 // added: wanglei@bigai.ai
 // time: 2021-08-17
@@ -93,6 +94,7 @@ class ActionBase {
   }
 
   const VKCTraj& getInitTraj() const { return init_traj_; }
+  tesseract_planning::CompositeInstruction seed;
 
  protected:
   ActionType action_type_;

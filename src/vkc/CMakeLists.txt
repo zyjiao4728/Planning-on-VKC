@@ -196,6 +196,7 @@ add_library(${PROJECT_NAME}_prob_generator SHARED
   src/planner/prob_generator.cpp
   src/planner/traj_init.cpp
   src/action/actions.cpp
+  src/planner/long_horizon.cpp
   src/planner/prob_translator.cpp
   src/planner/prob_translator_utils.cpp
 )
@@ -212,9 +213,9 @@ target_compile_options(
   PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
 )
 if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_prob_generator PUBLIC -std=c++11)
+    target_compile_options(${PROJECT_NAME}_prob_generator PUBLIC -std=c++14)
 else()
-    target_compile_features(${PROJECT_NAME}_prob_generator PUBLIC cxx_std_11)
+    target_compile_features(${PROJECT_NAME}_prob_generator PUBLIC cxx_std_14)
 endif()
 target_include_directories(
   ${PROJECT_NAME}_prob_generator PUBLIC

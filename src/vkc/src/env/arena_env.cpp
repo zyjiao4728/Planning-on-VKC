@@ -20,7 +20,7 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 
 namespace vkc {
 ArenaEnv::ArenaEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
-    : VKCEnvBasic(nh, plotting, rviz), steps_(steps) {
+    : VKCEnvBasic(nh, plotting, rviz, steps_) {
   // Set Log Level
   util::gLogLevel = util::LevelDebug;
 

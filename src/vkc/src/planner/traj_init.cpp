@@ -10,6 +10,16 @@ const std::string DEFAULT_VKC_GROUP_ID = "vkc";
 using namespace tesseract_planning;
 namespace vkc {
 
+void generateLongHorizonSeeds(VKCEnvBasic &env,
+                                  std::vector<ActionBase::Ptr> actions,
+                                  size_t window_size) {
+  auto cloned_env = std::move(env.clone());
+  auto sub_actions = {actions.begin(),
+                      actions.begin() + std::min(window_size, actions.size())};
+  for (auto &action : sub_actions) {
+  }
+}
+
 bool isEmptyCell(
     tesseract_collision::DiscreteContactManager::Ptr discrete_contact_manager,
     std::string link_name, Eigen::Isometry3d &tf,

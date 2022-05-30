@@ -37,14 +37,18 @@ namespace vkc {
  */
 class VKCEnvBasic {
  public:
-  VKCEnvBasic(ros::NodeHandle nh_,
-              bool plotting, bool rviz);
+  using Ptr = std::shared_ptr<VKCEnvBasic>;
+  using UPtr = std::unique_ptr<VKCEnvBasic>;
+
+  VKCEnvBasic(ros::NodeHandle nh_, bool plotting, bool rviz, int steps);
 
   virtual ~VKCEnvBasic() = default;
 
   // Create a environment for VKCc planning
-  virtual bool createEnvironment() = 0;
+  virtual bool createEnvironment();
 
+  VKCEnvBasic::UPtr clone() const;
+  
   void setEndEffector(std::string name);
 
   virtual bool reInit();
@@ -79,6 +83,8 @@ class VKCEnvBasic {
   bool rviz_; /**< @brief Enable rviz updating */
   bool plotting_;
 
+  int steps_;
+
   std::unordered_map<std::string, double>
       home_pose_;                    /**< @brief Home pose of robot model */
   vkc::ConstructVKC::Ptr tesseract_; /**< @brief Tesseract Manager Class */
@@ -91,6 +97,8 @@ class VKCEnvBasic {
   std::unordered_map<std::string, vkc::BaseObject::AttachLocation::Ptr>
       attach_locations_;
   std::vector<std::string> attached_links_;
+
+
   /**
    * @brief Set initial pose to home pose for all groups as defined in SRDF file
    * @return False if no home pose is defined

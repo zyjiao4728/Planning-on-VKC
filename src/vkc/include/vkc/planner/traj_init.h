@@ -31,6 +31,9 @@ struct MapInfo {
     grid_size_y = int(map_y / step_size) + 1;
   }
 };
+void generateLongHorizonSeeds(VKCEnvBasic &env,
+                              std::vector<ActionBase::Ptr> actions,
+                              int window_size);
 
 bool isEmptyCell(
     tesseract_collision::DiscreteContactManager::Ptr discrete_contact_manager,
@@ -53,7 +56,8 @@ double interpolate(std::vector<LinkDesiredPose> base_pose,
 tesseract_planning::CompositeInstruction generateMixedSeed(
     const tesseract_planning::CompositeInstruction &instructions,
     const tesseract_scene_graph::SceneState &current_state,
-    const tesseract_environment::Environment::ConstPtr &env, int min_steps = 30);
+    const tesseract_environment::Environment::ConstPtr &env,
+    int min_steps = 30);
 
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,

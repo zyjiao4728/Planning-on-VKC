@@ -82,7 +82,8 @@ class ProbGenerator {
   Eigen::Vector4d getQuatFromIso(Eigen::Isometry3d iso);
 
   tesseract_planning::ProfileDictionary::Ptr genCartProfiles_(
-      VKCEnvBasic &env, tesseract_planning::ManipulatorInfo manip, double collision_margin, double collision_coeff,
+      VKCEnvBasic &env, tesseract_planning::ManipulatorInfo manip,
+      double collision_margin, double collision_coeff,
       Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
 
   void setJointPlanProfile(
