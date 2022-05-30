@@ -21,6 +21,7 @@ VKCEnvBasic::UPtr VKCEnvBasic::clone() const {
   auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(nh_, plotting_, rviz_, steps_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
+  return cloned_vkc_env;
 }
 
 void VKCEnvBasic::setEndEffector(std::string link_name) {
