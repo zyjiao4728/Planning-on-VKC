@@ -130,14 +130,12 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
 
   ROS_DEBUG("generating pick problem");
 
+  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
   manip.working_frame = "world";
   manip.manipulator = act->getManipulatorID();
-  auto joint_group =
-      env.getVKCEnv()->getTesseract()->getJointGroup(act->getManipulatorID());
-
-  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
+  auto kinematic_group = env_->getKinematicGroup(act->getManipulatorID()); // same as joint group for initial step(verified)
 
   // set profiles
   double collision_margin = 0.0001;
@@ -150,15 +148,15 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
                                    collision_coeff, pos_coeff, rot_coeff);
   setSolverProfile(profiles, n_iter);
 
-  ROS_DEBUG("generating program");
-
   CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
                                manip);
 
   // set initial pose
   setStartInstruction(
-      program, joint_group->getJointNames(),
-      env_->getCurrentJointValues(joint_group->getJointNames()));
+      program, kinematic_group->getJointNames(),
+      env_->getCurrentJointValues(kinematic_group->getJointNames()));
+
+  MixedWaypoint waypoint(kinematic_group->getJointNames());
 
   // set target pose
   BaseObject::AttachLocation::Ptr attach_location_ptr =
@@ -168,14 +166,23 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
-  addCartWaypoint(program, pick_pose_world_transform, "pick object");
+  waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
+
+  PlanInstruction pick_plan(waypoint, PlanInstructionType::FREESPACE,
+                            "DEFAULT");
+  pick_plan.setDescription("waypoint for pick");
+  program.push_back(pick_plan);
+
+  // addCartWaypoint(program, pick_pose_world_transform, "pick object");
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
   ROS_DEBUG("generating seed");
 
-  CompositeInstruction seed =
-      generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+  // CompositeInstruction seed =
+  //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+  CompositeInstruction seed = generateMixedSeed(
+      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
 
   ROS_INFO("number of move instructions in pick seed: %d",
            getMoveInstructionCount(seed));
@@ -287,7 +294,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   }
 
   for (auto jo : act->getJointObjectives()) {
-    std::cout << jo.joint_angle << std::endl;
+    // std::cout << jo.joint_angle << std::endl;
     waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
   }
 
@@ -750,8 +757,10 @@ void ProbGenerator::setSolverProfile(ProfileDictionary::Ptr profiles,
       std::make_shared<tesseract_planning::TrajOptDefaultSolverProfile>();
   trajopt_solver_profile->opt_info.max_iter = n_iter;
   trajopt_solver_profile->opt_info.cnt_tolerance = 1e-3;
-  trajopt_solver_profile->opt_info.trust_expand_ratio = 1.2;
-  trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.8;
+  // trajopt_solver_profile->opt_info.trust_expand_ratio = 1.2;
+  trajopt_solver_profile->opt_info.trust_expand_ratio = 1.5;
+  // trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.8;
+  trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.5;
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-3;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
 

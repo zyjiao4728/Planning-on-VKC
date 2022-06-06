@@ -50,7 +50,10 @@ std::ostream& operator<<(std::ostream& oss,
 // added: wanglei@bigai.ai
 // time: 2021-08-17
 std::ostream& operator<<(std::ostream& oss, ActionBase::Ptr p_act) {
-  assert(nullptr != p_act);
+  if (p_act == nullptr) {
+    oss << ">>>null action";
+    return oss;
+  }
 
   switch (p_act->getActionType()) {
     case vkc::ActionType::PickAction:

@@ -350,15 +350,16 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
                                     ActionBase::Ptr action,
                                     vkc::ConstructVKC::Ptr tesseract) {
   std::cout << __func__ << ": action" << std::endl << action << std::endl;
-
-  // Set the current state to the last state of the pick trajectory
-  tesseract->getTesseract()->setState(joint_names, joint_states);
+  // Set the current state to the last state of the trajectory
+  if (joint_names.size())
+    tesseract->getTesseract()->setState(joint_names, joint_states);
 
   if (action == nullptr) {
     if (rviz_) {
       // Now update rviz environment
       // tesseract_->getTesseract()->
     }
+    updateKinematicInfo(tesseract);
     return DEFAULT_VKC_GROUP_ID;
   }
 
@@ -394,27 +395,31 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   }
 
   if (action->getActionType() != ActionType::GotoAction) {
-
-    tesseract_srdf::KinematicsInformation kin_info;
-    {
-      tesseract_common::PluginInfo pi;
-      pi.class_name = "KDLInvKinChainLMAFactory";
-      pi.config["base_link"] = "world";
-      pi.config["tip_link"] = end_effector_link_;
-      kin_info.kinematics_plugin_info.inv_plugin_infos[DEFAULT_VKC_GROUP_ID]
-          .plugins = {std::make_pair("KDLFInvKinLMA", pi)};
-      tesseract_srdf::ChainGroup group;
-      group.push_back(std::make_pair("world", end_effector_link_));
-      kin_info.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
-    }
-
-    auto cmd = std::make_shared<AddKinematicsInformationCommand>(kin_info);
-
-    tesseract->getTesseract()->applyCommand(cmd);
+    updateKinematicInfo(tesseract);
   }
 
   return DEFAULT_VKC_GROUP_ID;
 }  // namespace vkc
+
+void VKCEnvBasic::updateKinematicInfo(vkc::ConstructVKC::Ptr tesseract) {
+  CONSOLE_BRIDGE_logDebug("updating kinematic info");
+  tesseract_srdf::KinematicsInformation kin_info;
+  {
+    tesseract_common::PluginInfo pi;
+    pi.class_name = "KDLInvKinChainLMAFactory";
+    pi.config["base_link"] = "world";
+    pi.config["tip_link"] = end_effector_link_;
+    kin_info.kinematics_plugin_info.inv_plugin_infos[DEFAULT_VKC_GROUP_ID]
+        .plugins = {std::make_pair("KDLFInvKinLMA", pi)};
+    tesseract_srdf::ChainGroup group;
+    group.push_back(std::make_pair("world", end_effector_link_));
+    kin_info.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
+  }
+
+  auto cmd = std::make_shared<AddKinematicsInformationCommand>(kin_info);
+
+  tesseract->getTesseract()->applyCommand(cmd);
+}
 
 bool VKCEnvBasic::isGroupExist(std::string group_id) {
   return tesseract_->getSRDFModel()->kinematics_information.hasChainGroup(

@@ -135,6 +135,8 @@ class VKCEnvBasic {
                          const Eigen::VectorXd& joint_states,
                          ActionBase::Ptr action,
                          vkc::ConstructVKC::Ptr tesseract);
+
+  void updateKinematicInfo(vkc::ConstructVKC::Ptr env);
 };
 
 }  // namespace vkc

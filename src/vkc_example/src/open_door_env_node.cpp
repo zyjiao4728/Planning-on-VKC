@@ -28,6 +28,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   int j = 0;
 
+  env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+
   for (auto &action : actions) {
     PlannerResponse response;
     unsigned int try_cnt = 0;
