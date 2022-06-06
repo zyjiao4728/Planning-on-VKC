@@ -2,15 +2,13 @@
 <robot name="husky_ur5e_2f_85" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
   <xacro:include filename="$(find husky_ur_description)/urdf/husky_ur5_e_description.urdf.xacro" />
-  <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/robotiq_arg2f_85_model_macro.xacro" />
-  <xacro:robotiq_arg2f_85 prefix="" />
 
   <joint name="2f_85_joint" type="fixed">
     <origin rpy="0.0 ${M_PI/2} 0" xyz="0.0 0.0 0.0" />
     <parent link="ur_arm_ee_link" />
     <child link="robotiq_arg2f_base_link" />
   </joint>
-  <xacro:macro name="deploy" params="prefix attach_to_world loc_x loc_y orientation">
+  <xacro:macro name="deploy" params="prefix attach_to_world loc_x loc_y orientation has_gripper">
 
     <!-- Virtual Link Starts -->
     <link name="${prefix}virtual_base_x" />
@@ -50,6 +48,11 @@
         <parent link="world" />
         <origin xyz="${loc_x} ${loc_y} 0.145" rpy="0 0 ${orientation}" />
       </joint>
+    </xacro:if>
+
+    <xacro:if value="${has_gripper}">
+      <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/robotiq_arg2f_85_model_macro.xacro" />
+      <xacro:robotiq_arg2f_85 prefix="" />
     </xacro:if>
 
   </xacro:macro>

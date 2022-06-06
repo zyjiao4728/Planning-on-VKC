@@ -14,7 +14,7 @@ void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter) {
   // Solve problem. Results are stored in the response
   TrajOptMotionPlanner planner;
 
-  auto trajopt_status = planner.solve(request, response);
+  auto trajopt_status = planner.solve(request, response, true);
 
   ROS_WARN("%d, %s", trajopt_status.value(), trajopt_status.message().c_str());
 
