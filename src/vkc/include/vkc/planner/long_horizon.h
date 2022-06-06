@@ -14,8 +14,8 @@ class LongHorizonSeedGenerator {
    * @brief generate long horizon seeds inside actions
    *
    */
-  void generate(VKCEnvBasic &env, std::vector<ActionBase::Ptr> actions,
-                size_t window_size);
+  void generate(VKCEnvBasic &env, std::vector<ActionBase::Ptr> &actions,
+                int n_steps, int n_iter, size_t window_size);
 };
 };  // namespace vkc
 
