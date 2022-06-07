@@ -3,7 +3,7 @@
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
   <!-- The name of the parameter under which the URDF is loaded -->
   <arg name="env_description" default="env_description" />
-  <arg name="end_effector_link" default="ur_arm_ee_link" />
+  <arg name="end_effector_link" default="robotiq_arg2f_base_link" />
 
   <arg name="plotting" default="true" />
   <arg name="rviz" default="true" />

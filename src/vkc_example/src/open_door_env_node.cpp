@@ -202,8 +202,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  // pushDoor(actions, robot);
-  pullDoor(actions, robot);
+  pushDoor(actions, robot);
+  // pullDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

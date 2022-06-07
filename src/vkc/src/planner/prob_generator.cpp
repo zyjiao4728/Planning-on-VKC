@@ -413,7 +413,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
         LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
     waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
   }
-
+  
   for (auto jo : act->getJointObjectives()) {
     // std::cout << jo.joint_angle << std::endl;
     waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
@@ -887,6 +887,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.5;
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-3;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
+
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
