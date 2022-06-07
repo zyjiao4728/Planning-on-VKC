@@ -636,15 +636,15 @@ CompositeInstruction generateMixedSeed(
   profiles->addProfile<MMMOPlannerPlanProfile>(
       planner.getName(), instructions.getProfile(), profile);
   auto flat = flattenProgram(instructions);
-  // for (const auto &i : flat) {
-  //   if (isPlanInstruction(i.get()))
-  //     profiles->addProfile<MMMOPlannerPlanProfile>(
-  //         planner.getName(), i.get().as<PlanInstruction>().getProfile(),
-  //         profile);
-  // }
+  for (const auto &i : flat) {
+    if (isPlanInstruction(i.get()))
+      profiles->addProfile<MMMOPlannerPlanProfile>(
+          planner.getName(), i.get().as<PlanInstruction>().getProfile(),
+          profile);
+  }
   request.profiles = profiles;
   planner.solve(request, response);
-  response.results.print("mixed seed: ");
+  // response.results.print("mixed seed: ");
   return response.results;
 }
 
