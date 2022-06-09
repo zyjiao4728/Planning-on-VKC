@@ -14,10 +14,14 @@ class ConstructVKC {
  public:
   using Ptr = std::shared_ptr<ConstructVKC>;
   using ConstPtr = std::shared_ptr<const ConstructVKC>;
+  using UPtr = std::unique_ptr<ConstructVKC>;
 
   // Constructor and destructor
   ConstructVKC();
+  ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model, tesseract_scene_graph::SceneGraph::Ptr scene_graph, tesseract_environment::Environment::Ptr env);
   virtual ~ConstructVKC() = default;
+
+  ConstructVKC::UPtr clone();
 
   // Load URDF and SRDF file to scene graph
   bool loadURDFtoSceneGraph(

@@ -9,6 +9,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <tesseract_kinematics/kdl/kdl_inv_kin_chain_lma.h>
 #include <tesseract_srdf/utils.h>
 #include <tesseract_urdf/urdf_parser.h>
+#include <fmt/format.h>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 #include <vkc/construct_vkc.h>
@@ -17,6 +18,20 @@ namespace vkc {
 ConstructVKC::ConstructVKC() {
   ROS_INFO("Virtual Kinematic Chain constructor initialized...");
   clear();
+}
+ConstructVKC::ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model,
+                           tesseract_scene_graph::SceneGraph::Ptr scene_graph, tesseract_environment::Environment::Ptr env) {
+  ROS_INFO("Virtual Kinematic Chain constructor initialized...");
+  srdf_model_ = srdf_model;
+  scene_graph_ = scene_graph;
+  env_ = env;
+  monitor_ = nullptr;
+}
+
+ConstructVKC::UPtr ConstructVKC::clone() {
+  ROS_WARN("srdf model is reused, may cause problem...");
+  auto cloned_vkc = std::make_unique<ConstructVKC>(srdf_model_, scene_graph_->clone(), env_->clone());
+  return cloned_vkc;
 }
 
 bool ConstructVKC::loadURDFtoSceneGraph(
@@ -94,7 +109,7 @@ tesseract_scene_graph::SceneGraph::Ptr ConstructVKC::getSceneGraph() {
   return scene_graph_;
 }
 
-tesseract_monitoring::ROSEnvironmentMonitor::Ptr ConstructVKC::getMonitor(){
+tesseract_monitoring::ROSEnvironmentMonitor::Ptr ConstructVKC::getMonitor() {
   return monitor_;
 }
 
@@ -115,6 +130,7 @@ tesseract_srdf::SRDFModel::Ptr ConstructVKC::getSRDFModel() {
 void ConstructVKC::clear() {
   srdf_model_ = nullptr;
   scene_graph_ = nullptr;
+  env_ = nullptr;
   monitor_ = nullptr;
 }
 
