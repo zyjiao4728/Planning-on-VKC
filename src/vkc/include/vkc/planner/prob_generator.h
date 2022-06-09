@@ -38,11 +38,18 @@ class ProbGenerator {
                                                 ActionBase::Ptr action,
                                                 int n_steps, int n_iter);
 
+  tesseract_planning::MixedWaypoint genMixedWaypoint(VKCEnvBasic &env,
+                                                     ActionBase::Ptr act);
+
+  tesseract_planning::MixedWaypoint genPickMixedWaypoint(VKCEnvBasic &env,
+                                                         PickAction::Ptr act);
   tesseract_planning::PlannerRequest genPickProb(VKCEnvBasic &env,
                                                  PickAction::Ptr act,
                                                  int n_steps, int n_iter);
   // trajopt::TrajOptProb::Ptr genPickProbOMPL(VKCEnvBasic &env, PickAction::Ptr
   // act, int n_steps);
+  tesseract_planning::MixedWaypoint genPlaceMixedWaypoint(VKCEnvBasic &env,
+                                                          PlaceAction::Ptr act);
   tesseract_planning::PlannerRequest genPlaceProb(VKCEnvBasic &env,
                                                   PlaceAction::Ptr act,
                                                   int n_steps, int n_iter);
@@ -76,12 +83,15 @@ class ProbGenerator {
   //                  std::string manip);
 
  protected:
+  tesseract_planning::PlannerRequest genRequest_(
+      VKCEnvBasic &env, ActionBase::Ptr action,
+      tesseract_planning::MixedWaypoint waypoint, int n_steps, int n_iter);
   bool validateGroupID(tesseract_environment::Environment::Ptr tesseract,
                        const std::string &group_id);
 
   Eigen::Vector4d getQuatFromIso(Eigen::Isometry3d iso);
 
-  tesseract_planning::ProfileDictionary::Ptr genCartProfiles_(
+  tesseract_planning::ProfileDictionary::Ptr genPlannerProfiles_(
       VKCEnvBasic &env, tesseract_planning::ManipulatorInfo manip,
       double collision_margin, double collision_coeff,
       Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
@@ -105,7 +115,7 @@ class ProbGenerator {
   void addCartWaypoint(tesseract_planning::CompositeInstruction &program,
                        Eigen::Isometry3d pose, std::string description);
 
-  void setSolverProfile(tesseract_planning::ProfileDictionary::Ptr profiles,
+  void addSolverProfile(tesseract_planning::ProfileDictionary::Ptr profiles,
                         int n_iter);
 
   void addJointTerm(trajopt::ProblemConstructionInfo &pci, int joint_num);
