@@ -1,9 +1,10 @@
 #ifndef VKC_ACTION_BASE_H
 #define VKC_ACTION_BASE_H
 
+#include <tesseract_command_language/command_language.h>
+
 #include <Eigen/Eigen>
 #include <string>
-#include <tesseract_command_language/command_language.h>
 
 // added: wanglei@bigai.ai
 // time: 2021-08-17
@@ -69,6 +70,22 @@ class ActionBase {
   virtual ~ActionBase() = default;
 
   ActionType getActionType() { return action_type_; }
+
+  std::string getActionName() {
+    switch (action_type_) {
+      case ActionType::GotoAction:
+        return "Goto";
+      case ActionType::PickAction:
+        return "Pick";
+      case ActionType::PlaceAction:
+        return "Place";
+      case ActionType::UseAction:
+        return "Use";
+      default:
+        return "Unknown Action";
+    }
+    throw std::runtime_error("unknown action");
+  }
 
   std::string getManipulatorID() { return manipulator_id_; }
 
