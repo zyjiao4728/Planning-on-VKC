@@ -41,6 +41,8 @@ class VKCEnvBasic {
   using UPtr = std::unique_ptr<VKCEnvBasic>;
 
   VKCEnvBasic(ros::NodeHandle nh_, bool plotting, bool rviz, int steps);
+  VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc, bool plotting,
+              bool rviz, int steps);
 
   virtual ~VKCEnvBasic() = default;
 
@@ -48,7 +50,7 @@ class VKCEnvBasic {
   virtual bool createEnvironment();
 
   VKCEnvBasic::UPtr clone() const;
-  
+
   void setEndEffector(std::string name);
 
   virtual bool reInit();
@@ -97,7 +99,6 @@ class VKCEnvBasic {
   std::unordered_map<std::string, vkc::BaseObject::AttachLocation::Ptr>
       attach_locations_;
   std::vector<std::string> attached_links_;
-
 
   /**
    * @brief Set initial pose to home pose for all groups as defined in SRDF file

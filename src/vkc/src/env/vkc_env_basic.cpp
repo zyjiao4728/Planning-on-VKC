@@ -9,7 +9,8 @@ const std::string DEFAULT_VKC_GROUP_ID = "vkc";
 namespace vkc {
 // namespace vkc starts
 
-VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
+VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz,
+                         int steps)
     : nh_(nh),
       plotting_(plotting),
       rviz_(rviz),
@@ -17,8 +18,18 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz, int steps
       steps_(steps),
       plot_tesseract_(nullptr) {}
 
+VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
+                         bool plotting, bool rviz, int steps)
+    : nh_(nh),
+      plotting_(plotting),
+      rviz_(rviz),
+      tesseract_(vkc),
+      steps_(steps),
+      plot_tesseract_(nullptr) {}
+
 VKCEnvBasic::UPtr VKCEnvBasic::clone() const {
-  auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(nh_, plotting_, rviz_, steps_);
+  auto cloned_vkc_env =
+      std::make_unique<VKCEnvBasic>(nh_, tesseract_->clone(), plotting_, rviz_, steps_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
   return cloned_vkc_env;
@@ -444,9 +455,7 @@ bool VKCEnvBasic::isGroupExist(std::string group_id) {
   // return isfound_group;
 }
 
-bool VKCEnvBasic::createEnvironment(){
-  return false;
-}
+bool VKCEnvBasic::createEnvironment() { return false; }
 bool VKCEnvBasic::reInit() {
   // end_effector_link_ = robot_end_effector_link_;
   // ROS_INFO("[%s]revision: %u", __func__,
