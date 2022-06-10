@@ -59,7 +59,7 @@ MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
 }
 
 PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
-                                          MixedWaypoint wp, int n_steps,
+                                          Waypoint wp, int n_steps,
                                           int n_iter) {
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   ManipulatorInfo manip;
@@ -90,6 +90,10 @@ PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
   PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
                                    "DEFAULT");
+  if (act->joint_candidate.size()) {
+    plan_instruction.setWaypoint(
+        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
+  }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", act->getActionName()));
   program.push_back(plan_instruction);

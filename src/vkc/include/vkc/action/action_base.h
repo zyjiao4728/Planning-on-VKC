@@ -69,6 +69,9 @@ class ActionBase {
 
   virtual ~ActionBase() = default;
 
+  tesseract_planning::CompositeInstruction seed;
+  Eigen::VectorXd joint_candidate;
+
   ActionType getActionType() { return action_type_; }
 
   std::string getActionName() {
@@ -111,7 +114,8 @@ class ActionBase {
   }
 
   const VKCTraj& getInitTraj() const { return init_traj_; }
-  tesseract_planning::CompositeInstruction seed;
+
+
 
  protected:
   ActionType action_type_;

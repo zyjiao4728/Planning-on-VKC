@@ -85,7 +85,8 @@ class ProbGenerator {
  protected:
   tesseract_planning::PlannerRequest genRequest_(
       VKCEnvBasic &env, ActionBase::Ptr action,
-      tesseract_planning::MixedWaypoint waypoint, int n_steps, int n_iter);
+      tesseract_planning::Waypoint waypoint, int n_steps, int n_iter);
+
   bool validateGroupID(tesseract_environment::Environment::Ptr tesseract,
                        const std::string &group_id);
 
