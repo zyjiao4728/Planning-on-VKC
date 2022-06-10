@@ -38,18 +38,28 @@ class ProbGenerator {
                                                 ActionBase::Ptr action,
                                                 int n_steps, int n_iter);
 
+  tesseract_planning::PlannerRequest genRequest(
+      VKCEnvBasic &env, ActionBase::Ptr action,
+      tesseract_planning::Waypoint waypoint, int n_steps, int n_iter);
+
   tesseract_planning::MixedWaypoint genMixedWaypoint(VKCEnvBasic &env,
                                                      ActionBase::Ptr act);
 
   tesseract_planning::MixedWaypoint genPickMixedWaypoint(VKCEnvBasic &env,
                                                          PickAction::Ptr act);
+
+  tesseract_planning::MixedWaypoint genPlaceMixedWaypoint(VKCEnvBasic &env,
+                                                          PlaceAction::Ptr act);
+
+  tesseract_planning::MixedWaypoint genGotoMixedWaypoint(VKCEnvBasic &env,
+                                                         GotoAction::Ptr act);
+
   tesseract_planning::PlannerRequest genPickProb(VKCEnvBasic &env,
                                                  PickAction::Ptr act,
                                                  int n_steps, int n_iter);
   // trajopt::TrajOptProb::Ptr genPickProbOMPL(VKCEnvBasic &env, PickAction::Ptr
   // act, int n_steps);
-  tesseract_planning::MixedWaypoint genPlaceMixedWaypoint(VKCEnvBasic &env,
-                                                          PlaceAction::Ptr act);
+
   tesseract_planning::PlannerRequest genPlaceProb(VKCEnvBasic &env,
                                                   PlaceAction::Ptr act,
                                                   int n_steps, int n_iter);
@@ -83,10 +93,6 @@ class ProbGenerator {
   //                  std::string manip);
 
  protected:
-  tesseract_planning::PlannerRequest genRequest_(
-      VKCEnvBasic &env, ActionBase::Ptr action,
-      tesseract_planning::Waypoint waypoint, int n_steps, int n_iter);
-
   bool validateGroupID(tesseract_environment::Environment::Ptr tesseract,
                        const std::string &group_id);
 
