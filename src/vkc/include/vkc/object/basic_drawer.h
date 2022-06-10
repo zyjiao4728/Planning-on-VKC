@@ -491,62 +491,69 @@ class BaseDrawer : public BaseObject {
     */
 
     link_map_[base_link.getName()] =
-        std::make_shared<Link>(std::move(base_link));
-    link_map_[drawer.getName()] = std::make_shared<Link>(std::move(drawer));
+        std::make_shared<Link>(std::move(base_link.clone()));
+    link_map_[drawer.getName()] = std::make_shared<Link>(std::move(drawer.clone()));
     link_map_[left_wall.getName()] =
-        std::make_shared<Link>(std::move(left_wall));
+        std::make_shared<Link>(std::move(left_wall.clone()));
     link_map_[right_wall.getName()] =
-        std::make_shared<Link>(std::move(right_wall));
+        std::make_shared<Link>(std::move(right_wall.clone()));
     link_map_[bottom_wall.getName()] =
-        std::make_shared<Link>(std::move(bottom_wall));
-    link_map_[top_wall.getName()] = std::make_shared<Link>(std::move(top_wall));
+        std::make_shared<Link>(std::move(bottom_wall.clone()));
+    link_map_[top_wall.getName()] = std::make_shared<Link>(std::move(top_wall.clone()));
     link_map_[back_wall.getName()] =
-        std::make_shared<Link>(std::move(back_wall));
+        std::make_shared<Link>(std::move(back_wall.clone()));
     link_map_[handle_link.getName()] =
-        std::make_shared<Link>(std::move(handle_link));
+        std::make_shared<Link>(std::move(handle_link.clone()));
     link_map_[handle_left.getName()] =
-        std::make_shared<Link>(std::move(handle_left));
+        std::make_shared<Link>(std::move(handle_left.clone()));
     link_map_[handle_right.getName()] =
-        std::make_shared<Link>(std::move(handle_right));
+        std::make_shared<Link>(std::move(handle_right.clone()));
     // link_map_[handle_top_cover.getName()] =
-    // std::make_shared<Link>(std::move(handle_top_cover));
+    // std::make_shared<Link>(std::move(handle_top_cover.clone()));
     // link_map_[handle_bottom_cover.getName()] =
-    // std::make_shared<Link>(std::move(handle_bottom_cover));
+    // std::make_shared<Link>(std::move(handle_bottom_cover.clone()));
 
     joint_map_[base_drawer_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_drawer_joint));
+        std::make_shared<Joint>(std::move(base_drawer_joint.clone()));
     joint_map_[base_left_wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_left_wall_joint));
+        std::make_shared<Joint>(std::move(base_left_wall_joint.clone()));
     joint_map_[base_right_wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_right_wall_joint));
+        std::make_shared<Joint>(std::move(base_right_wall_joint.clone()));
     joint_map_[base_back_wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_back_wall_joint));
+        std::make_shared<Joint>(std::move(base_back_wall_joint.clone()));
     joint_map_[base_bottom_wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_bottom_wall_joint));
+        std::make_shared<Joint>(std::move(base_bottom_wall_joint.clone()));
     joint_map_[base_top_wall_joint.getName()] =
-        std::make_shared<Joint>(std::move(base_top_wall_joint));
+        std::make_shared<Joint>(std::move(base_top_wall_joint.clone()));
     // joint_map_[drawer_handle_bottom_cover_joint.getName()] =
-    //     std::make_shared<Joint>(std::move(drawer_handle_bottom_cover_joint));
+    //     std::make_shared<Joint>(std::move(drawer_handle_bottom_cover_joint.clone()));
     joint_map_[drawer_handle_link_joint.getName()] =
-        std::make_shared<Joint>(std::move(drawer_handle_link_joint));
+        std::make_shared<Joint>(std::move(drawer_handle_link_joint.clone()));
     joint_map_[drawer_handle_left_joint.getName()] =
-        std::make_shared<Joint>(std::move(drawer_handle_left_joint));
+        std::make_shared<Joint>(std::move(drawer_handle_left_joint.clone()));
     joint_map_[drawer_handle_right_joint.getName()] =
-        std::make_shared<Joint>(std::move(drawer_handle_right_joint));
+        std::make_shared<Joint>(std::move(drawer_handle_right_joint.clone()));
     // joint_map_[drawer_handle_top_cover_joint.getName()] =
-    //     std::make_shared<Joint>(std::move(drawer_handle_top_cover_joint));
+    //     std::make_shared<Joint>(std::move(drawer_handle_top_cover_joint.clone()));
 
     // Add an attach location
-    AttachLocation attach_location("attach_" + handle_link.getName(),
-                                   handle_link.getName());
+    AttachLocation attach_location(
+        fmt::format("attach_{}", handle_link.getName()), handle_link.getName());
+
     attach_location.local_joint_origin_transform.translation() +=
-        Eigen::Vector3d(0.1, 0.0, 0.0);
+        Eigen::Vector3d(0.15, 0.0, 0.0);
     attach_location.local_joint_origin_transform.linear() =
-        Eigen::Quaterniond(0.0, 0.0, 0.7071, 0.7071).matrix();
+        // Eigen::Quaterniond(0.0, 0.0, 0.70710678, 0.70710678).matrix();
+        Eigen::Quaterniond(0.5,0.5,-0.5,-0.5).matrix();
     attach_location.fixed_base = true;
 
     // Define connection joint
-    attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    // attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    attach_location.connection.type = JointType::REVOLUTE;
+    attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
+    attach_location.connection.limits = std::make_shared<JointLimits>();
+    attach_location.connection.limits->lower = -1.2;
+    attach_location.connection.limits->upper = 1.2;
     attach_location.connection.child_link_name = handle_link.getName();
     attach_location.connection.parent_link_name = "NULL";
 
