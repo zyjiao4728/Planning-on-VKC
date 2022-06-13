@@ -16,7 +16,7 @@ class LongHorizonSeedGenerator {
    */
   void generate(VKCEnvBasic &env, std::vector<ActionBase::Ptr> &actions);
 
-  std::vector<tesseract_kinematics::IKSolutions> getBestIKSet(
+  tesseract_kinematics::IKSolutions getBestIKSet(
       const std::vector<tesseract_kinematics::IKSolutions> &act_iks);
 
   int n_steps;

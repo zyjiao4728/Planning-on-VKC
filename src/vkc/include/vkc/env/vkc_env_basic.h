@@ -49,7 +49,7 @@ class VKCEnvBasic {
   // Create a environment for VKCc planning
   virtual bool createEnvironment();
 
-  VKCEnvBasic::UPtr clone() const;
+  VKCEnvBasic::UPtr clone();
 
   void setEndEffector(std::string name);
 
@@ -58,13 +58,16 @@ class VKCEnvBasic {
 
   void addAttachLocation(vkc::BaseObject::AttachLocation attach_location);
 
-  void addAttachLocations(
-      std::unordered_map<std::string, vkc::BaseObject::AttachLocation::Ptr>
+  void updateAttachLocations(
+      std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
           attach_locations);
 
   std::unordered_map<std::string, double> getHomePose();
 
-  vkc::BaseObject::AttachLocation::Ptr getAttachLocation(std::string name);
+  vkc::BaseObject::AttachLocation::ConstPtr getAttachLocation(std::string name);
+
+  std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
+  getAttachLocations();
 
   vkc::ConstructVKC::Ptr getVKCEnv();
   vkc::ConstructVKC::Ptr getPlotVKCEnv();
@@ -96,7 +99,7 @@ class VKCEnvBasic {
   std::string end_effector_link_;
   // the robot end effctor
   std::string robot_end_effector_link_;
-  std::unordered_map<std::string, vkc::BaseObject::AttachLocation::Ptr>
+  std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
       attach_locations_;
   std::vector<std::string> attached_links_;
 

@@ -131,11 +131,15 @@ MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
 
 MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
                                                   PickAction::Ptr act) {
+  CONSOLE_BRIDGE_logDebug("generating pick mixed waypoint");
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
   MixedWaypoint waypoint(kin_group->getJointNames());
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
+  std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
+  CONSOLE_BRIDGE_logDebug("attack location: %s",
+                          attach_location_ptr->link_name_);
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *
@@ -151,7 +155,7 @@ MixedWaypoint ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
       act->getManipulatorID());
   MixedWaypoint waypoint(kin_group->getJointNames());
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
@@ -200,7 +204,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
 
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
@@ -294,7 +298,7 @@ trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.01, 50);
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
 
   if (detach_location_ptr->fixed_base) {
@@ -393,7 +397,7 @@ PlannerRequest ProbGenerator::genUseProb(VKCEnvBasic &env, UseAction::Ptr act,
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.0001, 10);
 
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // update end effector
   if (act->getEndEffectorID() != "") {
@@ -435,7 +439,7 @@ trajopt::ProblemConstructionInfo ProbGenerator::genUseProb_test(
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.01, 50);
 
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // update end effector
   if (act->getEndEffectorID() != "") {
@@ -796,7 +800,7 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   MixedWaypoint waypoint(kinematic_group->getJointNames());
 
   // set target pose
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(

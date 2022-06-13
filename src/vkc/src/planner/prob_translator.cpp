@@ -334,7 +334,7 @@ bool ProbTranslator::transPickProb(VKCEnvBasic &env, vkc::PickAction::Ptr act) {
   insertPlanners(planner_);
 
   // extract pose information
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  auto attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   Eigen::Isometry3d target_pos =
       attach_location_ptr->world_joint_origin_transform;
@@ -360,8 +360,8 @@ bool ProbTranslator::transPlaceProb(VKCEnvBasic &env,
 
   // get the detach location and feed it to validity checkers
   // -----------------------
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
-      env.getAttachLocation(act->getDetachedObject());
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
+      std::move(env.getAttachLocation(act->getDetachedObject()));
   if (detach_location_ptr->fixed_base) {
     // std::string fix_link_name = detach_location_ptr->base_link_;
     // std::cout << fix_link_name.c_str() << std::endl;
