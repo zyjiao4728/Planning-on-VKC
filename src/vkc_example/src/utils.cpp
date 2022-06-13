@@ -84,13 +84,13 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response,
   return cost;
 }
 
-void refineTrajectory(tesseract_common::TrajArray &traj) {
-  long int n_rows = traj.rows();
-  long int n_cols = traj.cols();
+tesseract_common::JointTrajectory refineTrajectory(tesseract_common::JointTrajectory traj) {
+  long int n_rows = traj.states.size();  // number of waypoints
+  long int n_cols = traj.states[0].joint_names.size(); // number of joints
 
   for (int i = 0; i < n_rows - 1; i++) {
-    double delta_y = traj(i + 1, 1) - traj(i, 1);
-    double delta_x = traj(i + 1, 0) - traj(i, 0);
+    double delta_y = traj.states[i+1].position[1] - traj.states[i].position[1];
+    double delta_x = traj.states[i+1].position[0] - traj.states[i].position[0];
     double delta_orientation = atan2(delta_y, delta_x);
 
     if (delta_orientation > 3.14159265359) delta_orientation -= 3.14159265359;
@@ -98,18 +98,45 @@ void refineTrajectory(tesseract_common::TrajArray &traj) {
     if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
 
     if (n_cols > 3) {
-      traj(i, 3) += traj(i, 2) - delta_orientation;
+      traj.states[i].position[3] += traj.states[i].position[2] - delta_orientation;
     }
-    traj(i, 2) = delta_orientation;
+    traj.states[i].position[2] = delta_orientation;
   }
 
   // the last orientation is as same as the 2nd last
   if (n_rows > 1) {
     if (n_cols > 3) {
-      traj(n_rows - 1, 3) += traj(n_rows - 1, 2) - traj(n_rows - 2, 2);
+      traj.states[n_rows - 1].position[3] += traj.states[n_rows - 1].position[2] - traj.states[n_rows - 2].position[2];
     }
-    traj(n_rows - 1, 2) = traj(n_rows - 2, 2);
+    traj.states[n_rows - 1].position[2] = traj.states[n_rows - 2].position[2];
   }
+
+  return traj;
+  // long int n_rows = traj.rows();
+  // long int n_cols = traj.cols();
+
+  // for (int i = 0; i < n_rows - 1; i++) {
+  //   double delta_y = traj(i + 1, 1) - traj(i, 1);
+  //   double delta_x = traj(i + 1, 0) - traj(i, 0);
+  //   double delta_orientation = atan2(delta_y, delta_x);
+
+  //   if (delta_orientation > 3.14159265359) delta_orientation -= 3.14159265359;
+
+  //   if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
+
+  //   if (n_cols > 3) {
+  //     traj(i, 3) += traj(i, 2) - delta_orientation;
+  //   }
+  //   traj(i, 2) = delta_orientation;
+  // }
+
+  // // the last orientation is as same as the 2nd last
+  // if (n_rows > 1) {
+  //   if (n_cols > 3) {
+  //     traj(n_rows - 1, 3) += traj(n_rows - 1, 2) - traj(n_rows - 2, 2);
+  //   }
+  //   traj(n_rows - 1, 2) = traj(n_rows - 2, 2);
+  // }
 }
 
 int saveTrajToFile(const tesseract_common::TrajArray &traj,
