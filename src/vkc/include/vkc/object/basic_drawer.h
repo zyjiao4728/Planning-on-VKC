@@ -540,6 +540,7 @@ class BaseDrawer : public BaseObject {
     AttachLocation attach_location(
         fmt::format("attach_{}", handle_link.getName()), handle_link.getName());
 
+    attach_location.local_joint_origin_transform.setIdentity();
     attach_location.local_joint_origin_transform.translation() +=
         Eigen::Vector3d(0.15, 0.0, 0.0);
     attach_location.local_joint_origin_transform.linear() =

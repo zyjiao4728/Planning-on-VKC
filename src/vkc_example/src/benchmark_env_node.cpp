@@ -72,22 +72,23 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
         const auto &ci = response.results;
 
-        tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
-        joint_trajs.emplace_back(refined_traj);
+        tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
+        auto refined_traj = refineTrajectory(trajectory);
+        joint_trajs.emplace_back(trajectory);
 
         // ROS_WARN("trajectory: ");
-        // for (auto jo : refined_traj) {
+        // for (auto jo : trajectory) {
         //   std::cout << jo.position << std::endl;
         // }
 
         // refine the orientation of the move base
 
-        // tesseract_common::TrajArray refined_traj =
+        // tesseract_common::TrajArray trajectory =
         //     response.trajectory.leftCols(response.joint_names.size());
-        // refineTrajectory(refined_traj);
+        // refineTrajectory(trajectory);
 
         // std::cout << "optimized trajectory: " << std::endl
-        //           << refined_traj << std::endl;
+        //           << trajectory << std::endl;
         if (env.getPlotter() != nullptr)
         {
             ROS_INFO("plotting result");
@@ -105,11 +106,19 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
         //                 "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
         //                 "trajectory/open_door_pull.csv",
         //                 ',');
-        // saveTrajToFile(refined_traj,
+        // saveTrajToFile(trajectory,
         // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
 
-        env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
+        env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                       action);
+
+        for (auto joint_name : env.getVKCEnv()->getTesseract()->getActiveJointNames())
+        {
+            std::cout << joint_name << std::endl;
+        }
+
+        std::cout << env.getVKCEnv()->getTesseract()->getCurrentJointValues() << std::endl;
+
         // ROS_WARN("environment updated");
         if (env.getPlotter() != nullptr)
             env.getPlotter()->clear();
@@ -208,6 +217,47 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot)
     }
 }
 
+void baseline_reach(vkc::ActionSeq &actions, const std::string &robot)
+{
+
+    /** move base **/
+    // action 1: move base to target
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        // joint_objectives.emplace_back("base_y_base_x", 3.5);
+        // joint_objectives.emplace_back("base_theta_base_y", 0.);
+        // joint_objectives.emplace_back("base_link_base_theta", 0.);
+
+        Eigen::Isometry3d tf;
+        tf.setIdentity();
+        tf.translation() += Eigen::Vector3d(4., -.1, 0.145);
+        tf.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+
+        link_objectives.emplace_back("base_link", tf);
+
+        actions.emplace_back(
+            make_shared<GotoAction>("base", link_objectives, joint_objectives));
+    }
+
+    // action 2: move arm to target
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        Eigen::Isometry3d tf;
+        tf.setIdentity();
+        tf.translation() += Eigen::Vector3d(4.725, -0.45, 0.95);
+        tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
+        link_objectives.emplace_back("robotiq_arg2f_base_link", tf);
+
+        actions.emplace_back(
+            make_shared<GotoAction>("arm", link_objectives, joint_objectives));
+    }
+}
+
 int main(int argc, char **argv)
 {
     srand(time(NULL));
@@ -245,7 +295,8 @@ int main(int argc, char **argv)
     ActionSeq actions;
     // pushDoor(actions, robot);
     // pullDoor(actions, robot);
-    pullDrawer(actions, robot);
+    // pullDrawer(actions, robot);
+    baseline_reach(actions, robot);
 
     run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

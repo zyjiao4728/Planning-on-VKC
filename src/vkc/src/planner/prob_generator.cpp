@@ -47,6 +47,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                manip);
 
   // set initial pose
+  std::cout << fmt::format("{}",kinematic_group->getJointNames()) << std::endl;
   setStartInstruction(
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
@@ -141,6 +142,11 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  // std::cout << pick_pose_world_transform.translation() << std::endl;
+  // std::cout << pick_pose_world_transform.linear() << std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  
   waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
   return waypoint;
 }
