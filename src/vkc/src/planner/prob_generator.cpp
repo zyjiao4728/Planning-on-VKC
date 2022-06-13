@@ -66,7 +66,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
-  ROS_DEBUG("generating seed");
+  // CONSOLE_BRIDGE_logDebug("generating seed");
 
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
@@ -137,9 +137,9 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
   MixedWaypoint waypoint(kin_group->getJointNames());
   BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
-  std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
-  CONSOLE_BRIDGE_logDebug("attack location: %s",
-                          attach_location_ptr->link_name_);
+  // std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
+  // CONSOLE_BRIDGE_logDebug("attack location: %s",
+  //                         attach_location_ptr->link_name_);
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *

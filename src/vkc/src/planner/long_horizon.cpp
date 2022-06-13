@@ -17,24 +17,44 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   vkc_env->updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
+  std::vector<tesseract_kinematics::IKSolutions> act_iks;
   for (auto &action : sub_actions) {
-    // std::cout << action->seed.empty() << std::endl;
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
         std::move(env->getKinematicGroup(action->getManipulatorID()));
-
-    // auto ik_result = tesseract_planning::getIKWithHeuristic();
-    // auto filtered_ik_result =
-    //     tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
-    // vkc_env->updateEnv(seed_traj.back().joint_names,
-    // seed_traj.back().position,
-    //                action);
+    auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
+    std::cout << "mixed waypoint generated" << std::endl;
+    Eigen::VectorXd coeff(kin_group->getJointNames().size());
+    coeff.setOnes();
+    coeff(0) = 0;
+    coeff(1) = 0;
+    std::cout << coeff << std::endl;
+    auto ik_result = tesseract_planning::getIKWithOrder(
+        kin_group, wp, "world",
+        env->getCurrentJointValues(kin_group->getJointNames()), coeff);
+    CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
+                            ik_result.size());
+    auto filtered_ik_result =
+        tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
+    act_iks.push_back(filtered_ik_result);
+    vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
+                       action);
   }
-  std::cout << vkc_env->getEndEffectorLink() << std::endl;
+  auto ik_set = getBestIKSet(act_iks);
+  assert(ik_set.size() == sub_actions.size());
+  for (int i = 0; i < sub_actions.size(); i++) {
+    sub_actions[i]->joint_candidate = ik_set[i];
+  }
+
   return;
 }
 
-std::vector<tesseract_kinematics::IKSolutions>
-LongHorizonSeedGenerator::getBestIKSet(
-    const std::vector<tesseract_kinematics::IKSolutions> &act_iks) {}
+tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
+    const std::vector<tesseract_kinematics::IKSolutions> &act_iks) {
+  std::vector<Eigen::VectorXd> result;
+  for (auto &act_ik : act_iks) {
+    result.push_back(act_ik[0]);
+  }
+  return result;
+}
 
 }  // namespace vkc

@@ -100,10 +100,9 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
                     ',');
     // saveTrajToFile(refined_traj,
     // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
-
     env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
                   action);
-    // ROS_WARN("environment updated");
+    CONSOLE_BRIDGE_logInform("environment updated, starting next action...");
     if (env.getPlotter() != nullptr) env.getPlotter()->clear();
     ++j;
   }
@@ -201,8 +200,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  // pushDoor(actions, robot);
-  pullDoor(actions, robot);
+  pushDoor(actions, robot);
+  // pullDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }
