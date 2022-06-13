@@ -146,10 +146,10 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
-  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-  std::cout << pick_pose_world_transform.translation() << std::endl;
-  std::cout << pick_pose_world_transform.linear() << std::endl;
-  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  // std::cout << pick_pose_world_transform.translation() << std::endl;
+  // std::cout << pick_pose_world_transform.linear() << std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
   
   waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
   return waypoint;
