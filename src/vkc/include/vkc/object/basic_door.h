@@ -39,7 +39,7 @@ class BaseDoor : public BaseObject {
         std::make_shared<tesseract_geometry::Box>(0.1, 0.15, door_height_);
     material_name = base_link.getName() + "_color";
     base_link_visual->material = std::make_shared<Material>(material_name);
-    base_link_visual->material->color = Eigen::Vector4d(0.4, 0.2, 0.0, 1.0);
+    base_link_visual->material->color = Eigen::Vector4d(0.4, 0.2, 0.0, 0.0);
     base_link.visual.push_back(base_link_visual);
 
     Link door_link(object_name_ + "_door_link");
@@ -280,7 +280,8 @@ class BaseDoor : public BaseObject {
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
     attach_location.local_joint_origin_transform.translation() +=
-        Eigen::Vector3d(-0.2, mir_ * 0.08, 0.0);
+            Eigen::Vector3d(-0.15, 0.0, 0.0);
+        // Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     // attach_location.local_joint_origin_transform.linear() =
         // Eigen::Quaterniond(0.7071, 0.0, 0.7071, 0.0).matrix();
     attach_location.local_joint_origin_transform.linear() =
@@ -289,7 +290,12 @@ class BaseDoor : public BaseObject {
     attach_location.fixed_base = true;
 
     // Define connection joint
-    attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    // attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    attach_location.connection.type = JointType::REVOLUTE;
+    attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
+    attach_location.connection.limits = std::make_shared<JointLimits>();
+    attach_location.connection.limits->lower = -1.5;
+    attach_location.connection.limits->upper = 1.5;
     attach_location.connection.child_link_name = handle_link.getName();
     attach_location.connection.parent_link_name = "NULL";
 
