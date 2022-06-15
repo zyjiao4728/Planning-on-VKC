@@ -73,7 +73,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
         const auto &ci = response.results;
 
         tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
-        auto refined_traj = refineTrajectory(trajectory);
+        tesseract_common::JointTrajectory refined_traj = trajectory;
+        refineTrajectory(refined_traj, env);
         joint_trajs.emplace_back(trajectory);
 
         // ROS_WARN("trajectory: ");
@@ -217,7 +218,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot)
     }
 }
 
-void baseline_reach(vkc::ActionSeq &actions, const std::string &robot)
+void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::Isometry3d base_pose, Eigen::Isometry3d ee_pose)
 {
 
     /** move base **/
@@ -226,16 +227,7 @@ void baseline_reach(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        // joint_objectives.emplace_back("base_y_base_x", 3.5);
-        // joint_objectives.emplace_back("base_theta_base_y", 0.);
-        // joint_objectives.emplace_back("base_link_base_theta", 0.);
-
-        Eigen::Isometry3d tf;
-        tf.setIdentity();
-        tf.translation() += Eigen::Vector3d(4., -.1, 0.145);
-        tf.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
-
-        link_objectives.emplace_back("base_link", tf);
+        link_objectives.emplace_back("base_link", base_pose);
 
         actions.emplace_back(
             make_shared<GotoAction>("base", link_objectives, joint_objectives));
@@ -246,12 +238,7 @@ void baseline_reach(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        Eigen::Isometry3d tf;
-        tf.setIdentity();
-        tf.translation() += Eigen::Vector3d(4.725, -0.45, 0.95);
-        tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
-
-        link_objectives.emplace_back("robotiq_arg2f_base_link", tf);
+        link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
 
         actions.emplace_back(
             make_shared<GotoAction>("arm", link_objectives, joint_objectives));
@@ -293,10 +280,22 @@ int main(int argc, char **argv)
     vector<TesseractJointTraj> joint_trajs;
 
     ActionSeq actions;
-    // pushDoor(actions, robot);
+    pushDoor(actions, robot);
     // pullDoor(actions, robot);
     // pullDrawer(actions, robot);
-    baseline_reach(actions, robot);
+    {
+        Eigen::Isometry3d base_pose;
+        base_pose.setIdentity();
+        base_pose.translation() += Eigen::Vector3d(4.2, -.1, 0.145);
+        base_pose.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+
+        Eigen::Isometry3d ee_pose;
+        ee_pose.setIdentity();
+        ee_pose.translation() += Eigen::Vector3d(4.725, -0.45, 0.95);
+        ee_pose.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
+        baseline_reach(actions, robot, base_pose, ee_pose);
+    }
 
     run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }
