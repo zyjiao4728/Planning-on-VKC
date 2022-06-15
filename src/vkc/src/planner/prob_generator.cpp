@@ -18,49 +18,11 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
                                          ActionBase::Ptr action, int n_steps,
                                          int n_iter) {
   auto wp = genMixedWaypoint(env, action);
-  return genRequest_(env, action, wp, n_steps, n_iter);
+  return genRequest(env, action, wp, n_steps, n_iter);
 }
 
-MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
-                                              ActionBase::Ptr action) {
-  switch (action->getActionType()) {
-    case ActionType::PickAction: {
-      PickAction::Ptr pick_act = std::dynamic_pointer_cast<PickAction>(action);
-      // initFinalPose(env, std::vector<LinkDesiredPose>(),
-      // std::vector<JointDesiredPose>(), ActionType::PickAction);
-      return genPickMixedWaypoint(env, pick_act);
-    }
-
-      // case ActionType::GotoAction:
-      // {
-      //   GotoAction::Ptr goto_act =
-      //   std::dynamic_pointer_cast<GotoAction>(action); return
-      //   genGotoProb(env, goto_act, n_steps);
-      // }
-
-    case ActionType::PlaceAction: {
-      PlaceAction::Ptr place_act =
-          std::dynamic_pointer_cast<PlaceAction>(action);
-      return genPlaceMixedWaypoint(env, place_act);
-    }
-
-      // case ActionType::UseAction:
-      // {
-      //   UseAction::Ptr use_act =
-      //   std::dynamic_pointer_cast<UseAction>(action); return genUseProb(env,
-      //   use_act, n_steps);
-      // }
-
-    default: {
-      ROS_ERROR("Undefined action type.");
-    }
-  }
-  throw std::logic_error("action error");
-}
-
-PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
-                                          MixedWaypoint wp, int n_steps,
-                                          int n_iter) {
+PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
+                                         Waypoint wp, int n_steps, int n_iter) {
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
@@ -90,6 +52,12 @@ PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
   PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
                                    "DEFAULT");
+  if (act->joint_candidate.size()) {
+    CONSOLE_BRIDGE_logDebug(
+        "joint candidate found, resetting waypoint to joint waypoint...");
+    plan_instruction.setWaypoint(
+        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
+  }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", act->getActionName()));
   program.push_back(plan_instruction);
@@ -98,12 +66,14 @@ PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
-  ROS_DEBUG("generating seed");
+  // CONSOLE_BRIDGE_logDebug("generating seed");
 
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
-  CompositeInstruction seed = generateMixedSeed(
-      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
+  CompositeInstruction seed =
+      act->seed.empty() ? generateMixedSeed(program, cur_state,
+                                            env.getVKCEnv()->getTesseract(), 30)
+                        : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            getMoveInstructionCount(seed));
@@ -123,78 +93,53 @@ PlannerRequest ProbGenerator::genRequest_(VKCEnvBasic &env, ActionBase::Ptr act,
 
   return request;
 }
-// trajopt::ProblemConstructionInfo ProbGenerator::genProbTest(VKCEnvBasic &env,
-// ActionBase::Ptr action, int n_steps)
-// {
-//   switch (action->getActionType())
-//   {
-//   case ActionType::PickAction:
-//   {
-//     PickAction::Ptr pick_act = std::dynamic_pointer_cast<PickAction>(action);
-//     // initFinalPose(env, std::vector<LinkDesiredPose>(),
-//     std::vector<JointDesiredPose>(), ActionType::PickAction); return
-//     genPickProb_test(env, pick_act, n_steps);
-//   }
 
-//   case ActionType::GotoAction:
-//   {
-//     GotoAction::Ptr goto_act = std::dynamic_pointer_cast<GotoAction>(action);
-//     return genGotoProb_test(env, goto_act, n_steps);
-//   }
+MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
+                                              ActionBase::Ptr action) {
+  switch (action->getActionType()) {
+    case ActionType::PickAction: {
+      PickAction::Ptr pick_act = std::dynamic_pointer_cast<PickAction>(action);
+      // initFinalPose(env, std::vector<LinkDesiredPose>(),
+      // std::vector<JointDesiredPose>(), ActionType::PickAction);
+      return genPickMixedWaypoint(env, pick_act);
+    }
 
-//   case ActionType::PlaceAction:
-//   {
-//     PlaceAction::Ptr place_act =
-//     std::dynamic_pointer_cast<PlaceAction>(action); return
-//     genPlaceProb_test(env, place_act, n_steps);
-//   }
+    case ActionType::GotoAction: {
+      GotoAction::Ptr goto_act = std::dynamic_pointer_cast<GotoAction>(action);
+      return genGotoMixedWaypoint(env, goto_act);
+    }
 
-//   case ActionType::UseAction:
-//   {
-//     UseAction::Ptr use_act = std::dynamic_pointer_cast<UseAction>(action);
-//     return genUseProb_test(env, use_act, n_steps);
-//   }
-//     // TODO: an null action should be defined for default case
-//     //   default:
-//     //   {
-//     //     ROS_ERROR("Undefined action type.");
-//     //     return NULL;
-//     //   }
-//   }
-//   // return NULL;
-// }
+    case ActionType::PlaceAction: {
+      PlaceAction::Ptr place_act =
+          std::dynamic_pointer_cast<PlaceAction>(action);
+      return genPlaceMixedWaypoint(env, place_act);
+    }
 
-ProfileDictionary::Ptr ProbGenerator::genPlannerProfiles_(
-    VKCEnvBasic &env, ManipulatorInfo manip, double collision_margin,
-    double collision_coeff, Eigen::Vector3d pos_coeff,
-    Eigen::Vector3d rot_coeff) {
-  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  auto trajopt_composite_profile =
-      std::make_shared<TrajOptDefaultCompositeProfile>();
-  setCompositeProfile(
-      trajopt_composite_profile, collision_margin, collision_coeff,
-      (long int)env_->getGroupJointNames(manip.manipulator).size());
+      // case ActionType::UseAction:
+      // {
+      //   UseAction::Ptr use_act =
+      //   std::dynamic_pointer_cast<UseAction>(action); return genUseProb(env,
+      //   use_act, n_steps);
+      // }
 
-  auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
-  setCartPlanProfile(trajopt_plan_profile, pos_coeff, rot_coeff);
-
-  auto profiles = std::make_shared<ProfileDictionary>();
-  profiles->addProfile<TrajOptCompositeProfile>(
-      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT",
-      trajopt_composite_profile);
-  profiles->addProfile<TrajOptPlanProfile>(
-      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile);
-
-  return profiles;
+    default: {
+      ROS_ERROR("Undefined action type.");
+    }
+  }
+  throw std::logic_error("action error");
 }
 
 MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
                                                   PickAction::Ptr act) {
+  CONSOLE_BRIDGE_logDebug("generating pick mixed waypoint");
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
   MixedWaypoint waypoint(kin_group->getJointNames());
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
+  // std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
+  // CONSOLE_BRIDGE_logDebug("attack location: %s",
+  //                         attach_location_ptr->link_name_);
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *
@@ -204,144 +149,13 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
   return waypoint;
 }
 
-PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
-                                          int n_steps, int n_iter) {
-  // to make sure the attach link exists
-  if (nullptr == env.getAttachLocation(act->getAttachedObject())) {
-    ROS_ERROR(
-        "[%s]attach location named %s does not exist, please specified it "
-        "first.",
-        __func__, act->getAttachedObject().c_str());
-    assert(false);
-  }
-
-  ROS_DEBUG("generating pick problem");
-
-  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  ManipulatorInfo manip;
-  manip.tcp_frame = env.getEndEffectorLink();
-  manip.working_frame = "world";
-  manip.manipulator = act->getManipulatorID();
-  auto kinematic_group = env_->getKinematicGroup(
-      act->getManipulatorID());  // same as joint group for initial
-                                 // step(verified)
-
-  // set profiles
-  double collision_margin = 0.0001;
-  double collision_coeff = 10;
-
-  auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
-  auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
-
-  auto profiles = genPlannerProfiles_(env, manip, collision_margin,
-                                      collision_coeff, pos_coeff, rot_coeff);
-  addSolverProfile(profiles, n_iter);
-
-  CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
-                               manip);
-
-  // set initial pose
-  setStartInstruction(
-      program, kinematic_group->getJointNames(),
-      env_->getCurrentJointValues(kinematic_group->getJointNames()));
-
-  MixedWaypoint waypoint(kinematic_group->getJointNames());
-
-  // set target pose
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
-      env.getAttachLocation(act->getAttachedObject());
-  Eigen::Isometry3d pick_pose_world_transform =
-      env.getVKCEnv()->getTesseract()->getLinkTransform(
-          attach_location_ptr->link_name_) *
-      attach_location_ptr->local_joint_origin_transform;
-
-  waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
-
-  PlanInstruction pick_plan(waypoint, PlanInstructionType::FREESPACE,
-                            "DEFAULT");
-  pick_plan.setDescription("waypoint for pick");
-  program.push_back(pick_plan);
-
-  // addCartWaypoint(program, pick_pose_world_transform, "pick object");
-
-  // generate seed
-  auto cur_state = env.getVKCEnv()->getTesseract()->getState();
-  ROS_DEBUG("generating seed");
-
-  // CompositeInstruction seed =
-  //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
-  CompositeInstruction seed = generateMixedSeed(
-      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
-
-  ROS_INFO("number of move instructions in pick seed: %d",
-           getMoveInstructionCount(seed));
-  ROS_INFO("composing request.");
-
-  seed.print("pick seed: ");
-
-  // compose request
-  PlannerRequest request;
-  request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
-  request.instructions = program;
-  request.profiles = profiles;
-  request.seed = seed;
-  request.env_state = cur_state;
-  request.env = env.getVKCEnv()->getTesseract();
-
-  ROS_INFO("pick request generated.");
-
-  return request;
-}
-
-trajopt::ProblemConstructionInfo ProbGenerator::genPickProb_test(
-    VKCEnvBasic &env, PickAction::Ptr act, int n_steps) {
-  ProblemConstructionInfo pci(env.getVKCEnv()->getTesseract());
-  // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps,
-  // act->getManipulatorID()); addJointTerm(pci, joint_num);
-  // addCollisionTerm(pci, 0.01, 50);
-
-  // BaseObject::AttachLocation::Ptr attach_location_ptr =
-  // env.getAttachLocation(act->getAttachedObject());
-
-  // std::shared_ptr<CartPoseTermInfo> PickPose =
-  // std::shared_ptr<CartPoseTermInfo>(new CartPoseTermInfo);
-  // PickPose->term_type = TT_CNT;
-  // PickPose->name = "PickGoal";
-  // PickPose->source_frame = env.getEndEffectorLink();
-  // PickPose->timestep = pci.basic_info.n_steps - 1;
-  // PickPose->target_frame = "world";
-  // PickPose->target_frame_offset =
-  // attach_location_ptr->world_joint_origin_transform;
-  // // PickPose->xyz =
-  // attach_location_ptr->world_joint_origin_transform.translation();
-  // // PickPose->wxyz =
-  // getQuatFromIso(attach_location_ptr->world_joint_origin_transform);
-  // PickPose->pos_coeffs = Eigen::Vector3d(100.0, 100.0, 100.0);
-  // PickPose->rot_coeffs = Eigen::Vector3d(100.0, 100.0, 100.0);
-  // pci.cnt_infos.push_back(PickPose);
-  // std::vector<LinkDesiredPose> link_objs;
-  // std::vector<JointDesiredPose> joint_objs;
-  // Eigen::Isometry3d ee_pose =
-  // attach_location_ptr->world_joint_origin_transform;
-  // link_objs.push_back(LinkDesiredPose(attach_location_ptr->connection.parent_link_name,
-  // ee_pose));
-
-  // pci.init_info.type = InitInfo::GIVEN_TRAJ;
-  // pci.init_info.data = initTrajectory(env, link_objs, joint_objs, MapInfo(4,
-  // 4, 0.2),
-  //                                     pci.init_info.data, n_steps,
-  //                                     act->getManipulatorID());
-
-  return pci;
-}
-
 MixedWaypoint ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
                                                    PlaceAction::Ptr act) {
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
   MixedWaypoint waypoint(kin_group->getJointNames());
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
@@ -367,6 +181,22 @@ MixedWaypoint ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
   return waypoint;
 }
 
+MixedWaypoint ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
+                                                  GotoAction::Ptr act) {
+  auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
+      act->getManipulatorID());
+  MixedWaypoint waypoint(kin_group->getJointNames());
+
+  for (auto jo : act->getJointObjectives()) {
+    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
+  }
+
+  for (auto lo : act->getLinkObjectives()) {
+    waypoint.addLinkTarget(lo.link_name, lo.tf);
+  }
+  return waypoint;
+}
+
 PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
                                            PlaceAction::Ptr act, int n_steps,
                                            int n_iter) {
@@ -374,7 +204,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
 
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
@@ -454,128 +284,6 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
 
   ROS_INFO("place request generated.");
   return request;
-  // ProblemConstructionInfo
-  // pci(std::move(env.getVKCEnv()->getTesseract()->clone()));
-
-  // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps,
-  // act->getManipulatorID());
-
-  // addJointTerm(pci, joint_num);
-  // addCollisionTerm(pci, 0.0001, 10);
-
-  // BaseObject::AttachLocation::Ptr detach_location_ptr =
-  // env.getAttachLocation(act->getDetachedObject()); if
-  // (detach_location_ptr->fixed_base)
-  // {
-  //   ROS_INFO("[%s]generate a place problem for fixed base object.",
-  //   __func__); for (int i = 0; i < pci.basic_info.n_steps; ++i)
-  //   {
-  //     std::shared_ptr<CartPoseTermInfo> BasePose =
-  //     std::shared_ptr<CartPoseTermInfo>(new CartPoseTermInfo);
-  //     BasePose->term_type = TT_CNT;
-  //     BasePose->name = "BaseGoal_" + std::to_string(i);
-  //     BasePose->source_frame = detach_location_ptr->base_link_;
-  //     BasePose->timestep = i;
-  //     BasePose->target_frame = "world";
-  //     BasePose->target_frame_offset =
-  //     env.getVKCEnv()->getTesseract()->getLinkTransform(detach_location_ptr->base_link_);
-  //     // BasePose->xyz = env.getVKCEnv()
-  //     //                     ->getTesseract()
-  //     // ->getLinkTransform(detach_location_ptr->base_link_)
-  //     //                     .translation();
-  //     // BasePose->wxyz = getQuatFromIso(
-  //     //
-  //     env.getVKCEnv()->getTesseract()->getLinkTransform(detach_location_ptr->base_link_));
-  //     BasePose->pos_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
-  //     BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
-  //     // BasePose->pos_coeffs = Eigen::Vector3d(1,1,1);
-  //     // BasePose->rot_coeffs = Eigen::Vector3d(1,1,1);
-  //     pci.cnt_infos.push_back(BasePose);
-  //   }
-  //   Eigen::Isometry3d ee_pose =
-  //       env.getVKCEnv()->getTesseract()->getLinkTransform(detach_location_ptr->base_link_);
-  //   act->addLinkObjectives(LinkDesiredPose(detach_location_ptr->base_link_,
-  //   ee_pose));
-  // }
-
-  // for (auto &link_obj : act->getLinkObjectives())
-  // {
-  //   addTargetTerm(pci, link_obj, Eigen::Vector3d(10.0, 10.0, 10.0),
-  //   Eigen::Vector3d(10.0, 10.0, 10.0));
-  // }
-
-  // for (auto &joint_obj : act->getJointObjectives())
-  // {
-  //   addTargetTerm(pci, joint_obj, joint_num, 100);
-  // }
-
-  // ROS_INFO("[%s]generate a place problem for %s object.", __func__,
-  // (act->isRigidObject() ? "rigid" : "articulate"));
-  // // if (detach_location_ptr->link_name_.find("cabinet") != std::string::npos
-  // || detach_location_ptr->link_name_.find("dishwasher") != std::string::npos)
-  // if (!act->isRigidObject())
-  // {
-  //   ROS_INFO("[%s]generate a place problem for articulate object.",
-  //   __func__);
-  //   // pci.init_info.type = InitInfo::GIVEN_TRAJ;
-  //   initTrajectory(env, act->getLinkObjectives(), act->getJointObjectives(),
-  //   MapInfo(12, 12, 0.2),
-  //                  pci.init_info.data, n_steps, act->getManipulatorID());
-  //   ROS_INFO("[%s]init trajectory size, rows: %ld, colums: %d", __func__,
-  //   pci.init_info.data.rows(), pci.init_info.data.cols());
-
-  //   Eigen::VectorXd end_pos;
-  //   end_pos.resize(pci.kin->numJoints());
-  //   end_pos.setZero();
-  //   ROS_INFO("[%s](1)number of joints: %ld", __func__, pci.kin->numJoints());
-  //   for (unsigned int j = 0; j < pci.kin->numJoints(); j++)
-  //   {
-  //     end_pos[j] = pci.init_info.data.topRows(1)(j);
-  //   }
-  //   ROS_INFO("[%s](2)number of joints: %ld", __func__, pci.kin->numJoints());
-  //   end_pos(0) = pci.init_info.data.bottomRows(1)(0);
-  //   end_pos(1) = pci.init_info.data.bottomRows(1)(1);
-  //   if (pci.kin->numJoints() > 8)
-  //   {
-  //     end_pos(9) = act->getJointObjectives()[0].joint_angle;
-  //   }
-  //   ROS_INFO("[%s](3)number of joints: %ld", __func__, pci.kin->numJoints());
-  //   pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
-  //   pci.init_info.data = end_pos;
-  //   std::cout << "end pose: " << end_pos.transpose() << std::endl;
-  // }
-  // else
-  // {
-  //   // if (act->RequireInitTraj())
-  //   {
-  //     ROS_INFO("[%s]init trajectory for rigid object.", __func__);
-  //     pci.init_info.type = InitInfo::GIVEN_TRAJ;
-  //     if (0 != act->getInitTraj().rows())
-  //     {
-  //       ROS_INFO("[%s]init trajectory with given in action object.",
-  //       __func__); pci.init_info.data = act->getInitTraj();
-  //     }
-  //     else
-  //     {
-  //       ROS_INFO("[%s]init trajectory with generated by AStar.", __func__);
-  //       pci.init_info.data = initTrajectory(env, act->getLinkObjectives(),
-  //       act->getJointObjectives(),
-  //                                           MapInfo(12, 12, 0.2),
-  //                                           pci.init_info.data, n_steps,
-  //                                           act->getManipulatorID());
-  //       // for (int k = 2; k < n_steps; k++)
-  //       // {
-  //       //   pci.init_info.data.row(k).rightCols(6) =
-  //       pci.init_info.data.row(1).rightCols(6);
-  //       // }
-  //     }
-  //   }
-  // }
-
-  // std::cout << pci.init_info.data(n_steps - 1,0) << ",\t" <<
-  // pci.init_info.data(n_steps - 1,1) << std::endl;
-
-  // return ConstructProblem(pci);
 }
 
 trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(
@@ -590,7 +298,7 @@ trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.01, 50);
 
-  BaseObject::AttachLocation::Ptr detach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
 
   if (detach_location_ptr->fixed_base) {
@@ -642,52 +350,6 @@ trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(
 
 PlannerRequest ProbGenerator::genGotoProb(VKCEnvBasic &env, GotoAction::Ptr act,
                                           int n_steps) {
-  ProblemConstructionInfo pci(
-      std::move(env.getVKCEnv()->getTesseract()->clone()));
-
-  // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps,
-  // act->getManipulatorID());
-  int joint_num = env.getVKCEnv()->getTesseract()->getActiveJointNames().size();
-
-  addJointTerm(pci, joint_num);
-  addCollisionTerm(pci, 0.0001, 10);
-  std::shared_ptr<CollisionTermInfo> collision =
-      std::shared_ptr<CollisionTermInfo>(new CollisionTermInfo);
-
-  for (auto &link_obj : act->getLinkObjectives()) {
-    // ROS_ERROR("[%s]current end effector: %s, current link_obj name: %s",
-    //           env.getEndEffectorLink().c_str(), link_obj.link_name.c_str());
-    // assert(link_obj.link_name == env.getEndEffectorLink());
-
-    addTargetTerm(pci, link_obj, Eigen::Vector3d(10, 10, 10),
-                  Eigen::Vector3d(0, 0, 10));
-  }
-
-  for (auto &joint_obj : act->getJointObjectives()) {
-    addTargetTerm(pci, joint_obj, joint_num, 10);
-  }
-
-  pci.init_info.type = InitInfo::GIVEN_TRAJ;
-  pci.init_info.data =
-      initTrajectory(env, act->getLinkObjectives(), act->getJointObjectives(),
-                     MapInfo(12, 12, 0.05), pci.init_info.data, n_steps,
-                     act->getManipulatorID());
-  for (int k = 2; k < n_steps; k++) {
-    pci.init_info.data.row(k).rightCols(6) =
-        pci.init_info.data.row(1).rightCols(6);
-  }
-
-  // pci.init_info.type = InitInfo::JOINT_INTERPOLATED;
-  // pci.init_info.data = initTrajectory(env, act->getLinkObjectives(),
-  // act->getJointObjectives(), MapInfo(4, 4, 0.2),
-  //                                     pci.init_info.data, n_steps,
-  //                                     act->getManipulatorID());
-  // pci.init_info.data = pci.init_info.data.bottomRows(1);
-
-  std::cout << pci.init_info.data(n_steps - 1, 0) << ",\t"
-            << pci.init_info.data(n_steps - 1, 1) << std::endl;
-
-  // return ConstructProblem(pci);
   PlannerRequest request;
   return request;
 }
@@ -735,7 +397,7 @@ PlannerRequest ProbGenerator::genUseProb(VKCEnvBasic &env, UseAction::Ptr act,
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.0001, 10);
 
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // update end effector
   if (act->getEndEffectorID() != "") {
@@ -777,7 +439,7 @@ trajopt::ProblemConstructionInfo ProbGenerator::genUseProb_test(
   addJointTerm(pci, joint_num);
   addCollisionTerm(pci, 0.01, 50);
 
-  BaseObject::AttachLocation::Ptr attach_location_ptr =
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // update end effector
   if (act->getEndEffectorID() != "") {
@@ -838,6 +500,30 @@ Eigen::Vector4d ProbGenerator::getQuatFromIso(Eigen::Isometry3d iso) {
                          Eigen::Quaterniond(iso.rotation()).x(),
                          Eigen::Quaterniond(iso.rotation()).y(),
                          Eigen::Quaterniond(iso.rotation()).z());
+}
+
+ProfileDictionary::Ptr ProbGenerator::genPlannerProfiles_(
+    VKCEnvBasic &env, ManipulatorInfo manip, double collision_margin,
+    double collision_coeff, Eigen::Vector3d pos_coeff,
+    Eigen::Vector3d rot_coeff) {
+  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
+  auto trajopt_composite_profile =
+      std::make_shared<TrajOptDefaultCompositeProfile>();
+  setCompositeProfile(
+      trajopt_composite_profile, collision_margin, collision_coeff,
+      (long int)env_->getGroupJointNames(manip.manipulator).size());
+
+  auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
+  setCartPlanProfile(trajopt_plan_profile, pos_coeff, rot_coeff);
+
+  auto profiles = std::make_shared<ProfileDictionary>();
+  profiles->addProfile<TrajOptCompositeProfile>(
+      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT",
+      trajopt_composite_profile);
+  profiles->addProfile<TrajOptPlanProfile>(
+      profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_plan_profile);
+
+  return profiles;
 }
 
 void ProbGenerator::setJointPlanProfile(TrajOptDefaultPlanProfile::Ptr profile,
@@ -1070,5 +756,134 @@ void ProbGenerator::addTargetCost(ProblemConstructionInfo &pci,
   // Link_Goal->rot_coeffs = rot_coeff;
   // pci.cost_infos.push_back(Link_Goal);
 }
+PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
+                                          int n_steps, int n_iter) {
+  // to make sure the attach link exists
+  if (nullptr == env.getAttachLocation(act->getAttachedObject())) {
+    ROS_ERROR(
+        "[%s]attach location named %s does not exist, please specified it "
+        "first.",
+        __func__, act->getAttachedObject().c_str());
+    assert(false);
+  }
 
+  ROS_DEBUG("generating pick problem");
+
+  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
+  ManipulatorInfo manip;
+  manip.tcp_frame = env.getEndEffectorLink();
+  manip.working_frame = "world";
+  manip.manipulator = act->getManipulatorID();
+  auto kinematic_group = env_->getKinematicGroup(
+      act->getManipulatorID());  // same as joint group for initial
+                                 // step(verified)
+
+  // set profiles
+  double collision_margin = 0.0001;
+  double collision_coeff = 10;
+
+  auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
+  auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
+
+  auto profiles = genPlannerProfiles_(env, manip, collision_margin,
+                                      collision_coeff, pos_coeff, rot_coeff);
+  addSolverProfile(profiles, n_iter);
+
+  CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
+                               manip);
+
+  // set initial pose
+  setStartInstruction(
+      program, kinematic_group->getJointNames(),
+      env_->getCurrentJointValues(kinematic_group->getJointNames()));
+
+  MixedWaypoint waypoint(kinematic_group->getJointNames());
+
+  // set target pose
+  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
+      env.getAttachLocation(act->getAttachedObject());
+  Eigen::Isometry3d pick_pose_world_transform =
+      env.getVKCEnv()->getTesseract()->getLinkTransform(
+          attach_location_ptr->link_name_) *
+      attach_location_ptr->local_joint_origin_transform;
+
+  waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
+
+  PlanInstruction pick_plan(waypoint, PlanInstructionType::FREESPACE,
+                            "DEFAULT");
+  pick_plan.setDescription("waypoint for pick");
+  program.push_back(pick_plan);
+
+  // addCartWaypoint(program, pick_pose_world_transform, "pick object");
+
+  // generate seed
+  auto cur_state = env.getVKCEnv()->getTesseract()->getState();
+  ROS_DEBUG("generating seed");
+
+  // CompositeInstruction seed =
+  //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+  CompositeInstruction seed = generateMixedSeed(
+      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
+
+  ROS_INFO("number of move instructions in pick seed: %d",
+           getMoveInstructionCount(seed));
+  ROS_INFO("composing request.");
+
+  seed.print("pick seed: ");
+
+  // compose request
+  PlannerRequest request;
+  request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
+  request.instructions = program;
+  request.profiles = profiles;
+  request.seed = seed;
+  request.env_state = cur_state;
+  request.env = env.getVKCEnv()->getTesseract();
+
+  ROS_INFO("pick request generated.");
+
+  return request;
+}
+
+trajopt::ProblemConstructionInfo ProbGenerator::genPickProb_test(
+    VKCEnvBasic &env, PickAction::Ptr act, int n_steps) {
+  ProblemConstructionInfo pci(env.getVKCEnv()->getTesseract());
+  // int joint_num = initProbInfo(pci, env.getVKCEnv()->getTesseract(), n_steps,
+  // act->getManipulatorID()); addJointTerm(pci, joint_num);
+  // addCollisionTerm(pci, 0.01, 50);
+
+  // BaseObject::AttachLocation::Ptr attach_location_ptr =
+  // env.getAttachLocation(act->getAttachedObject());
+
+  // std::shared_ptr<CartPoseTermInfo> PickPose =
+  // std::shared_ptr<CartPoseTermInfo>(new CartPoseTermInfo);
+  // PickPose->term_type = TT_CNT;
+  // PickPose->name = "PickGoal";
+  // PickPose->source_frame = env.getEndEffectorLink();
+  // PickPose->timestep = pci.basic_info.n_steps - 1;
+  // PickPose->target_frame = "world";
+  // PickPose->target_frame_offset =
+  // attach_location_ptr->world_joint_origin_transform;
+  // // PickPose->xyz =
+  // attach_location_ptr->world_joint_origin_transform.translation();
+  // // PickPose->wxyz =
+  // getQuatFromIso(attach_location_ptr->world_joint_origin_transform);
+  // PickPose->pos_coeffs = Eigen::Vector3d(100.0, 100.0, 100.0);
+  // PickPose->rot_coeffs = Eigen::Vector3d(100.0, 100.0, 100.0);
+  // pci.cnt_infos.push_back(PickPose);
+  // std::vector<LinkDesiredPose> link_objs;
+  // std::vector<JointDesiredPose> joint_objs;
+  // Eigen::Isometry3d ee_pose =
+  // attach_location_ptr->world_joint_origin_transform;
+  // link_objs.push_back(LinkDesiredPose(attach_location_ptr->connection.parent_link_name,
+  // ee_pose));
+
+  // pci.init_info.type = InitInfo::GIVEN_TRAJ;
+  // pci.init_info.data = initTrajectory(env, link_objs, joint_objs, MapInfo(4,
+  // 4, 0.2),
+  //                                     pci.init_info.data, n_steps,
+  //                                     act->getManipulatorID());
+
+  return pci;
+}
 }  // namespace vkc

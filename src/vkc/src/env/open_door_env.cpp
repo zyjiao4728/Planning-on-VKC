@@ -87,7 +87,7 @@ bool OpenDoorEnv::createEnvironment() {
   // 0.2, 1.57)); drawer0.inverseRootTip("world", drawer0.getName() +
   // "_handle_link");
 
-  addAttachLocations(door_north.getAttachLocation());
+  updateAttachLocations(door_north.getAttachLocations());
 
   ROS_INFO("add attach location success.");
 

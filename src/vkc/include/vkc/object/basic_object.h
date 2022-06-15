@@ -54,6 +54,7 @@ class BaseObject {
   struct AttachLocation {
     using Ptr = std::shared_ptr<AttachLocation>;
     using ConstPtr = std::shared_ptr<const AttachLocation>;
+    using UPtr = std::unique_ptr<AttachLocation>;
 
     std::string name_;      /**< @brief The name of the attachment. */
     std::string link_name_; /**< @brief Link to attach (reference). */
@@ -77,6 +78,17 @@ class BaseObject {
       local_joint_origin_transform = Eigen::Isometry3d::Identity();
       world_joint_origin_transform = Eigen::Isometry3d::Identity();
     }
+
+    AttachLocation::UPtr clone() const {
+      AttachLocation::UPtr ptr =
+          std::make_unique<AttachLocation>(name_, link_name_);
+      ptr->connection = connection.clone();
+      ptr->base_link_ = base_link_;
+      ptr->fixed_base = fixed_base;
+      ptr->local_joint_origin_transform = local_joint_origin_transform;
+      ptr->world_joint_origin_transform = world_joint_origin_transform;
+      return ptr;
+    }
   };
 
   void addAttachLocation(AttachLocation::Ptr al) {
@@ -87,7 +99,7 @@ class BaseObject {
     return;
   }
 
-  AttachLocation::Ptr getAttachLocation(std::string name) {
+  AttachLocation::ConstPtr getAttachLocation(std::string name) {
     auto attach_location = attach_locations_.find(name);
 
     if (attach_location == attach_locations_.end()) return nullptr;
@@ -95,7 +107,8 @@ class BaseObject {
     return attach_location->second;
   }
 
-  std::unordered_map<std::string, AttachLocation::Ptr> getAttachLocation() {
+  std::unordered_map<std::string, AttachLocation::ConstPtr>
+  getAttachLocations() {
     return attach_locations_;
   }
 
@@ -108,7 +121,10 @@ class BaseObject {
       return false;
     }
 
-    attach_location->second->connection.parent_link_name = parent_link;
+    auto new_attach_location = attach_location->second->clone();
+    new_attach_location->connection.parent_link_name = parent_link;
+
+    attach_locations_[name] = std::move(new_attach_location);
     return true;
   }
 
@@ -119,9 +135,11 @@ class BaseObject {
     }
 
     for (auto &it : attach_locations_) {
-      it.second->world_joint_origin_transform =
+      auto new_al = it.second->clone();
+      new_al->world_joint_origin_transform =
           env_->getLinkTransform(it.second->link_name_) *
           it.second->local_joint_origin_transform;
+      attach_locations_[it.first] = std::move(new_al);
       // std::cout << "translation of attachment " << it.second->name_ << " in
       // world frame: " << std::endl; std::cout <<
       // it.second->world_joint_origin_transform.translation() << std::endl;
@@ -144,8 +162,10 @@ class BaseObject {
       return false;
     }
 
-    attach_location->second->world_joint_origin_transform =
+    auto new_attach_location = attach_location->second->clone();
+    new_attach_location->world_joint_origin_transform =
         transform * attach_location->second->local_joint_origin_transform;
+    attach_locations_[name] = std::move(new_attach_location);
     // std::cout << "translation of attachment " <<
     // attach_location->second->name_ << " in world frame: " << std::endl;
     // std::cout <<
@@ -481,7 +501,7 @@ class BaseObject {
       link_map_; /**< @brief The link map of the object.*/
   std::unordered_map<std::string, Joint::Ptr>
       joint_map_; /**< @brief The joint map of the object. */
-  std::unordered_map<std::string, AttachLocation::Ptr>
+  std::unordered_map<std::string, AttachLocation::ConstPtr>
       attach_locations_;  /**< @brief The attach locations of the
                              object. */
   std::string base_link_; /**< @brief The base link name of the object. */

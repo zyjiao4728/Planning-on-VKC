@@ -80,9 +80,9 @@ bool ArenaEnv::createEnvironment() {
   marker0.addToEnvironment(tesseract_->getTesseract());
   table1.addToEnvironment(tesseract_->getTesseract());
 
-  addAttachLocations(cabinet0.getAttachLocation());
-  addAttachLocations(marker0.getAttachLocation());
-  addAttachLocations(stick0.getAttachLocation());
+  updateAttachLocations(cabinet0.getAttachLocations());
+  updateAttachLocations(marker0.getAttachLocations());
+  updateAttachLocations(stick0.getAttachLocations());
 
   Commands cmds;
   cmds.clear();

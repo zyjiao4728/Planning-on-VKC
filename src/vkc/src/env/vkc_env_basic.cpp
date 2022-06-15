@@ -1,6 +1,7 @@
 #include <fmt/ranges.h>
 #include <tesseract_rosutils/plotting.h>
 #include <vkc/env/vkc_env_basic.h>
+#include <vkc/object/basic_object.h>
 
 using namespace tesseract_rosutils;
 
@@ -27,9 +28,9 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
       steps_(steps),
       plot_tesseract_(nullptr) {}
 
-VKCEnvBasic::UPtr VKCEnvBasic::clone() const {
-  auto cloned_vkc_env =
-      std::make_unique<VKCEnvBasic>(nh_, tesseract_->clone(), plotting_, rviz_, steps_);
+VKCEnvBasic::UPtr VKCEnvBasic::clone() {
+  auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(nh_, tesseract_->clone(),
+                                                      plotting_, rviz_, steps_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
   return cloned_vkc_env;
@@ -148,25 +149,34 @@ void VKCEnvBasic::addAttachLocation(
   attach_locations_[al_ptr->name_] = al_ptr;
 }
 
-void VKCEnvBasic::addAttachLocations(
-    std::unordered_map<std::string, vkc::BaseObject::AttachLocation::Ptr>
+void VKCEnvBasic::updateAttachLocations(
+    std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
         attach_locations) {
   for (auto& attach_location : attach_locations) {
-    attach_locations_[attach_location.first] = attach_location.second;
-    attach_locations_[attach_location.first]->connection.parent_link_name =
-        end_effector_link_;
+    auto new_attach_location = attach_location.second->clone();
+    new_attach_location->connection.parent_link_name = end_effector_link_;
+    attach_locations_[attach_location.first] = std::move(new_attach_location);
+    CONSOLE_BRIDGE_logDebug(
+        "adding attach location: %s, base link: %s",
+        attach_location.first.c_str(),
+        attach_locations_[attach_location.first]->base_link_.c_str());
   }
 }
 
 std::string VKCEnvBasic::getEndEffectorLink() { return end_effector_link_; }
 
-vkc::BaseObject::AttachLocation::Ptr VKCEnvBasic::getAttachLocation(
+vkc::BaseObject::AttachLocation::ConstPtr VKCEnvBasic::getAttachLocation(
     std::string link_name) {
   auto attach_location = attach_locations_.find(link_name);
   // cannot find the attached link
   if (attach_location == attach_locations_.end()) return nullptr;
 
   return attach_location->second;
+}
+
+std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
+VKCEnvBasic::getAttachLocations() {
+  return attach_locations_;
 }
 
 bool VKCEnvBasic::setHomePose() {
@@ -209,8 +219,14 @@ void VKCEnvBasic::updateAttachLocParentLink(std::string attach_loc_name,
         attach_loc_name.c_str());
     return;
   }
-  attach_locations_.at(attach_loc_name)->connection.parent_link_name =
-      parent_link_name;
+
+  auto new_attach_location = attach_locations_.at(attach_loc_name)->clone();
+  new_attach_location->connection.parent_link_name = parent_link_name;
+  attach_locations_[attach_loc_name] = std::move(new_attach_location);
+  CONSOLE_BRIDGE_logDebug("update attach loc: %s -> parent link %s",
+                          attach_loc_name.c_str(), parent_link_name.c_str());
+  // attach_locations_.at(attach_loc_name)->connection.parent_link_name =
+  //     parent_link_name;
 }
 
 void VKCEnvBasic::attachObject(std::string attach_location_name,
@@ -220,24 +236,22 @@ void VKCEnvBasic::attachObject(std::string attach_location_name,
   updateAttachLocParentLink(attach_location_name, end_effector_link_);
 
   // specified transform between end effector and attached location
+  auto new_attach_location =
+      attach_locations_.at(attach_location_name)->clone();
   if (tf != nullptr) {
-    // attach_locations_.at(attach_location_name)->connection.parent_to_joint_origin_transform
-    // = (*tf).inverse();
-    attach_locations_.at(attach_location_name)
-        ->connection.parent_to_joint_origin_transform =
-        tesseract->getTesseract()
-            ->getLinkTransform(getEndEffectorLink())
-            .inverse() *
-        tesseract->getTesseract()->getLinkTransform(
-            attach_locations_.at(attach_location_name)
-                ->connection.child_link_name);
-    attach_locations_.at(attach_location_name)->connection.parent_link_name =
-        getEndEffectorLink();
+    new_attach_location->connection.parent_to_joint_origin_transform =
+        (*tf).inverse();
+    // new_attach_location->connection.parent_to_joint_origin_transform =
+    //     tesseract->getTesseract()
+    //         ->getLinkTransform(getEndEffectorLink())
+    //         .inverse() *
+    //     tesseract->getTesseract()->getLinkTransform(
+    //         attach_locations_.at(attach_location_name)
+    //             ->connection.child_link_name);
   }
   // default transform
   else {
-    attach_locations_.at(attach_location_name)
-        ->connection.parent_to_joint_origin_transform =
+    new_attach_location->connection.parent_to_joint_origin_transform =
         tesseract->getTesseract()
             ->getLinkTransform(getEndEffectorLink())
             .inverse() *
@@ -245,9 +259,9 @@ void VKCEnvBasic::attachObject(std::string attach_location_name,
             attach_locations_.at(attach_location_name)
                 ->connection.child_link_name);
     // attach_locations_.at(attach_location_name)->local_joint_origin_transform.inverse();
-    attach_locations_.at(attach_location_name)->connection.parent_link_name =
-        getEndEffectorLink();
   }
+  new_attach_location->connection.parent_link_name = getEndEffectorLink();
+  attach_locations_[attach_location_name] = std::move(new_attach_location);
   ROS_INFO("[%s]pre end-effector: %s", __func__, getEndEffectorLink().c_str());
 
   // std::cout <<
@@ -327,10 +341,12 @@ void VKCEnvBasic::detachTopObject(vkc::ConstructVKC::Ptr tesseract,
       attach_locations_.at(target_location_name)->base_link_;
   for (auto& attach_location : attach_locations_) {
     if (target_object_base_link == attach_location.second->base_link_) {
-      attach_location.second->world_joint_origin_transform =
+      auto new_attach_location = attach_location.second->clone();
+      new_attach_location->world_joint_origin_transform =
           tesseract->getTesseract()->getLinkTransform(
-              attach_location.second->link_name_) *
-          attach_location.second->local_joint_origin_transform;
+              new_attach_location->link_name_) *
+          new_attach_location->local_joint_origin_transform;
+      attach_locations_[attach_location.first] = std::move(new_attach_location);
     }
     // attach_locations_.at(target_location_name)->world_joint_origin_transform
     // =
