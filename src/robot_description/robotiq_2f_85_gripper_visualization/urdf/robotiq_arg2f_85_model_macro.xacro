@@ -136,7 +136,7 @@
   </xacro:macro>
 
   <xacro:macro name="inner_knuckle_joint" params="prefix fingerprefix reflect">
-    <joint name="${prefix}${fingerprefix}_inner_knuckle_joint" type="revolute">
+    <joint name="${prefix}${fingerprefix}_inner_knuckle_joint" type="fixed">
       <!-- <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="${pi / 2 + .725} 0 ${(reflect - 1) * pi / 2}" /> -->
       <origin xyz="0 ${reflect * -0.0127} 0.06142" rpy="0 0 ${(1 + reflect) * pi / 2}"/>
       <parent link="${prefix}robotiq_arg2f_base_link" />
@@ -148,7 +148,7 @@
   </xacro:macro>
 
   <xacro:macro name="inner_finger_joint" params="prefix fingerprefix">
-    <joint name="${prefix}${fingerprefix}_inner_finger_joint" type="revolute">
+    <joint name="${prefix}${fingerprefix}_inner_finger_joint" type="fixed">
       <origin xyz="0 0.0061 0.0471" rpy="0 0 0"/>
       <parent link="${prefix}${fingerprefix}_outer_finger" />
       <child link="${prefix}${fingerprefix}_inner_finger" />
@@ -170,7 +170,7 @@
   <xacro:include filename="$(find robotiq_2f_85_gripper_visualization)/urdf/robotiq_arg2f.xacro" />
 
   <xacro:macro name="finger_joint" params="prefix">
-    <joint name="${prefix}finger_joint" type="revolute">
+    <joint name="${prefix}finger_joint" type="fixed">
       <origin xyz="0 -0.0306011 0.054904" rpy="0 0 ${pi}"/>
       <parent link="${prefix}robotiq_arg2f_base_link" />
       <child link="${prefix}left_outer_knuckle" />
@@ -181,7 +181,7 @@
   </xacro:macro>
 
   <xacro:macro name="right_outer_knuckle_joint" params="prefix">
-    <joint name="${prefix}right_outer_knuckle_joint" type="revolute">
+    <joint name="${prefix}right_outer_knuckle_joint" type="fixed">
       <origin xyz="0 0.0306011 0.054904" rpy="0 0 0"/>
       <parent link="${prefix}robotiq_arg2f_base_link" />
       <child link="${prefix}right_outer_knuckle" />

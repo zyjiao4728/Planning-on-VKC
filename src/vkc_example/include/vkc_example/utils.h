@@ -59,7 +59,7 @@ void solveProb(tesseract_planning::PlannerRequest request,
 // tesseract_planning::PlannerResponse &response,
 //                         int n_iter, bool enable_ploting = false);
 
-void refineTrajectory(tesseract_common::TrajArray &traj);
+void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic &env);
 
 int saveTrajToFile(const tesseract_common::TrajArray &traj,
                    const std::string filename);

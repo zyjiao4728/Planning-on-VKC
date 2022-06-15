@@ -48,6 +48,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       solveProb(prob_ptr, response, n_iter);
 
+      // break;
       if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
           response.status.value())  // optimization converges
       {

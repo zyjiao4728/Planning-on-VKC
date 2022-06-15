@@ -641,7 +641,7 @@ CompositeInstruction generateMixedSeed(
   tesseract_planning::MMMOMotionPlanner planner;
   MapInfo map(12, 12, 0.5);
   auto profile = std::make_shared<MMMOPlannerPlanProfile>(
-      12, 12, 0.5, 30, 5 * M_PI / 180, 0.1, 5 * M_PI / 180);
+      15, 15, 0.3, 30, 5 * M_PI / 180, 0.1, 5 * M_PI / 180);
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<MMMOPlannerPlanProfile>(
       planner.getName(), instructions.getProfile(), profile);

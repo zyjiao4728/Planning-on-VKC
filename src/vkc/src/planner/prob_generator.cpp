@@ -47,6 +47,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                manip);
 
   // set initial pose
+  std::cout << fmt::format("{}",kinematic_group->getJointNames()) << std::endl;
   setStartInstruction(
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
@@ -72,7 +73,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
       act->seed.empty() ? generateMixedSeed(program, cur_state,
-                                            env.getVKCEnv()->getTesseract(), 30)
+                                            env.getVKCEnv()->getTesseract(), n_steps)
                         : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
@@ -145,6 +146,11 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
+  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  std::cout << pick_pose_world_transform.translation() << std::endl;
+  std::cout << pick_pose_world_transform.linear() << std::endl;
+  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+  
   waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
   return waypoint;
 }
@@ -193,10 +199,12 @@ MixedWaypoint ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
 
   for (auto lo : act->getLinkObjectives()) {
     waypoint.addLinkTarget(lo.link_name, lo.tf);
+    std::cout << lo.tf.linear() << std::endl;
+    std::cout << lo.tf.translation() << std::endl;
   }
   return waypoint;
 }
-
+/*
 PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
                                            PlaceAction::Ptr act, int n_steps,
                                            int n_iter) {
@@ -240,10 +248,10 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
     // waypoint.addLinkTarget(manip.tcp_frame, detach_pose);
     // addCartWaypoint(program, detach_pose, "place object(fixed base)");
     act->addLinkObjectives(
-        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose, kin_group->getBaseLinkName()));
     waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
   }
-
+  
   for (auto jo : act->getJointObjectives()) {
     // std::cout << jo.joint_angle << std::endl;
     waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
@@ -476,7 +484,7 @@ trajopt::ProblemConstructionInfo ProbGenerator::genUseProb_test(
 
   return pci;
 }
-
+*/
 bool ProbGenerator::validateGroupID(Environment::Ptr tesseract,
                                     const std::string &group_id) {
   bool isfound_group = false;
@@ -571,8 +579,10 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.trust_expand_ratio = 1.5;
   // trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.8;
   trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.5;
-  trajopt_solver_profile->opt_info.min_trust_box_size = 1e-3;
-  trajopt_solver_profile->opt_info.min_approx_improve = 1e-3;
+  trajopt_solver_profile->opt_info.min_trust_box_size = 1e-2;
+  trajopt_solver_profile->opt_info.min_approx_improve = 1e-2;
+  trajopt_solver_profile->opt_info.inflate_constraints_individually = true;
+  // trajopt_solver_profile->opt_info.max_iter = 50;
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
@@ -823,7 +833,7 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed = generateMixedSeed(
-      program, cur_state, env.getVKCEnv()->getTesseract(), 30);
+      program, cur_state, env.getVKCEnv()->getTesseract(), n_steps);
 
   ROS_INFO("number of move instructions in pick seed: %d",
            getMoveInstructionCount(seed));

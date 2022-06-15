@@ -9,6 +9,7 @@
   <arg name="steps" default="30" />
   <arg name="niter" default="500" />
   <arg name="nruns" default="5" />
+  <arg name="envid" default="1" />
 
   <arg name="husky_locx" default="0.0" />
   <arg name="husky_locy" default="0.0" />
@@ -40,14 +41,15 @@
   <!-- If needed, broadcast static tf for robot root -->
   <node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 world base_link 100" />
 
-  <node pkg="vkc_example" type="vkc_example_open_door_env_node" name="vkc_example_open_door_env_node" output="screen" required="true">
+  <node pkg="vkc_example" type="vkc_example_benchmark_env_node" name="vkc_example_benchmark_env_node" output="screen" required="false">
     <param name="plotting" type="bool" value="$(arg plotting)" />
     <param name="rviz" type="bool" value="$(arg rviz)" />
     <param name="steps" type="int" value="$(arg steps)" />
     <param name="niter" type="int" value="$(arg niter)" />
     <param name="nruns" type="int" value="$(arg nruns)" />
+    <param name="envid" type="int" value="$(arg envid)" />
   </node>
 
   <!-- Launch visualization -->
-  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vkc_example_open_door_env_rviz" args="-d $(find vkc_example)/config/env.rviz" output="screen" />
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="vkc_example_benchmark_env_rviz" args="-d $(find vkc_example)/config/env.rviz" output="screen" />
 </launch>
