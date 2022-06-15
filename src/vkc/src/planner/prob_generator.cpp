@@ -47,7 +47,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                manip);
 
   // set initial pose
-  std::cout << fmt::format("{}",kinematic_group->getJointNames()) << std::endl;
+  std::cout << fmt::format("{}", kinematic_group->getJointNames()) << std::endl;
   setStartInstruction(
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
@@ -72,9 +72,10 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
-      act->seed.empty() ? generateMixedSeed(program, cur_state,
-                                            env.getVKCEnv()->getTesseract(), n_steps)
-                        : act->seed;
+      act->seed.empty()
+          ? generateMixedSeed(program, cur_state,
+                              env.getVKCEnv()->getTesseract(), n_steps)
+          : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            getMoveInstructionCount(seed));
@@ -146,11 +147,12 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
-  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-  // std::cout << pick_pose_world_transform.translation() << std::endl;
-  // std::cout << pick_pose_world_transform.linear() << std::endl;
-  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-  
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" <<
+  // std::endl; std::cout << pick_pose_world_transform.translation() <<
+  // std::endl; std::cout << pick_pose_world_transform.linear() << std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" <<
+  // std::endl;
+
   waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
   return waypoint;
 }
@@ -222,7 +224,7 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
   manip.manipulator = act->getManipulatorID();
   auto kinematic_group = env_->getKinematicGroup(act->getManipulatorID());
   // auto joint_group =
-  //     env.getVKCEnv()->getTesseract()->getJointGroup(act->getManipulatorID());
+  // env.getVKCEnv()->getTesseract()->getJointGroup(act->getManipulatorID());
 
   double collision_margin = 0.0001;
   double collision_coeff = 10;
@@ -248,10 +250,11 @@ PlannerRequest ProbGenerator::genPlaceProb(VKCEnvBasic &env,
     // waypoint.addLinkTarget(manip.tcp_frame, detach_pose);
     // addCartWaypoint(program, detach_pose, "place object(fixed base)");
     act->addLinkObjectives(
-        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose, kin_group->getBaseLinkName()));
+        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose,
+kin_group->getBaseLinkName()));
     waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
   }
-  
+
   for (auto jo : act->getJointObjectives()) {
     // std::cout << jo.joint_angle << std::endl;
     waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
@@ -327,7 +330,8 @@ trajopt::ProblemConstructionInfo ProbGenerator::genPlaceProb_test(
       //                     ->getLinkTransform(detach_location_ptr->base_link_)
       //                     .translation();
       // BasePose->wxyz = getQuatFromIso(
-      //     env.getVKCEnv()->getTesseract()->getLinkTransform(detach_location_ptr->base_link_));
+      //
+env.getVKCEnv()->getTesseract()->getLinkTransform(detach_location_ptr->base_link_));
       BasePose->pos_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
       BasePose->rot_coeffs = Eigen::Vector3d(10.0, 10.0, 10.0);
       pci.cnt_infos.push_back(BasePose);

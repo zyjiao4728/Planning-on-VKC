@@ -87,7 +87,7 @@ namespace vkc
                 Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
             door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
-            addAttachLocations(door_north.getAttachLocation());
+            updateAttachLocations(door_north.getAttachLocations());
 
             ROS_INFO("add attach location success.");
 
@@ -143,8 +143,8 @@ namespace vkc
             drawer1.createWorldJoint(Eigen::Vector4d(4., 0.5, 0.9, M_PI));
             drawer1.inverseRootTip("world", drawer1.getName() + "_handle_link");
 
-            addAttachLocations(drawer0.getAttachLocation());
-            addAttachLocations(drawer1.getAttachLocation());
+            updateAttachLocations(drawer0.getAttachLocations());
+            updateAttachLocations(drawer1.getAttachLocations());
 
             ROS_INFO("add attach location success.");
 
