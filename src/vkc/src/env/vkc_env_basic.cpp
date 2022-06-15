@@ -191,7 +191,7 @@ namespace vkc
   {
     for (const auto &group_state :
          tesseract_->getSRDFModel()->kinematics_information.group_states.at(
-             "vkc"))
+             DEFAULT_VKC_GROUP_ID))
     {
       if (std::string::npos == group_state.first.find("home"))
       {
@@ -488,7 +488,7 @@ namespace vkc
             .plugins = {std::make_pair("KDLFInvKinLMA", pi)};
         tesseract_srdf::ChainGroup group;
         group.push_back(std::make_pair("world", end_effector_link_));
-        kin_info.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
+        kin_info.addChainGroup(group_id, group);
       }
       else
       {
@@ -500,7 +500,7 @@ namespace vkc
             .plugins = {std::make_pair("KDLFInvKinLMA", pi)};
         tesseract_srdf::ChainGroup group;
         group.push_back(tesseract_->getSRDFModel()->kinematics_information.chain_groups.at(group_id)[0]);
-        kin_info.addChainGroup(DEFAULT_VKC_GROUP_ID, group);
+        kin_info.addChainGroup(group_id, group);
       }
     }
 

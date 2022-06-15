@@ -84,9 +84,35 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response,
   return cost;
 }
 
-tesseract_common::JointTrajectory refineTrajectory(tesseract_common::JointTrajectory traj) {
+void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic& env) 
+{
+  std::vector<std::string> joint_names = env.getVKCEnv()->getTesseract()->getActiveJointNames();
+  Eigen::VectorXd initial_state = env.getVKCEnv()->getTesseract()->getCurrentJointValues();
+  std::vector<std::string> planned_joint_names = traj.states[0].joint_names;
+
   long int n_rows = traj.states.size();  // number of waypoints
-  long int n_cols = traj.states[0].joint_names.size(); // number of joints
+  long int n_cols = joint_names.size(); // number of joints
+
+  for (int i = 0; i < n_rows; i++)
+  {
+    Eigen::VectorXd current_waypoint = traj.states[i].position;
+
+    for (int j = 0; j < planned_joint_names.size(); j++)
+    {
+      auto it = find(joint_names.begin(), joint_names.end(), planned_joint_names[j]);
+      if (it != joint_names.end()) 
+      {
+          int index = it - joint_names.begin();
+          initial_state[index] = current_waypoint[j];
+      }
+      else 
+      {
+          continue;
+      }
+    }
+    traj.states[i].joint_names = joint_names;
+    traj.states[i].position = initial_state;
+  }
 
   for (int i = 0; i < n_rows - 1; i++) {
     double delta_y = traj.states[i+1].position[1] - traj.states[i].position[1];
@@ -103,6 +129,8 @@ tesseract_common::JointTrajectory refineTrajectory(tesseract_common::JointTrajec
     traj.states[i].position[2] = delta_orientation;
   }
 
+  // std::cout << traj.states[0].position  << std::endl;
+
   // the last orientation is as same as the 2nd last
   if (n_rows > 1) {
     if (n_cols > 3) {
@@ -111,7 +139,6 @@ tesseract_common::JointTrajectory refineTrajectory(tesseract_common::JointTrajec
     traj.states[n_rows - 1].position[2] = traj.states[n_rows - 2].position[2];
   }
 
-  return traj;
   // long int n_rows = traj.rows();
   // long int n_cols = traj.cols();
 
