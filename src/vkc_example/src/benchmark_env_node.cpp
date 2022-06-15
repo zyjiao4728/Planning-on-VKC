@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 using namespace vkc;
@@ -144,7 +145,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        joint_objectives.emplace_back("door_north_door_joint", 1.5);
+        joint_objectives.emplace_back("door_north_door_joint", M_PI_2);
         place_action =
             make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
                                      link_objectives, joint_objectives, false);
@@ -175,7 +176,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        joint_objectives.emplace_back("door_north_door_joint", -1.5);
+        joint_objectives.emplace_back("door_north_door_joint", -M_PI_2);
         place_action =
             make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
                                      link_objectives, joint_objectives, false);
@@ -201,7 +202,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot)
         (*actions.rbegin())->RequireInitTraj(false);
     }
 
-    // action 2: open door
+    // action 2: open drawer
     {
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
@@ -218,7 +219,36 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot)
     }
 }
 
-void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::Isometry3d base_pose, Eigen::Isometry3d ee_pose)
+void pushDrawer(vkc::ActionSeq &actions, const std::string &robot)
+{
+    PlaceAction::Ptr place_action;
+
+    /** open drawer **/
+    // action 1: pick the drawer handle
+    {
+        actions.emplace_back(
+            make_shared<PickAction>(robot, "attach_drawer0_handle_link"));
+        (*actions.rbegin())->RequireInitTraj(false);
+    }
+
+    // action 2: open drawer
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        joint_objectives.emplace_back("drawer0_base_drawer_joint", 0.0);
+        place_action =
+            make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
+                                     link_objectives, joint_objectives, false);
+        place_action->setOperationObjectType(false);
+
+        place_action->RequireInitTraj(true);
+
+        actions.emplace_back(place_action);
+    }
+}
+
+void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::VectorXd base_pose, Eigen::Isometry3d ee_pose)
 {
 
     /** move base **/
@@ -227,7 +257,12 @@ void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::Is
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        link_objectives.emplace_back("base_link", base_pose);
+        Eigen::Isometry3d tf;
+        tf.setIdentity();
+        tf.translation() += Eigen::Vector3d(base_pose[0], base_pose[1], 0.145);
+        tf.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+
+        link_objectives.emplace_back("base_link", tf);
 
         actions.emplace_back(
             make_shared<GotoAction>("base", link_objectives, joint_objectives));
@@ -245,12 +280,53 @@ void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::Is
     }
 }
 
+Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal, double offset )
+{
+    bool init_base_position = false;
+    vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
+    Eigen::VectorXd base_values = Eigen::Vector2d(0, 0);
+    Eigen::VectorXd init_base_values = Eigen::Vector2d(0, 0);
+    init_base_values[0] = env.getVKCEnv()->getTesseract()->getCurrentJointValues()[0];
+    init_base_values[1] = env.getVKCEnv()->getTesseract()->getCurrentJointValues()[1];
+    tesseract_collision::ContactResultMap contact_results;
+
+    while (!init_base_position)
+    {
+        init_base_position = true;
+
+        double r = (rand() % 1000) / 1000.0 * 0.8;
+        double a = (rand() % 1000) / 1000.0 * 3.14 + offset;
+
+        base_values[0] = ee_goal.translation()[0] - r * sin(a);
+        base_values[1] = ee_goal.translation()[1] + r * cos(a);
+
+        env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+        env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+            contact_results, tesseract_collision::ContactTestType::ALL);
+        for (auto &collision : contact_results)
+        {
+            // std::cout << collision.first.first << " and " << collision.first.second << " are in collision." << std::endl;
+
+            if (collision.first.first == "base_link" || collision.first.second == "base_link")
+            {
+                init_base_position = false;
+                break;
+            }
+        }
+        contact_results.clear();
+    }
+
+    env.getVKCEnv()->getTesseract()->setState(base_joints, init_base_values);
+
+    return base_values;
+}
+
 int main(int argc, char **argv)
 {
     srand(time(NULL));
 
     console_bridge::setLogLevel(
-        console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
+        console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_INFO);
 
     ros::init(argc, argv, "open_door_env_node");
     ros::NodeHandle pnh("~");
@@ -279,23 +355,38 @@ int main(int argc, char **argv)
 
     vector<TesseractJointTraj> joint_trajs;
 
+    Eigen::Isometry3d door_handle_pose_close;
+    door_handle_pose_close.setIdentity();
+    door_handle_pose_close.translation() += Eigen::Vector3d(4.725, -0.45, 0.95);
+    door_handle_pose_close.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
+    Eigen::Isometry3d door_handle_pose_push;
+    door_handle_pose_push.setIdentity();
+    door_handle_pose_push.translation() += Eigen::Vector3d(5.97977, 0.254997, 0.94999);
+    door_handle_pose_push.linear() = Eigen::Quaterniond(0.0000, 0.0000, 0.7071, 0.7071).matrix();
+
+    Eigen::Isometry3d door_handle_pose_pull;
+    door_handle_pose_pull.setIdentity();
+    door_handle_pose_pull.translation() += Eigen::Vector3d(4.02, 0.804998, 0.95);
+    door_handle_pose_pull.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0.0000, 0.0000).matrix();
+
+    Eigen::Isometry3d drawer_handle_pose_close;
+    drawer_handle_pose_close.setIdentity();
+    drawer_handle_pose_close.translation() += Eigen::Vector3d(3.28, 2.5, 0.9);
+    drawer_handle_pose_close.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
+    Eigen::Isometry3d drawer_handle_pose_open;
+    drawer_handle_pose_open.setIdentity();
+    drawer_handle_pose_open.translation() += Eigen::Vector3d(2.48001, 2.49998, 0.899996);
+    drawer_handle_pose_open.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+
     ActionSeq actions;
-    pushDoor(actions, robot);
     // pullDoor(actions, robot);
+    // pushDoor(actions, robot);
     // pullDrawer(actions, robot);
-    {
-        Eigen::Isometry3d base_pose;
-        base_pose.setIdentity();
-        base_pose.translation() += Eigen::Vector3d(4.2, -.1, 0.145);
-        base_pose.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+    // pushDrawer(actions, robot);
 
-        Eigen::Isometry3d ee_pose;
-        ee_pose.setIdentity();
-        ee_pose.translation() += Eigen::Vector3d(4.725, -0.45, 0.95);
-        ee_pose.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
-
-        baseline_reach(actions, robot, base_pose, ee_pose);
-    }
+    baseline_reach(actions, robot, sampleBasePose(env, door_handle_pose_close, M_PI_2), door_handle_pose_close);
 
     run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

@@ -296,8 +296,8 @@ class BaseDoor : public BaseObject {
     attach_location.connection.type = JointType::REVOLUTE;
     attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
     attach_location.connection.limits = std::make_shared<JointLimits>();
-    attach_location.connection.limits->lower = -1.5;
-    attach_location.connection.limits->upper = 1.5;
+    attach_location.connection.limits->lower = -1.2;
+    attach_location.connection.limits->upper = 1.2;
     attach_location.connection.child_link_name = handle_link.getName();
     attach_location.connection.parent_link_name = "NULL";
 
