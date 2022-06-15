@@ -11,8 +11,8 @@ using namespace tesseract_planning;
 namespace vkc {
 
 void generateLongHorizonSeeds(VKCEnvBasic &env,
-                                  std::vector<ActionBase::Ptr> actions,
-                                  size_t window_size) {
+                              std::vector<ActionBase::Ptr> actions,
+                              size_t window_size) {
   auto cloned_env = std::move(env.clone());
   auto sub_actions = {actions.begin(),
                       actions.begin() + std::min(window_size, actions.size())};
@@ -629,7 +629,8 @@ trajopt::TrajArray initTrajectory(
 CompositeInstruction generateMixedSeed(
     const CompositeInstruction &instructions,
     const tesseract_scene_graph::SceneState &current_state,
-    const tesseract_environment::Environment::ConstPtr &env, int min_steps) {
+    const tesseract_environment::Environment::ConstPtr &env, int min_steps,
+    std::pair<std::string, std::string> base_joint) {
   // srand(time(NULL));
   ROS_WARN("generating mixed seed");
   PlannerRequest request;
@@ -639,9 +640,10 @@ CompositeInstruction generateMixedSeed(
   PlannerResponse response;
 
   tesseract_planning::MMMOMotionPlanner planner;
-  MapInfo map(12, 12, 0.5);
-  auto profile = std::make_shared<MMMOPlannerPlanProfile>(
-      15, 15, 0.3, 30, 5 * M_PI / 180, 0.1, 5 * M_PI / 180);
+  auto profile = std::make_shared<MMMOPlannerPlanProfile>(30, 5 * M_PI / 180,
+                                                          0.1, 5 * M_PI / 180);
+  profile->setMapInfo(15, 15, 0.4);
+  profile->setBaseJoint(base_joint);
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<MMMOPlannerPlanProfile>(
       planner.getName(), instructions.getProfile(), profile);
