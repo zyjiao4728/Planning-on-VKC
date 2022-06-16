@@ -85,7 +85,7 @@ namespace vkc
             door_north.createObject();
             door_north.createWorldJoint(
                 Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-            door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
+            // door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
             updateAttachLocations(door_north.getAttachLocations());
 

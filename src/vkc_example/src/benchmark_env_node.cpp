@@ -114,14 +114,85 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
         env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                       action);
 
-        for (auto joint_name : env.getVKCEnv()->getTesseract()->getActiveJointNames())
-        {
-            std::cout << joint_name << std::endl;
-        }
+        // for (auto joint_name : env.getVKCEnv()->getTesseract()->getActiveJointNames())
+        // {
+        //     std::cout << joint_name << std::endl;
+        // }
 
-        std::cout << env.getVKCEnv()->getTesseract()->getCurrentJointValues() << std::endl;
+        // std::cout << env.getVKCEnv()->getTesseract()->getCurrentJointValues() << std::endl;
 
         // ROS_WARN("environment updated");
+        if (env.getPlotter() != nullptr)
+            env.getPlotter()->clear();
+        ++j;
+    }
+}
+
+void run_baseline(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
+                  ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
+                  unsigned int nruns)
+{
+    ProbGenerator prob_generator;
+
+    int j = 0;
+
+    env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+
+    for (auto ptr = actions.begin(); ptr < actions.end(); ptr++)
+    {
+        auto action = *ptr;
+        PlannerResponse response;
+        unsigned int try_cnt = 0;
+        bool converged = false;
+        while (try_cnt++ < nruns)
+        {
+            auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+
+            env.getPlotter()->waitForInput(
+                "optimization is ready. Press <Enter> to process the request.");
+
+            solveProb(prob_ptr, response, n_iter);
+
+            if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
+                response.status.value()) // optimization converges
+            {
+                converged = true;
+                break;
+            }
+            else
+            {
+                ROS_WARN(
+                    "[%s]optimization could not converge, response code: %d, "
+                    "description: %s",
+                    __func__, response.status.value(),
+                    response.status.message().c_str());
+                ActionSeq sub_actions(ptr, actions.end());
+            }
+        }
+
+        const auto &ci = response.results;
+
+        tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
+        tesseract_common::JointTrajectory refined_traj = trajectory;
+        refineTrajectory(refined_traj, env);
+        joint_trajs.emplace_back(trajectory);
+
+        if (env.getPlotter() != nullptr)
+        {
+            ROS_INFO("plotting result");
+            tesseract_common::Toolpath toolpath =
+                toToolpath(ci, *env.getVKCEnv()->getTesseract());
+            env.getPlotter()->plotMarker(
+                tesseract_visualization::ToolpathMarker(toolpath));
+            env.getPlotter()->plotTrajectory(
+                refined_traj, *env.getVKCEnv()->getTesseract()->getStateSolver());
+            env.getPlotter()->waitForInput(
+                "Finished optimization. Press <Enter> to start next action");
+        }
+
+        env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
+                      action);
+
         if (env.getPlotter() != nullptr)
             env.getPlotter()->clear();
         ++j;
@@ -280,7 +351,44 @@ void baseline_reach(vkc::ActionSeq &actions, const std::string &robot, Eigen::Ve
     }
 }
 
-Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal, double offset )
+void moveBase(vkc::ActionSeq &actions, const std::string &robot, Eigen::VectorXd base_pose)
+{
+
+    /** move base **/
+    // action 1: move base to target
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        Eigen::Isometry3d tf;
+        tf.setIdentity();
+        tf.translation() += Eigen::Vector3d(base_pose[0], base_pose[1], 0.145);
+        tf.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+
+        link_objectives.emplace_back("base_link", tf);
+
+        actions.emplace_back(
+            make_shared<GotoAction>("base", link_objectives, joint_objectives));
+    }
+}
+
+void moveArm(vkc::ActionSeq &actions, const std::string &robot, Eigen::Isometry3d ee_pose)
+{
+
+    /** move arm **/
+    // action 1: move arm to target
+    {
+        std::vector<LinkDesiredPose> link_objectives;
+        std::vector<JointDesiredPose> joint_objectives;
+
+        link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
+
+        actions.emplace_back(
+            make_shared<GotoAction>("arm", link_objectives, joint_objectives));
+    }
+}
+
+Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal, double offset)
 {
     bool init_base_position = false;
     vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
@@ -363,12 +471,12 @@ int main(int argc, char **argv)
     Eigen::Isometry3d door_handle_pose_push;
     door_handle_pose_push.setIdentity();
     door_handle_pose_push.translation() += Eigen::Vector3d(5.97977, 0.254997, 0.94999);
-    door_handle_pose_push.linear() = Eigen::Quaterniond(0.0000, 0.0000, 0.7071, 0.7071).matrix();
+    door_handle_pose_push.linear() = Eigen::Quaterniond(0.0000, 0.0000, 0.707106781186548, 0.707106781186548).matrix();
 
     Eigen::Isometry3d door_handle_pose_pull;
     door_handle_pose_pull.setIdentity();
     door_handle_pose_pull.translation() += Eigen::Vector3d(4.02, 0.804998, 0.95);
-    door_handle_pose_pull.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0.0000, 0.0000).matrix();
+    door_handle_pose_pull.linear() = Eigen::Quaterniond(0.707106781186548, 0.707106781186548, 0.0000, 0.0000).matrix();
 
     Eigen::Isometry3d drawer_handle_pose_close;
     drawer_handle_pose_close.setIdentity();
@@ -385,8 +493,32 @@ int main(int argc, char **argv)
     // pushDoor(actions, robot);
     // pullDrawer(actions, robot);
     // pushDrawer(actions, robot);
+    // run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 
-    baseline_reach(actions, robot, sampleBasePose(env, door_handle_pose_close, M_PI_2), door_handle_pose_close);
+    // Eigen::Isometry3d pick_pose_world_transform =
+    //   env.getVKCEnv()->getTesseract()->getLinkTransform(
+    //       attach_location_ptr->link_name_) *
+    //   attach_location_ptr->local_joint_origin_transform;
 
-    run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+    {
+        // open door baseline 1
+        std::unordered_map<std::string, double> door_joint_target;
+        door_joint_target["door_north_door_joint"] = M_PI_2;
+        std::unordered_map<std::string, double> door_joint_init;
+        door_joint_init["door_north_door_joint"] = 0.0;
+
+        baseline_reach(actions, robot, sampleBasePose(env, door_handle_pose_close, 0), door_handle_pose_close);
+        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+
+        env.getVKCEnv()->getTesseract()->setState(door_joint_target);
+
+        actions.clear();
+        moveBase(actions, robot, sampleBasePose(env, door_handle_pose_push, M_PI_2));
+        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+
+        for (int i = 0; i < steps; i++)
+        {
+            actions.clear();
+        }
+    }
 }
