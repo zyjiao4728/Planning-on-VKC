@@ -61,7 +61,7 @@ class BaseDoor : public BaseObject {
     door_link_visual->origin.linear() =
         Eigen::AngleAxisd(pi_, Eigen::Vector3d::UnitZ()).toRotationMatrix();
     door_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(
-        0.1, door_width_, door_height_);
+        0.05, door_width_, door_height_);
     material_name = door_link.getName() + "_color";
     door_link_visual->material = std::make_shared<Material>(material_name);
     door_link_visual->material->color = Eigen::Vector4d(0.4, 0.2, 0.0, 1.0);
