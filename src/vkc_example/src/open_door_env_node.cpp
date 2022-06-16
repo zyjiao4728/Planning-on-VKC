@@ -115,8 +115,10 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
   /** open door **/
   // action 1: pick the door handle
   {
-    actions.emplace_back(
-        make_shared<PickAction>(robot, "attach_door_north_handle_link"));
+    auto pick_action =
+        make_shared<PickAction>(robot, "attach_door_north_handle_link");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
     (*actions.rbegin())->RequireInitTraj(false);
   }
 
@@ -132,6 +134,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
     place_action->setOperationObjectType(false);
 
     place_action->RequireInitTraj(true);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
 
     actions.emplace_back(place_action);
   }
@@ -201,8 +204,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pushDoor(actions, robot);
-  // pullDoor(actions, robot);
+  // pushDoor(actions, robot);
+  pullDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

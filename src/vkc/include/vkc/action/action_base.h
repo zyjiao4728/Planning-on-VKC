@@ -119,8 +119,9 @@ class ActionBase {
     return base_joint_;
   }
 
-  void setBaseJoint(std::pair<std::string, std::string> base_joint) {
-    base_joint_ = base_joint;
+  void setBaseJoint(std::string base_joint_x, std::string base_joint_y) {
+    base_joint_ = std::make_pair<std::string, std::string>(
+        std::move(base_joint_x), std::move(base_joint_y));
   }
 
   void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
