@@ -211,7 +211,7 @@ class BaseDoor : public BaseObject {
     handle_joint.parent_to_joint_origin_transform =
         Eigen::Isometry3d::Identity();
     handle_joint.parent_to_joint_origin_transform.translation() +=
-        Eigen::Vector3d(-0.125, mir_ * (-door_width_ + 0.08), handle_height_);
+        Eigen::Vector3d(-0.125, mir_ * (-door_width_ + 0.16), handle_height_);
     handle_joint.type = JointType::FIXED;
     // handle_joint.axis = Eigen::Vector3d(1, 0, 0);
     // handle_joint.limits = std::make_shared<JointLimits>();
@@ -292,12 +292,12 @@ class BaseDoor : public BaseObject {
     attach_location.fixed_base = true;
 
     // Define connection joint
-    // attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
-    attach_location.connection.type = JointType::REVOLUTE;
-    attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
-    attach_location.connection.limits = std::make_shared<JointLimits>();
-    attach_location.connection.limits->lower = -1.2;
-    attach_location.connection.limits->upper = 1.2;
+    attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    // attach_location.connection.type = JointType::REVOLUTE;
+    // attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
+    // attach_location.connection.limits = std::make_shared<JointLimits>();
+    // attach_location.connection.limits->lower = -1.2;
+    // attach_location.connection.limits->upper = 1.2;
     attach_location.connection.child_link_name = handle_link.getName();
     attach_location.connection.parent_link_name = "NULL";
 
