@@ -115,7 +115,15 @@ class ActionBase {
 
   const VKCTraj& getInitTraj() const { return init_traj_; }
 
+  std::pair<std::string, std::string> getBaseJoint() const {
+    return base_joint_;
+  }
 
+  void setBaseJoint(std::pair<std::string, std::string> base_joint) {
+    base_joint_ = base_joint;
+  }
+
+  void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
 
  protected:
   ActionType action_type_;
@@ -127,6 +135,7 @@ class ActionBase {
   std::string name_;  // action name string value
   VKCTraj init_traj_;
   bool init_traj_required_;
+  std::pair<std::string, std::string> base_joint_;
 };
 
 // added: wanglei@bigai.ai

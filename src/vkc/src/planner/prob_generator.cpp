@@ -74,7 +74,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   CompositeInstruction seed =
       act->seed.empty()
           ? generateMixedSeed(program, cur_state,
-                              env.getVKCEnv()->getTesseract(), n_steps)
+                              env.getVKCEnv()->getTesseract(), n_steps, act->getBaseJoint())
           : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
