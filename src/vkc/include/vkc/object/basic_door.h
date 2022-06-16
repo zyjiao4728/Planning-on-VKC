@@ -211,7 +211,7 @@ class BaseDoor : public BaseObject {
     handle_joint.parent_to_joint_origin_transform =
         Eigen::Isometry3d::Identity();
     handle_joint.parent_to_joint_origin_transform.translation() +=
-        Eigen::Vector3d(-0.125, mir_ * (-door_width_ + 0.16), handle_height_);
+        Eigen::Vector3d(-0.125, mir_ * (-door_width_ + 0.08), handle_height_);
     handle_joint.type = JointType::FIXED;
     // handle_joint.axis = Eigen::Vector3d(1, 0, 0);
     // handle_joint.limits = std::make_shared<JointLimits>();
@@ -282,7 +282,7 @@ class BaseDoor : public BaseObject {
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
     attach_location.local_joint_origin_transform.translation() +=
-            Eigen::Vector3d(-0.15, 0.0, 0.0);
+            Eigen::Vector3d(-0.20, mir_ * 0.08, 0.0);
         // Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     // attach_location.local_joint_origin_transform.linear() =
         // Eigen::Quaterniond(0.7071, 0.0, 0.7071, 0.0).matrix();

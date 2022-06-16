@@ -10,6 +10,7 @@
   <arg name="niter" default="500" />
   <arg name="nruns" default="5" />
   <arg name="envid" default="1" />
+  <arg name="baseline" default="false" />
 
   <arg name="husky_locx" default="0.0" />
   <arg name="husky_locy" default="0.0" />
@@ -48,6 +49,7 @@
     <param name="niter" type="int" value="$(arg niter)" />
     <param name="nruns" type="int" value="$(arg nruns)" />
     <param name="envid" type="int" value="$(arg envid)" />
+    <param name="baseline" type="bool" value="$(arg baseline)" />
   </node>
 
   <!-- Launch visualization -->
