@@ -174,7 +174,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("door_north_door_joint", -M_PI_2);
+    joint_objectives.emplace_back("door_north_door_joint", -1.5);
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
                                  link_objectives, joint_objectives, false);
@@ -207,7 +207,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("drawer0_base_drawer_joint", -0.8);
+    joint_objectives.emplace_back("drawer0_base_drawer_joint", -0.6);
     place_action =
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
                                  link_objectives, joint_objectives, false);
@@ -356,7 +356,7 @@ Eigen::VectorXd sampleArmPose1(vkc::VKCEnvBasic &env,
 Eigen::VectorXd sampleArmPose2(
     vkc::VKCEnvBasic &env, std::string target_joint, double target_value,
     vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr,
-    int n_steps) {
+    int remaining_steps) {
   std::unordered_map<std::string, double> joint_init;
   joint_init[target_joint] =
       env.getVKCEnv()->getTesseract()->getCurrentJointValues(
@@ -370,8 +370,10 @@ Eigen::VectorXd sampleArmPose2(
         kin->getJointNames());
 
   int max_inc = 100;
-  double joint_res = target_value / n_steps;
-  double joint_fineres = target_value / n_steps / 10;
+  double joint_res =
+      (target_value - joint_init[target_joint]) / remaining_steps;
+  double joint_fineres =
+      (target_value - joint_init[target_joint]) / remaining_steps / 10;
   int n_inc = 0;
 
   bool no_collision = false;
@@ -413,18 +415,26 @@ Eigen::VectorXd sampleArmPose2(
       env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
           contact_results, tesseract_collision::ContactTestType::ALL);
       if (contact_results.size() > 0) {
+        for (auto contact_result : contact_results) {
+          std::cout << contact_result.first.first << ":\t"
+                    << contact_result.first.second << std::endl;
+        }
         no_collision = false;
       } else {
         max_cost = (ik_seed - res).array().abs().sum();
         ik_result = res;
         no_collision = true;
       }
-      std::cout << "found ik, collision: " << no_collision
-                << ", cost: " << max_cost
-                << ", joint_init: " << joint_init[target_joint] << std::endl;
     }
   }
-  if (no_collision) return ik_result;
+
+  if (no_collision) {
+    std::cout << std::boolalpha;
+    std::cout << "found ik " << found_ik << " in collision: " << !no_collision
+              << ", cost: " << max_cost
+              << ", joint_init: " << joint_init[target_joint] << std::endl;
+    return ik_result;
+  }
 
   auto temp_joint_init = joint_init;
 
@@ -434,11 +444,14 @@ Eigen::VectorXd sampleArmPose2(
 
     if (found_ik) {
       temp_joint_init[target_joint] += joint_fineres;
+      temp_joint_init[target_joint] =
+          std::min(target_value, temp_joint_init[target_joint]);
       env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
     } else {
-      joint_init[target_joint] -= joint_fineres;
+      temp_joint_init[target_joint] -= joint_fineres;
+      temp_joint_init[target_joint] =
+          std::max(0.0, temp_joint_init[target_joint]);
       env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
-      std::cout << temp_joint_init[target_joint] << std::endl;
     }
 
     Eigen::Isometry3d ee_target =
@@ -468,6 +481,10 @@ Eigen::VectorXd sampleArmPose2(
             ->contactTest(contact_results,
                           tesseract_collision::ContactTestType::ALL);
         if (contact_results.size() > 0) {
+          for (auto contact_result : contact_results) {
+            std::cout << contact_result.first.first << ":\t"
+                      << contact_result.first.second << std::endl;
+          }
           no_collision = false;
         } else {
           max_cost = (ik_seed - res).array().abs().sum();
@@ -477,10 +494,13 @@ Eigen::VectorXd sampleArmPose2(
       }
       contact_results.clear();
     }
-    std::cout << "found ik " << found_ik << " collision: " << no_collision
-              << ", cost: " << max_cost
-              << ", temp_joint_init: " << temp_joint_init[target_joint]
-              << std::endl;
+    if (found_ik) {
+      std::cout << std::boolalpha;
+      std::cout << "found ik " << found_ik << " in collision: " << !no_collision
+                << ", cost: " << max_cost
+                << ", temp_joint_init: " << temp_joint_init[target_joint]
+                << std::endl;
+    }
   }
   return ik_result;
 }
@@ -501,23 +521,33 @@ Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
       env.getVKCEnv()->getTesseract()->getCurrentJointValues(
           kin->getJointNames());
 
-  while (true) {
+  double max_cost = 1e6;
+  Eigen::VectorXd ik_result;
+  int sample_base_pose_tries = 0;
+  while (sample_base_pose_tries < 1000) {
+    sample_base_pose_tries++;
     Eigen::VectorXd ik_seed =
         tesseract_common::generateRandomNumber(limits.joint_limits);
     tesseract_kinematics::IKSolutions result =
         kin->calcInvKin(ik_inputs, ik_seed);
     for (const auto &res : result) {
-      env.getVKCEnv()->getTesseract()->setState(joint_names, res);
-      env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
-          contact_results, tesseract_collision::ContactTestType::ALL);
-      if (contact_results.size() == 0) {
-        env.getVKCEnv()->getTesseract()->setState(joint_names,
-                                                  initial_joint_values);
-        return res;
+      if ((ik_seed - res).array().abs().sum() < max_cost) {
+        env.getVKCEnv()->getTesseract()->setState(joint_names, res);
+        env.getVKCEnv()
+            ->getTesseract()
+            ->getDiscreteContactManager()
+            ->contactTest(contact_results,
+                          tesseract_collision::ContactTestType::ALL);
+        if (contact_results.size() == 0) {
+          ik_result = res;
+          max_cost = (ik_seed - res).array().abs().sum();
+        }
       }
     }
     contact_results.clear();
   }
+  env.getVKCEnv()->getTesseract()->setState(joint_names, initial_joint_values);
+  return ik_result;
 }
 
 void run_baseline1(vector<TesseractJointTraj> &joint_trajs,
@@ -529,12 +559,12 @@ void run_baseline1(vector<TesseractJointTraj> &joint_trajs,
   vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr;
   if (envid == 1) {
     target_joint = "door_north_door_joint";
-    target_value = M_PI_2;
+    target_value = 1.5;
     attach_location_ptr =
         env.getAttachLocation("attach_door_north_handle_link");
   } else if (envid == 2) {
     target_joint = "drawer0_base_drawer_joint";
-    target_value = 0.8;
+    target_value = 0.6;
     attach_location_ptr = env.getAttachLocation("attach_drawer0_handle_link");
   } else {
     ROS_ERROR("Run baseline 1: Unknown environment id.");
@@ -603,12 +633,12 @@ void run_baseline2(vector<TesseractJointTraj> &joint_trajs,
   vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr;
   if (envid == 1) {
     target_joint = "door_north_door_joint";
-    target_value = M_PI_2;
+    target_value = 1.5;
     attach_location_ptr =
         env.getAttachLocation("attach_door_north_handle_link");
   } else if (envid == 2) {
     target_joint = "drawer0_base_drawer_joint";
-    target_value = 0.8;
+    target_value = 0.6;
     attach_location_ptr = env.getAttachLocation("attach_drawer0_handle_link");
   } else {
     ROS_ERROR("Run baseline 1: Unknown environment id.");
@@ -653,7 +683,7 @@ void run_baseline2(vector<TesseractJointTraj> &joint_trajs,
     env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
 
     Eigen::VectorXd arm_pose = sampleArmPose2(env, target_joint, target_value,
-                                              attach_location_ptr, n_steps);
+                                              attach_location_ptr, n_steps - i);
     env.getVKCEnv()->getTesseract()->setState(env.getVKCEnv()
                                                   ->getTesseract()
                                                   ->getKinematicGroup("arm")
@@ -702,13 +732,21 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  //   pushDoor(actions, robot);
-  //   pullDoor(actions, robot);
-  // pullDrawer(actions, robot);
-  // pushDrawer(actions, robot);
-  // run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 
-  // run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz, nruns,
-  // envid);
-  run_baseline2(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
+  if (envid == 1 && !runbs){
+    pushDoor(actions, robot);
+    run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+
+  }
+  else if (envid == 2 && !runbs){
+    pullDrawer(actions, robot);
+    run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+  }
+  else{
+    // run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
+    run_baseline2(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
+  }
+  //   pullDoor(actions, robot);
+  // pushDrawer(actions, robot);
+
 }
