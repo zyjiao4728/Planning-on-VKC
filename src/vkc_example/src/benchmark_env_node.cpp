@@ -26,7 +26,7 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
-  int window_size = 3;
+  // int window_size = 3;
   // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
   // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
@@ -550,6 +550,39 @@ Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
   return ik_result;
 }
 
+void sampleInitBasePose(vkc::VKCEnvBasic &env, int envid) {
+  bool init_base_position = false;
+  vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
+  Eigen::VectorXd base_values = Eigen::Vector2d(0., 0.);
+  tesseract_collision::ContactResultMap contact_results;
+
+  while (!init_base_position) {
+    init_base_position = true;
+    contact_results.clear();
+    if (envid == 1) {
+      base_values = Eigen::Vector2d(rand() % 100 / 99. * -2. - 0.5,
+                                    6. * (rand() % 100 / 99. - 0.5));
+      env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+    } else if (envid == 2) {
+      base_values = Eigen::Vector2d(2. * (rand() % 100 / 99. - 0.5),
+                                    rand() % 100 / 99. * 5.);
+      env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+    }
+
+    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+    env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+        contact_results, tesseract_collision::ContactTestType::ALL);
+
+    for (auto &collision : contact_results) {
+      if (collision.first.first == "base_link" ||
+          collision.first.second == "base_link") {
+        init_base_position = false;
+        break;
+      }
+    }
+  }
+}
+
 void run_baseline1(vector<TesseractJointTraj> &joint_trajs,
                    vkc::VKCEnvBasic &env, vkc::ActionSeq &actions, int n_steps,
                    int n_iter, bool rviz_enabled, unsigned int nruns,
@@ -729,24 +762,24 @@ int main(int argc, char **argv) {
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
+  sampleInitBasePose(env, envid);
+
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
 
-  if (envid == 1 && !runbs){
+  if (envid == 1 && !runbs) {
     pushDoor(actions, robot);
     run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 
-  }
-  else if (envid == 2 && !runbs){
+  } else if (envid == 2 && !runbs) {
     pullDrawer(actions, robot);
     run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
-  }
-  else{
-    // run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
+  } else {
+    // run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz, nruns,
+    // envid);
     run_baseline2(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
   }
   //   pullDoor(actions, robot);
   // pushDrawer(actions, robot);
-
 }
