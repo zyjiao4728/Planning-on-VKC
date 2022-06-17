@@ -67,15 +67,15 @@ namespace vkc
             wall_north_right.createWorldJoint(Eigen::Vector4d(
                 arena_x / 2.0, -((arena_y - door_width) / 4.0 + door_width / 2.0), 0, 0));
 
-            vkc::BaseWall wall_west("wall_west", arena_x + wall_thickness, 4.,
+            vkc::BaseWall wall_west("wall_west", arena_x / 2. + wall_thickness, 4.,
                                     arena_z);
             wall_west.createObject();
-            wall_west.createWorldJoint(Eigen::Vector4d(0, arena_y / 2.0 - 2., 0, 0));
+            wall_west.createWorldJoint(Eigen::Vector4d(arena_x / 4., arena_y / 2.0 - 2., 0, 0));
 
-            vkc::BaseWall wall_east("wall_east", arena_x + wall_thickness, 4.,
+            vkc::BaseWall wall_east("wall_east", arena_x / 2. + wall_thickness, 4.,
                                     arena_z);
             wall_east.createObject();
-            wall_east.createWorldJoint(Eigen::Vector4d(0, -arena_y / 2.0 + 2., 0, 0));
+            wall_east.createWorldJoint(Eigen::Vector4d(arena_x / 4., -arena_y / 2.0 + 2., 0, 0));
 
             vkc::BaseWall wall_south("wall_south", wall_thickness, arena_y, arena_z);
             wall_south.createObject();
