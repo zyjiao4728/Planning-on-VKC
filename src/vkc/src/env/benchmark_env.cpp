@@ -34,7 +34,7 @@ namespace vkc
 
         ROS_INFO("Sucessfully load the robot model, now creating environment...");
 
-        createBenchmarkEnv(env_id, runbs);
+        createBenchmarkEnv(env_id, runbs, rviz);
 
         ROS_INFO("Sucessfully create the environment, now creating optimization problem...");
     }
@@ -44,7 +44,7 @@ namespace vkc
         return false;
     }
 
-    bool BenchmarkEnv::createBenchmarkEnv(int env_id, bool runbs)
+    bool BenchmarkEnv::createBenchmarkEnv(int env_id, bool runbs, bool rviz)
     {
         if (env_id == 1)
         {
@@ -100,7 +100,7 @@ namespace vkc
 
             ROS_INFO("add objects to environment success");
 
-            plotter_->waitForInput("wait for environment to update");
+            if (rviz) plotter_->waitForInput("wait for environment to update");
 
             // Disable minor collision detection
 
@@ -171,7 +171,7 @@ namespace vkc
 
             ROS_INFO("add objects to environment success");
 
-            plotter_->waitForInput("wait for environment to update");
+            if (rviz) plotter_->waitForInput("wait for environment to update");
 
             // Disable minor collision detection
 

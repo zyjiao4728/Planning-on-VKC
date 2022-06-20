@@ -14,7 +14,7 @@ void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter) {
   // Solve problem. Results are stored in the response
   TrajOptMotionPlanner planner;
 
-  auto trajopt_status = planner.solve(request, response, true);
+  auto trajopt_status = planner.solve(request, response, false);
 
   ROS_WARN("%d, %s", trajopt_status.value(), trajopt_status.message().c_str());
 
@@ -249,4 +249,18 @@ void TrajectoryVisualize(
     // joint_traj_iter->trajectory.bottomRows(1).transpose(), *action_iter);
     // plotter->clear();
   }
+}
+
+double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory){
+
+  double dist_travelled = 0.0;
+
+  for (int i = 1; i < trajectory.size(); i++)
+  {
+    Eigen::VectorXd curr_state = trajectory[i];
+    Eigen::VectorXd prev_state = trajectory[i-1];
+    dist_travelled += (curr_state - prev_state).array().abs().sum();
+  }
+
+  return dist_travelled;
 }

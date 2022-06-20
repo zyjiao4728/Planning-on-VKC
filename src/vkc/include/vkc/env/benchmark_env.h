@@ -32,7 +32,7 @@ class BenchmarkEnv : public VKCEnvBasic {
 
   bool createEnvironment() override;
 
-  bool createBenchmarkEnv(int exp_id, bool runbs);
+  bool createBenchmarkEnv(int exp_id, bool runbs, bool rviz);
 };
 
 }  // namespace vkc

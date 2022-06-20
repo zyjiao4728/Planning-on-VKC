@@ -96,9 +96,9 @@ bool VKCEnvBasic::initTesseractConfig() {
     plotter_ = std::make_shared<ROSPlotting>(
         tesseract_->getTesseract()->getSceneGraph()->getRoot());
     plotter_->waitForConnection();
-    if (plotter_ != nullptr && plotter_->isConnected())
-      plotter_->waitForInput(
-          "tesseract plotter init success, press enter to continue");
+    // if (plotter_ != nullptr && plotter_->isConnected())
+    //   plotter_->waitForInput(
+    //       "tesseract plotter init success, press enter to continue");
   }
 
   ROS_INFO("Tesseract initialized...");

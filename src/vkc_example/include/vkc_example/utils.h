@@ -64,6 +64,8 @@ void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic 
 int saveTrajToFile(const tesseract_common::TrajArray &traj,
                    const std::string filename);
 
+double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory);
+
 std::vector<vkc::JointDesiredPose> getJointHome(
     std::unordered_map<std::string, double> home_pose);
 
