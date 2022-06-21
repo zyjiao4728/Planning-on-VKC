@@ -96,7 +96,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     }
 
     if (!converged) {
-      return elapsed_time;
+      elapsed_time.emplace_back(-1.0);
     }
     const auto &ci = response.results;
 
@@ -105,19 +105,6 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     refineTrajectory(refined_traj, env);
     joint_trajs.emplace_back(trajectory);
 
-    // ROS_WARN("trajectory: ");
-    // for (auto jo : trajectory) {
-    //   std::cout << jo.position << std::endl;
-    // }
-
-    // refine the orientation of the move base
-
-    // tesseract_common::TrajArray trajectory =
-    //     response.trajectory.leftCols(response.joint_names.size());
-    // refineTrajectory(trajectory);
-
-    // std::cout << "optimized trajectory: " << std::endl
-    //           << trajectory << std::endl;
     if (rviz_enabled && env.getPlotter() != nullptr) {
       ROS_INFO("plotting result");
       tesseract_common::Toolpath toolpath =
@@ -130,26 +117,9 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    // toDelimitedFile(ci,
-    //                 "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-    //                 "trajectory/open_door_pull.csv",
-    //                 ',');
-    // saveTrajToFile(trajectory,
-    // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
-
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
 
-    // for (auto joint_name :
-    // env.getVKCEnv()->getTesseract()->getActiveJointNames())
-    // {
-    //     std::cout << joint_name << std::endl;
-    // }
-
-    // std::cout << env.getVKCEnv()->getTesseract()->getCurrentJointValues() <<
-    // std::endl;
-
-    // ROS_WARN("environment updated");
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
   }
@@ -622,6 +592,32 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env, int envid) {
   }
 }
 
+void interpBaselineReach(std::vector<double> &data,
+                         std::vector<double> &elapsed_time,
+                         std::vector<TesseractJointTraj> &joint_trajs) {
+  if (elapsed_time[0] < 0. || elapsed_time[1] < 0.) {
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    return;
+  } else {
+    data.emplace_back(elapsed_time[0] + elapsed_time[1]);
+    std::vector<Eigen::VectorXd> base_trajectory;
+    std::vector<Eigen::VectorXd> arm_trajectory;
+
+    for (auto state : joint_trajs[0].states) {
+      base_trajectory.emplace_back(state.position.head(2));
+    }
+    for (auto state : joint_trajs[1].states) {
+      arm_trajectory.emplace_back(state.position.head(6));
+    }
+    data.emplace_back(computeTrajLength(base_trajectory));
+    data.emplace_back(computeTrajLength(arm_trajectory));
+    return;
+  }
+  return;
+}
+
 std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
                                   vkc::VKCEnvBasic &env,
                                   vkc::ActionSeq &actions, int n_steps,
@@ -658,18 +654,8 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
   auto elapsed_time =
       run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
   std::vector<double> data;
-  data.emplace_back(elapsed_time[0] + elapsed_time[1]);
-  std::vector<Eigen::VectorXd> base_trajectory;
-  std::vector<Eigen::VectorXd> arm_trajectory;
 
-  for (auto state : joint_trajs[0].states) {
-    base_trajectory.emplace_back(state.position.head(2));
-  }
-  for (auto state : joint_trajs[1].states) {
-    arm_trajectory.emplace_back(state.position.head(6));
-  }
-  data.emplace_back(computeTrajLength(base_trajectory));
-  data.emplace_back(computeTrajLength(arm_trajectory));
+  interpBaselineReach(data, elapsed_time, joint_trajs);
 
   env.getVKCEnv()->getTesseract()->setState(joint_target);
 
@@ -683,6 +669,8 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
   auto end = chrono::steady_clock::now();
   bool success = true;
   std::vector<double> base_time;
+  std::vector<Eigen::VectorXd> base_trajectory;
+  std::vector<Eigen::VectorXd> arm_trajectory;
 
   while (try_cnt++ < nruns) {
     actions.clear();
@@ -695,7 +683,7 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
     moveBase(actions, sampleBasePose(env, pose_place));
     base_time =
         run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
-    if (base_time.size() == 0) continue;
+    if (base_time[0] < 0.) continue;
     base_trajectory.clear();
     arm_trajectory.clear();
     for (auto state : joint_trajs[0].states) {
@@ -720,6 +708,7 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
           attach_location_ptr->local_joint_origin_transform;
       auto ik_status = sampleArmPose1(env, ee_target, arm_pose);
       success = success && ik_status;
+      if (!ik_status) break;
       arm_trajectory.emplace_back(arm_pose);
       env.getVKCEnv()->getTesseract()->setState(env.getVKCEnv()
                                                     ->getTesseract()
@@ -741,7 +730,12 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
     }
   }
 
-  if (!success) return data;
+  if (base_time[0] < 0. || !success) {
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    return data;
+  }
 
   data.emplace_back(
       chrono::duration_cast<chrono::milliseconds>(end - start).count() / 1000. +
@@ -789,18 +783,8 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
   auto elapsed_time =
       run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
   std::vector<double> data;
-  data.emplace_back(elapsed_time[0] + elapsed_time[1]);
-  std::vector<Eigen::VectorXd> base_trajectory;
-  std::vector<Eigen::VectorXd> arm_trajectory;
 
-  for (auto state : joint_trajs[0].states) {
-    base_trajectory.emplace_back(state.position.head(2));
-  }
-  for (auto state : joint_trajs[1].states) {
-    arm_trajectory.emplace_back(state.position.head(6));
-  }
-  data.emplace_back(computeTrajLength(base_trajectory));
-  data.emplace_back(computeTrajLength(arm_trajectory));
+  interpBaselineReach(data, elapsed_time, joint_trajs);
 
   env.getVKCEnv()->getTesseract()->setState(joint_target);
 
@@ -814,6 +798,8 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
   auto end = chrono::steady_clock::now();
   bool success = true;
   std::vector<double> base_time;
+  std::vector<Eigen::VectorXd> base_trajectory;
+  std::vector<Eigen::VectorXd> arm_trajectory;
 
   while (try_cnt++ < nruns) {
     actions.clear();
@@ -827,7 +813,8 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
     base_time =
         run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
 
-    if (base_time.size() == 0) continue;
+    if (base_time[0] < 0.) continue;
+
     base_trajectory.clear();
     arm_trajectory.clear();
     for (auto state : joint_trajs[0].states) {
@@ -850,6 +837,7 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
       auto ik_status = sampleArmPose2(env, target_joint, target_value, arm_pose,
                                       attach_location_ptr, n_steps - i);
       success = success && ik_status;
+      if (!ik_status) break;
       arm_trajectory.emplace_back(arm_pose);
       env.getVKCEnv()->getTesseract()->setState(env.getVKCEnv()
                                                     ->getTesseract()
@@ -871,8 +859,13 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
     }
   }
 
-  if (!success) return data;
-  
+  if (base_time[0] < 0. || !success) {
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    return data;
+  }
+
   data.emplace_back(
       chrono::duration_cast<chrono::milliseconds>(end - start).count() / 1000. +
       base_time[0]);
