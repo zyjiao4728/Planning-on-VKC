@@ -33,6 +33,7 @@ VKCEnvBasic::UPtr VKCEnvBasic::clone() {
                                                       plotting_, rviz_, steps_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
+  cloned_vkc_env->updateAttachLocations(attach_locations_);
   return cloned_vkc_env;
 }
 
