@@ -368,7 +368,8 @@ bool sampleArmPose2(
   joint_init[target_joint] =
       env.getVKCEnv()->getTesseract()->getCurrentJointValues(
           std::vector<std::string>({target_joint}))[0];
-
+  
+  // std::cout << 1 << std::endl;
   tesseract_kinematics::KinematicGroup::Ptr kin =
       std::move(env.getVKCEnv()->getTesseract()->getKinematicGroup("arm"));
 
@@ -406,7 +407,7 @@ bool sampleArmPose2(
       env.getVKCEnv()->getTesseract()->getCurrentJointValues(
           kin->getJointNames());
   ik_result = ik_seed;
-
+  // std::cout << 2 << std::endl;
   for (int tries = 0; tries < 200; tries++) {
     result = kin->calcInvKin(ik_inputs, ik_seed);
     if (result.size() > 0) {
@@ -415,7 +416,7 @@ bool sampleArmPose2(
       break;
     }
   }
-
+  // std::cout << 3 << std::endl;
   tesseract_collision::ContactResultMap contact_results;
   double max_cost = 1e6;
   for (const auto &res : result) {
@@ -436,7 +437,7 @@ bool sampleArmPose2(
       }
     }
   }
-
+  // std::cout << 4 << std::endl;
   if (no_collision) {
     std::cout << std::boolalpha;
     std::cout << "found ik " << found_ik << " in collision: " << !no_collision
@@ -446,7 +447,7 @@ bool sampleArmPose2(
   }
 
   auto temp_joint_init = joint_init;
-
+  // std::cout << 5 << std::endl;
   while (!no_collision && n_inc < max_inc) {
     n_inc++;
     ik_inputs.clear();
@@ -462,7 +463,7 @@ bool sampleArmPose2(
           std::max(0.0, temp_joint_init[target_joint]);
       env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
     }
-
+    // std::cout << 6 << std::endl;
     Eigen::Isometry3d ee_target =
         env.getVKCEnv()->getTesseract()->getLinkTransform(
             attach_location_ptr->link_name_) *
@@ -481,6 +482,7 @@ bool sampleArmPose2(
       }
     }
     max_cost = 1e6;
+    // std::cout << 7 << std::endl;
     for (const auto &res : result) {
       if ((ik_seed - res).array().abs().sum() < max_cost) {
         env.getVKCEnv()->getTesseract()->setState(joint_names, res);
@@ -490,10 +492,10 @@ bool sampleArmPose2(
             ->contactTest(contact_results,
                           tesseract_collision::ContactTestType::ALL);
         if (contact_results.size() > 0) {
-          for (auto contact_result : contact_results) {
-            std::cout << contact_result.first.first << ":\t"
-                      << contact_result.first.second << std::endl;
-          }
+          // for (auto contact_result : contact_results) {
+          //   std::cout << contact_result.first.first << ":\t"
+          //             << contact_result.first.second << std::endl;
+          // }
           no_collision = false;
         } else {
           max_cost = (ik_seed - res).array().abs().sum();
@@ -503,6 +505,7 @@ bool sampleArmPose2(
       }
       contact_results.clear();
     }
+    // std::cout << 8 << std::endl;
     if (found_ik) {
       std::cout << std::boolalpha;
       std::cout << "found ik " << found_ik << " in collision: " << !no_collision
@@ -531,9 +534,9 @@ Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
           kin->getJointNames());
 
   double max_cost = 1e6;
-  Eigen::VectorXd ik_result;
+  Eigen::VectorXd ik_result = initial_joint_values;
   int sample_base_pose_tries = 0;
-  while (sample_base_pose_tries < 200) {
+  while (sample_base_pose_tries < 1000) {
     sample_base_pose_tries++;
     Eigen::VectorXd ik_seed =
         tesseract_common::generateRandomNumber(limits.joint_limits);
@@ -734,6 +737,7 @@ std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
     data.emplace_back(-1);
     data.emplace_back(-1);
     data.emplace_back(-1);
+    data.emplace_back(0);
     return data;
   }
 
@@ -783,16 +787,13 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
   auto elapsed_time =
       run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
   std::vector<double> data;
-
   interpBaselineReach(data, elapsed_time, joint_trajs);
-
   env.getVKCEnv()->getTesseract()->setState(joint_target);
 
   Eigen::Isometry3d pose_place =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
-
   int try_cnt = 0;
   auto start = chrono::steady_clock::now();
   auto end = chrono::steady_clock::now();
@@ -812,7 +813,6 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
     moveBase(actions, sampleBasePose(env, pose_place));
     base_time =
         run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
-
     if (base_time[0] < 0.) continue;
 
     base_trajectory.clear();
@@ -858,14 +858,13 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
       env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
     }
   }
-
   if (base_time[0] < 0. || !success) {
     data.emplace_back(-1);
     data.emplace_back(-1);
     data.emplace_back(-1);
+    data.emplace_back(0);
     return data;
   }
-
   data.emplace_back(
       chrono::duration_cast<chrono::milliseconds>(end - start).count() / 1000. +
       base_time[0]);
