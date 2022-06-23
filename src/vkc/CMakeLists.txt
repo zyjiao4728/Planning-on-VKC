@@ -25,6 +25,7 @@ find_package(tesseract_common REQUIRED)
 find_package(trajopt_ifopt REQUIRED)
 find_package(trajopt_sqp REQUIRED)
 find_package(astar REQUIRED)
+find_package(kmeans_rex REQUIRED)
 find_package(ompl REQUIRED)
 
 catkin_package()
@@ -234,6 +235,7 @@ target_link_libraries(${PROJECT_NAME}_prob_generator
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
   astar
+  kmeans_rex
   tesseract::tesseract_motion_planners_trajopt 
   tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}

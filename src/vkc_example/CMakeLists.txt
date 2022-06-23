@@ -24,6 +24,7 @@ find_package(trajopt REQUIRED)
 find_package(tesseract_environment REQUIRED)
 find_package(tesseract_motion_planners REQUIRED)
 find_package(ompl REQUIRED)
+find_package(kmeans_rex REQUIRED)
 
 
 find_package(PCL REQUIRED COMPONENTS 

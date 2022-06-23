@@ -68,6 +68,7 @@
   <depend>tesseract_common</depend>
   <depend>tesseract_support</depend>
   <depend>astar</depend>
+  <depend>kmeans_rex</depend>
   <depend>trajopt_sqp</depend>
   <depend>trajopt_ifopt</depend>
 

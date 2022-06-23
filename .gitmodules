@@ -1,3 +1,6 @@
 [submodule "src/tesseract_ros"]
 	path = src/tesseract_ros
 	url = ssh://git@gitlab.mybigai.ac.cn:2222/robotics/tesseract_ros.git
+[submodule "src/KMeansRex"]
+	path = src/KMeansRex
+	url = git@github.com:BigAI-Robotics/KMeansRex.git
