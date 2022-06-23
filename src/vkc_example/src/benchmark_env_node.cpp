@@ -126,6 +126,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   return elapsed_time;
 }
 
+void setBaseJoint(vkc::ActionBase::Ptr action) {
+  action->setBaseJoint(std::string("base_y_base_x"),
+                       std::string("base_theta_base_y"));
+}
+
 void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
   PlaceAction::Ptr place_action;
 
@@ -134,9 +139,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
   {
     actions.emplace_back(
         make_shared<PickAction>(robot, "attach_door_north_handle_link"));
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 
   // action 2: open door
@@ -150,8 +153,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
                                  link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->setBaseJoint(std::make_pair(
-        std::string("base_y_base_x"), std::string("base_theta_base_y")));
+    setBaseJoint(place_action);
 
     actions.emplace_back(place_action);
   }
@@ -167,9 +169,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
   {
     actions.emplace_back(
         make_shared<PickAction>(robot, "attach_door_north_handle_link"));
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 
   // action 2: open door
@@ -183,8 +183,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
                                  link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->setBaseJoint(std::make_pair(
-        std::string("base_y_base_x"), std::string("base_theta_base_y")));
+    setBaseJoint(place_action);
 
     actions.emplace_back(place_action);
   }
@@ -200,9 +199,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
   {
     actions.emplace_back(
         make_shared<PickAction>(robot, "attach_drawer0_handle_link"));
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 
   // action 2: open drawer
@@ -216,8 +213,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
                                  link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->setBaseJoint(std::make_pair(
-        std::string("base_y_base_x"), std::string("base_theta_base_y")));
+    setBaseJoint(place_action);
 
     actions.emplace_back(place_action);
   }
@@ -231,9 +227,7 @@ void pushDrawer(vkc::ActionSeq &actions, const std::string &robot) {
   {
     actions.emplace_back(
         make_shared<PickAction>(robot, "attach_drawer0_handle_link"));
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 
   // action 2: open drawer
@@ -247,8 +241,7 @@ void pushDrawer(vkc::ActionSeq &actions, const std::string &robot) {
                                  link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
 
-    place_action->setBaseJoint(std::make_pair(
-        std::string("base_y_base_x"), std::string("base_theta_base_y")));
+    setBaseJoint(place_action);
 
     actions.emplace_back(place_action);
   }
@@ -272,9 +265,7 @@ void baseline_reach(vkc::ActionSeq &actions, Eigen::VectorXd base_pose,
     actions.emplace_back(
         make_shared<GotoAction>("base", link_objectives, joint_objectives));
 
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 
   // action 2: move arm to target
@@ -288,7 +279,6 @@ void baseline_reach(vkc::ActionSeq &actions, Eigen::VectorXd base_pose,
         make_shared<GotoAction>("arm", link_objectives, joint_objectives));
   }
 }
-
 void moveBase(vkc::ActionSeq &actions, Eigen::VectorXd base_pose) {
   /** move base **/
   // action 1: move base to target
@@ -306,9 +296,7 @@ void moveBase(vkc::ActionSeq &actions, Eigen::VectorXd base_pose) {
     actions.emplace_back(
         make_shared<GotoAction>("base", link_objectives, joint_objectives));
 
-    (*actions.rbegin())
-        ->setBaseJoint(std::make_pair(std::string("base_y_base_x"),
-                                      std::string("base_theta_base_y")));
+    setBaseJoint(*actions.rbegin());
   }
 }
 
@@ -368,7 +356,7 @@ bool sampleArmPose2(
   joint_init[target_joint] =
       env.getVKCEnv()->getTesseract()->getCurrentJointValues(
           std::vector<std::string>({target_joint}))[0];
-  
+
   // std::cout << 1 << std::endl;
   tesseract_kinematics::KinematicGroup::Ptr kin =
       std::move(env.getVKCEnv()->getTesseract()->getKinematicGroup("arm"));
