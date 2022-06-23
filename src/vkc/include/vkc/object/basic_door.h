@@ -61,7 +61,7 @@ class BaseDoor : public BaseObject {
     door_link_visual->origin.linear() =
         Eigen::AngleAxisd(pi_, Eigen::Vector3d::UnitZ()).toRotationMatrix();
     door_link_visual->geometry = std::make_shared<tesseract_geometry::Box>(
-        0.1, door_width_, door_height_);
+        0.05, door_width_, door_height_);
     material_name = door_link.getName() + "_color";
     door_link_visual->material = std::make_shared<Material>(material_name);
     door_link_visual->material->color = Eigen::Vector4d(0.4, 0.2, 0.0, 1.0);
@@ -282,7 +282,7 @@ class BaseDoor : public BaseObject {
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
     attach_location.local_joint_origin_transform.translation() +=
-            Eigen::Vector3d(-0.15, 0.0, 0.0);
+            Eigen::Vector3d(-0.20, mir_ * 0.08, 0.0);
         // Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     // attach_location.local_joint_origin_transform.linear() =
         // Eigen::Quaterniond(0.7071, 0.0, 0.7071, 0.0).matrix();
@@ -292,12 +292,12 @@ class BaseDoor : public BaseObject {
     attach_location.fixed_base = true;
 
     // Define connection joint
-    // attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
-    attach_location.connection.type = JointType::REVOLUTE;
-    attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
-    attach_location.connection.limits = std::make_shared<JointLimits>();
-    attach_location.connection.limits->lower = -1.2;
-    attach_location.connection.limits->upper = 1.2;
+    attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
+    // attach_location.connection.type = JointType::REVOLUTE;
+    // attach_location.connection.axis = Eigen::Vector3d(0, 0, 1);
+    // attach_location.connection.limits = std::make_shared<JointLimits>();
+    // attach_location.connection.limits->lower = -1.2;
+    // attach_location.connection.limits->upper = 1.2;
     attach_location.connection.child_link_name = handle_link.getName();
     attach_location.connection.parent_link_name = "NULL";
 

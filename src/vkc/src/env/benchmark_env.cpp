@@ -20,7 +20,7 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 
 namespace vkc
 {
-    BenchmarkEnv::BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id) : VKCEnvBasic(nh, plotting, rviz, steps)
+    BenchmarkEnv::BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id, bool runbs) : VKCEnvBasic(nh, plotting, rviz, steps)
     {
         // Set Log Level
         util::gLogLevel = util::LevelInfo;
@@ -34,7 +34,7 @@ namespace vkc
 
         ROS_INFO("Sucessfully load the robot model, now creating environment...");
 
-        createBenchmarkEnv(env_id);
+        createBenchmarkEnv(env_id, runbs, rviz);
 
         ROS_INFO("Sucessfully create the environment, now creating optimization problem...");
     }
@@ -44,7 +44,7 @@ namespace vkc
         return false;
     }
 
-    bool BenchmarkEnv::createBenchmarkEnv(int env_id)
+    bool BenchmarkEnv::createBenchmarkEnv(int env_id, bool runbs, bool rviz)
     {
         if (env_id == 1)
         {
@@ -53,7 +53,7 @@ namespace vkc
             double arena_z = 2.06;
 
             double wall_thickness = 0.1;
-            double door_width = 1.06;
+            double door_width = 1.1;
 
             vkc::BaseWall wall_north_left("wall_north_left", wall_thickness,
                                           (arena_y - door_width) / 2.0, arena_z);
@@ -67,15 +67,15 @@ namespace vkc
             wall_north_right.createWorldJoint(Eigen::Vector4d(
                 arena_x / 2.0, -((arena_y - door_width) / 4.0 + door_width / 2.0), 0, 0));
 
-            vkc::BaseWall wall_west("wall_west", arena_x + wall_thickness, 4.,
+            vkc::BaseWall wall_west("wall_west", arena_x / 2. + wall_thickness, 4.,
                                     arena_z);
             wall_west.createObject();
-            wall_west.createWorldJoint(Eigen::Vector4d(0, arena_y / 2.0 - 2., 0, 0));
+            wall_west.createWorldJoint(Eigen::Vector4d(arena_x / 4., arena_y / 2.0 - 2., 0, 0));
 
-            vkc::BaseWall wall_east("wall_east", arena_x + wall_thickness, 4.,
+            vkc::BaseWall wall_east("wall_east", arena_x / 2. + wall_thickness, 4.,
                                     arena_z);
             wall_east.createObject();
-            wall_east.createWorldJoint(Eigen::Vector4d(0, -arena_y / 2.0 + 2., 0, 0));
+            wall_east.createWorldJoint(Eigen::Vector4d(arena_x / 4., -arena_y / 2.0 + 2., 0, 0));
 
             vkc::BaseWall wall_south("wall_south", wall_thickness, arena_y, arena_z);
             wall_south.createObject();
@@ -85,7 +85,7 @@ namespace vkc
             door_north.createObject();
             door_north.createWorldJoint(
                 Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-            door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
+            if (!runbs) door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
             updateAttachLocations(door_north.getAttachLocations());
 
@@ -100,7 +100,7 @@ namespace vkc
 
             ROS_INFO("add objects to environment success");
 
-            plotter_->waitForInput("wait for environment to update");
+            if (rviz) plotter_->waitForInput("wait for environment to update");
 
             // Disable minor collision detection
 
@@ -136,12 +136,12 @@ namespace vkc
             vkc::BaseDrawer drawer0("drawer0");
             drawer0.createObject();
             drawer0.createWorldJoint(Eigen::Vector4d(4., 2.5, 0.9, M_PI));
-            drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
+            if (!runbs) drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
             vkc::BaseDrawer drawer1("drawer1");
             drawer1.createObject();
             drawer1.createWorldJoint(Eigen::Vector4d(4., 0.5, 0.9, M_PI));
-            drawer1.inverseRootTip("world", drawer1.getName() + "_handle_link");
+            if (!runbs) drawer1.inverseRootTip("world", drawer1.getName() + "_handle_link");
 
             updateAttachLocations(drawer0.getAttachLocations());
             updateAttachLocations(drawer1.getAttachLocations());
@@ -171,7 +171,7 @@ namespace vkc
 
             ROS_INFO("add objects to environment success");
 
-            plotter_->waitForInput("wait for environment to update");
+            if (rviz) plotter_->waitForInput("wait for environment to update");
 
             // Disable minor collision detection
 
