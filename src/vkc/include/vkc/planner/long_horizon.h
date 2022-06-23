@@ -19,10 +19,20 @@ class LongHorizonSeedGenerator {
   tesseract_kinematics::IKSolutions getBestIKSet(
       const std::vector<tesseract_kinematics::IKSolutions> &act_iks);
 
+  tesseract_kinematics::IKSolutions kmeans(
+      const tesseract_kinematics::IKSolutions &act_iks, int k);
+  double getIKSetCost(const tesseract_kinematics::IKSolutions &act_ik_set);
+
   int n_steps;
   int n_iter;
   size_t window_size;
 };
+std::vector<tesseract_kinematics::IKSolutions> CartesianProduct(
+    const std::vector<tesseract_kinematics::IKSolutions> &act_iks);
+void CartesianRecurse_(std::vector<tesseract_kinematics::IKSolutions> &accum,
+                      tesseract_kinematics::IKSolutions stack,
+                      std::vector<tesseract_kinematics::IKSolutions> sequences,
+                      int index);
 };  // namespace vkc
 
 #endif

@@ -26,8 +26,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
   int window_size = 3;
-  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  // seed_generator.generate(env, actions);
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -61,7 +61,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             __func__, response.status.value(),
             response.status.message().c_str());
         ActionSeq sub_actions(ptr, actions.end());
-        // seed_generator.generate(env, sub_actions);
+        seed_generator.generate(env, sub_actions);
       }
     }
 
@@ -204,8 +204,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  // pushDoor(actions, robot);
-  pullDoor(actions, robot);
+  pushDoor(actions, robot);
+  // pullDoor(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

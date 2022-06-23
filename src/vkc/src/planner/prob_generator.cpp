@@ -51,17 +51,21 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   setStartInstruction(
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
+  auto seed_program = program;
+
   PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
                                    "DEFAULT");
-  if (act->joint_candidate.size()) {
-    CONSOLE_BRIDGE_logDebug(
-        "joint candidate found, resetting waypoint to joint waypoint...");
-    plan_instruction.setWaypoint(
-        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
-  }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", act->getActionName()));
   program.push_back(plan_instruction);
+
+  if (act->joint_candidate.size()) {
+    CONSOLE_BRIDGE_logDebug(
+        "joint candidate found, resetting seed waypoint to joint waypoint...");
+    plan_instruction.setWaypoint(
+        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
+  }
+  seed_program.push_back(plan_instruction);
 
   // addCartWaypoint(program, pick_pose_world_transform, "pick object");
 
@@ -72,10 +76,10 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
-      act->seed.empty()
-          ? generateMixedSeed(program, cur_state,
-                              env.getVKCEnv()->getTesseract(), n_steps, act->getBaseJoint())
-          : act->seed;
+      act->seed.empty() ? generateMixedSeed(seed_program, cur_state,
+                                            env.getVKCEnv()->getTesseract(),
+                                            n_steps, act->getBaseJoint())
+                        : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            getMoveInstructionCount(seed));
@@ -839,7 +843,7 @@ PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
   CompositeInstruction seed = generateMixedSeed(
       program, cur_state, env.getVKCEnv()->getTesseract(), n_steps);
 
-  ROS_INFO("number of move instructions in pick seed: %d",
+  ROS_INFO("number of move instructions in pick seed: %ld",
            getMoveInstructionCount(seed));
   ROS_INFO("composing request.");
 

@@ -28,6 +28,11 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
       steps_(steps),
       plot_tesseract_(nullptr) {}
 
+/**
+ * @brief clone 
+ *
+ * @return VKCEnvBasic::UPtr
+ */
 VKCEnvBasic::UPtr VKCEnvBasic::clone() {
   auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(nh_, tesseract_->clone(),
                                                       plotting_, rviz_, steps_);
@@ -425,12 +430,13 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     attachObject(location_name, tesseract, tf);
   }
 
-  if (rviz_) {
+  if (rviz_ && tesseract_->getMonitor() != nullptr) {
     // Now update rviz environment
     tesseract_->getMonitor()->updateEnvironmentWithCurrentState();
   }
 
   if (action->getActionType() != ActionType::GotoAction) {
+    CONSOLE_BRIDGE_logDebug("action is not goto, updating kinematic group");
     updateKinematicInfo(tesseract);
   }
 
