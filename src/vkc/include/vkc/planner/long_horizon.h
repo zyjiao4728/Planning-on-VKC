@@ -17,11 +17,16 @@ class LongHorizonSeedGenerator {
   void generate(VKCEnvBasic &env, std::vector<ActionBase::Ptr> &actions);
 
   tesseract_kinematics::IKSolutions getBestIKSet(
-      const std::vector<tesseract_kinematics::IKSolutions> &act_iks);
+      const Eigen::VectorXd current_state,
+      const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
+      const Eigen::VectorXd cost_coeff);
 
   tesseract_kinematics::IKSolutions kmeans(
       const tesseract_kinematics::IKSolutions &act_iks, int k);
-  double getIKSetCost(const tesseract_kinematics::IKSolutions &act_ik_set);
+
+  double getIKSetCost(const Eigen::VectorXd current_state,
+                      const tesseract_kinematics::IKSolutions &act_ik_set,
+                      const Eigen::VectorXd cost_coeff);
 
   int n_steps;
   int n_iter;
@@ -30,9 +35,9 @@ class LongHorizonSeedGenerator {
 std::vector<tesseract_kinematics::IKSolutions> CartesianProduct(
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks);
 void CartesianRecurse_(std::vector<tesseract_kinematics::IKSolutions> &accum,
-                      tesseract_kinematics::IKSolutions stack,
-                      std::vector<tesseract_kinematics::IKSolutions> sequences,
-                      int index);
+                       tesseract_kinematics::IKSolutions stack,
+                       std::vector<tesseract_kinematics::IKSolutions> sequences,
+                       int index);
 };  // namespace vkc
 
 #endif

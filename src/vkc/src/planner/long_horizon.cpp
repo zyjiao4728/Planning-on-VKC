@@ -18,6 +18,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   std::shared_ptr<VKCEnvBasic> vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
   vkc_env->updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+  auto current_state = env->getCurrentJointValues();
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
   std::vector<tesseract_kinematics::IKSolutions> act_iks;
@@ -30,6 +31,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     coeff.setOnes();
     coeff(0) = 0;
     coeff(1) = 0;
+    coeff(2) = 0;
     // CONSOLE_BRIDGE_logDebug(
     //     fmt::format("{}", kin_group->getJointNames()).c_str());
     // std::cout
@@ -49,7 +51,10 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     CONSOLE_BRIDGE_logDebug("udpate env success, processing next action...");
   }
   std::cout << "getting best ik set" << std::endl;
-  auto ik_set = getBestIKSet(act_iks);
+  Eigen::VectorXd coeff(9);
+  coeff.setOnes();
+  coeff(2) = 0;
+  auto ik_set = getBestIKSet(current_state, act_iks, coeff);
   assert(ik_set.size() == sub_actions.size());
   for (int i = 0; i < sub_actions.size(); i++) {
     sub_actions[i]->joint_candidate = ik_set[i];
@@ -59,39 +64,56 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
 }
 
 tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
-    const std::vector<tesseract_kinematics::IKSolutions> &act_iks) {
+    const Eigen::VectorXd current_state,
+    const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
+    const Eigen::VectorXd cost_coeff) {
   std::vector<Eigen::VectorXd> best_ik_set;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
     auto filtered_iks = kmeans(act_ik, 50);
-    CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
-                            filtered_iks[0].size());
+    // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
+    //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);
   }
   std::reverse(set_input.begin(), set_input.end());
   auto sets = CartesianProduct(set_input);
   double lowest_cost = 10000;
-  for (auto &ik_set : sets) {
-    double cost = getIKSetCost(ik_set);
+  for (const auto &ik_set : sets) {
+    double cost = getIKSetCost(current_state, ik_set, cost_coeff);
     if (cost < lowest_cost) {
       lowest_cost = cost;
       best_ik_set = ik_set;
     }
   }
+  std::cout << "best ik set\n";
   for (const auto &ik : best_ik_set) {
     std::cout << ik.transpose() << std::endl;
   }
-  std::cout << "get ik set success" << std::endl;
+  std::cout << "best ik set cost: " << lowest_cost << std::endl;
   // exit(0);
   return best_ik_set;
 }
 
 double LongHorizonSeedGenerator::getIKSetCost(
-    const std::vector<Eigen::VectorXd> &act_ik_set) {
-  double cost = 0.0;
+    const Eigen::VectorXd current_state,
+    const std::vector<Eigen::VectorXd> &act_ik_set,
+    const Eigen::VectorXd cost_coeff) {
+  const int coeff_length = cost_coeff.size();
+  assert(act_ik_set.size() > 0 && act_ik_set[0].size() >= coeff_length);
+  double cost =
+      (act_ik_set[0].head(coeff_length) - current_state.head(coeff_length))
+          .cwiseProduct(cost_coeff)
+          .array()
+          .abs()
+          .sum();
   for (int i = 0; i < act_ik_set.size() - 1; i++) {
-    cost +=
-        (act_ik_set[i].head(9) - act_ik_set[i + 1].head(9)).array().abs().sum();
+    assert(act_ik_set[i].size() >= coeff_length);
+    cost += (act_ik_set[i].head(coeff_length) -
+             act_ik_set[i + 1].head(coeff_length))
+                .cwiseProduct(cost_coeff)
+                .array()
+                .abs()
+                .sum();
   }
   return cost;
 }
@@ -118,7 +140,7 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
   Eigen::ArrayXXd mu = Eigen::ArrayXXd::Zero(K, n_features);
   Eigen::ArrayXd z = Eigen::ArrayXd::Zero(n_examples_ttl);
 
-  std::cout << "running kmeans ... \n";
+  std::cout << "running kmeans with k: " << K << std::endl;
   RunKMeans(data_all.data(), n_examples_ttl, n_features, K, n_iters, seed,
             "plusplus", mu.data(), z.data());
   std::cout << "done.\n";
