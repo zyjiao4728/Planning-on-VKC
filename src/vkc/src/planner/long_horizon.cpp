@@ -29,14 +29,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     CONSOLE_BRIDGE_logDebug("mixed waypoint generated");
     Eigen::VectorXd coeff(kin_group->getJointNames().size());
     coeff.setOnes();
-    coeff(0) = 0;
-    coeff(1) = 0;
     coeff(2) = 0;
-    // CONSOLE_BRIDGE_logDebug(
-    //     fmt::format("{}", kin_group->getJointNames()).c_str());
-    // std::cout
-    //     << env->getCurrentJointValues(kin_group->getJointNames()).transpose()
-    //     << std::endl;
     auto ik_result = tesseract_planning::getIKWithOrder(
         kin_group, wp, "world",
         env->getCurrentJointValues(kin_group->getJointNames()), coeff);
@@ -70,7 +63,7 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
   std::vector<Eigen::VectorXd> best_ik_set;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 50);
+    auto filtered_iks = kmeans(act_ik, 80);
     // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
     //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);
@@ -121,7 +114,7 @@ double LongHorizonSeedGenerator::getIKSetCost(
 tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
     const tesseract_kinematics::IKSolutions &act_iks, int k) {
   const Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
-  int K = std::min(int(act_iks.size() * 0.6), k);
+  int K = std::min(int(act_iks.size() * 0.8), k);
   int n_features = act_iks[0].rows();
   int n_iters = 400;
   int seed = 42;
