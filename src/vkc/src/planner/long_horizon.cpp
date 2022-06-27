@@ -21,6 +21,11 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   auto current_state = env->getCurrentJointValues();
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
+  if (sub_actions.size() <= 1) {
+    CONSOLE_BRIDGE_logDebug("sub actions length <= 1, removing joint candidates");
+    if (sub_actions.size()) sub_actions[0]->joint_candidate = Eigen::VectorXd();
+    return;
+  }
   std::vector<tesseract_kinematics::IKSolutions> act_iks;
   for (auto &action : sub_actions) {
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
