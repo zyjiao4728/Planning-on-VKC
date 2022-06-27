@@ -46,9 +46,9 @@ int saveDataToFile(const std::vector<double> &data,
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
                         int n_iter, bool rviz_enabled, unsigned int nruns) {
-  // int window_size = 3;
-  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  // seed_generator.generate(env, actions);
+  int window_size = 3;
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -90,8 +90,8 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        // ActionSeq sub_actions(ptr, actions.end());
-        // seed_generator.generate(env, sub_actions);
+        ActionSeq sub_actions(ptr, actions.end());
+        seed_generator.generate(env, sub_actions);
       }
     }
 
@@ -935,7 +935,7 @@ int main(int argc, char **argv) {
     }
     saveDataToFile(data,
                    "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
-                   "open_door_push_vkc.csv");
+                   "open_door_push_vkc_long.csv");
   } else if (envid == 2 && !runbs) {
     pullDrawer(actions, robot);
     auto elapsed_time =
@@ -958,7 +958,7 @@ int main(int argc, char **argv) {
     }
     saveDataToFile(data,
                    "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
-                   "open_drawer_pull_vkc.csv");
+                   "open_drawer_pull_vkc_long.csv");
   } else if (runbs == 1) {
     auto data = run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz,
                               nruns, envid);
