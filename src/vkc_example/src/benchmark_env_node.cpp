@@ -927,6 +927,12 @@ int main(int argc, char **argv) {
       data.emplace_back(base_cost);
       data.emplace_back(arm_cost);
     }
+    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.){
+       data.emplace_back(0);
+    }
+    else{
+      data.emplace_back(1);
+    }
     saveDataToFile(data,
                    "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
                    "open_door_push_vkc.csv");
