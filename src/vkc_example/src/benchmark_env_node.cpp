@@ -45,10 +45,13 @@ int saveDataToFile(const std::vector<double> &data,
 
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
-                        int n_iter, bool rviz_enabled, unsigned int nruns) {
+                        int n_iter, bool rviz_enabled, unsigned int nruns,
+                        bool long_horizon = false) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  seed_generator.generate(env, actions);
+  if (long_horizon) {
+    seed_generator.generate(env, actions);
+  }
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -90,8 +93,10 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        ActionSeq sub_actions(ptr, actions.end());
-        seed_generator.generate(env, sub_actions);
+        if (long_horizon) {
+          ActionSeq sub_actions(ptr, actions.end());
+          seed_generator.generate(env, sub_actions);
+        }
       }
     }
 
@@ -880,6 +885,7 @@ int main(int argc, char **argv) {
 
   bool plotting = true;
   bool rviz = true;
+  bool long_horizon = true;
   int steps = 30;
   int n_iter = 1000;
   int nruns = 5;
@@ -896,6 +902,7 @@ int main(int argc, char **argv) {
   pnh.param<int>("nruns", nruns, nruns);
   pnh.param<int>("envid", envid, envid);
   pnh.param<int>("baseline", runbs, runbs);
+  pnh.param<bool>("longhorizon", long_horizon, long_horizon);
 
   BenchmarkEnv env(nh, plotting, rviz, steps, envid, runbs);
 
@@ -909,8 +916,8 @@ int main(int argc, char **argv) {
 
   if (envid == 1 && !runbs) {
     pushDoor(actions, robot);
-    auto elapsed_time =
-        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+    auto elapsed_time = run(joint_trajs, env, actions, steps, n_iter, rviz,
+                            nruns, long_horizon);
 
     std::vector<double> data;
 
@@ -927,19 +934,25 @@ int main(int argc, char **argv) {
       data.emplace_back(base_cost);
       data.emplace_back(arm_cost);
     }
-    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.){
-       data.emplace_back(0);
-    }
-    else{
+    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.) {
+      data.emplace_back(0);
+    } else {
       data.emplace_back(1);
     }
-    saveDataToFile(data,
-                   "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
-                   "open_door_push_vkc_long.csv");
+    if (long_horizon) {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_door_push_vkc_long.csv");
+    } else {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_door_push_vkc.csv");
+    }
+
   } else if (envid == 2 && !runbs) {
     pullDrawer(actions, robot);
     auto elapsed_time =
-        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, long_horizon);
 
     std::vector<double> data;
 
@@ -956,9 +969,21 @@ int main(int argc, char **argv) {
       data.emplace_back(base_cost);
       data.emplace_back(arm_cost);
     }
-    saveDataToFile(data,
-                   "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
-                   "open_drawer_pull_vkc_long.csv");
+    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.) {
+      data.emplace_back(0);
+    } else {
+      data.emplace_back(1);
+    }
+    if (long_horizon) {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_drawer_pull_vkc_long.csv");
+    } else {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_drawer_pull_vkc.csv");
+    }
+
   } else if (runbs == 1) {
     auto data = run_baseline1(joint_trajs, env, actions, steps, n_iter, rviz,
                               nruns, envid);

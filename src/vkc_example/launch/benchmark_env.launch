@@ -11,6 +11,7 @@
   <arg name="nruns" default="5" />
   <arg name="envid" default="1" />
   <arg name="baseline" default="0" />
+  <arg name="longhorizon" default="false" />
 
   <arg name="husky_locx" default="0.0" />
   <arg name="husky_locy" default="0.0" />
@@ -50,6 +51,7 @@
     <param name="nruns" type="int" value="$(arg nruns)" />
     <param name="envid" type="int" value="$(arg envid)" />
     <param name="baseline" type="int" value="$(arg baseline)" />
+    <param name="longhorizon" type="bool" value="$(arg longhorizon)" />
   </node>
 
   <!-- Launch visualization -->
