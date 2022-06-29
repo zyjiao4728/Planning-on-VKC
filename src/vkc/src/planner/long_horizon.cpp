@@ -36,7 +36,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     CONSOLE_BRIDGE_logDebug("mixed waypoint generated");
     Eigen::VectorXd coeff(kin_group->getJointNames().size());
     coeff.setOnes();
-    coeff(2) = 0;
+    // coeff(2) = 0;
     auto ik_result = tesseract_planning::getIKWithOrder(
         kin_group, wp, "world",
         env->getCurrentJointValues(kin_group->getJointNames()), coeff);
@@ -53,7 +53,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   std::cout << "getting best ik set" << std::endl;
   Eigen::VectorXd coeff(9);
   coeff.setOnes();
-  coeff(2) = 0;
+  // coeff(2) = 0;
   auto ik_set = getBestIKSet(current_state, act_iks, coeff);
   assert(ik_set.size() == sub_actions.size());
   for (int i = 0; i < sub_actions.size(); i++) {

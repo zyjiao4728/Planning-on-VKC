@@ -646,7 +646,7 @@ CompositeInstruction generateMixedSeed(
   profile->setBaseJoint(base_joint);
   Eigen::VectorXd cost_coeff;
   cost_coeff.setOnes(env->getCurrentJointValues().size());
-  cost_coeff(2) = 0;
+  // cost_coeff(2) = 0;
   profile->cost_coeff = cost_coeff;
 
   auto profiles = std::make_shared<ProfileDictionary>();

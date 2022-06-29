@@ -47,7 +47,6 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                manip);
 
   // set initial pose
-  std::cout << fmt::format("{}", kinematic_group->getJointNames()) << std::endl;
   setStartInstruction(
       program, kinematic_group->getJointNames(),
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
