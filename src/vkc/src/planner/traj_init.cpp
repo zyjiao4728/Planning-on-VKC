@@ -632,7 +632,7 @@ CompositeInstruction generateMixedSeed(
     const tesseract_environment::Environment::ConstPtr &env, int min_steps,
     std::pair<std::string, std::string> base_joint) {
   // srand(time(NULL));
-  ROS_WARN("generating mixed seed");
+  CONSOLE_BRIDGE_logInform("generating mixed seed");
   PlannerRequest request;
   request.instructions = instructions;
   request.env_state = current_state;
