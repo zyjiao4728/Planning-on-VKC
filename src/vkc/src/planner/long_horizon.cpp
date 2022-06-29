@@ -14,18 +14,20 @@ LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
 void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                                         std::vector<ActionBase::Ptr> &actions) {
   CONSOLE_BRIDGE_logDebug("generating long horizon seed");
+  std::vector<ActionBase::Ptr> sub_actions(
+      actions.begin(), actions.begin() + std::min(window_size, actions.size()));
+  if (sub_actions.size() <= 1) {
+    CONSOLE_BRIDGE_logDebug(
+        "sub actions length <= 1, removing joint candidates");
+    if (sub_actions.size()) sub_actions[0]->joint_candidate = Eigen::VectorXd();
+    return;
+  } 
   ProbGenerator prob_generator;
   std::shared_ptr<VKCEnvBasic> vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
   vkc_env->updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   auto current_state = env->getCurrentJointValues();
-  std::vector<ActionBase::Ptr> sub_actions(
-      actions.begin(), actions.begin() + std::min(window_size, actions.size()));
-  if (sub_actions.size() <= 1) {
-    CONSOLE_BRIDGE_logDebug("sub actions length <= 1, removing joint candidates");
-    if (sub_actions.size()) sub_actions[0]->joint_candidate = Eigen::VectorXd();
-    return;
-  }
+
   std::vector<tesseract_kinematics::IKSolutions> act_iks;
   for (auto &action : sub_actions) {
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
@@ -55,6 +57,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   auto ik_set = getBestIKSet(current_state, act_iks, coeff);
   assert(ik_set.size() == sub_actions.size());
   for (int i = 0; i < sub_actions.size(); i++) {
+    ik_set[i](2) = current_state(2);
     sub_actions[i]->joint_candidate = ik_set[i];
   }
 
@@ -68,7 +71,7 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
   std::vector<Eigen::VectorXd> best_ik_set;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 80);
+    auto filtered_iks = kmeans(act_ik, 100);
     // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
     //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);
