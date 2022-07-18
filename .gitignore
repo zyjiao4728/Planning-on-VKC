@@ -67,3 +67,7 @@ unused/
 # Catkin custom files
 CATKIN_IGNORE
 *.log
+
+# data file
+*.csv
+*.txt
