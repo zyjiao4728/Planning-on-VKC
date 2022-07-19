@@ -645,9 +645,10 @@ CompositeInstruction generateMixedSeed(
   profile->setMapInfo(15, 15, 0.15);
   profile->setBaseJoint(base_joint);
   Eigen::VectorXd cost_coeff;
-  cost_coeff.setOnes(env->getCurrentJointValues().size());
+  // std::cout << env->getCurrentJointValues().size() << std::endl;
+  // cost_coeff.setOnes(env->getCurrentJointValues().size());
   // cost_coeff(2) = 0;
-  profile->cost_coeff = cost_coeff;
+  // profile->cost_coeff = cost_coeff;
 
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<MMMOPlannerPlanProfile>(

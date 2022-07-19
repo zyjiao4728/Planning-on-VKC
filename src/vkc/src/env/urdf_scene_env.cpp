@@ -2,7 +2,6 @@
 
 using namespace std;
 using namespace trajopt;
-using namespace tesseract;
 using namespace tesseract_environment;
 using namespace tesseract_scene_graph;
 using namespace tesseract_collision;
@@ -26,14 +25,13 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 namespace vkc {
 UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz,
                            int steps)
-    : VKCEnvBasic(nh, plotting, rviz), steps_(steps) {
+    : VKCEnvBasic(nh, plotting, rviz, steps) {
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
 
-  initTesseractConfig(MODIFY_ENVIRONMENT_SERVICE,
-                      GET_ENVIRONMENT_CHANGES_SERVICE);
+  initTesseractConfig();
 
   // set robot initial pose in scene graph
   setHomePose();
@@ -50,16 +48,14 @@ UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz,
 UrdfSceneEnv::UrdfSceneEnv(ros::NodeHandle nh, bool plotting, bool rviz,
                            int steps, const AttachObjectInfos &attaches,
                            const InverseChainsInfos &inverse_chains)
-    : VKCEnvBasic(nh, plotting, rviz),
-      steps_(steps),
+    : VKCEnvBasic(nh, plotting, rviz, steps),
       attaches_(attaches),
       inverse_chains_(inverse_chains) {
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
   loadRobotModel(ENV_DESCRIPTION_PARAM, ENV_SEMANTIC_PARAM, END_EFFECTOR_LINK);
 
-  initTesseractConfig(MODIFY_ENVIRONMENT_SERVICE,
-                      GET_ENVIRONMENT_CHANGES_SERVICE);
+  initTesseractConfig();
 
   // set robot initial pose in scene graph
   setHomePose();
@@ -84,10 +80,15 @@ bool UrdfSceneEnv::createEnvironment() {
   DOUT("Before RVIZ Changed");
 
   for (auto &it : attach_locations_) {
-    it.second->world_joint_origin_transform =
-        tesseract_->getTesseract()->getEnvironment()->getLinkTransform(
-            it.second->link_name_) *
+    auto replace_joint = it.second->clone();
+    replace_joint->world_joint_origin_transform =
+        tesseract_->getTesseract()->getLinkTransform(it.second->link_name_) *
         it.second->local_joint_origin_transform;
+    attach_locations_[it.first] = std::move(replace_joint);
+    // it.second->world_joint_origin_transform =
+    //     tesseract_->getTesseract()->getLinkTransform(
+    //         it.second->link_name_) *
+    //     it.second->local_joint_origin_transform;
     std::cout << "translation of attachment " << it.second->name_
               << " in world frame: " << std::endl;
     std::cout << it.second->world_joint_origin_transform.translation()
@@ -98,12 +99,12 @@ bool UrdfSceneEnv::createEnvironment() {
               << std::endl;
   }
 
-  if (rviz_) {
-    // Now update rviz environment
-    if (!sendRvizChanges(n_past_revisions_, tesseract_)) return false;
-  }
+  // if (rviz_) {
+  //   // Now update rviz environment
+  //   if (!sendRvizChanges(n_past_revisions_, tesseract_)) return false;
+  // }
 
-  DOUT("RVIZ Changed");
+  // DOUT("RVIZ Changed");
 
   return true;
 }
@@ -123,12 +124,11 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::loadSceneGraphFromURDF_(
   nh_.getParam(scene_description, scene_urdf_xml_string);
 
   DOUT("Load URDF from: " << scene_description);
-  ResourceLocator::Ptr locator =
-      std::make_shared<tesseract_rosutils::ROSResourceLocator>();
+  auto locator = std::make_shared<tesseract_rosutils::ROSResourceLocator>();
 
   // Parse urdf string into Scene Graph
   tesseract_scene_graph::SceneGraph::Ptr sg =
-      tesseract_urdf::parseURDFString(scene_urdf_xml_string, locator);
+      tesseract_urdf::parseURDFString(scene_urdf_xml_string, *locator);
   if (sg == nullptr) {
     DOUT("Fail to parse SceneGraph: " << scene_description);
     exit(1);
@@ -143,6 +143,8 @@ bool UrdfSceneEnv::reInit() {
   configAttachLocations_(attaches_);
 
   VKCEnvBasic::reInit();
+
+  return true;
 }
 /*****************************************************************8
  * Configurate AttachLocations in the URDF scene
@@ -153,7 +155,8 @@ void UrdfSceneEnv::configAttachLocations_(
     const std::vector<AttachObjectInfo> &attaches) {
   for (const auto &attach : attaches) {
     ROS_INFO(
-        "[%s]add attach object, attach name: %s, attach_link: %s, fixed base: "
+        "[%s]add attach object, attach name: %s, attach_link: %s, base_link: "
+        "%s, fixed base: "
         "%s",
         __func__, attach.attach_name.c_str(), attach.attach_link.c_str(),
         attach.base_link.c_str(), (attach.fixed_base ? "yes" : "no"));
@@ -190,8 +193,8 @@ void UrdfSceneEnv::newAttachLocation_(std::string attach_name,
 
   // add AttachLocation object into the Env
   // The name ID of the AttachLocation will be AttachLocation.name_
-  AttachLocation::Ptr attach_location_ptr =
-      std::make_shared<AttachLocation>(std::move(attach_location));
+  BaseObject::AttachLocation::Ptr attach_location_ptr =
+      std::make_shared<BaseObject::AttachLocation>(std::move(attach_location));
 
   addAttachLocation(attach_location_ptr);
 }
@@ -261,9 +264,9 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
   DOUT("[" << __func__ << "]inverting link `" << src << "` and `" << dst
            << "`");
 
-  SceneGraph::Ptr tmp_sg = deepcopySceneGraph(sg);
+  SceneGraph::Ptr tmp_sg = sg->clone();
   std::string src_parent_name = getLinkParentName_(sg, src);
-  Joint::Ptr src_parent_joint = getLinkParentJoint_(sg, src);
+  Joint::ConstPtr src_parent_joint = getLinkParentJoint_(sg, src);
 
   // find a path from `src` link to `dst` link
   // path.second: return JSON-type joint_name list
@@ -283,7 +286,7 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
   reverse(path.begin(), path.end());
 
   for (auto &it : path) {
-    Joint::Ptr sg_joint = sg->getJoint(it);
+    Joint::ConstPtr sg_joint = sg->getJoint(it);
     if (sg_joint->parent_link_name == src_parent_name) {
       // new_tip location in the global world frame
       tip_root_transform = src_parent_joint->parent_to_joint_origin_transform *
@@ -294,7 +297,8 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
         ROS_INFO("\t\t%s", child_it->getName().c_str());
         if (std::find(path.begin(), path.end(), child_it->getName()) ==
             path.end()) {
-          Joint::Ptr outbound_joint = sg->getJoint(child_it->getName());
+          Joint::Ptr outbound_joint = std::make_shared<Joint>(
+              std::move(sg->getJoint(child_it->getName())->clone()));
           outbound_joint->parent_to_joint_origin_transform =
               prev_old_joint_tf.inverse() *
               outbound_joint->parent_to_joint_origin_transform;
@@ -306,7 +310,8 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
       continue;
     }
 
-    Joint::Ptr new_joint = sg_joint;
+    Joint::Ptr new_joint =
+        std::make_shared<Joint>(std::move(sg_joint->clone()));
     new_joint->parent_link_name = sg_joint->child_link_name;
     new_joint->child_link_name = sg_joint->parent_link_name;
 
@@ -323,8 +328,8 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
     for (auto &child_it : sg->getOutboundJoints(sg_joint->child_link_name)) {
       if (std::find(path.begin(), path.end(), child_it->getName()) ==
           path.end()) {
-        Joint::Ptr outbound_joint =
-            std::make_shared<Joint>(*sg->getJoint(child_it->getName()));
+        Joint::Ptr outbound_joint = std::make_shared<Joint>(
+            std::move(sg->getJoint(child_it->getName())->clone()));
 
         outbound_joint->parent_to_joint_origin_transform =
             prev_old_joint_tf.inverse() *
@@ -383,14 +388,15 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
     tmp_sg->addJoint(*new_joint);
   }
 
-  Joint new_root_parent_joint(src_parent_joint->getName());
-  new_root_parent_joint.parent_link_name = src_parent_name;
-  new_root_parent_joint.child_link_name = dst;
-  new_root_parent_joint.type = JointType::FIXED;
-  new_root_parent_joint.parent_to_joint_origin_transform = tip_root_transform;
+  Joint::Ptr new_root_parent_joint =
+      std::make_shared<Joint>(std::move(src_parent_joint->getName()));
+  new_root_parent_joint->parent_link_name = src_parent_name;
+  new_root_parent_joint->child_link_name = dst;
+  new_root_parent_joint->type = JointType::FIXED;
+  new_root_parent_joint->parent_to_joint_origin_transform = tip_root_transform;
 
   tmp_sg->removeJoint(src_parent_joint->getName());
-  tmp_sg->addJoint(new_root_parent_joint);
+  tmp_sg->addJoint(*new_root_parent_joint);
 
   return tmp_sg;
 }
@@ -412,9 +418,10 @@ void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name) {
 
   DOUT("add link: " << link->getName()
                     << ", Joint: " << root_parent_joint->getName());
-  tesseract_->getTesseractEnvironment()->addLink(*link, *root_parent_joint);
-  // plot_tesseract_->getTesseractEnvironment()->addLink(*link,
-  //                                                     *root_parent_joint);
+  Commands cmds;
+  cmds.clear();
+  cmds.push_back(std::make_shared<AddLinkCommand>(*link, *root_parent_joint));
+  tesseract_->getTesseract()->applyCommands(cmds);
 
   std::vector<Joint::ConstPtr> out_bound_joints =
       sg->getOutboundJoints(root_name);
@@ -434,11 +441,11 @@ string UrdfSceneEnv::getLinkParentName_(SceneGraph::ConstPtr sg,
   }
 }
 
-Joint::Ptr UrdfSceneEnv::getLinkParentJoint_(SceneGraph::ConstPtr sg,
-                                             string link_name) {
+Joint::ConstPtr UrdfSceneEnv::getLinkParentJoint_(SceneGraph::ConstPtr sg,
+                                                  string link_name) {
   auto inbound_joints = sg->getInboundJoints(link_name);
 
-  return std::make_shared<Joint>(*inbound_joints[0]);
+  return inbound_joints[0];
 }
 
 /*******************************************************************
@@ -461,27 +468,28 @@ void printSceneGraphHelper(const SceneGraph::ConstPtr &sg,
   }
 }
 
-SceneGraph::Ptr deepcopySceneGraph(SceneGraph::ConstPtr sg) {
-  SceneGraph::Ptr sg_copied = std::make_shared<SceneGraph>();
+// SceneGraph::Ptr deepcopySceneGraph(SceneGraph::ConstPtr sg) {
+//   SceneGraph::Ptr sg_copied = std::make_shared<SceneGraph>();
 
-  deepcopySceneGraphHelper(sg_copied, sg, sg->getRoot());
-  sg_copied->setRoot(sg->getRoot());
-  sg_copied->setName(sg->getName());
+//   deepcopySceneGraphHelper(sg_copied, sg, sg->getRoot());
+//   sg_copied->setRoot(sg->getRoot());
+//   sg_copied->setName(sg->getName());
 
-  return sg_copied;
-}
+//   return sg_copied;
+// }
 
-void deepcopySceneGraphHelper(SceneGraph::Ptr dst_sg,
-                              SceneGraph::ConstPtr src_sg, string root_name) {
-  if (!dst_sg->addLink(*(src_sg->getLink(root_name)))) {
-    DOUT("Error when copying Link " << root_name << " to scene graph.");
-  }
+// void deepcopySceneGraphHelper(SceneGraph::Ptr dst_sg,
+//                               SceneGraph::ConstPtr src_sg, string root_name)
+//                               {
+//   if (!dst_sg->addLink(*(src_sg->getLink(root_name)))) {
+//     DOUT("Error when copying Link " << root_name << " to scene graph.");
+//   }
 
-  for (const auto &child_joint : src_sg->getOutboundJoints(root_name)) {
-    deepcopySceneGraphHelper(dst_sg, src_sg, child_joint->child_link_name);
-    dst_sg->addJoint(*child_joint);
-  }
-}
+//   for (const auto &child_joint : src_sg->getOutboundJoints(root_name)) {
+//     deepcopySceneGraphHelper(dst_sg, src_sg, child_joint->child_link_name);
+//     dst_sg->addJoint(*child_joint);
+//   }
+// }
 
 vector<string> findPath(SceneGraph::ConstPtr sg, const string &src,
                         const string &dst) {
