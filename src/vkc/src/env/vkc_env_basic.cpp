@@ -147,10 +147,10 @@ bool VKCEnvBasic::ifAttachedLink(std::string link_name) {
 }
 
 void VKCEnvBasic::addAttachLocation(
-    vkc::BaseObject::AttachLocation attach_location) {
-  vkc::BaseObject::AttachLocation::Ptr al_ptr =
-      std::make_shared<vkc::BaseObject::AttachLocation>(
-          std::move(attach_location));
+    vkc::BaseObject::AttachLocation::Ptr al_ptr) {
+  // vkc::BaseObject::AttachLocation::Ptr al_ptr =
+  //     std::make_shared<vkc::BaseObject::AttachLocation>(
+  //         std::move(attach_location));
   al_ptr->connection.parent_link_name = end_effector_link_;
   attach_locations_[al_ptr->name_] = al_ptr;
 }

@@ -166,7 +166,7 @@ class UrdfSceneEnv : public VKCEnvBasic {
   std::string getLinkParentName_(tesseract_scene_graph::SceneGraph::ConstPtr sg,
                                  std::string link_name);
 
-  tesseract_scene_graph::Joint::Ptr getLinkParentJoint_(
+  tesseract_scene_graph::Joint::ConstPtr getLinkParentJoint_(
       tesseract_scene_graph::SceneGraph::ConstPtr sg, std::string link_name);
 
  private:

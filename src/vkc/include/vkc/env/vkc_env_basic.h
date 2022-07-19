@@ -56,7 +56,7 @@ class VKCEnvBasic {
   virtual bool reInit();
   void setRobotEndEffector(std::string link_name);
 
-  void addAttachLocation(vkc::BaseObject::AttachLocation attach_location);
+  void addAttachLocation(vkc::BaseObject::AttachLocation::Ptr attach_location_ptr);
 
   void updateAttachLocations(
       std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
