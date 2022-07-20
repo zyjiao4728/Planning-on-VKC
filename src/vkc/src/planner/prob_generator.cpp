@@ -249,7 +249,7 @@ ProfileDictionary::Ptr ProbGenerator::genPlannerProfiles_(
   auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
   setCartPlanProfile(trajopt_plan_profile, pos_coeff, rot_coeff);
 
-  // trajopt_plan_profile->fixed_dofs = {2};
+  trajopt_plan_profile->fixed_dofs = {3,4,5};
 
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<TrajOptCompositeProfile>(
