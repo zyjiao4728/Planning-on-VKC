@@ -27,7 +27,6 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
-  int window_size = 3;
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -40,13 +39,13 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      ROS_WARN("generating request");
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
-      env.getPlotter()->waitForInput(
-          "optimization is ready. Press <Enter> to process the request.");
+      if (rviz_enabled) {
+        env.getPlotter()->waitForInput(
+            "optimization is ready. Press <Enter> to process the request.");
+      }
 
-      // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       solveProb(prob_ptr, response, n_iter);
 
       // break;
@@ -66,23 +65,12 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     const auto &ci = response.results;
 
-    tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
-    joint_trajs.emplace_back(refined_traj);
+    tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
+    tesseract_common::JointTrajectory refined_traj = trajectory;
+    refineTrajectory(refined_traj, env);
+    joint_trajs.emplace_back(trajectory);
 
-    // ROS_WARN("trajectory: ");
-    // for (auto jo : refined_traj) {
-    //   std::cout << jo.position << std::endl;
-    // }
-
-    // refine the orientation of the move base
-
-    // tesseract_common::TrajArray refined_traj =
-    //     response.trajectory.leftCols(response.joint_names.size());
-    // refineTrajectory(refined_traj);
-
-    // std::cout << "optimized trajectory: " << std::endl
-    //           << refined_traj << std::endl;
-    if (env.getPlotter() != nullptr) {
+    if (rviz_enabled && env.getPlotter() != nullptr) {
       ROS_INFO("plotting result");
       tesseract_common::Toolpath toolpath =
           toToolpath(ci, *env.getVKCEnv()->getTesseract());
@@ -94,42 +82,47 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    toDelimitedFile(ci,
-                    "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-                    "trajectory/open_door_pull.csv",
-                    ',');
-    // saveTrajToFile(refined_traj,
-    // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
-    env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
+    env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
-    CONSOLE_BRIDGE_logInform("environment updated, starting next action...");
-    if (env.getPlotter() != nullptr) env.getPlotter()->clear();
+
+    if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
   }
 }
 
-void genVKCDemoDeq(ActionSeq &seq,
-                   std::unordered_map<std::string, double> home_pose) {
-  std::vector<JointDesiredPose> joint_home = getJointHome(home_pose);
-  ActionBase::Ptr action;
-  vector<LinkDesiredPose> link_objectives;
-  vector<JointDesiredPose> joint_objectives;
-  Eigen::Isometry3d destination;
+void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
+  PlaceAction::Ptr place_action;
 
-  action = make_shared<PickAction>("vkc", "attach_bottle");
-  action->RequireInitTraj(true);
-  seq.push_back(action);
+  /** open door **/
+  // action 1: pick the door handle
+  {
+    auto pick_action = make_shared<PickAction>(robot, "attach_bottle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
 
-  link_objectives.clear();
-  joint_objectives.clear();
-  destination.translation() = Eigen::Vector3d(-1.6, 1.4, 0.9);
-  destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
-  // destination.linear() = Eigen::Quaterniond(0.7071, 0.7071, 0, 0.0).matrix();
-  link_objectives.push_back(LinkDesiredPose("bottle", destination));
-  action = make_shared<PlaceAction>("vkc", "attach_bottle", link_objectives,
-                                    joint_objectives);
+  // action 2: open door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
+    destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
+    link_objectives.push_back(LinkDesiredPose("bottle", destination));
 
-  seq.push_back(action);
+    place_action = make_shared<PlaceAction>(
+        robot, "attach_bottle", link_objectives, joint_objectives, false);
+
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(place_action);
+  }
+}
+
+void setInitState(VKCEnvBasic &env) {
+  vector<string> dishwasher_joints({ "dishwasher_12065_joint_0", "dishwasher_12065_joint_1" , "dishwasher_12065_joint_2" });
+  Eigen::Vector3d dishwasher_values({ 0.3080, -0.1359, -0.6457}); //open: 0.9250 close -0.6457
+  env.getVKCEnv()->getTesseract()->setState(dishwasher_joints, dishwasher_values);
 }
 
 int main(int argc, char **argv) {
@@ -147,8 +140,10 @@ int main(int argc, char **argv) {
   int steps = 10;
   int n_iter = 1000;
   int nruns = 5;
+  std::string robot{"vkc"};
 
   // Get ROS Parameters
+  pnh.param<std::string>("robot", robot, robot);
   pnh.param("plotting", plotting, plotting);
   pnh.param("rviz", rviz, rviz);
   pnh.param<int>("steps", steps, steps);
@@ -156,6 +151,14 @@ int main(int argc, char **argv) {
   pnh.param<int>("nruns", nruns, nruns);
 
   UrdfSceneEnv::AttachObjectInfos attaches;
+
+  attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_bottle",
+                                                       "bottle_link_0",
+                                                       "bottle",
+                                                       {-0.2, 0, -0.0},
+                                                       {0.5, 0.5, 0.5, 0.5},
+                                                       false});
+
   attaches.emplace_back(
       UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
                                      "fridge_0001_dof_rootd_Aa002_r",
@@ -163,15 +166,6 @@ int main(int argc, char **argv) {
                                      {0.61, -0.30, -0.60},
                                      {0.0, 0.707106781, 0.707106781, 0.0},
                                      true});
-
-  attaches.emplace_back(
-      UrdfSceneEnv::AttachObjectInfo{"attach_bottle",
-                                     "bottle_link_0",
-                                     "bottle",
-                                     {-0.04, 0.0, -0.15},
-                                     {0.707106781, 0.707106781, -0.0, 0.0},
-                                     //  {0.5, 0.5, -0.5, 0.5},
-                                     false});
 
   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_drawer",
                                                        "cabinet_45290_2_link_0",
@@ -204,10 +198,10 @@ int main(int argc, char **argv) {
                                                        true});
 
   UrdfSceneEnv::InverseChainsInfos inverse_chains;
-  // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"fridge_0001",
-  // "fridge_0001_dof_rootd_Aa002_r"});
   inverse_chains.emplace_back(
       UrdfSceneEnv::InverseChainsInfo{"bottle", "bottle_link_0"});
+  // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"fridge_0001",
+  // "fridge_0001_dof_rootd_Aa002_r"});
   // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"cabinet_45290_2_base",
   // "cabinet_45290_2_link_0"});
   // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"door_8966_base",
@@ -218,84 +212,9 @@ int main(int argc, char **argv) {
   // "link_1"});
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
-
-  Commands cmds;
-  cmds.clear();
-
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "bottle_link_0", "bottle_link_1", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "bottle_link_1", "rect_table", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_1_link_0", "cabinet_45290_1_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_1_link_1", "cabinet_45290_1_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_1_link_2", "cabinet_45290_1_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_2_link_0", "cabinet_45290_2_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_2_link_1", "cabinet_45290_2_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "cabinet_45290_2_link_2", "cabinet_45290_2_link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "dishwasher_12065_link_0", "dishwasher_12065_link_4", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "dishwasher_12065_link_1", "dishwasher_12065_link_4", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "dishwasher_12065_link_2", "dishwasher_12065_link_4", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "dishwasher_12065_link_3", "dishwasher_12065_link_4", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "door_8966_link_0", "door_8966_link_1", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "door_8966_link_0", "door_8966_link_2", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "fridge_0001", "fridge_0001_dof_rootd_Aa002_r", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "fridge_0001", "fridge_0001_dof_rootd_Ba001_t", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "fridge_0001", "fridge_0001_dof_rootd_Ba002_t", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "fridge_0001", "fridge_0001_dof_rootd_Ba003_t", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "fridge_0001_dof_rootd_Aa002_r", "fridge_0001_dof_rootd_Ba003_t",
-      "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "link_0", "link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "link_1", "link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "link_2", "link_3", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "link_0", "link_3", "Never"));
-
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_1", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_2", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_3", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_4", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_5", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_6", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "oven_101917_link_7", "oven_101917_link_8", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "rect_table", "ur_arm_forearm_link", "Never"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "rect_table", "ur_arm_wrist_1_link", "Never"));
-
+  setInitState(env);
   ActionSeq actions;
-  genVKCDemoDeq(actions, env.getHomePose());
-  // cache the planning result for replaying
+  genVKCDemoDeq(actions, robot);
   vector<TesseractJointTraj> joint_trajs;
-
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
-
-  // visualize the trajectory as planned
-  TrajectoryVisualize(env, actions, joint_trajs);
 }

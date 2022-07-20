@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="scene">
   <!-- <xacro:include filename="$(find scene_builder)/output/vkc_demo/main.xacro" /> -->
-  <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e.urdf.xacro" />
+  <xacro:include filename="$(find vkc_example)/urdf/deploy_husky_ur5e_2f_85.urdf.xacro" />
 
   <!-- Arguments -->
   <xacro:arg name="husky_locx" default="0.0"/>

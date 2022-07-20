@@ -1,4 +1,5 @@
 #include <vkc/env/urdf_scene_env.h>
+#include <tesseract_srdf/utils.h>
 
 using namespace std;
 using namespace trajopt;
@@ -13,6 +14,7 @@ using namespace tesseract_rosutils;
 const std::string INTERACTIVE_SCENE_DESC_PARAM = "interactive_description";
 const std::string ENV_DESCRIPTION_PARAM = "env_description";
 const std::string ENV_SEMANTIC_PARAM = "env_description_semantic";
+const std::string INTERACTIVE_SCENE_SEMANTIC_PARAM = "interactive_description_semantic";
 
 // Link name defined as end effector
 const std::string END_EFFECTOR_LINK = "end_effector_link";
@@ -223,6 +225,23 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(
   }
 
   updateInvertedEnv_(iscene_sg);
+
+  // Process scene srdf
+  std::string scene_srdf_xml_file;
+  auto locator = std::make_shared<tesseract_rosutils::ROSResourceLocator>();
+  tesseract_srdf::SRDFModel::Ptr srdf =
+      std::make_shared<tesseract_srdf::SRDFModel>();
+  nh_.getParam(INTERACTIVE_SCENE_SEMANTIC_PARAM, scene_srdf_xml_file);
+  srdf->initString(*iscene_sg, scene_srdf_xml_file, *locator);
+  
+  // Add allowed collision matrix to scene graph
+  Commands cmds;
+  cmds.clear();
+  for (const auto& pair : srdf->acm.getAllAllowedCollisions()){
+    cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(pair.first.first, pair.first.second, pair.second));
+  }
+  
+  tesseract_->getTesseract()->applyCommands(cmds);
 
   return iscene_sg;
 }
