@@ -640,12 +640,13 @@ CompositeInstruction generateMixedSeed(
   PlannerResponse response;
 
   tesseract_planning::MMMOMotionPlanner planner;
-  auto profile = std::make_shared<MMMOPlannerPlanProfile>(30, 5 * M_PI / 180,
+  auto profile = std::make_shared<MMMOPlannerPlanProfile>(min_steps, 5 * M_PI / 180,
                                                           0.1, 5 * M_PI / 180);
   profile->setMapInfo(15, 15, 0.15);
   profile->setBaseJoint(base_joint);
   Eigen::VectorXd cost_coeff;
-  cost_coeff.setOnes(env->getCurrentJointValues().size());
+  // std::cout << env->getCurrentJointValues().size() << std::endl;
+  // cost_coeff.setOnes(env->getCurrentJointValues().size());
   // cost_coeff(2) = 0;
   // profile->cost_coeff = cost_coeff;
 

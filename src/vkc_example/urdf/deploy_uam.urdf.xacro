@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot name="deploy_uam" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find aerialvkc_v3000_description)/urdf/aerialvkc_v3000_description_simplify.urdf.xacro" />
+
+    <xacro:macro name="deploy" params="prefix attach_to_world x y z">
+
+        <!-- Virtual Link Starts -->
+        <link name="${prefix}virtual_base_x" />
+        <link name="${prefix}virtual_base_y" />
+        <link name="${prefix}virtual_base_z" />
+        <link name="${prefix}virtual_base_roll" />
+        <link name="${prefix}virtual_base_pitch" />
+        <link name="${prefix}virtual_base_yaw" />
+
+        <!-- Virtual Link Ends -->
+
+        <joint name="${prefix}base_link_base_yaw" type="revolute">
+            <parent link="${prefix}virtual_base_yaw" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="base_link" />
+            <axis xyz="0 0 1" />
+            <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14" />
+        </joint>
+
+        <joint name="${prefix}base_yaw_base_pitch" type="revolute">
+            <parent link="${prefix}virtual_base_pitch" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="${prefix}virtual_base_yaw" />
+            <axis xyz="0 1 0" />
+            <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14" />
+        </joint>
+
+        <joint name="${prefix}base_pitch_base_roll" type="revolute">
+            <parent link="${prefix}virtual_base_roll" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="${prefix}virtual_base_pitch" />
+            <axis xyz="1 0 0" />
+            <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14" />
+        </joint>
+
+        <joint name="${prefix}base_roll_base_z" type="prismatic">
+            <parent link="${prefix}virtual_base_z" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="${prefix}virtual_base_roll" />
+            <axis xyz="0 0 1" />
+            <limit effort="20" velocity="5.0" lower="-10" upper="10" />
+        </joint>
+
+        <joint name="${prefix}base_z_base_y" type="prismatic">
+            <parent link="${prefix}virtual_base_y" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="${prefix}virtual_base_z" />
+            <axis xyz="0 1 0" />
+            <limit effort="20" velocity="5.0" lower="-10" upper="10" />
+        </joint>
+
+        <joint name="${prefix}base_y_base_x" type="prismatic">
+            <parent link="${prefix}virtual_base_x" />
+            <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+            <child link="${prefix}virtual_base_y" />
+            <axis xyz="1 0 0" />
+            <limit effort="20" velocity="5.0" lower="-10" upper="10" />
+        </joint>
+
+        <xacro:if value="${attach_to_world}">
+            <joint name="${prefix}world" type="fixed">
+                <child link="${prefix}virtual_base_x" />
+                <parent link="world" />
+                <origin xyz="${x} ${y} ${z}" rpy="0 0 0" />
+            </joint>
+        </xacro:if>
+
+    </xacro:macro>
+</robot>

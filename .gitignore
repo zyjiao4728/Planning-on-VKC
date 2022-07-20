@@ -68,4 +68,6 @@ unused/
 CATKIN_IGNORE
 *.log
 
+# data file
 *.csv
+*.txt

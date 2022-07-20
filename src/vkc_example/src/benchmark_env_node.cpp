@@ -529,7 +529,7 @@ Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
   double max_cost = 1e6;
   Eigen::VectorXd ik_result = initial_joint_values;
   int sample_base_pose_tries = 0;
-  while (sample_base_pose_tries < 1000) {
+  while (sample_base_pose_tries < 200) {
     sample_base_pose_tries++;
     Eigen::VectorXd ik_seed =
         tesseract_common::generateRandomNumber(limits.joint_limits);

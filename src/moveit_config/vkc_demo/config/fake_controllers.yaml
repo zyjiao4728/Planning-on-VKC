@@ -1,5 +1,6 @@
 controller_list:
   - name: fake_vkc_controller
+    type: $(arg fake_execution_type)
     joints:
       - base_y_base_x
       - base_theta_base_y
@@ -10,6 +11,6 @@ controller_list:
       - ur_arm_wrist_1_joint
       - ur_arm_wrist_2_joint
       - ur_arm_wrist_3_joint
-initial:  # Define initial robot poses.
+initial:  # Define initial robot poses per group
   - group: vkc
     pose: home
