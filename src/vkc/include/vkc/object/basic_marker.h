@@ -25,7 +25,7 @@ class BaseMarker : public BaseObject {
     Visual::Ptr marker_link_visual = std::make_shared<Visual>();
     marker_link_visual->origin = Eigen::Isometry3d::Identity();
     marker_link_visual->geometry =
-        std::make_shared<tesseract_geometry::Box>(radius_, radius_, radius_);
+        std::make_shared<tesseract_geometry::Sphere>(radius_);
     material_name = marker_link.getName() + "_color";
     marker_link_visual->material = std::make_shared<Material>(material_name);
     marker_link_visual->material->color = color_;
@@ -34,7 +34,7 @@ class BaseMarker : public BaseObject {
     // Collision::Ptr marker_link_collision = std::make_shared<Collision>();
     // marker_link_collision->origin = marker_link_visual->origin;
     // marker_link_collision->geometry =
-    // std::make_shared<tesseract_geometry::Sphere>(radius_);
+    //     std::make_shared<tesseract_geometry::Sphere>(radius_);
     // marker_link.collision.push_back(marker_link_collision);
 
     Joint marker_joint(object_name_ + "_marker_joint");
@@ -62,12 +62,13 @@ class BaseMarker : public BaseObject {
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(1, 0, 0, 0).matrix(); attach_location.fixed_base =
     // true;
-    AttachLocation attach_location("attach_" + marker_link.getName(),
-                                   marker_link.getName());
+
+    AttachLocation attach_location(fmt::format("attach_{}", marker_link.getName()), marker_link.getName());
+    attach_location.local_joint_origin_transform.setIdentity();
     attach_location.local_joint_origin_transform.translation() +=
-        Eigen::Vector3d(0, 0, 0.2);
+        Eigen::Vector3d(0, 0, 0.15);
     attach_location.local_joint_origin_transform.linear() =
-        Eigen::Quaterniond(0.7071, 0, 0.7071, 0).matrix();
+        Eigen::Quaterniond(0.70710678, 0, -0.70710678, 0).matrix();
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(1, 0, 0, 0).matrix();
     attach_location.fixed_base = false;

@@ -1,0 +1,16 @@
+controller_list:
+  - name: fake_vkc_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - base_y_base_x
+      - base_z_base_y
+      - base_roll_base_z
+      - base_roll_base_pitch
+      - base_yaw_base_pitch
+      - base_link_base_yaw
+      - arm_joint_I
+      - arm_joint_II
+      - gripper_base_joint
+initial:  # Define initial robot poses per group
+  - group: vkc
+    pose: home

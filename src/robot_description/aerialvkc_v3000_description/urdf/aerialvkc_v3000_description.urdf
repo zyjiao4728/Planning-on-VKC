@@ -1,0 +1,1796 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="aerialvkc_v3000_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="1.48132749672181E-06 -0.000128518507548026 -0.0186756580403975"
+        rpy="0 0 0" />
+      <mass
+        value="0.0852219238436207" />
+      <inertia
+        ixx="2.92200472097296E-05"
+        ixy="-8.40191538166482E-11"
+        ixz="1.3785811308194E-09"
+        iyy="2.73759047460707E-05"
+        iyz="-2.65992896723796E-09"
+        izz="5.10775637259083E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="hinge_link_I">
+    <inertial>
+      <origin
+        xyz="-0.0286920658868101 -2.09776640502923E-12 0.000129765701351203"
+        rpy="0 0 0" />
+      <mass
+        value="0.0180481140635355" />
+      <inertia
+        ixx="1.14996315873899E-06"
+        ixy="-2.80155247515752E-16"
+        ixz="-4.90018086254004E-14"
+        iyy="4.77573925274109E-06"
+        iyz="-2.69085765053552E-14"
+        izz="4.43859152295461E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="hinge_joint_I"
+    type="continuous">
+    <origin
+      xyz="0 0.200000000000009 -0.00599999999999989"
+      rpy="0.00518564126547178 0 1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="hinge_link_I" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="crazyflie11/base_link">
+    <inertial>
+      <origin
+        xyz="4.7277807986898E-05 -0.000242548958398092 -0.00256688589947934"
+        rpy="0 0 0" />
+      <mass
+        value="0.0934996333792319" />
+      <inertia
+        ixx="4.92603412266741E-05"
+        ixy="-1.92395335842271E-11"
+        ixz="-1.15879177735369E-14"
+        iyy="4.17272140348144E-05"
+        iyz="2.11721011582016E-07"
+        izz="8.39136565814911E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie11/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie11/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gimbal_joint_I"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 -0.00405398778622896 0" />
+    <parent
+      link="hinge_link_I" />
+    <child
+      link="crazyflie11/base_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="prolink_I_I">
+    <inertial>
+      <origin
+        xyz="1.0547118733939E-14 5.20673305899333E-05 0.000500000000002887"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435091" />
+      <inertia
+        ixx="1.60093905219262E-07"
+        ixy="3.04402465419514E-22"
+        ixz="1.61145123082987E-22"
+        iyy="1.58813263600953E-07"
+        iyz="-1.81359349302251E-22"
+        izz="3.18797540679143E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_I_I"
+    type="continuous">
+    <origin
+      xyz="-0.0580370958807339 0.0555608345534356 0.0210499999999688"
+      rpy="0 0 1.10424755267301" />
+    <parent
+      link="crazyflie11/base_link" />
+    <child
+      link="prolink_I_I" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_I_II">
+    <inertial>
+      <origin
+        xyz="-1.04931939338138E-05 5.09990176109087E-05 0.000500000000002998"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435093" />
+      <inertia
+        ixx="1.60041892161909E-07"
+        ixy="2.52793844475622E-10"
+        ixz="8.84049279666048E-23"
+        iyy="1.58865276658305E-07"
+        iyz="-7.82978148569725E-23"
+        izz="3.18797540679141E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_I_II"
+    type="continuous">
+    <origin
+      xyz="0.0580370958812072 0.0555608345539184 0.0210499999999653"
+      rpy="0 0 -0.663519439198283" />
+    <parent
+      link="crazyflie11/base_link" />
+    <child
+      link="prolink_I_II" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_I_III">
+    <inertial>
+      <origin
+        xyz="-1.90407394590197E-06 5.20325034606868E-05 0.000500000000002554"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435069" />
+      <inertia
+        ixx="1.60092192585075E-07"
+        ixy="4.6801041599918E-11"
+        ixz="-7.42138109531619E-23"
+        iyy="1.58814976235129E-07"
+        iyz="-5.5524498617622E-23"
+        izz="3.18797540679131E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_I_III"
+    type="continuous">
+    <origin
+      xyz="0.0580370958804296 -0.0545608345526662 0.0210500000000247"
+      rpy="0 0 -1.57077530421496" />
+    <parent
+      link="crazyflie11/base_link" />
+    <child
+      link="prolink_I_III" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_I_IV">
+    <inertial>
+      <origin
+        xyz="-2.06085148946045E-14 5.20673305122177E-05 0.000500000000002998"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435101" />
+      <inertia
+        ixx="1.60093905219265E-07"
+        ixy="-5.29395592033938E-22"
+        ixz="3.44830917858043E-22"
+        iyy="1.58813263600954E-07"
+        iyz="2.25380867526558E-22"
+        izz="3.18797540679146E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_IV.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_I_IV.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_I_IV"
+    type="continuous">
+    <origin
+      xyz="-0.0580370958808196 -0.0545608345536692 0.021050000000026"
+      rpy="0 0 2.97788495714067" />
+    <parent
+      link="crazyflie11/base_link" />
+    <child
+      link="prolink_I_IV" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="hinge_link_II">
+    <inertial>
+      <origin
+        xyz="-0.0286920658625174 -6.13620265710324E-13 0.000129766128506792"
+        rpy="0 0 0" />
+      <mass
+        value="0.0180481140584542" />
+      <inertia
+        ixx="1.1499631662955E-06"
+        ixy="5.61120378748299E-20"
+        ixz="2.47952921767015E-18"
+        iyy="4.77573926634576E-06"
+        iyz="-2.39120533973003E-14"
+        izz="4.43859151899919E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="hinge_joint_II"
+    type="continuous">
+    <origin
+      xyz="0.199999999999998 0 -0.00600000000000039"
+      rpy="-0.0287956813296177 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="hinge_link_II" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="crazyflie22/base_link">
+    <inertial>
+      <origin
+        xyz="0.000260025205274461 -0.000242548958405142 -0.00255411928161065"
+        rpy="0 0 0" />
+      <mass
+        value="0.0934996333792317" />
+      <inertia
+        ixx="4.94987515477189E-05"
+        ixy="-1.75803692106723E-08"
+        ixz="-2.86441417358484E-06"
+        iyy="4.17272140348139E-05"
+        iyz="2.10989852183832E-07"
+        izz="8.36752462604459E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie22/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie22/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gimbal_joint_II"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="hinge_link_II" />
+    <child
+      link="crazyflie22/base_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="prolink_II_I">
+    <inertial>
+      <origin
+        xyz="7.51482209793153E-13 -5.20673301678265E-05 0.00049999999979089"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435077" />
+      <inertia
+        ixx="1.60093905219261E-07"
+        ixy="1.9124415762226E-21"
+        ixz="1.34416849539867E-22"
+        iyy="1.58813263600949E-07"
+        iyz="-3.53619711866419E-22"
+        izz="3.18797540679137E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_II_I"
+    type="continuous">
+    <origin
+      xyz="-0.0595830993828221 0.0555608345545135 0.0161635783847631"
+      rpy="0.0755920970039211 0.0344063484778542 -1.99713839703144" />
+    <parent
+      link="crazyflie22/base_link" />
+    <child
+      link="prolink_II_I" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_II_II">
+    <inertial>
+      <origin
+        xyz="-5.18683221605309E-05 4.54797229854087E-06 0.000499999999773015"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435096" />
+      <inertia
+        ixx="1.58823034455358E-07"
+        ixy="1.1143380637116E-10"
+        ixz="7.4032664823496E-23"
+        iyy="1.60084134364856E-07"
+        iyz="-6.82940993239093E-22"
+        izz="3.18797540679142E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_II_II"
+    type="continuous">
+    <origin
+      xyz="0.0560911155447258 0.055560834553689 0.0257913503949391"
+      rpy="0.0784644863410207 0.0272130660534785 -1.90396164537388" />
+    <parent
+      link="crazyflie22/base_link" />
+    <child
+      link="prolink_II_II" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_II_III">
+    <inertial>
+      <origin
+        xyz="-2.07419986428536E-05 4.77574748815046E-05 0.000499999999740819"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435079" />
+      <inertia
+        ixx="1.59890670359717E-07"
+        ixy="4.67938683258318E-10"
+        ixz="-1.84047686293049E-22"
+        iyy="1.59016498460492E-07"
+        iyz="3.83811804224605E-22"
+        izz="3.18797540679136E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_II_III"
+    type="continuous">
+    <origin
+      xyz="0.0560911155449499 -0.0545608345531821 0.0257913503949986"
+      rpy="0.0784644863410329 0.0272130660534786 -1.90396164537387" />
+    <parent
+      link="crazyflie22/base_link" />
+    <child
+      link="prolink_II_III" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_II_IV">
+    <inertial>
+      <origin
+        xyz="5.09296222228339E-05 1.08249937225136E-05 0.000499999999742429"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435079" />
+      <inertia
+        ixx="1.58868618017891E-07"
+        ixy="-2.6043244539803E-10"
+        ixz="-2.72969602142499E-23"
+        iyy="1.60038550802321E-07"
+        iyz="-3.76884166594473E-22"
+        izz="3.18797540679139E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_IV.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_II_IV.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_II_IV"
+    type="continuous">
+    <origin
+      xyz="-0.0595830993831619 -0.0545608345535355 0.0161635783847945"
+      rpy="0.0784644863410271 0.0272130660534784 -1.90396164537389" />
+    <parent
+      link="crazyflie22/base_link" />
+    <child
+      link="prolink_II_IV" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="hinge_link_III">
+    <inertial>
+      <origin
+        xyz="-0.0286920658808958 2.18658424699925E-13 0.000129766128801556"
+        rpy="0 0 0" />
+      <mass
+        value="0.0180481140621349" />
+      <inertia
+        ixx="1.14996316009685E-06"
+        ixy="7.66630253772555E-21"
+        ixz="-8.6233529577341E-19"
+        iyy="4.77573925518498E-06"
+        iyz="-2.63595495794425E-14"
+        izz="4.43859152224334E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="hinge_joint_III"
+    type="continuous">
+    <origin
+      xyz="0 -0.2 -0.00600000000000006"
+      rpy="0.010335172419835 0 -1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="hinge_link_III" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="crazyflie33/base_link">
+    <inertial>
+      <origin
+        xyz="4.72778079948499E-05 -0.000242548958406419 -0.00256688589947895"
+        rpy="0 0 0" />
+      <mass
+        value="0.0934996333792321" />
+      <inertia
+        ixx="4.92603412266742E-05"
+        ixy="-1.92395334444135E-11"
+        ixz="-1.15879799245794E-14"
+        iyy="4.17272140348142E-05"
+        iyz="2.11721011560071E-07"
+        izz="8.39136565814913E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie33/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie33/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gimbal_joint_III"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 -0.127462557808115 0" />
+    <parent
+      link="hinge_link_III" />
+    <child
+      link="crazyflie33/base_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="prolink_III_I">
+    <inertial>
+      <origin
+        xyz="-1.7216775078599E-05 -4.9138471421073E-05 0.000499999999804657"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435086" />
+      <inertia
+        ixx="1.59953881825124E-07"
+        ixy="-3.99641383195494E-10"
+        ixz="-3.58892988271445E-22"
+        iyy="1.58953286995089E-07"
+        iyz="2.06795153138257E-22"
+        izz="3.18797540679141E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_III_I"
+    type="continuous">
+    <origin
+      xyz="-0.0580370958826119 0.0555608345531589 0.0210500000001814"
+      rpy="0 0 -1.48966793031658" />
+    <parent
+      link="crazyflie33/base_link" />
+    <child
+      link="prolink_III_I" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_III_II">
+    <inertial>
+      <origin
+        xyz="-4.92400494522816E-05 1.69240829440698E-05 0.000500000000147938"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435089" />
+      <inertia
+        ixx="1.58948566542123E-07"
+        ixy="3.93659359918973E-10"
+        ixz="-1.14978105144871E-22"
+        iyy="1.59958602278093E-07"
+        iyz="-4.96308367531817E-23"
+        izz="3.18797540679144E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_III_II"
+    type="continuous">
+    <origin
+      xyz="0.0580370958807384 0.0555608345530176 0.0210499999999164"
+      rpy="0 0 -1.48966793031658" />
+    <parent
+      link="crazyflie33/base_link" />
+    <child
+      link="prolink_III_II" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_III_III">
+    <inertial>
+      <origin
+        xyz="-8.61076095515223E-06 5.13503811269134E-05 0.000499999999975576"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435087" />
+      <inertia
+        ixx="1.60058880069487E-07"
+        ixy="2.08872935955854E-10"
+        ixz="-1.69778820726509E-22"
+        iyy="1.58848288750731E-07"
+        iyz="-2.81241408268029E-22"
+        izz="3.18797540679146E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_III_III"
+    type="continuous">
+    <origin
+      xyz="0.0580370958809432 -0.0545608345538356 0.0210500000000353"
+      rpy="0 0 -1.4896679303166" />
+    <parent
+      link="crazyflie33/base_link" />
+    <child
+      link="prolink_III_III" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_III_IV">
+    <inertial>
+      <origin
+        xyz="5.20369407975285E-05 -1.77857149941119E-06 0.000500000000126288"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435082" />
+      <inertia
+        ixx="1.58814757901547E-07"
+        ixy="4.37199107530133E-11"
+        ixz="1.05465528100511E-22"
+        iyy="1.60092410918667E-07"
+        iyz="-5.62482816536059E-23"
+        izz="3.18797540679141E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_IV.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_III_IV.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_III_IV"
+    type="continuous">
+    <origin
+      xyz="-0.0580370958772718 -0.0545608345588964 0.0210499999999432"
+      rpy="0 0 -1.4896679303166" />
+    <parent
+      link="crazyflie33/base_link" />
+    <child
+      link="prolink_III_IV" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="hinge_link_IV">
+    <inertial>
+      <origin
+        xyz="-0.0286920658668609 -3.54316576078872E-12 0.000129766128072806"
+        rpy="0 0 0" />
+      <mass
+        value="0.0180481140578559" />
+      <inertia
+        ixx="1.14996316628649E-06"
+        ixy="7.16390733120724E-19"
+        ixz="1.52650612459364E-17"
+        iyy="4.77573926634852E-06"
+        iyz="-2.381332784271E-14"
+        izz="4.43859151898881E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_IV.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/hinge_link_IV.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="hinge_joint_IV"
+    type="continuous">
+    <origin
+      xyz="-0.200000000000035 0 -0.00599999999975193"
+      rpy="-0.175696970810379 0 3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="hinge_link_IV" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="crazyflie44/base_link">
+    <inertial>
+      <origin
+        xyz="4.72778079841224E-05 -0.00024254895813558 -0.00256688589968912"
+        rpy="0 0 0" />
+      <mass
+        value="0.093499633379232" />
+      <inertia
+        ixx="4.92603412266741E-05"
+        ixy="-1.92395335526859E-11"
+        ixz="-1.15881424093215E-14"
+        iyy="4.17272140348142E-05"
+        iyz="2.11721011559999E-07"
+        izz="8.39136565814913E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie44/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.698039215686274 0.698039215686274 0.698039215686274 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/crazyflie44/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gimbal_joint_IV"
+    type="continuous">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0.126399856180809 0" />
+    <parent
+      link="hinge_link_IV" />
+    <child
+      link="crazyflie44/base_link" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="prolink_IV_I">
+    <inertial>
+      <origin
+        xyz="5.18718707275267E-05 4.50732639226126E-06 0.000499999999348577"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435084" />
+      <inertia
+        ixx="1.58822860589334E-07"
+        ixy="-1.10445464140219E-10"
+        ixz="2.81241408268029E-23"
+        iyy="1.60084308230878E-07"
+        iyz="-3.14328632770151E-23"
+        izz="3.1879754067914E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_IV_I"
+    type="continuous">
+    <origin
+      xyz="-0.0580370958802715 0.0555608345536603 0.0210500000004409"
+      rpy="0 0 2.52411544180218" />
+    <parent
+      link="crazyflie44/base_link" />
+    <child
+      link="prolink_IV_I" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_IV_II">
+    <inertial>
+      <origin
+        xyz="1.43218770176645E-14 5.20673311954489E-05 0.00049999999919248"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435095" />
+      <inertia
+        ixx="1.60093905219262E-07"
+        ixy="1.33672386988569E-21"
+        ixz="-2.37400835802719E-22"
+        iyy="1.58813263600953E-07"
+        iyz="-4.08627222601196E-22"
+        izz="3.18797540679143E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_IV_II"
+    type="continuous">
+    <origin
+      xyz="0.0580370958804008 0.055560834553266 0.0210500000006031"
+      rpy="0 0 -0.524851138144808" />
+    <parent
+      link="crazyflie44/base_link" />
+    <child
+      link="prolink_IV_II" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_IV_III">
+    <inertial>
+      <origin
+        xyz="1.14130926931466E-13 -5.2067330308353E-05 0.000499999999279688"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435072" />
+      <inertia
+        ixx="1.60093905219258E-07"
+        ixy="1.62127400060393E-21"
+        ixz="1.05879118406788E-22"
+        iyy="1.5881326360095E-07"
+        iyz="1.82289927491373E-22"
+        izz="3.18797540679136E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_III.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_III.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_IV_III"
+    type="continuous">
+    <origin
+      xyz="0.0580370958809931 -0.054560834553372 0.0210500000005089"
+      rpy="0 0 1.54314227197888" />
+    <parent
+      link="crazyflie44/base_link" />
+    <child
+      link="prolink_IV_III" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="prolink_IV_IV">
+    <inertial>
+      <origin
+        xyz="-1.97721250466132E-05 4.81671045164389E-05 0.000499999999435286"
+        rpy="0 0 0" />
+      <mass
+        value="0.000657768846435079" />
+      <inertia
+        ixx="1.59909232099247E-07"
+        ixy="4.49884342933237E-10"
+        ixz="-6.61744490042422E-23"
+        iyy="1.58997936720964E-07"
+        iyz="6.61744490042422E-24"
+        izz="3.18797540679139E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_IV.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/prolink_IV_IV.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="projoint_IV_IV"
+    type="continuous">
+    <origin
+      xyz="-0.058037095880834 -0.0545608345535001 0.0210500000003528"
+      rpy="0 0 2.52411544180219" />
+    <parent
+      link="crazyflie44/base_link" />
+    <child
+      link="prolink_IV_IV" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="arm_link_I">
+    <inertial>
+      <origin
+        xyz="0.05253602024707 -4.57926109589946E-06 -0.0168972921267843"
+        rpy="0 0 0" />
+      <mass
+        value="0.0275681136662095" />
+      <inertia
+        ixx="2.72070258102073E-06"
+        ixy="1.37858107076687E-09"
+        ixz="2.65992896154086E-09"
+        iyy="5.941459455612E-06"
+        iyz="8.40191538528037E-11"
+        izz="5.56952222893338E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/arm_link_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.882352941176471 0.882352941176471 0.882352941176471 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/arm_link_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_joint_I"
+    type="continuous">
+    <origin
+      xyz="0 0.0171000000000001 -0.0640000000000012"
+      rpy="1.5707963267949 1.24062427138137 -3.14159265358979" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm_link_I" />
+    <axis
+      xyz="0 0 -1" />
+  </joint>
+  <link
+    name="arm_link_II">
+    <inertial>
+      <origin
+        xyz="0.0522490225899118 2.93617788832412E-06 0.0088589356221796"
+        rpy="0 0 0" />
+      <mass
+        value="0.0244066118573224" />
+      <inertia
+        ixx="3.05584899796754E-06"
+        ixy="-8.40195027234299E-11"
+        ixz="-1.81948675529431E-09"
+        iyy="4.45896939288554E-06"
+        iyz="1.37858045352126E-09"
+        izz="3.54593627656304E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/arm_link_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.882352941176471 0.882352941176471 0.882352941176471 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/arm_link_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_joint_II"
+    type="continuous">
+    <origin
+      xyz="0.0795000000000011 0 0.000599999999999989"
+      rpy="3.14159265358979 0 0.741832302427812" />
+    <parent
+      link="arm_link_I" />
+    <child
+      link="arm_link_II" />
+    <axis
+      xyz="0 0 1" />
+  </joint>
+  <link
+    name="gripper_base_link">
+    <inertial>
+      <origin
+        xyz="-0.0288543831041018 0.0102193705656141 -0.000533524657248041"
+        rpy="0 0 0" />
+      <mass
+        value="0.0269390656546595" />
+      <inertia
+        ixx="2.71855561283908E-06"
+        ixy="-2.25698658019009E-08"
+        ixz="6.35938766446021E-08"
+        iyy="4.83739569817908E-06"
+        iyz="-4.7376840769291E-08"
+        izz="3.12049324623483E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.23921568627451 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_base_joint"
+    type="continuous">
+    <origin
+      xyz="0.081 0 0.0115"
+      rpy="1.58355301227902 0 3.14159265358979" />
+    <parent
+      link="arm_link_II" />
+    <child
+      link="gripper_base_link" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="gear_arm_link_I">
+    <inertial>
+      <origin
+        xyz="0.00267731882910643 0.0106438174366791 0.00892931899279378"
+        rpy="0 0 0" />
+      <mass
+        value="0.00349672383608932" />
+      <inertia
+        ixx="2.42592643014622E-07"
+        ixy="-6.33345976947497E-09"
+        ixz="-5.31056533536211E-09"
+        iyy="1.67231621577249E-07"
+        iyz="-8.94608332147827E-08"
+        izz="1.98724712665995E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gear_arm_link_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.776470588235294 0.756862745098039 0.737254901960784 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gear_arm_link_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gear_arm_joint_I"
+    type="continuous">
+    <origin
+      xyz="-0.0309999999998418 0.00250000000000006 -0.00899999999985582"
+      rpy="3.00938329599883 0 -1.5707963267949" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="gear_arm_link_I" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+  <link
+    name="gripper_arm_link_I">
+    <inertial>
+      <origin
+        xyz="0.00197818578094229 0.00274999999999997 -0.023361329516465"
+        rpy="0 0 0" />
+      <mass
+        value="0.00213978898611195" />
+      <inertia
+        ixx="3.67965569591137E-07"
+        ixy="3.39144051146741E-23"
+        ixz="3.13636809696129E-08"
+        iyy="3.85107682847711E-07"
+        iyz="-1.95266323350799E-22"
+        izz="2.79302160615542E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_arm_link_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_arm_link_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_arm_joint_I"
+    type="continuous">
+    <origin
+      xyz="-0.0005 0.0191511113728454 0.0160696904896308"
+      rpy="0 1.53958298448806 -1.57079632679495" />
+    <parent
+      link="gear_arm_link_I" />
+    <child
+      link="gripper_arm_link_I" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="gear_arm_link_II">
+    <inertial>
+      <origin
+        xyz="0.00195026912579577 0.0125207003204885 0.00723101715979743"
+        rpy="0 0 0" />
+      <mass
+        value="0.00335826751583657" />
+      <inertia
+        ixx="2.34194097650031E-07"
+        ixy="1.78464217158316E-22"
+        ixz="2.45259051621973E-22"
+        iyy="1.32114929674718E-07"
+        iyz="-7.58361620076075E-08"
+        izz="2.19682282962741E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gear_arm_link_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.776470588235294 0.756862745098039 0.737254901960784 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gear_arm_link_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gear_arm_joint_II"
+    type="continuous">
+    <origin
+      xyz="-0.031000000001165 0.00250000000000017 0.00899999999958237"
+      rpy="2.0379809891575 0 -1.5707963267949" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="gear_arm_link_II" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+  <link
+    name="gripper_arm_link_II">
+    <inertial>
+      <origin
+        xyz="0.00197818578094229 0.00275000000000003 -0.0233613295164651"
+        rpy="0 0 0" />
+      <mass
+        value="0.00213978898611195" />
+      <inertia
+        ixx="3.67965569591137E-07"
+        ixy="-2.60561892954204E-23"
+        ixz="3.13636809696127E-08"
+        iyy="3.8510768284771E-07"
+        iyz="1.64427996139057E-22"
+        izz="2.79302160615542E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_arm_link_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.294117647058824 0.294117647058824 0.294117647058824 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/gripper_arm_link_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_arm_joint_II"
+    type="continuous">
+    <origin
+      xyz="0.00499999999999989 0.0216506350944628 0.0124999999987991"
+      rpy="3.14159265358979 -0.303258744156093 -1.57079632679489" />
+    <parent
+      link="gear_arm_link_II" />
+    <child
+      link="gripper_arm_link_II" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <!-- <link
+    name="normal_arm_link_I">
+    <inertial>
+      <origin
+        xyz="-0.0193344458147364 0.00771705584223548 -8.88455975456282E-14"
+        rpy="0 0 0" />
+      <mass
+        value="0.00257461585074682" />
+      <inertia
+        ixx="7.00095704810362E-08"
+        ixy="-1.70399206185924E-22"
+        ixz="3.36254464505643E-19"
+        iyy="8.79760949965136E-08"
+        iyz="9.64699389389969E-23"
+        izz="1.45016424231698E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/normal_arm_link_I.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/normal_arm_link_I.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="normal_arm_joint_I"
+    type="continuous">
+    <origin
+      xyz="-0.046 0.00750000000000006 -0.00624999999999996"
+      rpy="3.14159265358979 -0.580661153570797 0" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="normal_arm_link_I" />
+    <axis
+      xyz="0 -1 0" />
+  </joint>
+  <link
+    name="normal_arm_link_II">
+    <inertial>
+      <origin
+        xyz="-0.0193344458149342 -0.00678294415776332 -8.52373727155964E-14"
+        rpy="0 0 0" />
+      <mass
+        value="0.00257461585074681" />
+      <inertia
+        ixx="7.00095704810361E-08"
+        ixy="8.4475820056978E-23"
+        ixz="1.12370094500136E-18"
+        iyy="8.7976094996513E-08"
+        iyz="5.08199088837266E-23"
+        izz="1.45016424231697E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/normal_arm_link_II.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://aerialvkc_v3000_description/meshes/normal_arm_link_II.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="normal_arm_joint_II"
+    type="continuous">
+    <origin
+      xyz="-0.046 0.00750000000000012 0.00625000000000005"
+      rpy="0 0.594529528607256 0" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="normal_arm_link_II" />
+    <axis
+      xyz="0 1 0" />
+  </joint> -->
+</robot>

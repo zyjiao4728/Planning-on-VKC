@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="uam_env">
+  <xacro:include filename="$(find vkc_example)/urdf/deploy_uam.urdf.xacro" />
+
+  <!-- Arguments -->
+  <xacro:arg name="x" default="0.0"/>
+  <xacro:arg name="y" default="0.0"/>
+  <xacro:arg name="z" default="0.5"/>
+
+  <!-- Setup Environment -->
+  <link name="world"/>
+  <xacro:deploy prefix="" attach_to_world="true" x="$(arg x)" y="$(arg y)" z="$(arg z)"/>
+
+</robot>
