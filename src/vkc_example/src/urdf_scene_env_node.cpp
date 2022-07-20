@@ -121,7 +121,7 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
 
 void setInitState(VKCEnvBasic &env) {
   vector<string> dishwasher_joints({ "dishwasher_12065_joint_0", "dishwasher_12065_joint_1" , "dishwasher_12065_joint_2" });
-  Eigen::Vector3d dishwasher_values({ 0.3080, -0.1359, -0.6457}); //open: 0.9250 close -0.6457
+  Eigen::Vector3d dishwasher_values({ -0.3080, -0.1359, -0.6457}); //open: 0.9250 close -0.6457
   env.getVKCEnv()->getTesseract()->setState(dishwasher_joints, dishwasher_values);
 }
 
