@@ -249,7 +249,7 @@ ProfileDictionary::Ptr ProbGenerator::genPlannerProfiles_(
   auto trajopt_plan_profile = std::make_shared<TrajOptDefaultPlanProfile>();
   setCartPlanProfile(trajopt_plan_profile, pos_coeff, rot_coeff);
 
-  trajopt_plan_profile->fixed_dofs = {2};
+  // trajopt_plan_profile->fixed_dofs = {2};
 
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<TrajOptCompositeProfile>(
@@ -309,7 +309,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-2;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-2;
   trajopt_solver_profile->opt_info.inflate_constraints_individually = true;
-  // trajopt_solver_profile->opt_info.max_iter = 50;
+  trajopt_solver_profile->opt_info.max_time = 60.;
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
