@@ -5,12 +5,40 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /EnvironmentState1
         - /EnvironmentState1/Environment1
         - /TesseractTrajectory1
         - /TesseractTrajectory1/Environment1
-        - /TesseractTrajectory1/Trajectory Visualization1
+        - /TesseractTrajectory1/Links1
+        - /TesseractTrajectory1/Links1/bottle_link_01
+        - /TesseractTrajectory1/Links1/bottle_link_0_helper1
+        - /TesseractTrajectory1/Links1/bottle_link_11
+        - /TesseractTrajectory1/Links1/left_inner_finger1
+        - /TesseractTrajectory1/Links1/left_inner_finger_pad1
+        - /TesseractTrajectory1/Links1/left_inner_knuckle1
+        - /TesseractTrajectory1/Links1/left_outer_finger1
+        - /TesseractTrajectory1/Links1/left_outer_knuckle1
+        - /TesseractTrajectory1/Links1/rear_bumper_link1
+        - /TesseractTrajectory1/Links1/rear_left_wheel_link1
+        - /TesseractTrajectory1/Links1/rear_right_wheel_link1
+        - /TesseractTrajectory1/Links1/right_inner_finger1
+        - /TesseractTrajectory1/Links1/right_inner_finger_pad1
+        - /TesseractTrajectory1/Links1/right_inner_knuckle1
+        - /TesseractTrajectory1/Links1/right_outer_finger1
+        - /TesseractTrajectory1/Links1/right_outer_knuckle1
+        - /TesseractTrajectory1/Links1/top_plate_link1
+        - /TesseractTrajectory1/Links1/top_plate_rear_link1
+        - /TesseractTrajectory1/Links1/ur_arm_base1
+        - /TesseractTrajectory1/Links1/ur_arm_base_link1
+        - /TesseractTrajectory1/Links1/ur_arm_ee_link1
+        - /TesseractTrajectory1/Links1/ur_arm_forearm_link1
+        - /TesseractTrajectory1/Links1/ur_arm_shoulder_link1
+        - /TesseractTrajectory1/Links1/ur_arm_upper_arm_link1
+        - /TesseractTrajectory1/Links1/ur_arm_wrist_1_link1
+        - /TesseractTrajectory1/Links1/ur_arm_wrist_2_link1
+        - /TesseractTrajectory1/Links1/ur_arm_wrist_3_link1
         - /Light1
-      Splitter Ratio: 0.6423841118812561
+      Splitter Ratio: 0.7017828226089478
     Tree Height: 1619
   - Class: rviz/Selection
     Name: Selection
@@ -68,29 +96,6 @@ Visualization Manager:
       Value: false
     - Class: tesseract_rviz/EnvironmentState
       Enabled: false
-      Environment:
-        Alpha: 1
-        Display Mode: Monitor
-        Monitor Namespace: tesseract_vkc
-        Show All Links: true
-        Show Collision: false
-        Show Highlights: true
-        Show Visual: true
-        Value: ""
-      Joint State Monitor:
-        Topic: joint_states
-        Value: ""
-      Links:
-        All Links Enabled:
-          {}
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-      Name: EnvironmentState
-      Value: false
-    - Class: tesseract_rviz/TesseractTrajectory
-      Enabled: true
       Environment:
         Alpha: 1
         Display Mode: Monitor
@@ -3737,6 +3742,3656 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+      Name: EnvironmentState
+      Value: false
+    - Class: tesseract_rviz/TesseractTrajectory
+      Enabled: true
+      Environment:
+        Alpha: 1
+        Display Mode: Monitor
+        Monitor Namespace: tesseract_vkc
+        Show All Links: true
+        Show Collision: false
+        Show Highlights: true
+        Show Visual: true
+        Value: ""
+      Joint State Monitor:
+        Topic: joint_states
+        Value: ""
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 0.5
+          Collision:
+            ACM:
+              ur_arm_base_link: Adjacent
+              ur_arm_shoulder_link: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bed:
+          Alpha: 1
+          Collision:
+            ACM:
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bottle:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        bottle_link_0:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bottle_link_0_helper:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        bottle_link_1:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_44781:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cabinet_45290_1_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cabinet_45290_1_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_1_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Default
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_1_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_1_link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Adjacent
+              cabinet_45290_1_link_1: Adjacent
+              cabinet_45290_1_link_2: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_2_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cabinet_45290_2_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_2_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Default
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_2_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_45290_2_link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Adjacent
+              cabinet_45290_2_link_1: Adjacent
+              cabinet_45290_2_link_2: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        chair_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        chair_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        chair_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        coach:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_12065:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        dishwasher_12065_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_12065_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_12065_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Default
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_12065_link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_12065_link_4:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Adjacent
+              dishwasher_12065_link_1: Adjacent
+              dishwasher_12065_link_2: Adjacent
+              dishwasher_12065_link_3: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_8966_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        door_8966_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_8966_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Adjacent
+              door_8966_link_2: Adjacent
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        door_8966_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Adjacent
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001:
+          Alpha: 0.20000000298023224
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001_dof_rootd_Aa001_r: Adjacent
+              fridge_0001_dof_rootd_Aa002_r: Adjacent
+              fridge_0001_dof_rootd_Ba001_t: Adjacent
+              fridge_0001_dof_rootd_Ba002_t: Adjacent
+              fridge_0001_dof_rootd_Ba003_t: Adjacent
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001_dof_rootd_Aa001_r:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001_dof_rootd_Aa002_r:
+          Alpha: 0.20000000298023224
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Default
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Default
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001_dof_rootd_Ba001_t:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001_dof_rootd_Ba002_t:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fridge_0001_dof_rootd_Ba003_t:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Default
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_bumper_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_left_wheel_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        front_right_wheel_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        inertial_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_inner_finger:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_inner_finger_pad:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_inner_knuckle:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_outer_finger:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_outer_knuckle:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Never
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Adjacent
+              link_1: Adjacent
+              link_2: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        oven_101917_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_4:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_5:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_6:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_7:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Never
+              bottle_link_0: Never
+              bottle_link_1: Never
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Never
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Never
+              chair_1: Never
+              chair_2: Never
+              chair_3: Never
+              coach: Never
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Never
+              door_8966_link_0: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Never
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Never
+              round_table: Never
+              tv: Never
+              wall_ground: Never
+              wall_kitchen_wall: Never
+              wall_wall_bottom: Never
+              wall_wall_left: Never
+              wall_wall_mid_bottom: Never
+              wall_wall_mid_door: Never
+              wall_wall_mid_down: Never
+              wall_wall_mid_top: Never
+              wall_wall_right: Never
+              wall_wall_top: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        oven_101917_link_8:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Adjacent
+              oven_101917_link_1: Adjacent
+              oven_101917_link_2: Adjacent
+              oven_101917_link_3: Adjacent
+              oven_101917_link_4: Adjacent
+              oven_101917_link_5: Adjacent
+              oven_101917_link_6: Adjacent
+              oven_101917_link_7: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_bumper_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_left_wheel_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rear_right_wheel_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rect_table:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_inner_finger:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_inner_finger_pad:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_inner_knuckle:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_outer_finger:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_outer_knuckle:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        rigid_object_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        robotiq_arg2f_base_link:
+          Alpha: 0.20000000298023224
+          Collision:
+            ACM:
+              ur_arm_ee_link: Adjacent
+              ur_arm_wrist_1_link: Never
+              ur_arm_wrist_2_link: Never
+              ur_arm_wrist_3_link: Default
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        round_table:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_chassis_link:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_plate_front_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        top_plate_link:
+          Alpha: 0.30000001192092896
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        top_plate_rear_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        tv:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ur_arm_base_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              base_link: Adjacent
+              ur_arm_shoulder_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_ee_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              robotiq_arg2f_base_link: Adjacent
+              ur_arm_wrist_1_link: Never
+              ur_arm_wrist_2_link: Never
+              ur_arm_wrist_3_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_forearm_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              ur_arm_upper_arm_link: Adjacent
+              ur_arm_wrist_1_link: Adjacent
+              ur_arm_wrist_2_link: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_shoulder_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              base_link: Never
+              ur_arm_base_link: Adjacent
+              ur_arm_upper_arm_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_tool0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        ur_arm_upper_arm_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              ur_arm_forearm_link: Adjacent
+              ur_arm_shoulder_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_1_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              robotiq_arg2f_base_link: Never
+              ur_arm_ee_link: Never
+              ur_arm_forearm_link: Adjacent
+              ur_arm_wrist_2_link: Adjacent
+              ur_arm_wrist_3_link: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_2_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              robotiq_arg2f_base_link: Never
+              ur_arm_ee_link: Never
+              ur_arm_forearm_link: Never
+              ur_arm_wrist_1_link: Adjacent
+              ur_arm_wrist_3_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        ur_arm_wrist_3_link:
+          Alpha: 0.30000001192092896
+          Collision:
+            ACM:
+              robotiq_arg2f_base_link: Default
+              ur_arm_ee_link: Adjacent
+              ur_arm_wrist_1_link: Never
+              ur_arm_wrist_2_link: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        user_rail_link:
+          Alpha: 0.5
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        virtual_base_theta:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        virtual_base_x:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        virtual_base_y:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        wall_ground:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Default
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Default
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Default
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Default
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_kitchen_wall:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_bottom:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_left:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_mid_bottom:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_mid_door:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_mid_down:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_mid_top:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_right: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_right:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_top: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        wall_wall_top:
+          Alpha: 1
+          Collision:
+            ACM:
+              bed: Adjacent
+              bottle_link_0: Never
+              bottle_link_1: Adjacent
+              cabinet_45290_1_link_0: Never
+              cabinet_45290_1_link_1: Never
+              cabinet_45290_1_link_2: Never
+              cabinet_45290_1_link_3: Adjacent
+              cabinet_45290_2_link_0: Never
+              cabinet_45290_2_link_1: Never
+              cabinet_45290_2_link_2: Never
+              cabinet_45290_2_link_3: Adjacent
+              chair_1: Adjacent
+              chair_2: Adjacent
+              chair_3: Adjacent
+              coach: Adjacent
+              dishwasher_12065_link_0: Never
+              dishwasher_12065_link_1: Never
+              dishwasher_12065_link_2: Never
+              dishwasher_12065_link_3: Never
+              dishwasher_12065_link_4: Adjacent
+              door_8966_link_0: Adjacent
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              link_0: Never
+              link_1: Never
+              link_2: Never
+              link_3: Adjacent
+              oven_101917_link_0: Never
+              oven_101917_link_1: Never
+              oven_101917_link_2: Never
+              oven_101917_link_3: Never
+              oven_101917_link_4: Never
+              oven_101917_link_5: Never
+              oven_101917_link_6: Never
+              oven_101917_link_7: Never
+              oven_101917_link_8: Adjacent
+              rect_table: Adjacent
+              round_table: Adjacent
+              tv: Adjacent
+              wall_ground: Adjacent
+              wall_kitchen_wall: Adjacent
+              wall_wall_bottom: Adjacent
+              wall_wall_left: Adjacent
+              wall_wall_mid_bottom: Adjacent
+              wall_wall_mid_door: Adjacent
+              wall_wall_mid_down: Adjacent
+              wall_wall_mid_top: Adjacent
+              wall_wall_right: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Name: TesseractTrajectory
       Trajectory Monitor:
         Topic: /tesseract/display_tesseract_trajectory
@@ -3744,7 +7399,7 @@ Visualization Manager:
       Trajectory Visualization:
         Display Mode: Single
         Interrupt Display: false
-        Time Scale: 0.30000001192092896
+        Time Scale: 0.5
         Trail Step Size: 1
         Value: ""
       Value: true
@@ -3794,7 +7449,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.718932628631592
+      Distance: 4.627518653869629
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -3802,17 +7457,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.4813172817230225
-        Y: 1.7663376331329346
-        Z: 0.9410357475280762
+        X: 1.5053375959396362
+        Y: 1.7049511671066284
+        Z: 1.0405102968215942
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7697968482971191
+      Pitch: 0.7197970151901245
       Target Frame: <Fixed Frame>
-      Yaw: 2.6115996837615967
+      Yaw: 2.6216230392456055
     Saved: ~
 Window Geometry:
   Displays:

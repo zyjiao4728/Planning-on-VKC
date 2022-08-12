@@ -94,67 +94,19 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
   PickAction::Ptr pick_action;
   PlaceAction::Ptr place_action;
 
-  // // action 1: pick fridge handle
-  // {
-  //   pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-  //   actions.emplace_back(pick_action);
-  // }
-
-  // // action 2: open fridge door
-  // {
-  //   std::vector<LinkDesiredPose> link_objectives;
-  //   std::vector<JointDesiredPose> joint_objectives;
-
-  //   joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
-  //   place_action =
-  //       make_shared<PlaceAction>(robot, "attach_fridge_handle",
-  //                                link_objectives, joint_objectives, false);
-
-  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-
-  //   actions.emplace_back(place_action);
-  // }
-
-    // action 3: pick bottle
-  {
-    pick_action = make_shared<PickAction>(robot, "attach_bottle");
-    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    actions.emplace_back(pick_action);
-  }
-
-  // action 4: place bottle on the round table
-  {
-    std::vector<LinkDesiredPose> link_objectives;
-    std::vector<JointDesiredPose> joint_objectives;
-    Eigen::Isometry3d destination;
-    destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
-    destination.linear() = Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0,  0).matrix();
-    // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
-    // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
-    link_objectives.push_back(LinkDesiredPose("bottle", destination));
-
-    place_action = make_shared<PlaceAction>(
-        robot, "attach_bottle", link_objectives, joint_objectives, false);
-
-    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    actions.emplace_back(place_action);
-  }
-
-  // action 5: pick fridge handle
+  // action 1: pick fridge handle
   {
     pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(pick_action);
   }
 
-  // action 6: close fridge door
+  // action 2: open fridge door
   {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
     place_action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle",
                                  link_objectives, joint_objectives, false);
@@ -163,6 +115,54 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     actions.emplace_back(place_action);
   }
+
+  //   // action 3: pick bottle
+  // {
+  //   pick_action = make_shared<PickAction>(robot, "attach_bottle");
+  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(pick_action);
+  // }
+
+  // // action 4: place bottle in the fridge
+  // {
+  //   std::vector<LinkDesiredPose> link_objectives;
+  //   std::vector<JointDesiredPose> joint_objectives;
+  //   Eigen::Isometry3d destination;
+  //   destination.setIdentity();
+  //   destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
+  //   destination.linear() = Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0,  0).matrix();
+  //   // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
+  //   // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
+  //   link_objectives.push_back(LinkDesiredPose("bottle", destination));
+
+  //   place_action = make_shared<PlaceAction>(
+  //       robot, "attach_bottle", link_objectives, joint_objectives, false);
+
+  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(place_action);
+  // }
+
+  // // action 5: pick fridge handle
+  // {
+  //   pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
+  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(pick_action);
+  // }
+
+  // // action 6: close fridge door
+  // {
+  //   std::vector<LinkDesiredPose> link_objectives;
+  //   std::vector<JointDesiredPose> joint_objectives;
+
+  //   joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
+  //   place_action =
+  //       make_shared<PlaceAction>(robot, "attach_fridge_handle",
+  //                                link_objectives, joint_objectives, false);
+
+  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+
+  //   actions.emplace_back(place_action);
+  // }
 }
 
 void setInitState(VKCEnvBasic &env) {
@@ -228,20 +228,20 @@ int main(int argc, char **argv) {
                                      {0.707106781, 0, -0.707106781, 0},
                                      true});
 
-  attaches.emplace_back(
-      UrdfSceneEnv::AttachObjectInfo{"attach_dishwasher",
-                                     "dishwasher_12065_link_0",
-                                     "dishwasher_12065",
-                                     {0.0, -0.2, 0.35},
-                                     {0.707106781, 0, 0.707106781, 0},
-                                     true});
+  // attaches.emplace_back(
+  //     UrdfSceneEnv::AttachObjectInfo{"attach_dishwasher",
+  //                                    "dishwasher_12065_link_0",
+  //                                    "dishwasher_12065",
+  //                                    {0.0, -0.2, 0.35},
+  //                                    {0.707106781, 0, 0.707106781, 0},
+  //                                    true});
 
-  attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cabinet",
-                                                       "link_1",
-                                                       "cabinet_44781",
-                                                       {0.6, -0.65, 0.2},
-                                                       {0.5, 0.5, 0.5, -0.5},
-                                                       true});
+  // attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_cabinet",
+  //                                                      "link_1",
+  //                                                      "cabinet_44781",
+  //                                                      {0.6, -0.65, 0.2},
+  //                                                      {0.5, 0.5, 0.5, -0.5},
+  //                                                      true});
 
   UrdfSceneEnv::InverseChainsInfos inverse_chains;
   inverse_chains.emplace_back(
