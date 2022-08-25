@@ -452,9 +452,11 @@ class BaseCabinet : public BaseObject {
     AttachLocation attach_location("attach_" + handle_link.getName(),
                                    handle_link.getName());
     attach_location.local_joint_origin_transform.translation() +=
-        Eigen::Vector3d(-0.2, 0, 0.0);
+        // Eigen::Vector3d(-0.2, 0, 0.0);
+        Eigen::Vector3d(-0.1, 0, 0.0);
     attach_location.local_joint_origin_transform.linear() =
-        Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();
+        // Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();
+        Eigen::Quaterniond(0.0, 0.0, 0.70710678, 0.70710678).matrix();
     attach_location.fixed_base = true;
 
     // Define connection joint

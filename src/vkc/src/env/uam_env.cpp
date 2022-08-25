@@ -43,22 +43,29 @@ UAMEnv::UAMEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps)
 bool UAMEnv::createEnvironment() {
   vkc::BaseMarker marker0("lightbulb0", 0.05);
   marker0.createObject();
-  marker0.createWorldJoint(Eigen::Vector4d(1, 1, 0.5, 0.0));
+  marker0.createWorldJoint(Eigen::Vector4d(1, 0, 1.06, 0.0));
   marker0.inverseRootTip("world", marker0.getName() + "_marker_link");
 
-  vkc::BaseTable table0("table0", 0.45, 1, 1);
+  vkc::BaseTable table0("table0", 1.0, 1.5, 1.5);
   table0.createObject();
-  table0.createWorldJoint(Eigen::Vector4d(1,1,0,0));
+  table0.createWorldJoint(Eigen::Vector4d(1, 0, 0, 0));
 
-  vkc::BaseWall wall_top("wall_top", 1, 1, 0.1);
+  vkc::BaseWall wall_top("wall_top", 5, 5, 0.1);
   wall_top.createObject();
-  wall_top.createWorldJoint(Eigen::Vector4d(1, 1, 2.1, 0));
+  wall_top.createWorldJoint(Eigen::Vector4d(3, 0, 2.6, 0));
+
+  vkc::BaseCabinet cabinet0("cabinet0");
+  cabinet0.createObject();
+  cabinet0.createWorldJoint(Eigen::Vector4d(0, -5, 0, -1.57));
+  cabinet0.inverseRootTip("world", cabinet0.getName() + "_handle_link");
 
   marker0.addToEnvironment(tesseract_->getTesseract());
   table0.addToEnvironment(tesseract_->getTesseract());
   wall_top.addToEnvironment(tesseract_->getTesseract());
+  cabinet0.addToEnvironment(tesseract_->getTesseract());
 
   updateAttachLocations(marker0.getAttachLocations());
+  updateAttachLocations(cabinet0.getAttachLocations());
 
   Commands cmds;
   cmds.clear();
@@ -104,6 +111,71 @@ bool UAMEnv::createEnvironment() {
       "crazyflie33/base_link", "crazyflie44/base_link", "Never"));
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "crazyflie33/base_link", "gripper_base_link", "Never"));
+
+  cmds.push_back(std::make_shared<ChangeLinkCollisionEnabledCommand>(
+      "cabinet0_knob1_link", false));
+  cmds.push_back(std::make_shared<ChangeLinkCollisionEnabledCommand>(
+      "cabinet0_knob2_link", false));
+  cmds.push_back(std::make_shared<ChangeLinkCollisionEnabledCommand>(
+      "cabinet0_handle_link", false));
+
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_bottom_link", "cabinet0_cabinet_door_link", "Never"));
+
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_cabinet_bottom_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_level1_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_level2_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_level3_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_back_link", "cabinet0_top_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_bottom_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_bottom_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level1_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level2_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level3_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level1_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level2_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level3_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_top_link", "cabinet0_cabinet_right_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level1_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level2_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_level3_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_top_link", "cabinet0_cabinet_left_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_left_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_right_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_top_link", "cabinet0_cabinet_door_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_door_link", "cabinet0_knob1_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_cabinet_door_link", "cabinet0_knob2_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_handle_link", "cabinet0_knob1_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "cabinet0_handle_link", "cabinet0_knob2_link", "Never"));
 
   tesseract_->getTesseract()->applyCommands(cmds);
 

@@ -15,10 +15,10 @@
     <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
     <group_state name="home" group="vkc">
         <joint name="arm_joint_I" value="1.00"/>
-        <joint name="arm_joint_II" value="-2.20"/>
+        <joint name="arm_joint_II" value="-1.50"/>
         <joint name="base_link_base_yaw" value="0.0"/>
         <joint name="base_pitch_base_roll" value="0.0"/>
-        <joint name="base_roll_base_z" value="0.0"/>
+        <joint name="base_roll_base_z" value="1.5"/>
         <joint name="base_y_base_x" value="0.0"/>
         <joint name="base_yaw_base_pitch" value="0.0"/>
         <joint name="base_z_base_y" value="0.0"/>

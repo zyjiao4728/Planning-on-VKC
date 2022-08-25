@@ -254,6 +254,7 @@ target_link_libraries(
   ${PROJECT_NAME}_utils 
   vkc::vkc_construct_vkc
   vkc::vkc_uam_env
+  vkc::vkc_urdf_scene_env
   vkc::vkc_prob_generator
   vkc::vkc_vkc_env_basic
   tesseract::tesseract_motion_planners_ompl

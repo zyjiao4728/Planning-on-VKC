@@ -574,11 +574,12 @@
       </geometry>
     </collision>
   </link>
-  <joint name="arm_joint_I" type="continuous">
+  <joint name="arm_joint_I" type="revolute">
     <origin xyz="0 -0.0171000000000001 -0.0640000000000012" rpy="-1.5707963267949 1.5707963267949 3.14159265358979" />
     <parent link="base_link" />
     <child link="arm_link_I" />
     <axis xyz="0 0 -1" />
+    <limit effort="30" lower="-1.57" upper="1.57" velocity="10" />
   </joint>
 
   <link name="arm_link_II">
@@ -602,11 +603,12 @@
       </geometry>
     </collision>
   </link>
-  <joint name="arm_joint_II" type="continuous">
+  <joint name="arm_joint_II" type="revolute">
     <origin xyz="0.0795000000000011 0 0.000599999999999989" rpy="3.14159265358979 0 0" />
     <parent link="arm_link_I" />
     <child link="arm_link_II" />
     <axis xyz="0 0 1" />
+    <limit effort="30" lower="-1.57" upper="1.57" velocity="10" />
   </joint>
 
   <link name="gripper_base_link">
@@ -630,11 +632,12 @@
       </geometry>
     </collision>
   </link>
-  <joint name="gripper_base_joint" type="continuous">
+  <joint name="gripper_base_joint" type="revolute">
     <origin xyz="0.081 0 0.0115" rpy="1.58355301227902 0 3.14159265358979" />
     <parent link="arm_link_II" />
     <child link="gripper_base_link" />
     <axis xyz="1 0 0" />
+    <limit effort="30" lower="-3.14" upper="3.14" velocity="10" />
   </joint>
 
   <link name="gear_arm_link_I">
