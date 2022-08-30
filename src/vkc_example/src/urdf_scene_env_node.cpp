@@ -116,31 +116,31 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
     actions.emplace_back(place_action);
   }
 
-  //   // action 3: pick bottle
-  // {
-  //   pick_action = make_shared<PickAction>(robot, "attach_bottle");
-  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-  //   actions.emplace_back(pick_action);
-  // }
+    // action 3: pick bottle
+  {
+    pick_action = make_shared<PickAction>(robot, "attach_bottle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
 
-  // // action 4: place bottle in the fridge
-  // {
-  //   std::vector<LinkDesiredPose> link_objectives;
-  //   std::vector<JointDesiredPose> joint_objectives;
-  //   Eigen::Isometry3d destination;
-  //   destination.setIdentity();
-  //   destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
-  //   destination.linear() = Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0,  0).matrix();
-  //   // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
-  //   // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
-  //   link_objectives.push_back(LinkDesiredPose("bottle", destination));
+  // action 4: place bottle in the fridge
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
+    destination.linear() = Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0,  0).matrix();
+    // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
+    // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
+    link_objectives.push_back(LinkDesiredPose("bottle", destination));
 
-  //   place_action = make_shared<PlaceAction>(
-  //       robot, "attach_bottle", link_objectives, joint_objectives, false);
+    place_action = make_shared<PlaceAction>(
+        robot, "attach_bottle", link_objectives, joint_objectives, false);
 
-  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-  //   actions.emplace_back(place_action);
-  // }
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(place_action);
+  }
 
   // // action 5: pick fridge handle
   // {

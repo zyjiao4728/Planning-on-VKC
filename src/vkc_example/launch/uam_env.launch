@@ -14,7 +14,7 @@
 
   <arg name="x" default="0.0" />
   <arg name="y" default="0.0" />
-  <arg name="z" default="0.5" />
+  <arg name="z" default="0.0" />
 
   <!-- Load universal environment description format (URDF) -->
   <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/uam_env.xacro' x:=$(arg x) y:=$(arg y) z:=$(arg z)" />
