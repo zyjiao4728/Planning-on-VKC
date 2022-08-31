@@ -16,24 +16,24 @@
   <arg name="has_gripper" default="true" />
 
   <!-- Load universal environment description format (URDF) -->
-  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/env.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) has_gripper:=$(arg has_gripper)" />
+  <!-- <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/env.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) has_gripper:=$(arg has_gripper)" /> -->
 
   <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg env_description)_semantic" textfile="$(find env)/config/env.srdf" />
+  <!-- <param name="$(arg env_description)_semantic" textfile="$(find env)/config/env.srdf" /> -->
 
-  <arg name="end_effector_link" default="robotiq_arg2f_base_link" />
+  <!-- <arg name="end_effector_link" default="robotiq_arg2f_base_link" /> -->
 
   <!-- <param name="end_effector_link" type="str" value="$(arg end_effector_link)"/> -->
 
-  <!-- <arg name="loc_x" default="0.0"/> -->
-  <!-- <arg name="loc_y" default="0.0"/> -->
-  <!-- <arg name="orient" default="0.0"/> -->
+  <arg name="loc_x" default="3.0"/>
+  <arg name="loc_y" default="0.0"/>
+  <arg name="orient" default="0.0"/>
 
-  <!-- <arg name="end_effector_link" default="left_gripper_flange"/> -->
+  <arg name="end_effector_link" default="left_gripper_flange"/>
 
-  <!-- <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_big_task.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)"/> -->
+  <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_big_task.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)"/>
 
-  <!-- <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" /> -->
+  <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" />
 
   <param name="end_effector_link" type="str" value="$(arg end_effector_link)" />
 

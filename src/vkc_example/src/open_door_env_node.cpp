@@ -106,7 +106,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     toDelimitedFile(ci,
                     "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-                    "trajectory/open_door_pull.csv",
+                    "trajectory/open_door_push.csv",
                     ',');
     // saveTrajToFile(refined_traj,
     // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
