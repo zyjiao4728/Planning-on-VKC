@@ -26,6 +26,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
 
 PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                          Waypoint wp, int n_steps, int n_iter) {
+  CONSOLE_BRIDGE_logDebug("generating planning request...");
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
@@ -61,15 +62,14 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
       fmt::format("waypoint for {}", act->getActionName()));
   program.push_back(plan_instruction);
 
+  auto seed_instruction = plan_instruction;
   if (act->joint_candidate.size()) {
-    CONSOLE_BRIDGE_logDebug(
+    CONSOLE_BRIDGE_logInform(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
-    plan_instruction.setWaypoint(
+    seed_instruction.setWaypoint(
         JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
   }
-  seed_program.push_back(plan_instruction);
-
-  // addCartWaypoint(program, pick_pose_world_transform, "pick object");
+  seed_program.push_back(seed_instruction);
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
@@ -203,8 +203,14 @@ MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
 MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
                                                   PickAction::Ptr act) {
   CONSOLE_BRIDGE_logDebug("generating pick mixed waypoint");
+  std::cout << "act manipulator id: " << act->getManipulatorID() << std::endl;
+  std::cout << fmt::format("group joint names: {}",
+                           env.getVKCEnv()->getTesseract()->getGroupJointNames(
+                               act->getManipulatorID()))
+            << std::endl;
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
+  // std::cout << fmt::format("{}", kin_group->getJointNames()) << std::endl;
   MixedWaypoint waypoint(kin_group->getJointNames());
   BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
