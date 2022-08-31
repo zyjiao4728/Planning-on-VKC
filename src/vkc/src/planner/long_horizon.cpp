@@ -67,8 +67,8 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
         "long horizon udpate env success, processing next action...");
     auto kg = vkc_env->getVKCEnv()->getTesseract()->getKinematicGroup(
         action->getManipulatorID());
-    std::cout << "get kg success" << std::endl;
-    fmt::print("kin group joints after update: {}\n", kg->getJointNames());
+    // std::cout << "get kg success" << std::endl;
+    // fmt::print("kin group joints after update: {}\n", kg->getJointNames());
   }
 
   std::cout << "getting ordered ik set...";
@@ -112,8 +112,8 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
     auto filtered_iks = kmeans(act_ik, 100);
-    CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
-                            filtered_iks[0].size());
+    // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
+    //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);
   }
   // used push back before, so we need to reverse the ik sequence back
@@ -180,7 +180,10 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
   Eigen::ArrayXXd mu = Eigen::ArrayXXd::Zero(K, n_features);
   Eigen::ArrayXd z = Eigen::ArrayXd::Zero(n_examples_ttl);
 
-  CONSOLE_BRIDGE_logDebug("running kmeans with k: %d", K);
+  if (K < 10){
+    CONSOLE_BRIDGE_logWarn("K: %d, maybe too small", K);
+  }
+  // CONSOLE_BRIDGE_logDebug("running kmeans with k: %d", K);
   RunKMeans(data_all.data(), n_examples_ttl, n_features, K, n_iters, seed,
             "plusplus", mu.data(), z.data());
   // std::cout << "done.\n";

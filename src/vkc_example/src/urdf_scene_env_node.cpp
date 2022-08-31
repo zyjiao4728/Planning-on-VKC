@@ -209,9 +209,7 @@ int main(int argc, char **argv) {
   ros::NodeHandle nh;
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                  ros::console::levels::Debug);
-  OutputHandlerColorSTD *oh;
-  console_bridge::useOutputHandler(oh);
-  console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
   ROS_INFO("Initializaing environment node...");
 
   bool plotting = true;

@@ -77,4 +77,47 @@ void TrajectoryVisualize(
     vkc::VKCEnvBasic &env, vkc::ActionSeq &actions,
     std::vector<tesseract_common::JointTrajectory> &joint_trajs);
 
+class OutputHandlerColorSTD : public console_bridge::OutputHandlerSTD {
+  void log(const std::string &text, console_bridge::LogLevel level,
+           const char *filename, int line) {
+    auto current_time =
+        std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    auto t = std::localtime(&current_time);
+    char buf[80];
+    std::strftime(buf, sizeof(buf), "%T", t);
+    switch (level) {
+      case console_bridge::CONSOLE_BRIDGE_LOG_DEBUG:
+        std::cout << buf << "[DEBUG]: " << text << std::endl;
+        break;
+      case console_bridge::CONSOLE_BRIDGE_LOG_INFO:
+        std::cout << "\033[34m" << buf << "[INFO]: " << text << "\033[0m"
+                  << std::endl;
+        break;
+      case console_bridge::CONSOLE_BRIDGE_LOG_WARN:
+        std::cerr << "\033[33m" << buf << "[WARN]: " << text << "\033[0m"
+                  << std::endl;
+        break;
+      case console_bridge::CONSOLE_BRIDGE_LOG_ERROR:
+        std::cerr << "\033[31m" << buf << "[ERROR]: " << text << "\033[0m"
+                  << std::endl;
+      default:
+        break;
+    }
+    if (level >= console_bridge::CONSOLE_BRIDGE_LOG_WARN) {
+      std::cerr << "         at line " << line << " in " << filename
+                << std::endl;
+      std::cerr.flush();
+    } else {
+      std::cout.flush();
+    }
+  }
+};
+
+void setupLog(
+    console_bridge::LogLevel level = console_bridge::CONSOLE_BRIDGE_LOG_INFO) {
+  OutputHandlerColorSTD *oh = new OutputHandlerColorSTD();
+  console_bridge::useOutputHandler(oh);
+  console_bridge::setLogLevel(level);
+}
+
 #endif
