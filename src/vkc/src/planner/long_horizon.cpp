@@ -15,29 +15,35 @@ LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
 
 void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                                         std::vector<ActionBase::Ptr> &actions) {
-  CONSOLE_BRIDGE_logDebug("generating long horizon seed");
+  CONSOLE_BRIDGE_logDebug("\n\rgenerating long horizon seed\n");
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
-  if (sub_actions.size() <= 1) {
-    CONSOLE_BRIDGE_logDebug(
-        "sub actions length <= 1, removing joint candidates");
-    if (sub_actions.size()) sub_actions[0]->joint_candidate = Eigen::VectorXd();
-    return;
-  }
+  std::string origin_ee = raw_vkc_env.getEndEffectorLink();
+  // if (sub_actions.size() <= 1) {
+  //   CONSOLE_BRIDGE_logDebug(
+  //       "sub actions length <= 1, removing joint candidates");
+  //   if (sub_actions.size()) sub_actions[0]->joint_candidate =
+  //   Eigen::VectorXd(); return;
+  // }
+
   ProbGenerator prob_generator;
-  std::shared_ptr<VKCEnvBasic> vkc_env = std::move(raw_vkc_env.clone());
+  VKCEnvBasic::Ptr vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
-  vkc_env->updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+  std::cout << fmt::format("{}", env->getGroupNames()).c_str() << std::endl;
   auto current_state = env->getCurrentJointValues();
 
   // get action iks
+  tesseract_kinematics::IKSolutions filtered_ik_result;
   std::vector<tesseract_kinematics::IKSolutions> act_iks;
   for (auto &action : sub_actions) {
+    CONSOLE_BRIDGE_logDebug("processing action %s",
+                            action->getActionName().c_str());
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
         std::move(env->getKinematicGroup(action->getManipulatorID()));
+    // fmt::print("kin group joint names: {}", kin_group->getJointNames());
     auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
-    CONSOLE_BRIDGE_logDebug("mixed waypoint generated");
-    tesseract_kinematics::IKSolutions filtered_ik_result;
+    CONSOLE_BRIDGE_logDebug("mixed waypoint for long horizon seed generated");
+    filtered_ik_result.clear();
 
     // get collision free ik for action
     if (action->joint_candidates.size()) {
@@ -57,24 +63,41 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
 
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
-    CONSOLE_BRIDGE_logDebug("udpate env success, processing next action...");
+    CONSOLE_BRIDGE_logDebug(
+        "long horizon udpate env success, processing next action...");
+    auto kg = vkc_env->getVKCEnv()->getTesseract()->getKinematicGroup(
+        action->getManipulatorID());
+    std::cout << "get kg success" << std::endl;
+    fmt::print("kin group joints after update: {}\n", kg->getJointNames());
   }
 
-  std::cout << "getting best ik set" << std::endl;
+  std::cout << "getting ordered ik set...";
   Eigen::VectorXd coeff(9);
   coeff.setOnes();
   // coeff(2) = 0;
   auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff);
-  assert(ik_sets.back().size() == sub_actions.size());
+  std::cout << "done." << std::endl;
+  assert(ik_sets.front().size() == sub_actions.size());
   sub_actions.front()->joint_candidates.clear();
   for (auto ik_set : ik_sets) {
     if (std::find(sub_actions.front()->joint_candidates.begin(),
                   sub_actions.front()->joint_candidates.end(),
-                  ik_set.front()) !=
+                  ik_set.front()) ==
         sub_actions.front()->joint_candidates.end()) {
       sub_actions.front()->joint_candidates.push_back(ik_set.front());
     }
   }
+  std::cout << sub_actions.front()->joint_candidates.size() << std::endl;
+  CONSOLE_BRIDGE_logInform("generating long horizon seed success");
+  raw_vkc_env.setEndEffector(origin_ee);
+  // const tesseract_srdf::KinematicsInformation kin_info =
+  //     raw_vkc_env.getVKCEnv()
+  //         ->getTesseract()
+  //         ->getKinematicsInformation()
+  //         .clone();
+  // auto cmd = std::make_shared<AddKinematicsInformationCommand>(kin_info);
+  // raw_vkc_env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  raw_vkc_env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   return;
 }
 
@@ -89,8 +112,8 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
     auto filtered_iks = kmeans(act_ik, 100);
-    // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
-    //                         filtered_iks[0].size());
+    CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
+                            filtered_iks[0].size());
     set_input.push_back(filtered_iks);
   }
   // used push back before, so we need to reverse the ik sequence back
@@ -105,6 +128,7 @@ LongHorizonSeedGenerator::getOrderedIKSet(
 
   while (ik_set_queue.size() > 0) {
     sets_result.push_back(ik_set_queue.top().ik_set);
+    // std::cout << ik_set_queue.top().cost << std::endl;
     ik_set_queue.pop();
   }
   return sets_result;
@@ -115,6 +139,7 @@ double LongHorizonSeedGenerator::getIKSetCost(
     const std::vector<Eigen::VectorXd> &act_ik_set,
     const Eigen::VectorXd cost_coeff) {
   const int coeff_length = cost_coeff.size();
+  assert(current_state.size() >= cost_coeff.size());
   assert(act_ik_set.size() > 0 && act_ik_set[0].size() >= coeff_length);
   double cost =
       (act_ik_set[0].head(coeff_length) - current_state.head(coeff_length))
@@ -150,16 +175,15 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
   assert(data_all.rows() == act_iks.size());
 
   // Display the data
-  // std::cout << "data_all\n";
   // std::cout << data_all.format(CleanFmt) << "\n";
 
   Eigen::ArrayXXd mu = Eigen::ArrayXXd::Zero(K, n_features);
   Eigen::ArrayXd z = Eigen::ArrayXd::Zero(n_examples_ttl);
 
-  std::cout << "running kmeans with k: " << K << std::endl;
+  CONSOLE_BRIDGE_logDebug("running kmeans with k: %d", K);
   RunKMeans(data_all.data(), n_examples_ttl, n_features, K, n_iters, seed,
             "plusplus", mu.data(), z.data());
-  std::cout << "done.\n";
+  // std::cout << "done.\n";
 
   // std::cout << "estimated clusters:\n";
   // std::cout << mu.format(CleanFmt) << "\n";

@@ -156,7 +156,7 @@ bool UrdfSceneEnv::reInit() {
 void UrdfSceneEnv::configAttachLocations_(
     const std::vector<AttachObjectInfo> &attaches) {
   for (const auto &attach : attaches) {
-    ROS_INFO(
+    ROS_DEBUG(
         "[%s]add attach object, attach name: %s, attach_link: %s, base_link: "
         "%s, fixed base: "
         "%s",

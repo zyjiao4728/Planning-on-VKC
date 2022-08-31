@@ -3,13 +3,13 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 #include <tesseract_collision/bullet/bullet_cast_bvh_manager.h>
 #include <tesseract_collision/bullet/bullet_discrete_bvh_manager.h>
 // #include <tesseract_environment/kdl/kdl_env.h>
+#include <fmt/format.h>
 #include <ros/ros.h>
 #include <tesseract_kinematics/core/utils.h>
 #include <tesseract_kinematics/kdl/kdl_factories.h>
 #include <tesseract_kinematics/kdl/kdl_inv_kin_chain_lma.h>
 #include <tesseract_srdf/utils.h>
 #include <tesseract_urdf/urdf_parser.h>
-#include <fmt/format.h>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
 
 #include <vkc/construct_vkc.h>
@@ -20,17 +20,18 @@ ConstructVKC::ConstructVKC() {
   clear();
 }
 ConstructVKC::ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model,
-                           tesseract_scene_graph::SceneGraph::Ptr scene_graph, tesseract_environment::Environment::Ptr env) {
+                           tesseract_environment::Environment::Ptr env) {
   ROS_INFO("Virtual Kinematic Chain constructor initialized...");
+  clear();
   srdf_model_ = srdf_model;
-  scene_graph_ = scene_graph;
   env_ = env;
-  monitor_ = nullptr;
+  scene_graph_ = std::move(env->getSceneGraph()->clone());
 }
 
 ConstructVKC::UPtr ConstructVKC::clone() {
   ROS_WARN("srdf model is reused, may cause problem...");
-  auto cloned_vkc = std::make_unique<ConstructVKC>(srdf_model_, scene_graph_->clone(), env_->clone());
+  auto cloned_vkc =
+      std::make_unique<ConstructVKC>(srdf_model_, std::move(env_->clone()));
   return cloned_vkc;
 }
 
@@ -113,7 +114,7 @@ tesseract_monitoring::ROSEnvironmentMonitor::Ptr ConstructVKC::getMonitor() {
   return monitor_;
 }
 
-tesseract_srdf::SRDFModel::Ptr ConstructVKC::getSRDFModel() {
+tesseract_srdf::SRDFModel::ConstPtr ConstructVKC::getSRDFModel() const {
   return srdf_model_;
 }
 

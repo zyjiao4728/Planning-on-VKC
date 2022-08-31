@@ -18,7 +18,8 @@ class ConstructVKC {
 
   // Constructor and destructor
   ConstructVKC();
-  ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model, tesseract_scene_graph::SceneGraph::Ptr scene_graph, tesseract_environment::Environment::Ptr env);
+  ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model,
+               tesseract_environment::Environment::Ptr env);
   virtual ~ConstructVKC() = default;
 
   ConstructVKC::UPtr clone();
@@ -38,7 +39,7 @@ class ConstructVKC {
   tesseract_environment::Environment::Ptr getTesseract();
   tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
   tesseract_monitoring::ROSEnvironmentMonitor::Ptr getMonitor();
-  tesseract_srdf::SRDFModel::Ptr getSRDFModel();
+  tesseract_srdf::SRDFModel::ConstPtr getSRDFModel() const;
 
   // tesseract_environment::Environment::Ptr getEnvironment();
   // tesseract_environment::Environment::Ptr getTesseract();

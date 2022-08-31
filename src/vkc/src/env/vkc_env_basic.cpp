@@ -34,11 +34,12 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
  * @return VKCEnvBasic::UPtr
  */
 VKCEnvBasic::UPtr VKCEnvBasic::clone() {
-  auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(nh_, tesseract_->clone(),
-                                                      plotting_, rviz_, steps_);
+  auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(
+      nh_, std::move(tesseract_->clone()), plotting_, rviz_, steps_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
   cloned_vkc_env->updateAttachLocations(attach_locations_);
+  cloned_vkc_env->attached_links_ = attached_links_;
   return cloned_vkc_env;
 }
 
@@ -160,7 +161,7 @@ void VKCEnvBasic::updateAttachLocations(
         attach_locations) {
   for (auto& attach_location : attach_locations) {
     auto new_attach_location = attach_location.second->clone();
-    new_attach_location->connection.parent_link_name = end_effector_link_;
+    // new_attach_location->connection.parent_link_name = attach_location->conne;
     attach_locations_[attach_location.first] = std::move(new_attach_location);
     CONSOLE_BRIDGE_logDebug(
         "adding attach location: %s, base link: %s",
@@ -364,11 +365,18 @@ void VKCEnvBasic::detachTopObject(vkc::ConstructVKC::Ptr tesseract,
 void VKCEnvBasic::detachObject(std::string detach_location_name,
                                vkc::ConstructVKC::Ptr tesseract,
                                const std::string& new_attach_link) {
-  if (!ifAttachedLink(detach_location_name)) return;
+  if (!ifAttachedLink(detach_location_name)) {
+    CONSOLE_BRIDGE_logWarn("link %s not attached, returning",
+                           detach_location_name.c_str());
+    return;
+  }
 
   // detach previously attached links
-  while (getTopAttachedLink() != detach_location_name)
+  while (getTopAttachedLink() != detach_location_name) {
+    CONSOLE_BRIDGE_logDebug("top attach link: %s, detaching top object",
+                            getTopAttachedLink());
     detachTopObject(tesseract);
+  }
 
   // detach the real target detach_location_name
   detachTopObject(tesseract, new_attach_link);
@@ -393,7 +401,8 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   std::cout << __func__ << ": action" << std::endl << action << std::endl;
   // Set the current state to the last state of the trajectory
   if (joint_names.size()) {
-    std::cout << "new joint state: " << joint_states;
+    assert(joint_names.size() == joint_states.size());
+    std::cout << "updating joint state with: " << joint_states.transpose() << std::endl;
     tesseract->getTesseract()->setState(joint_names, joint_states);
   }
 
@@ -419,7 +428,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   } else if (action->getActionType() == ActionType::PlaceAction) {
     PlaceAction::Ptr place_act = std::dynamic_pointer_cast<PlaceAction>(action);
     location_name = place_act->getDetachedObject();
-    std::cout << "detach: " << location_name << std::endl;
+    std::cout << "detach location_name: " << location_name << std::endl;
     std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
     detachObject(location_name, tesseract, place_act->getNewAttachObject());
     std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
@@ -446,7 +455,8 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
 }  // namespace vkc
 
 void VKCEnvBasic::updateKinematicInfo(vkc::ConstructVKC::Ptr tesseract) {
-  CONSOLE_BRIDGE_logDebug("updating kinematic info");
+  CONSOLE_BRIDGE_logDebug("updating kinematic info with end effector: %s",
+                          end_effector_link_.c_str());
   tesseract_srdf::KinematicsInformation kin_info;
   for (auto group_id :
        tesseract_->getSRDFModel()->kinematics_information.group_names) {
