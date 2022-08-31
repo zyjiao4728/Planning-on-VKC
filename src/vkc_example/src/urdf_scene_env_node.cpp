@@ -1,7 +1,9 @@
+#include <fmt/ranges.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/urdf_scene_env.h>
 #include <vkc/env/vkc_env_basic.h>
+#include <vkc/planner/long_horizon.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc_example/utils.h>
 // motion planning via OMPL
@@ -27,6 +29,9 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
+  int window_size = 3;
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -35,6 +40,19 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
+    ActionSeq sub_actions(ptr, actions.end());
+    // fmt::print("kg: {}", env.getVKCEnv()
+    //                          ->getTesseract()
+    //                          ->getKinematicGroup(action->getManipulatorID())
+    //                          ->getJointNames());
+    seed_generator.generate(env, sub_actions);
+    // std::cout << "sg after generate" << std::endl;
+    // printSceneGraph(env.getVKCEnv()->getTesseract()->getSceneGraph());
+    action->switchCandidate();
+    // fmt::print("kg: {}", env.getVKCEnv()
+    //                          ->getTesseract()
+    //                          ->getKinematicGroup(action->getManipulatorID())
+    //                          ->getJointNames());
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -45,7 +63,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
         env.getPlotter()->waitForInput(
             "optimization is ready. Press <Enter> to process the request.");
       }
-
       solveProb(prob_ptr, response, n_iter);
 
       // break;
@@ -60,6 +77,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
+
+        action->switchCandidate();
       }
     }
 
@@ -84,6 +103,11 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
+    CONSOLE_BRIDGE_logInform("update env finished");
+    // const tesseract_srdf::KinematicsInformation kin_info =
+    // env.getVKCEnv()->getTesseract()->getKinematicsInformation(); auto cmd =
+    // std::make_shared<AddKinematicsInformationCommand>(kin_info);
+    // env.getVKCEnv()->getTesseract()->applyCommand(cmd);
 
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
@@ -108,15 +132,15 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
     place_action =
-        make_shared<PlaceAction>(robot, "attach_fridge_handle",
-                                 link_objectives, joint_objectives, false);
+        make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
+                                 joint_objectives, false);
 
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
 
     actions.emplace_back(place_action);
   }
 
-    // action 3: pick bottle
+  // action 3: pick bottle
   {
     pick_action = make_shared<PickAction>(robot, "attach_bottle");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
@@ -130,9 +154,11 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
     Eigen::Isometry3d destination;
     destination.setIdentity();
     destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
-    destination.linear() = Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0,  0).matrix();
+    destination.linear() =
+        Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0, 0).matrix();
     // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
-    // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
+    // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50,
+    // -0.50).matrix();
     link_objectives.push_back(LinkDesiredPose("bottle", destination));
 
     place_action = make_shared<PlaceAction>(
@@ -142,33 +168,37 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
     actions.emplace_back(place_action);
   }
 
-  // // action 5: pick fridge handle
-  // {
-  //   pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-  //   actions.emplace_back(pick_action);
-  // }
+  // action 5: pick fridge handle
+  {
+    pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
 
-  // // action 6: close fridge door
-  // {
-  //   std::vector<LinkDesiredPose> link_objectives;
-  //   std::vector<JointDesiredPose> joint_objectives;
+  // action 6: close fridge door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
 
-  //   joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
-  //   place_action =
-  //       make_shared<PlaceAction>(robot, "attach_fridge_handle",
-  //                                link_objectives, joint_objectives, false);
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
+                                 joint_objectives, false);
 
-  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
 
-  //   actions.emplace_back(place_action);
-  // }
+    actions.emplace_back(place_action);
+  }
 }
 
 void setInitState(VKCEnvBasic &env) {
-  vector<string> dishwasher_joints({ "dishwasher_12065_joint_0", "dishwasher_12065_joint_1" , "dishwasher_12065_joint_2" });
-  Eigen::Vector3d dishwasher_values({ -0.3080, -0.1359, -0.6457}); //open: 0.9250 close -0.6457
-  env.getVKCEnv()->getTesseract()->setState(dishwasher_joints, dishwasher_values);
+  vector<string> dishwasher_joints({"dishwasher_12065_joint_0",
+                                    "dishwasher_12065_joint_1",
+                                    "dishwasher_12065_joint_2"});
+  Eigen::Vector3d dishwasher_values(
+      {-0.3080, -0.1359, -0.6457});  // open: 0.9250 close -0.6457
+  env.getVKCEnv()->getTesseract()->setState(dishwasher_joints,
+                                            dishwasher_values);
 }
 
 int main(int argc, char **argv) {
@@ -179,6 +209,9 @@ int main(int argc, char **argv) {
   ros::NodeHandle nh;
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                  ros::console::levels::Debug);
+  OutputHandlerColorSTD *oh;
+  console_bridge::useOutputHandler(oh);
+  console_bridge::setLogLevel(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
   ROS_INFO("Initializaing environment node...");
 
   bool plotting = true;
@@ -246,8 +279,8 @@ int main(int argc, char **argv) {
   UrdfSceneEnv::InverseChainsInfos inverse_chains;
   inverse_chains.emplace_back(
       UrdfSceneEnv::InverseChainsInfo{"bottle", "bottle_link_0"});
-  inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"fridge_0001",
-  "fridge_0001_dof_rootd_Aa002_r"});
+  inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
+      "fridge_0001", "fridge_0001_dof_rootd_Aa002_r"});
   // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"cabinet_45290_2_base",
   // "cabinet_45290_2_link_0"});
   // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"door_8966_base",

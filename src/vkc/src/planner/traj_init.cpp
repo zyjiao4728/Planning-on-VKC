@@ -669,7 +669,7 @@ CompositeInstruction generateMixedSeed(
   request.profiles = profiles;
   planner.solve(request, response);
   // response.results.print("mixed seed: ");
-  CONSOLE_BRIDGE_logDebug("mixed waypoint generation success");
+  CONSOLE_BRIDGE_logDebug("mixed seed generation success");
   return response.results;
 }
 
