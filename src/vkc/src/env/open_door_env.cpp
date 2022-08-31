@@ -81,13 +81,13 @@ bool OpenDoorEnv::createEnvironment() {
       Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
   door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
-  // vkc::BaseDrawer drawer0("drawer0");
-  // drawer0.createObject();
-  // drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3,
-  // 0.2, 1.57)); drawer0.inverseRootTip("world", drawer0.getName() +
-  // "_handle_link");
+  vkc::BaseDrawer drawer0("drawer0");
+  drawer0.createObject();
+  drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3, 0.5, 1.57));
+  drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   updateAttachLocations(door_north.getAttachLocations());
+  updateAttachLocations(drawer0.getAttachLocations());
 
   ROS_INFO("add attach location success.");
 
@@ -97,6 +97,7 @@ bool OpenDoorEnv::createEnvironment() {
   wall_east.addToEnvironment(tesseract_->getTesseract());
   wall_south.addToEnvironment(tesseract_->getTesseract());
   door_north.addToEnvironment(tesseract_->getTesseract());
+  drawer0.addToEnvironment(tesseract_->getTesseract());
 
   ROS_INFO("add objects to environment success");
 

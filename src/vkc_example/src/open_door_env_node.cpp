@@ -41,7 +41,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      auto prob_ptr = prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      auto prob_ptr =
+          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
@@ -51,7 +52,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
       solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
-      if (OMPLMotionPlannerStatusCategory::SolutionFound == response.status.value())
+      if (OMPLMotionPlannerStatusCategory::SolutionFound ==
+          response.status.value())
       // if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
       //     response.status.value())  // optimization converges
       {
@@ -109,6 +111,39 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     CONSOLE_BRIDGE_logInform("environment updated, starting next action...");
     if (env.getPlotter() != nullptr) env.getPlotter()->clear();
     ++j;
+  }
+}
+
+void setBaseJoint(vkc::ActionBase::Ptr action) {
+  action->setBaseJoint(std::string("base_y_base_x"),
+                       std::string("base_theta_base_y"));
+}
+
+void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
+  PlaceAction::Ptr place_action;
+
+  /** open drawer **/
+  // action 1: pick the drawer handle
+  {
+    actions.emplace_back(
+        make_shared<PickAction>(robot, "attach_drawer0_handle_link"));
+    setBaseJoint(*actions.rbegin());
+  }
+
+  // action 2: open drawer
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("drawer0_base_drawer_joint", -0.6);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
+                                 link_objectives, joint_objectives, false);
+    place_action->setOperationObjectType(false);
+
+    setBaseJoint(place_action);
+
+    actions.emplace_back(place_action);
   }
 }
 
@@ -207,8 +242,9 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pushDoor(actions, robot);
+  // pushDoor(actions, robot);
   // pullDoor(actions, robot);
+  pullDrawer(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

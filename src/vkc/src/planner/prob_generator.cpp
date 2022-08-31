@@ -2,6 +2,7 @@
 #include <tesseract_command_language/command_language.h>
 #include <tesseract_motion_planners/interface_utils.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_constrained_plan_profile.h>
+#include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc/planner/traj_init.h>
 
@@ -111,23 +112,23 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   tesseract_kinematics::KinematicGroup::Ptr kin_group =
       std::move(env_->getKinematicGroup(action->getManipulatorID()));
 
-  auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
   auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>();
-  LinkConstraint test(kin_group, wp.link_constraints, 0.01);
-  auto constraint =
-      std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.01);
-
-  ompl_profile->constraint = constraint;
-  ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
-
   auto profiles = std::make_shared<ProfileDictionary>();
-  profiles->addProfile<OMPLConstrainedPlanProfile>(
-      profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
-
-  for (auto &profile : profiles->getProfileEntry<OMPLConstrainedPlanProfile>(
-           profile_ns::OMPL_DEFAULT_NAMESPACE)) {
-    std::cout << "profile ompl" << profile.first << std::endl;
+  if (wp.link_constraints.size()) {
+    auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
+    auto constraint =
+        std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.5);
+    ompl_profile->constraint = constraint;
+    ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
+    profiles->addProfile<OMPLConstrainedPlanProfile>(
+        profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
+  } else {
+    auto ompl_profile = std::make_shared<OMPLDefaultPlanProfile>();
+    ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
+    profiles->addProfile<OMPLDefaultPlanProfile>(
+        profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
   }
+
   CONSOLE_BRIDGE_logDebug("generating program");
   CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
                                manip);
