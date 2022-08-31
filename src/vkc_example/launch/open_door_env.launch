@@ -10,10 +10,10 @@
   <arg name="niter" default="500" />
   <arg name="nruns" default="5" />
 
-  <arg name="husky_locx" default="0.0" />
-  <arg name="husky_locy" default="0.0" />
-  <arg name="husky_orient" default="-0.0" />
-  <arg name="has_gripper" default="true" />
+  <!-- <arg name="husky_locx" default="0.0" /> -->
+  <!-- <arg name="husky_locy" default="0.0" /> -->
+  <!-- <arg name="husky_orient" default="-0.0" /> -->
+  <!-- <arg name="has_gripper" default="true"/> -->
 
   <!-- Load universal environment description format (URDF) -->
   <!-- <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/env.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) has_gripper:=$(arg has_gripper)" /> -->
