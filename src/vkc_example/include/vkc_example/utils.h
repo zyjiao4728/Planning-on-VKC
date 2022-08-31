@@ -55,11 +55,15 @@ class CostInfo {
 void solveProb(tesseract_planning::PlannerRequest request,
                tesseract_planning::PlannerResponse &response, int n_iter);
 
+void solveOmplProb(tesseract_planning::PlannerRequest request,
+                   tesseract_planning::PlannerResponse &response, int n_iter);
+
 // CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr,
 // tesseract_planning::PlannerResponse &response,
 //                         int n_iter, bool enable_ploting = false);
 
-void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic &env);
+void refineTrajectory(tesseract_common::JointTrajectory &traj,
+                      vkc::VKCEnvBasic &env);
 
 int saveTrajToFile(const tesseract_common::TrajArray &traj,
                    const std::string filename);

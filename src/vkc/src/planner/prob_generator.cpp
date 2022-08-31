@@ -1,6 +1,7 @@
 #include <fmt/ranges.h>
 #include <tesseract_command_language/command_language.h>
 #include <tesseract_motion_planners/interface_utils.h>
+#include <tesseract_motion_planners/ompl/profile/ompl_constrained_plan_profile.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc/planner/traj_init.h>
 
@@ -70,7 +71,6 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
-  // CONSOLE_BRIDGE_logDebug("generating seed");
 
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
@@ -95,6 +95,64 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   request.env = env.getVKCEnv()->getTesseract();
 
   ROS_INFO("%s request generated.", act->getActionName().c_str());
+
+  return request;
+}
+
+PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
+                                             ActionBase::Ptr action,
+                                             int n_steps, int n_iter) {
+  auto wp = genMixedWaypoint(env, action);
+  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
+  ManipulatorInfo manip;
+  manip.tcp_frame = env.getEndEffectorLink();
+  manip.working_frame = "world";
+  manip.manipulator = action->getManipulatorID();
+  tesseract_kinematics::KinematicGroup::Ptr kin_group =
+      std::move(env_->getKinematicGroup(action->getManipulatorID()));
+
+  auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
+  auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>();
+  LinkConstraint test(kin_group, wp.link_constraints, 0.01);
+  auto constraint =
+      std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.01);
+
+  ompl_profile->constraint = constraint;
+  ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
+
+  auto profiles = std::make_shared<ProfileDictionary>();
+  profiles->addProfile<OMPLConstrainedPlanProfile>(
+      profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
+
+  for (auto &profile : profiles->getProfileEntry<OMPLConstrainedPlanProfile>(
+           profile_ns::OMPL_DEFAULT_NAMESPACE)) {
+    std::cout << "profile ompl" << profile.first << std::endl;
+  }
+  CONSOLE_BRIDGE_logDebug("generating program");
+  CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
+                               manip);
+  setStartInstruction(program, kin_group->getJointNames(),
+                      env_->getCurrentJointValues(kin_group->getJointNames()));
+  PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
+                                   "FREESPACE");
+  plan_instruction.setDescription(
+      fmt::format("waypoint for {}", action->getActionName()));
+  program.push_back(plan_instruction);
+
+  auto cur_state = env.getVKCEnv()->getTesseract()->getState();
+
+  CompositeInstruction seed =
+      generateMixedSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+
+  PlannerRequest request;
+  request.name = process_planner_names::OMPL_PLANNER_NAME;
+  request.instructions = program;
+  request.profiles = profiles;
+  request.env_state = cur_state;
+  request.seed = seed;
+  request.env = env.getVKCEnv()->getTesseract();
+
+  ROS_INFO("%s ompl request generated.", action->getActionName().c_str());
 
   return request;
 }
@@ -144,17 +202,18 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
       env.getAttachLocation(act->getAttachedObject());
   // std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
   // CONSOLE_BRIDGE_logDebug("attack location: %s",
-  //                         attach_location_ptr->link_name_);
+  //                         attach_location_ptr->link_name_.c_str());
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
-  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" <<
-  // std::endl; std::cout << pick_pose_world_transform.translation() <<
-  // std::endl; std::cout << pick_pose_world_transform.linear() << std::endl;
-  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++" <<
-  // std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  //           << std::endl;
+  // std::cout << pick_pose_world_transform.translation() << std::endl;
+  // std::cout << pick_pose_world_transform.linear() << std::endl;
+  // std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  //           << std::endl;
 
   waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
   return waypoint;
@@ -499,89 +558,90 @@ void ProbGenerator::addTargetCost(ProblemConstructionInfo &pci,
 }
 PlannerRequest ProbGenerator::genPickProb(VKCEnvBasic &env, PickAction::Ptr act,
                                           int n_steps, int n_iter) {
-  // to make sure the attach link exists
-  if (nullptr == env.getAttachLocation(act->getAttachedObject())) {
-    ROS_ERROR(
-        "[%s]attach location named %s does not exist, please specified it "
-        "first.",
-        __func__, act->getAttachedObject().c_str());
-    assert(false);
-  }
+  // // to make sure the attach link exists
+  // if (nullptr == env.getAttachLocation(act->getAttachedObject())) {
+  //   ROS_ERROR(
+  //       "[%s]attach location named %s does not exist, please specified it "
+  //       "first.",
+  //       __func__, act->getAttachedObject().c_str());
+  //   assert(false);
+  // }
 
-  ROS_DEBUG("generating pick problem");
+  // ROS_DEBUG("generating pick problem");
 
-  Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  ManipulatorInfo manip;
-  manip.tcp_frame = env.getEndEffectorLink();
-  manip.working_frame = "world";
-  manip.manipulator = act->getManipulatorID();
-  auto kinematic_group = env_->getKinematicGroup(
-      act->getManipulatorID());  // same as joint group for initial
-                                 // step(verified)
+  // Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
+  // ManipulatorInfo manip;
+  // manip.tcp_frame = env.getEndEffectorLink();
+  // manip.working_frame = "world";
+  // manip.manipulator = act->getManipulatorID();
+  // auto kinematic_group = env_->getKinematicGroup(
+  //     act->getManipulatorID());  // same as joint group for initial
+  //                                // step(verified)
 
-  // set profiles
-  double collision_margin = 0.0001;
-  double collision_coeff = 10;
+  // // set profiles
+  // double collision_margin = 0.0001;
+  // double collision_coeff = 10;
 
-  auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
-  auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
+  // auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
+  // auto rot_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
 
-  auto profiles = genPlannerProfiles_(env, manip, collision_margin,
-                                      collision_coeff, pos_coeff, rot_coeff);
-  addSolverProfile(profiles, n_iter);
+  // auto profiles = genPlannerProfiles_(env, manip, collision_margin,
+  //                                     collision_coeff, pos_coeff, rot_coeff);
+  // addSolverProfile(profiles, n_iter);
 
-  CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
-                               manip);
+  // CompositeInstruction program("DEFAULT", CompositeInstructionOrder::ORDERED,
+  //                              manip);
 
-  // set initial pose
-  setStartInstruction(
-      program, kinematic_group->getJointNames(),
-      env_->getCurrentJointValues(kinematic_group->getJointNames()));
+  // // set initial pose
+  // setStartInstruction(
+  //     program, kinematic_group->getJointNames(),
+  //     env_->getCurrentJointValues(kinematic_group->getJointNames()));
 
-  MixedWaypoint waypoint(kinematic_group->getJointNames());
+  // MixedWaypoint waypoint(kinematic_group->getJointNames());
 
-  // set target pose
-  BaseObject::AttachLocation::ConstPtr attach_location_ptr =
-      env.getAttachLocation(act->getAttachedObject());
-  Eigen::Isometry3d pick_pose_world_transform =
-      env.getVKCEnv()->getTesseract()->getLinkTransform(
-          attach_location_ptr->link_name_) *
-      attach_location_ptr->local_joint_origin_transform;
+  // // set target pose
+  // BaseObject::AttachLocation::ConstPtr attach_location_ptr =
+  //     env.getAttachLocation(act->getAttachedObject());
+  // Eigen::Isometry3d pick_pose_world_transform =
+  //     env.getVKCEnv()->getTesseract()->getLinkTransform(
+  //         attach_location_ptr->link_name_) *
+  //     attach_location_ptr->local_joint_origin_transform;
 
-  waypoint.addLinkTarget(env.getEndEffectorLink(), pick_pose_world_transform);
+  // waypoint.addLinkTarget(env.getEndEffectorLink(),
+  // pick_pose_world_transform);
 
-  PlanInstruction pick_plan(waypoint, PlanInstructionType::FREESPACE,
-                            "DEFAULT");
-  pick_plan.setDescription("waypoint for pick");
-  program.push_back(pick_plan);
+  // PlanInstruction pick_plan(waypoint, PlanInstructionType::FREESPACE,
+  //                           "DEFAULT");
+  // pick_plan.setDescription("waypoint for pick");
+  // program.push_back(pick_plan);
 
-  // addCartWaypoint(program, pick_pose_world_transform, "pick object");
+  // // addCartWaypoint(program, pick_pose_world_transform, "pick object");
 
-  // generate seed
-  auto cur_state = env.getVKCEnv()->getTesseract()->getState();
-  ROS_DEBUG("generating seed");
+  // // generate seed
+  // auto cur_state = env.getVKCEnv()->getTesseract()->getState();
+  // ROS_DEBUG("generating seed");
 
-  // CompositeInstruction seed =
-  //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
-  CompositeInstruction seed = generateMixedSeed(
-      program, cur_state, env.getVKCEnv()->getTesseract(), n_steps);
+  // // CompositeInstruction seed =
+  // //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+  // CompositeInstruction seed = generateMixedSeed(
+  //     program, cur_state, env.getVKCEnv()->getTesseract(), n_steps);
 
-  ROS_INFO("number of move instructions in pick seed: %ld",
-           getMoveInstructionCount(seed));
-  ROS_INFO("composing request.");
+  // ROS_INFO("number of move instructions in pick seed: %ld",
+  //          getMoveInstructionCount(seed));
+  // ROS_INFO("composing request.");
 
   // seed.print("pick seed: ");
 
   // compose request
   PlannerRequest request;
-  request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
-  request.instructions = program;
-  request.profiles = profiles;
-  request.seed = seed;
-  request.env_state = cur_state;
-  request.env = env.getVKCEnv()->getTesseract();
+  // request.name = process_planner_names::TRAJOPT_PLANNER_NAME;
+  // request.instructions = program;
+  // request.profiles = profiles;
+  // request.seed = seed;
+  // request.env_state = cur_state;
+  // request.env = env.getVKCEnv()->getTesseract();
 
-  ROS_INFO("pick request generated.");
+  // ROS_INFO("pick request generated.");
 
   return request;
 }

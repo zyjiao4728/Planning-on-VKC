@@ -182,7 +182,8 @@ add_library(${PROJECT_NAME}_utils SHARED src/utils.cpp)
 target_link_libraries(
   ${PROJECT_NAME}_utils
   tesseract::tesseract_environment
-  tesseract::tesseract_motion_planners_trajopt 
+  tesseract::tesseract_motion_planners_trajopt
+  tesseract::tesseract_motion_planners_ompl
   ${catkin_LIBRARIES}
 )
 target_compile_options(

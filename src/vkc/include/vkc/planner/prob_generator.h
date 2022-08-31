@@ -14,6 +14,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_POP
 #include <tesseract_motion_planners/trajopt/trajopt_motion_planner.h>
 #include <tesseract_process_managers/core/process_planning_request.h>
 // #include <tesseract_process_managers/core/default_process_planners.h>
+
 #include <tesseract_environment/utils.h>
 #include <tesseract_rosutils/plotting.h>
 #include <tesseract_rosutils/utils.h>
@@ -41,6 +42,10 @@ class ProbGenerator {
   tesseract_planning::PlannerRequest genRequest(
       VKCEnvBasic &env, ActionBase::Ptr action,
       tesseract_planning::Waypoint waypoint, int n_steps, int n_iter);
+
+  tesseract_planning::PlannerRequest getOmplRequest(VKCEnvBasic &env,
+                                                    ActionBase::Ptr action,
+                                                    int n_steps, int n_iter);
 
   tesseract_planning::MixedWaypoint genMixedWaypoint(VKCEnvBasic &env,
                                                      ActionBase::Ptr act);
@@ -144,6 +149,7 @@ class ProbGenerator {
  private:
   std::unordered_map<std::string, int> planned_joints;
 };
+
 
 }  // namespace vkc
 

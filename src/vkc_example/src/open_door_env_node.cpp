@@ -1,6 +1,7 @@
 #include <ros/console.h>
 #include <tesseract_command_language/utils/utils.h>
 #include <tesseract_motion_planners/core/utils.h>
+#include <tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/open_door_env.h>
@@ -27,7 +28,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          unsigned int nruns) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  seed_generator.generate(env, actions);
+  // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -40,17 +41,19 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      auto prob_ptr = prob_generator.getOmplRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      solveProb(prob_ptr, response, n_iter);
+      // solveProb(prob_ptr, response, n_iter);
+      solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
-      if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
-          response.status.value())  // optimization converges
+      if (OMPLMotionPlannerStatusCategory::SolutionFound == response.status.value())
+      // if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
+      //     response.status.value())  // optimization converges
       {
         converged = true;
         break;
@@ -61,7 +64,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             __func__, response.status.value(),
             response.status.message().c_str());
         ActionSeq sub_actions(ptr, actions.end());
-        seed_generator.generate(env, sub_actions);
+        // seed_generator.generate(env, sub_actions);
       }
     }
 

@@ -1,3 +1,4 @@
+#include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
 #include <vkc_example/utils.h>
 
@@ -18,6 +19,17 @@ void solveProb(PlannerRequest request, PlannerResponse &response, int n_iter) {
 
   ROS_WARN("%d, %s", trajopt_status.value(), trajopt_status.message().c_str());
 
+  return;
+}
+
+void solveOmplProb(PlannerRequest request, PlannerResponse &response,
+                   int n_iter) {
+  ROS_WARN("constructed ompl problem, solving...");
+
+  OMPLMotionPlanner planner;
+  auto ompl_status = planner.solve(request, response, true);
+
+  ROS_WARN("%d, %s", ompl_status.value(), ompl_status.message().c_str());
   return;
 }
 
@@ -84,30 +96,28 @@ CostInfo solveProb_cost(TrajOptProb::Ptr prob_ptr, PlannerResponse &response,
   return cost;
 }
 
-void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic& env) 
-{
-  std::vector<std::string> joint_names = env.getVKCEnv()->getTesseract()->getActiveJointNames();
-  Eigen::VectorXd initial_state = env.getVKCEnv()->getTesseract()->getCurrentJointValues();
+void refineTrajectory(tesseract_common::JointTrajectory &traj,
+                      vkc::VKCEnvBasic &env) {
+  std::vector<std::string> joint_names =
+      env.getVKCEnv()->getTesseract()->getActiveJointNames();
+  Eigen::VectorXd initial_state =
+      env.getVKCEnv()->getTesseract()->getCurrentJointValues();
   std::vector<std::string> planned_joint_names = traj.states[0].joint_names;
 
   long int n_rows = traj.states.size();  // number of waypoints
-  long int n_cols = joint_names.size(); // number of joints
+  long int n_cols = joint_names.size();  // number of joints
 
-  for (int i = 0; i < n_rows; i++)
-  {
+  for (int i = 0; i < n_rows; i++) {
     Eigen::VectorXd current_waypoint = traj.states[i].position;
 
-    for (int j = 0; j < planned_joint_names.size(); j++)
-    {
-      auto it = find(joint_names.begin(), joint_names.end(), planned_joint_names[j]);
-      if (it != joint_names.end()) 
-      {
-          int index = it - joint_names.begin();
-          initial_state[index] = current_waypoint[j];
-      }
-      else 
-      {
-          continue;
+    for (int j = 0; j < planned_joint_names.size(); j++) {
+      auto it =
+          find(joint_names.begin(), joint_names.end(), planned_joint_names[j]);
+      if (it != joint_names.end()) {
+        int index = it - joint_names.begin();
+        initial_state[index] = current_waypoint[j];
+      } else {
+        continue;
       }
     }
     traj.states[i].joint_names = joint_names;
@@ -115,8 +125,10 @@ void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic&
   }
 
   for (int i = 0; i < n_rows - 1; i++) {
-    double delta_y = traj.states[i+1].position[1] - traj.states[i].position[1];
-    double delta_x = traj.states[i+1].position[0] - traj.states[i].position[0];
+    double delta_y =
+        traj.states[i + 1].position[1] - traj.states[i].position[1];
+    double delta_x =
+        traj.states[i + 1].position[0] - traj.states[i].position[0];
     double delta_orientation = atan2(delta_y, delta_x);
 
     if (delta_orientation > 3.14159265359) delta_orientation -= 3.14159265359;
@@ -124,7 +136,8 @@ void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic&
     if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
 
     if (n_cols > 3) {
-      traj.states[i].position[3] += traj.states[i].position[2] - delta_orientation;
+      traj.states[i].position[3] +=
+          traj.states[i].position[2] - delta_orientation;
     }
     traj.states[i].position[2] = delta_orientation;
   }
@@ -134,7 +147,9 @@ void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic&
   // the last orientation is as same as the 2nd last
   if (n_rows > 1) {
     if (n_cols > 3) {
-      traj.states[n_rows - 1].position[3] += traj.states[n_rows - 1].position[2] - traj.states[n_rows - 2].position[2];
+      traj.states[n_rows - 1].position[3] +=
+          traj.states[n_rows - 1].position[2] -
+          traj.states[n_rows - 2].position[2];
     }
     traj.states[n_rows - 1].position[2] = traj.states[n_rows - 2].position[2];
   }
@@ -147,9 +162,11 @@ void refineTrajectory(tesseract_common::JointTrajectory& traj, vkc::VKCEnvBasic&
   //   double delta_x = traj(i + 1, 0) - traj(i, 0);
   //   double delta_orientation = atan2(delta_y, delta_x);
 
-  //   if (delta_orientation > 3.14159265359) delta_orientation -= 3.14159265359;
+  //   if (delta_orientation > 3.14159265359) delta_orientation
+  //   -= 3.14159265359;
 
-  //   if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
+  //   if (delta_orientation < -3.14159265359) delta_orientation
+  //   += 3.14159265359;
 
   //   if (n_cols > 3) {
   //     traj(i, 3) += traj(i, 2) - delta_orientation;
@@ -251,14 +268,12 @@ void TrajectoryVisualize(
   }
 }
 
-double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory){
-
+double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory) {
   double dist_travelled = 0.0;
 
-  for (int i = 1; i < trajectory.size(); i++)
-  {
+  for (int i = 1; i < trajectory.size(); i++) {
     Eigen::VectorXd curr_state = trajectory[i];
-    Eigen::VectorXd prev_state = trajectory[i-1];
+    Eigen::VectorXd prev_state = trajectory[i - 1];
     dist_travelled += (curr_state - prev_state).array().abs().sum();
   }
 

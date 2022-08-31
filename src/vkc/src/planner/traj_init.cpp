@@ -1,4 +1,5 @@
 
+#include <fmt/ranges.h>
 #include <tesseract_motion_planners/3mo/3mo_motion_planner.h>
 #include <tesseract_motion_planners/3mo/profile/3mo_planner_plan_profile.h>
 #include <vkc/planner/traj_init.h>
@@ -630,7 +631,8 @@ CompositeInstruction generateMixedSeed(
     const CompositeInstruction &instructions,
     const tesseract_scene_graph::SceneState &current_state,
     const tesseract_environment::Environment::ConstPtr &env, int min_steps,
-    std::pair<std::string, std::string> base_joint) {
+    const std::pair<std::string, std::string> base_joint,
+    const Eigen::VectorXd &ik_cost_coeff) {
   // srand(time(NULL));
   CONSOLE_BRIDGE_logInform("generating mixed seed");
   PlannerRequest request;
@@ -644,11 +646,15 @@ CompositeInstruction generateMixedSeed(
                                                           0.1, 5 * M_PI / 180);
   profile->setMapInfo(15, 15, 0.15);
   profile->setBaseJoint(base_joint);
-  Eigen::VectorXd cost_coeff;
-  // std::cout << env->getCurrentJointValues().size() << std::endl;
-  // cost_coeff.setOnes(env->getCurrentJointValues().size());
-  // cost_coeff(2) = 0;
-  // profile->cost_coeff = cost_coeff;
+  CONSOLE_BRIDGE_logDebug(
+      fmt::format("current joint names: {}", env->getActiveJointNames())
+          .c_str());
+
+  if (ik_cost_coeff.size()) {
+    CONSOLE_BRIDGE_logDebug("setting ik cost coeff with length %ld",
+                            ik_cost_coeff.size());
+    profile->cost_coeff = ik_cost_coeff;
+  }
 
   auto profiles = std::make_shared<ProfileDictionary>();
   profiles->addProfile<MMMOPlannerPlanProfile>(

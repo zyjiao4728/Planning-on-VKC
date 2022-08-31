@@ -57,8 +57,9 @@ tesseract_planning::CompositeInstruction generateMixedSeed(
     const tesseract_planning::CompositeInstruction &instructions,
     const tesseract_scene_graph::SceneState &current_state,
     const tesseract_environment::Environment::ConstPtr &env, int min_steps = 30,
-    std::pair<std::string, std::string> base_joint =
-        std::make_pair<std::string, std::string>("", ""));
+    const std::pair<std::string, std::string> base_joint =
+        std::make_pair<std::string, std::string>("", ""),
+    const Eigen::VectorXd &ik_cost_coeff = Eigen::VectorXd());
 
 trajopt::TrajArray initTrajectory(
     VKCEnvBasic &env, std::vector<LinkDesiredPose> &link_objectives,
