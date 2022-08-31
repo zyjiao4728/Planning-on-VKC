@@ -29,7 +29,7 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
       plot_tesseract_(nullptr) {}
 
 /**
- * @brief clone 
+ * @brief clone
  *
  * @return VKCEnvBasic::UPtr
  */
@@ -392,8 +392,10 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
                                     vkc::ConstructVKC::Ptr tesseract) {
   std::cout << __func__ << ": action" << std::endl << action << std::endl;
   // Set the current state to the last state of the trajectory
-  if (joint_names.size())
+  if (joint_names.size()) {
+    std::cout << "new joint state: " << joint_states;
     tesseract->getTesseract()->setState(joint_names, joint_states);
+  }
 
   if (action == nullptr) {
     if (rviz_) {

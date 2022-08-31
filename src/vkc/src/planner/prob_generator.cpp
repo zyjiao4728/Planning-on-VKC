@@ -19,7 +19,8 @@ ProbGenerator::ProbGenerator() {}
 PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
                                          ActionBase::Ptr action, int n_steps,
                                          int n_iter) {
-  auto wp = genMixedWaypoint(env, action);
+  Waypoint wp;
+  wp = genMixedWaypoint(env, action);
   return genRequest(env, action, wp, n_steps, n_iter);
 }
 
@@ -117,7 +118,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   if (wp.link_constraints.size()) {
     auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
     auto constraint =
-        std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.5);
+        std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.2);
     ompl_profile->constraint = constraint;
     ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
     profiles->addProfile<OMPLConstrainedPlanProfile>(
@@ -136,6 +137,12 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                       env_->getCurrentJointValues(kin_group->getJointNames()));
   PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
                                    "FREESPACE");
+  if (action->joint_candidate.size()) {
+    CONSOLE_BRIDGE_logDebug(
+        "joint candidate found, resetting seed waypoint to joint waypoint...");
+    plan_instruction.setWaypoint(
+        JointWaypoint(kin_group->getJointNames(), action->joint_candidate));
+  }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", action->getActionName()));
   program.push_back(plan_instruction);

@@ -71,6 +71,7 @@ class ActionBase {
 
   tesseract_planning::CompositeInstruction seed;
   Eigen::VectorXd joint_candidate;
+  std::vector<Eigen::VectorXd> joint_candidates;
 
   ActionType getActionType() { return action_type_; }
 
@@ -125,6 +126,13 @@ class ActionBase {
   }
 
   void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
+
+  void switchCandidate() {
+    joint_candidate = joint_candidates.front();
+    joint_candidates.erase(joint_candidates.begin());
+    // std::remove(joint_candidates.begin(), joint_candidates.end(),
+    //             joint_candidate);
+  }
 
  protected:
   ActionType action_type_;

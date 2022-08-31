@@ -5,6 +5,8 @@
 #include <vkc/planner/long_horizon.h>
 #include <vkc/planner/prob_generator.h>
 
+#include <queue>
+
 namespace vkc {
 
 LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
@@ -21,54 +23,69 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
         "sub actions length <= 1, removing joint candidates");
     if (sub_actions.size()) sub_actions[0]->joint_candidate = Eigen::VectorXd();
     return;
-  } 
+  }
   ProbGenerator prob_generator;
   std::shared_ptr<VKCEnvBasic> vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
   vkc_env->updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   auto current_state = env->getCurrentJointValues();
 
+  // get action iks
   std::vector<tesseract_kinematics::IKSolutions> act_iks;
   for (auto &action : sub_actions) {
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
         std::move(env->getKinematicGroup(action->getManipulatorID()));
     auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
     CONSOLE_BRIDGE_logDebug("mixed waypoint generated");
-    Eigen::VectorXd coeff(kin_group->getJointNames().size());
-    coeff.setOnes();
-    // coeff(2) = 0;
-    auto ik_result = tesseract_planning::getIKWithOrder(
-        kin_group, wp, "world",
-        env->getCurrentJointValues(kin_group->getJointNames()), coeff);
-    CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
-                            ik_result.size());
-    auto filtered_ik_result =
-        tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
+    tesseract_kinematics::IKSolutions filtered_ik_result;
+
+    // get collision free ik for action
+    if (action->joint_candidates.size()) {
+      filtered_ik_result = action->joint_candidates;
+    } else {
+      auto ik_result = tesseract_planning::getIKs(kin_group, wp, "world");
+
+      CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
+                              ik_result.size());
+      filtered_ik_result =
+          tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
+      CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
+                              filtered_ik_result.size());
+      action->joint_candidates = filtered_ik_result;
+    }
     act_iks.push_back(filtered_ik_result);
 
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
     CONSOLE_BRIDGE_logDebug("udpate env success, processing next action...");
   }
+
   std::cout << "getting best ik set" << std::endl;
   Eigen::VectorXd coeff(9);
   coeff.setOnes();
   // coeff(2) = 0;
-  auto ik_set = getBestIKSet(current_state, act_iks, coeff);
-  assert(ik_set.size() == sub_actions.size());
-  for (int i = 0; i < sub_actions.size(); i++) {
-    ik_set[i](2) = current_state(2);
-    sub_actions[i]->joint_candidate = ik_set[i];
+  auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff);
+  assert(ik_sets.back().size() == sub_actions.size());
+  sub_actions.front()->joint_candidates.clear();
+  for (auto ik_set : ik_sets) {
+    if (std::find(sub_actions.front()->joint_candidates.begin(),
+                  sub_actions.front()->joint_candidates.end(),
+                  ik_set.front()) !=
+        sub_actions.front()->joint_candidates.end()) {
+      sub_actions.front()->joint_candidates.push_back(ik_set.front());
+    }
   }
-
   return;
 }
 
-tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
+std::vector<tesseract_kinematics::IKSolutions>
+LongHorizonSeedGenerator::getOrderedIKSet(
     const Eigen::VectorXd current_state,
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
     const Eigen::VectorXd cost_coeff) {
-  std::vector<Eigen::VectorXd> best_ik_set;
+  std::priority_queue<IKSetWithCost, std::vector<IKSetWithCost>,
+                      std::greater<IKSetWithCost>>
+      ik_set_queue;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
     auto filtered_iks = kmeans(act_ik, 100);
@@ -76,23 +93,21 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::getBestIKSet(
     //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);
   }
+  // used push back before, so we need to reverse the ik sequence back
   std::reverse(set_input.begin(), set_input.end());
   auto sets = CartesianProduct(set_input);
   double lowest_cost = 10000;
   for (const auto &ik_set : sets) {
     double cost = getIKSetCost(current_state, ik_set, cost_coeff);
-    if (cost < lowest_cost) {
-      lowest_cost = cost;
-      best_ik_set = ik_set;
-    }
+    if (cost > 0) ik_set_queue.emplace(ik_set, cost);
   }
-  std::cout << "best ik set\n";
-  for (const auto &ik : best_ik_set) {
-    std::cout << ik.transpose() << std::endl;
+  std::vector<tesseract_kinematics::IKSolutions> sets_result;
+
+  while (ik_set_queue.size() > 0) {
+    sets_result.push_back(ik_set_queue.top().ik_set);
+    ik_set_queue.pop();
   }
-  std::cout << "best ik set cost: " << lowest_cost << std::endl;
-  // exit(0);
-  return best_ik_set;
+  return sets_result;
 }
 
 double LongHorizonSeedGenerator::getIKSetCost(

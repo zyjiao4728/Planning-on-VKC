@@ -7,6 +7,20 @@
 TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 
 namespace vkc {
+
+struct IKSetWithCost {
+  tesseract_kinematics::IKSolutions ik_set;
+  double cost;
+  IKSetWithCost(tesseract_kinematics::IKSolutions ik_set, double cost)
+      : ik_set{std::move(ik_set)}, cost{cost} {}
+  friend bool operator<(IKSetWithCost const &ik1, IKSetWithCost const &ik2) {
+    return ik1.cost < ik2.cost;
+  }
+  friend bool operator>(IKSetWithCost const &ik1, IKSetWithCost const &ik2) {
+    return ik1.cost > ik2.cost;
+  }
+};
+
 class LongHorizonSeedGenerator {
  public:
   LongHorizonSeedGenerator(int n_steps, int n_iter, size_t window_size);
@@ -16,7 +30,7 @@ class LongHorizonSeedGenerator {
    */
   void generate(VKCEnvBasic &env, std::vector<ActionBase::Ptr> &actions);
 
-  tesseract_kinematics::IKSolutions getBestIKSet(
+  std::vector<tesseract_kinematics::IKSolutions> getOrderedIKSet(
       const Eigen::VectorXd current_state,
       const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
       const Eigen::VectorXd cost_coeff);

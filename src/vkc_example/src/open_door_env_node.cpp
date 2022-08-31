@@ -28,7 +28,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          unsigned int nruns) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  // seed_generator.generate(env, actions);
+  seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -41,15 +41,16 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      auto prob_ptr =
-          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      // auto prob_ptr =
+      //     prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      // solveProb(prob_ptr, response, n_iter);
-      solveOmplProb(prob_ptr, response, n_iter);
+      solveProb(prob_ptr, response, n_iter);
+      // solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
       if (OMPLMotionPlannerStatusCategory::SolutionFound ==
@@ -66,13 +67,14 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             __func__, response.status.value(),
             response.status.message().c_str());
         ActionSeq sub_actions(ptr, actions.end());
-        // seed_generator.generate(env, sub_actions);
+        seed_generator.generate(env, sub_actions);
       }
     }
 
     const auto &ci = response.results;
 
     tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
+    ROS_INFO("toJointTrajectory Success");
     joint_trajs.emplace_back(refined_traj);
 
     // ROS_WARN("trajectory: ");
@@ -125,8 +127,15 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
   /** open drawer **/
   // action 1: pick the drawer handle
   {
-    actions.emplace_back(
-        make_shared<PickAction>(robot, "attach_drawer0_handle_link"));
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_drawer0_handle_link");
+    std::vector<double> jt = {2.59962,   -2.26451, -1.80648, 2.39978, 0.0238237,
+                              -0.169994, 0.145632, 0.594092, -1.57026};
+    double *ptr_ = &jt[0];
+    Eigen::Map<Eigen::VectorXd> joint_target(ptr_, 9);
+    pick_action->joint_candidate = joint_target;
+    // std::cout << pick_action->joint_candidate << std::endl;
+    actions.emplace_back(pick_action);
     setBaseJoint(*actions.rbegin());
   }
 
@@ -140,7 +149,12 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
                                  link_objectives, joint_objectives, false);
     place_action->setOperationObjectType(false);
-
+    std::vector<double> jt = {2.59962,   -1.66451,  -1.80648, 2.39978,
+                              0.0238237, -0.169994, 0.145632, 0.594092,
+                              -1.57026,  -0.6};
+    double *ptr_ = &jt[0];
+    Eigen::Map<Eigen::VectorXd> joint_target(ptr_, 10);
+    place_action->joint_candidate = joint_target;
     setBaseJoint(place_action);
 
     actions.emplace_back(place_action);
@@ -243,8 +257,8 @@ int main(int argc, char **argv) {
 
   ActionSeq actions;
   // pushDoor(actions, robot);
-  // pullDoor(actions, robot);
-  pullDrawer(actions, robot);
+  pullDoor(actions, robot);
+  // pullDrawer(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

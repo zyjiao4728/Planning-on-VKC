@@ -642,8 +642,8 @@ CompositeInstruction generateMixedSeed(
   PlannerResponse response;
 
   tesseract_planning::MMMOMotionPlanner planner;
-  auto profile = std::make_shared<MMMOPlannerPlanProfile>(min_steps, 5 * M_PI / 180,
-                                                          0.1, 5 * M_PI / 180);
+  auto profile = std::make_shared<MMMOPlannerPlanProfile>(
+      min_steps, 5 * M_PI / 180, 0.1, 5 * M_PI / 180);
   profile->setMapInfo(15, 15, 0.15);
   profile->setBaseJoint(base_joint);
   CONSOLE_BRIDGE_logDebug(
@@ -669,6 +669,7 @@ CompositeInstruction generateMixedSeed(
   request.profiles = profiles;
   planner.solve(request, response);
   // response.results.print("mixed seed: ");
+  CONSOLE_BRIDGE_logDebug("mixed waypoint generation success");
   return response.results;
 }
 
