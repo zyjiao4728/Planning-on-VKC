@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="mobile_kinova_description" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <link name="world_link" />
+
+  <xacro:include filename="$(find mobile_kinova_description)/urdf/mobile_kinova_description.urdf.xacro" />
+  <xacro:mobile_manipulator x="2" y="2" z="0" mobile_manipulator_perfix="first_" />
+
+</robot>

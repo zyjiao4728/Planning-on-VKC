@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="sr_env">
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="chair0_chair" link2="chair1_chair" reason="Adjacent"/>
+    <disable_collisions link1="chair0_chair" link2="chair2_chair" reason="Adjacent"/>
+    <disable_collisions link1="chair0_chair" link2="coke_can0_coke_can" reason="Adjacent"/>
+    <disable_collisions link1="chair0_chair" link2="desk0_desk" reason="Adjacent"/>
+    <disable_collisions link1="chair0_chair" link2="round_table0_round_table" reason="Adjacent"/>
+    <disable_collisions link1="chair1_chair" link2="chair2_chair" reason="Adjacent"/>
+    <disable_collisions link1="chair1_chair" link2="coke_can0_coke_can" reason="Adjacent"/>
+    <disable_collisions link1="chair1_chair" link2="desk0_desk" reason="Adjacent"/>
+    <disable_collisions link1="chair1_chair" link2="round_table0_round_table" reason="Adjacent"/>
+    <disable_collisions link1="chair2_chair" link2="coke_can0_coke_can" reason="Adjacent"/>
+    <disable_collisions link1="chair2_chair" link2="desk0_desk" reason="Adjacent"/>
+    <disable_collisions link1="chair2_chair" link2="round_table0_round_table" reason="Adjacent"/>
+    <disable_collisions link1="coke_can0_coke_can" link2="desk0_desk" reason="Adjacent"/>
+    <disable_collisions link1="coke_can0_coke_can" link2="round_table0_round_table" reason="Adjacent"/>
+    <disable_collisions link1="desk0_desk" link2="round_table0_round_table" reason="Adjacent"/>
+</robot>

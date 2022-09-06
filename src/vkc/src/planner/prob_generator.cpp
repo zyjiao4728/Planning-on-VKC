@@ -37,7 +37,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                  // step(verified)
 
   // set profiles
-  double collision_margin = 0.0001;
+  double collision_margin = 0.05;
   double collision_coeff = 10;
 
   auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
@@ -374,7 +374,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   auto trajopt_solver_profile =
       std::make_shared<tesseract_planning::TrajOptDefaultSolverProfile>();
   trajopt_solver_profile->opt_info.max_iter = n_iter;
-  trajopt_solver_profile->opt_info.cnt_tolerance = 1e-3;
+  trajopt_solver_profile->opt_info.cnt_tolerance = 5e-3;
   // trajopt_solver_profile->opt_info.trust_expand_ratio = 1.2;
   trajopt_solver_profile->opt_info.trust_expand_ratio = 1.5;
   // trajopt_solver_profile->opt_info.trust_shrink_ratio = 0.8;

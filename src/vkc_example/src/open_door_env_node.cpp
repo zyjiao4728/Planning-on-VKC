@@ -26,9 +26,9 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
-  int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  seed_generator.generate(env, actions);
+  // int window_size = 3;
+  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -37,6 +37,9 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
+    // ActionSeq sub_actions(ptr, actions.end());
+    // seed_generator.generate(env, sub_actions);
+    // action->switchCandidate();
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -66,8 +69,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        ActionSeq sub_actions(ptr, actions.end());
-        seed_generator.generate(env, sub_actions);
+        // action->switchCandidate();
       }
     }
 
@@ -104,7 +106,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     toDelimitedFile(ci,
                     "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-                    "trajectory/open_door_push.csv",
+                    "trajectory/open_door_push_" + std::to_string(j) +".csv",
                     ',');
     // saveTrajToFile(refined_traj,
     // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
@@ -171,7 +173,6 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
         make_shared<PickAction>(robot, "attach_door_north_handle_link");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(pick_action);
-    (*actions.rbegin())->RequireInitTraj(false);
   }
 
   // action 2: open door
@@ -183,11 +184,8 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
                                  link_objectives, joint_objectives, false);
-    place_action->setOperationObjectType(false);
 
-    place_action->RequireInitTraj(true);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-
     actions.emplace_back(place_action);
   }
 }
@@ -195,14 +193,13 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
 void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
   PlaceAction::Ptr place_action;
 
-  ROS_INFO("creating push door actions.");
-
   /** open door **/
   // action 1: pick the door handle
   {
-    actions.emplace_back(
-        make_shared<PickAction>(robot, "attach_door_north_handle_link"));
-    (*actions.rbegin())->RequireInitTraj(false);
+    auto pick_action =
+        make_shared<PickAction>(robot, "attach_door_north_handle_link");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
   }
 
   // action 2: open door
@@ -214,21 +211,17 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
                                  link_objectives, joint_objectives, false);
-    place_action->setOperationObjectType(false);
 
-    place_action->RequireInitTraj(true);
-
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
-
-  ROS_INFO("push door actions created.");
 }
 
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  console_bridge::setLogLevel(
-      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
+  setupLog(
+      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_WARN);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
@@ -256,8 +249,8 @@ int main(int argc, char **argv) {
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  // pushDoor(actions, robot);
-  pullDoor(actions, robot);
+  pushDoor(actions, robot);
+  // pullDoor(actions, robot);
   // pullDrawer(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);

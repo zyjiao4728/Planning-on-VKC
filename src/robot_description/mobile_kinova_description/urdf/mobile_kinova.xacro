@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="mobile_kinova_description" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="mobile_kinova" params="mobile_kinova_perfix">
+
+    <link name="${mobile_kinova_perfix}mobile_kinova_base_footprint" />
+
+    <joint name="${mobile_kinova_perfix}base_joint" type="fixed">
+      <origin xyz="0 0 0.3675" rpy="0 0 0" />
+      <parent link="${mobile_kinova_perfix}mobile_kinova_base_footprint" />
+      <child link="base_link" />
+    </joint>
+    <link name="${mobile_kinova_perfix}mobile_kinova_imu_link" />
+    <joint name="${mobile_kinova_perfix}imu_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}mobile_kinova_imu_link" />
+    </joint>
+    <link name="base_link">
+      <inertial>
+        <origin xyz="0 0 -0.0136431434104687" rpy="0 0 0" />
+        <mass value="9.89950634877348" />
+        <inertia ixx="0.795127345413475" ixy="5.08321412306251E-17" ixz="2.89643019551683E-16" iyy="0.940791808170548" iyz="-7.79435314675257E-17" izz="0.343173205591601" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/base_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.925490196078431 0.925490196078431 0.925490196078431 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.5 0.32 0.6" />
+        </geometry>
+      </collision>
+    </link>
+    <link name="${mobile_kinova_perfix}f_r_wheel_link">
+      <inertial>
+        <origin xyz="-0.000152513550771782 -0.00100525341299773 0.0225" rpy="0 0 0" />
+        <mass value="1.6714224402489" />
+        <inertia ixx="0.0052886416400816" ixy="2.50397249800228E-05" ixz="1.66858315478733E-19" iyy="0.00544988553643564" iyz="-9.6551263656837E-21" izz="0.0101744221029332" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/f_r_wheel_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.025" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="0.05" radius="0.11" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${mobile_kinova_perfix}f_r_wheel_joint" type="fixed">
+      <origin xyz="0.21125 -0.23 -0.2575" rpy="-1.5707963267949 0.691763328034846 0" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}f_r_wheel_link" />
+      <axis xyz="0 0 1" />
+    </joint>
+    <link name="${mobile_kinova_perfix}f_l_wheel_link">
+      <inertial>
+        <origin xyz="0.000152513550771616 -0.00100525341299795 -0.0225000000000001" rpy="0 0 0" />
+        <mass value="1.6714224402489" />
+        <inertia ixx="0.0052886416400816" ixy="-2.50397249800221E-05" ixz="2.6888131358455E-17" iyy="0.00544988553643564" iyz="-2.60802341680795E-17" izz="0.0101744221029332" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/f_l_wheel_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.025" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="0.05" radius="0.11" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${mobile_kinova_perfix}f_l_wheel_joint" type="fixed">
+      <origin xyz="0.21125 0.23 -0.2575" rpy="-1.57079632679489 1.17962260455804 0" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}f_l_wheel_link" />
+      <axis xyz="0 0 1" />
+    </joint>
+    <link name="${mobile_kinova_perfix}b_r_wheel_link">
+      <inertial>
+        <origin xyz="-0.000152513550771838 -0.00100525341299779 0.0225" rpy="0 0 0" />
+        <mass value="1.6714224402489" />
+        <inertia ixx="0.00528864164008161" ixy="2.50397249800232E-05" ixz="-1.06179962715602E-19" iyy="0.00544988553643564" iyz="-4.8063739176665E-20" izz="0.0101744221029332" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/b_r_wheel_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.025" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="0.05" radius="0.11" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${mobile_kinova_perfix}b_r_wheel_joint" type="fixed">
+      <origin xyz="-0.21125 -0.23 -0.2575" rpy="1.5707963267949 -0.390127402361218 3.14159265358979" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}b_r_wheel_link" />
+      <axis xyz="0 0 1" />
+    </joint>
+    <link name="${mobile_kinova_perfix}b_l_wheel_link">
+      <inertial>
+        <origin xyz="0.000152513550771838 -0.00100525341299773 -0.0225" rpy="0 0 0" />
+        <mass value="1.6714224402489" />
+        <inertia ixx="0.0052886416400816" ixy="-2.5039724980023E-05" ixz="1.73284844695019E-19" iyy="0.00544988553643563" iyz="-7.82158096097678E-21" izz="0.0101744221029332" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/b_l_wheel_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="1 1 1 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 -0.025" rpy="0 0 0" />
+        <geometry>
+          <cylinder length="0.05" radius="0.11" />
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${mobile_kinova_perfix}b_l_wheel_joint" type="fixed">
+      <origin xyz="-0.21125 0.23 -0.2575" rpy="-1.5707963267949 -0.691763328034846 0" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}b_l_wheel_link" />
+      <axis xyz="0 0 1" />
+    </joint>
+
+    <!-- kortex part -->
+
+    <xacro:arg name="arm" default="gen3" />
+    <xacro:arg name="dof" default="7" />
+    <xacro:arg name="vision" default="true" />
+
+    <xacro:arg name="gripper" default="robotiq_2f_85" />
+
+    <xacro:arg name="sim" default="false" />
+    <xacro:arg name="prefix" default="${mobile_kinova_perfix}kortex_" />
+
+    <xacro:include filename="$(find mobile_kinova_description)/urdf/kortex_robot.xacro" />
+    <xacro:load_robot arm="$(arg arm)" gripper="$(arg gripper)" dof="$(arg dof)" vision="$(arg vision)" sim="$(arg sim)" prefix="$(arg prefix)" />
+
+    <!-- hokuyo lidar module -->
+
+    <link name="${mobile_kinova_perfix}hokuyo_link">
+      <!--       <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <box size="0.1 0.1 0.1"/>
+          </geometry>
+        </collision> -->
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://mobile_kinova_description/meshes/hokuyo.dae" />
+        </geometry>
+      </visual>
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+    <joint name="${mobile_kinova_perfix}hokuyo_joint" type="fixed">
+      <!--<axis xyz="0 0 1" />-->
+      <origin xyz="0.2 -0.076 0.33" rpy="0 0 -1.5707963267949" />
+      <parent link="base_link" />
+      <child link="${mobile_kinova_perfix}hokuyo_link" />
+    </joint>
+    <!-- Hokuyo sensor for simulation -->
+    <turtlebot_sim_laser_range_finder />
+  </xacro:macro>
+
+</robot>

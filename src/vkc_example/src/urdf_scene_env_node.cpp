@@ -208,8 +208,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle pnh("~");
   ros::NodeHandle nh;
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
-                                 ros::console::levels::Debug);
-  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+                                 ros::console::levels::Info);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_INFO);
   ROS_INFO("Initializaing environment node...");
 
   bool plotting = true;

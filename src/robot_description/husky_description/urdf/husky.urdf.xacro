@@ -77,7 +77,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <origin xyz="${( husky_front_bumper_extend - husky_rear_bumper_extend ) / 2.0} 0 ${base_z_size/4}" rpy="0 0 0" />
       <origin xyz="0 0 0.05" rpy="0 0 0" />
       <geometry>
-      <cylinder radius="0.1" length="0.3"/>
+      <cylinder radius="0.5" length="0.3"/>
         <!-- <box size="${ base_x_size + husky_front_bumper_extend + husky_rear_bumper_extend } ${base_y_size} ${base_z_size/2}"/> -->
       </geometry>
     </collision>

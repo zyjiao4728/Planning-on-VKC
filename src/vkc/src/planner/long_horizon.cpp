@@ -111,7 +111,7 @@ LongHorizonSeedGenerator::getOrderedIKSet(
       ik_set_queue;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 100);
+    auto filtered_iks = kmeans(act_ik, 10);
     // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
     //                         filtered_iks[0].size());
     set_input.push_back(filtered_iks);

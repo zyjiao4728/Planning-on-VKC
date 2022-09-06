@@ -91,7 +91,7 @@
     <disable_collisions link1="left_arm_forearm_link" link2="left_gripper_flange" reason="User"/>
     <disable_collisions link1="left_arm_forearm_link" link2="right_arm_wrist_3_link" reason="User"/>
     <disable_collisions link1="left_arm_forearm_link" link2="right_gripper_flange" reason="User"/>
-    <disable_collisions link1="left_arm_forearm_link" link2="left_gripper_palm" reason="User"/>
+    <!-- <disable_collisions link1="left_arm_forearm_link" link2="left_gripper_palm" reason="User"/> -->
     <disable_collisions link1="left_arm_shoulder_link" link2="left_arm_upper_arm_link" reason="Adjacent"/>
     <disable_collisions link1="left_arm_shoulder_link" link2="left_arm_wrist_3_link" reason="User"/>
     <disable_collisions link1="left_arm_shoulder_link" link2="left_gripper_flange" reason="User"/>

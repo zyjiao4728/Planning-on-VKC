@@ -1,0 +1,17 @@
+controller_list:
+  - name: fake_vkc_controller
+    type: $(arg fake_execution_type)
+    joints:
+      - base_y_base_x
+      - base_theta_base_y
+      - base_link_base_theta
+      - kortex_joint_1
+      - kortex_joint_2
+      - kortex_joint_3
+      - kortex_joint_4
+      - kortex_joint_5
+      - kortex_joint_6
+      - kortex_joint_7
+initial:  # Define initial robot poses per group
+  - group: vkc
+    pose: home
