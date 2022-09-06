@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="sr_env">
+  <xacro:include filename="$(find vkc_example)/urdf/deploy_mobile_kinova.xacro" />
+  <!-- <xacro:include filename="$(find scene_builder)/output/sr_env/main.xacro" /> -->
+
+  <!-- Arguments -->
+  <xacro:arg name="x" default="0.0"/>
+  <xacro:arg name="y" default="0.0"/>
+  <xacro:arg name="theta" default="0.0"/>
+
+  <!-- Setup Environment -->
+  <link name="world"/>
+  <xacro:deploy prefix="" attach_to_world="true" loc_x="$(arg x)" loc_y="$(arg y)" orientation="$(arg theta)"/>
+
+</robot>

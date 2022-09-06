@@ -9,37 +9,10 @@ Panels:
         - /EnvironmentState1/Environment1
         - /TesseractTrajectory1
         - /TesseractTrajectory1/Environment1
-        - /TesseractTrajectory1/Links1
-        - /TesseractTrajectory1/Links1/bottle_link_01
-        - /TesseractTrajectory1/Links1/bottle_link_0_helper1
-        - /TesseractTrajectory1/Links1/bottle_link_11
-        - /TesseractTrajectory1/Links1/left_inner_finger1
-        - /TesseractTrajectory1/Links1/left_inner_finger_pad1
-        - /TesseractTrajectory1/Links1/left_inner_knuckle1
-        - /TesseractTrajectory1/Links1/left_outer_finger1
-        - /TesseractTrajectory1/Links1/left_outer_knuckle1
-        - /TesseractTrajectory1/Links1/rear_bumper_link1
-        - /TesseractTrajectory1/Links1/rear_left_wheel_link1
-        - /TesseractTrajectory1/Links1/rear_right_wheel_link1
-        - /TesseractTrajectory1/Links1/right_inner_finger1
-        - /TesseractTrajectory1/Links1/right_inner_finger_pad1
-        - /TesseractTrajectory1/Links1/right_inner_knuckle1
-        - /TesseractTrajectory1/Links1/right_outer_finger1
-        - /TesseractTrajectory1/Links1/right_outer_knuckle1
-        - /TesseractTrajectory1/Links1/top_plate_link1
-        - /TesseractTrajectory1/Links1/top_plate_rear_link1
-        - /TesseractTrajectory1/Links1/ur_arm_base1
-        - /TesseractTrajectory1/Links1/ur_arm_base_link1
-        - /TesseractTrajectory1/Links1/ur_arm_ee_link1
-        - /TesseractTrajectory1/Links1/ur_arm_forearm_link1
-        - /TesseractTrajectory1/Links1/ur_arm_shoulder_link1
-        - /TesseractTrajectory1/Links1/ur_arm_upper_arm_link1
-        - /TesseractTrajectory1/Links1/ur_arm_wrist_1_link1
-        - /TesseractTrajectory1/Links1/ur_arm_wrist_2_link1
-        - /TesseractTrajectory1/Links1/ur_arm_wrist_3_link1
-        - /Light1
-      Splitter Ratio: 0.7017828226089478
-    Tree Height: 1619
+        - /TesseractTrajectory1/Trajectory Visualization1
+        - /TesseractTrajectory1/Trajectory Monitor1
+      Splitter Ratio: 0.6034063100814819
+    Tree Height: 1851
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -56,7 +29,6 @@ Panels:
     Name: Views
     Splitter Ratio: 0.5
   - Class: rviz/Time
-    Experimental: false
     Name: Time
     SyncMode: 0
     SyncSource: ""
@@ -159,10 +131,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -224,10 +192,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -289,10 +253,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -318,10 +278,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        cabinet_44781:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         cabinet_45290_1_base:
           Alpha: 1
           Show Axes: false
@@ -358,10 +314,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -419,10 +371,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -480,10 +428,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -541,10 +485,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -606,10 +546,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -667,10 +603,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -728,10 +660,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -789,10 +717,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -850,10 +774,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -911,10 +831,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -972,10 +888,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1033,10 +945,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1097,10 +1005,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1157,10 +1061,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1216,10 +1116,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1277,10 +1173,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1338,10 +1230,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1403,10 +1291,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1464,10 +1348,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1524,10 +1404,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1585,10 +1461,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Adjacent
               fridge_0001_dof_rootd_Ba002_t: Adjacent
               fridge_0001_dof_rootd_Ba003_t: Adjacent
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1644,10 +1516,6 @@ Visualization Manager:
               fridge_0001: Adjacent
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1705,10 +1573,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Default
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1765,10 +1629,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1825,10 +1685,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1886,10 +1742,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Default
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -1963,250 +1815,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        link_0:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_1:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_2: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_2:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_3:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Adjacent
-              bottle_link_0: Never
-              bottle_link_1: Adjacent
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Adjacent
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Adjacent
-              chair_1: Adjacent
-              chair_2: Adjacent
-              chair_3: Adjacent
-              coach: Adjacent
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Adjacent
-              door_8966_link_0: Adjacent
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Adjacent
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Adjacent
-              link_1: Adjacent
-              link_2: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Adjacent
-              rect_table: Adjacent
-              round_table: Adjacent
-              tv: Adjacent
-              wall_ground: Adjacent
-              wall_kitchen_wall: Adjacent
-              wall_wall_bottom: Adjacent
-              wall_wall_left: Adjacent
-              wall_wall_mid_bottom: Adjacent
-              wall_wall_mid_door: Adjacent
-              wall_wall_mid_down: Adjacent
-              wall_wall_mid_top: Adjacent
-              wall_wall_right: Adjacent
-              wall_wall_top: Adjacent
-          Show Axes: false
-          Show Trail: false
-          Value: true
         oven_101917:
           Alpha: 1
           Show Axes: false
@@ -2244,10 +1852,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
               oven_101917_link_3: Never
@@ -2305,10 +1909,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_2: Never
               oven_101917_link_3: Never
@@ -2366,10 +1966,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_3: Never
@@ -2427,10 +2023,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2488,10 +2080,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2549,10 +2137,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2610,10 +2194,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2671,10 +2251,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2732,10 +2308,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Adjacent
               oven_101917_link_1: Adjacent
               oven_101917_link_2: Adjacent
@@ -2808,10 +2380,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2909,10 +2477,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -2988,10 +2552,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3162,10 +2722,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3223,10 +2779,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3284,10 +2836,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3345,10 +2893,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3406,10 +2950,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3467,10 +3007,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3527,10 +3063,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3588,10 +3120,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3649,10 +3177,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3710,10 +3234,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3769,7 +3289,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         base_link:
-          Alpha: 0.5
+          Alpha: 1
           Collision:
             ACM:
               ur_arm_base_link: Adjacent
@@ -3809,10 +3329,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3843,7 +3359,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         bottle_link_0:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               bed: Never
@@ -3874,10 +3390,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3908,7 +3420,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         bottle_link_1:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               bed: Adjacent
@@ -3939,10 +3451,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -3968,10 +3476,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        cabinet_44781:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         cabinet_45290_1_base:
           Alpha: 1
           Show Axes: false
@@ -4008,10 +3512,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4069,10 +3569,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4130,10 +3626,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4191,10 +3683,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4256,10 +3744,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4317,10 +3801,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4378,10 +3858,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4439,10 +3915,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4500,10 +3972,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4561,10 +4029,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4622,10 +4086,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4683,10 +4143,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4747,10 +4203,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4807,10 +4259,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4866,10 +4314,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4927,10 +4371,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -4988,10 +4428,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5053,10 +4489,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5114,10 +4546,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5174,10 +4602,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5204,7 +4628,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         fridge_0001:
-          Alpha: 0.20000000298023224
+          Alpha: 1
           Collision:
             ACM:
               bed: Adjacent
@@ -5235,10 +4659,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Adjacent
               fridge_0001_dof_rootd_Ba002_t: Adjacent
               fridge_0001_dof_rootd_Ba003_t: Adjacent
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5294,10 +4714,6 @@ Visualization Manager:
               fridge_0001: Adjacent
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5324,7 +4740,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         fridge_0001_dof_rootd_Aa002_r:
-          Alpha: 0.20000000298023224
+          Alpha: 1
           Collision:
             ACM:
               bed: Never
@@ -5355,10 +4771,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Default
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5415,10 +4827,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5475,10 +4883,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5536,10 +4940,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Default
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -5566,17 +4966,17 @@ Visualization Manager:
           Show Trail: false
           Value: true
         front_bumper_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         front_left_wheel_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         front_right_wheel_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -5589,271 +4989,27 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         left_inner_finger:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         left_inner_finger_pad:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         left_inner_knuckle:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         left_outer_finger:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         left_outer_knuckle:
-          Alpha: 0.30000001192092896
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_0:
           Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_1:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_2: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_2:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Never
-              bottle_link_0: Never
-              bottle_link_1: Never
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Never
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Never
-              chair_1: Never
-              chair_2: Never
-              chair_3: Never
-              coach: Never
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Never
-              door_8966_link_0: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_3: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Never
-              rect_table: Never
-              round_table: Never
-              tv: Never
-              wall_ground: Never
-              wall_kitchen_wall: Never
-              wall_wall_bottom: Never
-              wall_wall_left: Never
-              wall_wall_mid_bottom: Never
-              wall_wall_mid_door: Never
-              wall_wall_mid_down: Never
-              wall_wall_mid_top: Never
-              wall_wall_right: Never
-              wall_wall_top: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        link_3:
-          Alpha: 1
-          Collision:
-            ACM:
-              bed: Adjacent
-              bottle_link_0: Never
-              bottle_link_1: Adjacent
-              cabinet_45290_1_link_0: Never
-              cabinet_45290_1_link_1: Never
-              cabinet_45290_1_link_2: Never
-              cabinet_45290_1_link_3: Adjacent
-              cabinet_45290_2_link_0: Never
-              cabinet_45290_2_link_1: Never
-              cabinet_45290_2_link_2: Never
-              cabinet_45290_2_link_3: Adjacent
-              chair_1: Adjacent
-              chair_2: Adjacent
-              chair_3: Adjacent
-              coach: Adjacent
-              dishwasher_12065_link_0: Never
-              dishwasher_12065_link_1: Never
-              dishwasher_12065_link_2: Never
-              dishwasher_12065_link_3: Never
-              dishwasher_12065_link_4: Adjacent
-              door_8966_link_0: Adjacent
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              fridge_0001: Adjacent
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Adjacent
-              link_1: Adjacent
-              link_2: Adjacent
-              oven_101917_link_0: Never
-              oven_101917_link_1: Never
-              oven_101917_link_2: Never
-              oven_101917_link_3: Never
-              oven_101917_link_4: Never
-              oven_101917_link_5: Never
-              oven_101917_link_6: Never
-              oven_101917_link_7: Never
-              oven_101917_link_8: Adjacent
-              rect_table: Adjacent
-              round_table: Adjacent
-              tv: Adjacent
-              wall_ground: Adjacent
-              wall_kitchen_wall: Adjacent
-              wall_wall_bottom: Adjacent
-              wall_wall_left: Adjacent
-              wall_wall_mid_bottom: Adjacent
-              wall_wall_mid_door: Adjacent
-              wall_wall_mid_down: Adjacent
-              wall_wall_mid_top: Adjacent
-              wall_wall_right: Adjacent
-              wall_wall_top: Adjacent
           Show Axes: false
           Show Trail: false
           Value: true
@@ -5894,10 +5050,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
               oven_101917_link_3: Never
@@ -5955,10 +5107,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_2: Never
               oven_101917_link_3: Never
@@ -6016,10 +5164,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_3: Never
@@ -6077,10 +5221,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6138,10 +5278,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6199,10 +5335,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6260,10 +5392,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6321,10 +5449,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Never
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6382,10 +5506,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Adjacent
               oven_101917_link_1: Adjacent
               oven_101917_link_2: Adjacent
@@ -6411,17 +5531,17 @@ Visualization Manager:
           Show Trail: false
           Value: true
         rear_bumper_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         rear_left_wheel_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         rear_right_wheel_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -6458,10 +5578,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6487,27 +5603,27 @@ Visualization Manager:
           Show Trail: false
           Value: true
         right_inner_finger:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         right_inner_finger_pad:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         right_inner_knuckle:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         right_outer_finger:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
         right_outer_knuckle:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -6516,7 +5632,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         robotiq_arg2f_base_link:
-          Alpha: 0.20000000298023224
+          Alpha: 1
           Collision:
             ACM:
               ur_arm_ee_link: Adjacent
@@ -6559,10 +5675,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6588,7 +5700,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         top_chassis_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -6597,7 +5709,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         top_plate_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -6638,10 +5750,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6671,7 +5779,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         ur_arm_base_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               base_link: Adjacent
@@ -6680,7 +5788,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_ee_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               robotiq_arg2f_base_link: Adjacent
@@ -6691,7 +5799,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_forearm_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               ur_arm_upper_arm_link: Adjacent
@@ -6701,7 +5809,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_shoulder_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               base_link: Never
@@ -6715,7 +5823,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
         ur_arm_upper_arm_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               ur_arm_forearm_link: Adjacent
@@ -6724,7 +5832,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_wrist_1_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               robotiq_arg2f_base_link: Never
@@ -6736,7 +5844,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_wrist_2_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               robotiq_arg2f_base_link: Never
@@ -6748,7 +5856,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         ur_arm_wrist_3_link:
-          Alpha: 0.30000001192092896
+          Alpha: 1
           Collision:
             ACM:
               robotiq_arg2f_base_link: Default
@@ -6759,7 +5867,7 @@ Visualization Manager:
           Show Trail: false
           Value: true
         user_rail_link:
-          Alpha: 0.5
+          Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
@@ -6812,10 +5920,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6873,10 +5977,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6934,10 +6034,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -6995,10 +6091,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7056,10 +6148,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7117,10 +6205,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7177,10 +6261,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7238,10 +6318,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7299,10 +6375,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7360,10 +6432,6 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
-              link_0: Never
-              link_1: Never
-              link_2: Never
-              link_3: Adjacent
               oven_101917_link_0: Never
               oven_101917_link_1: Never
               oven_101917_link_2: Never
@@ -7397,7 +6465,7 @@ Visualization Manager:
         Topic: /tesseract/display_tesseract_trajectory
         Value: ""
       Trajectory Visualization:
-        Display Mode: Single
+        Display Mode: Loop
         Interrupt Display: false
         Time Scale: 0.5
         Trail Step Size: 1
@@ -7465,27 +6533,27 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7197970151901245
+      Pitch: 0.7147970199584961
       Target Frame: <Fixed Frame>
       Yaw: 2.6216230392456055
     Saved: ~
 Window Geometry:
   Displays:
-    collapsed: true
-  Height: 2018
-  Hide Left Dock: true
+    collapsed: false
+  Height: 2086
+  Hide Left Dock: false
   Hide Right Dock: true
-  QMainWindow State: 000000ff00000000fd00000004000000000000026b0000077dfc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000da00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000dafb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073000000002f000006d9000001de00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb00000038005400650073007300650072006100630074005400720061006a006500630074006f007200790020002d00200053006c00690064006500720000000717000000950000002e0000002efb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000000000010000010f000004b7fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000004b70000017800fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d00000052fc0100000002fb0000000800540069006d006500000000000000073d00000b1d00fffffffb0000000800540069006d0065010000000000000450000000000000000000000e700000077d00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000338000007c1fc020000000bfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000da00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000dafb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000002f000007c1000001de00fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb00000038005400650073007300650072006100630074005400720061006a006500630074006f007200790020002d00200053006c00690064006500720000000717000000d90000002e0000002efb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000000000010000010f000004b7fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d000004b70000017800fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e100000197000000030000073d00000052fc0100000002fb0000000800540069006d006500000000000000073d0000096f00fffffffb0000000800540069006d0065010000000000000450000000000000000000000bb9000007c100000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730000000000ffffffff0000000000000000
   Selection:
     collapsed: false
   TesseractTrajectory - Slider:
-    collapsed: true
+    collapsed: false
   Time:
     collapsed: false
   Tool Properties:
     collapsed: false
   Views:
     collapsed: true
-  Width: 3696
-  X: 3984
-  Y: 68
+  Width: 3840
+  X: 3840
+  Y: 0
