@@ -222,7 +222,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  setupLog(console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_WARN);
+  setupLog(console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_INFO);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
