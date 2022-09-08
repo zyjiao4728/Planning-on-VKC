@@ -144,7 +144,7 @@ void refineTrajectory(tesseract_common::JointTrajectory &traj,
     if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
 
     if (n_cols > 3) {
-      traj.states[i].position[3] -=
+      traj.states[i].position[3] +=
           traj.states[i].position[2] - delta_orientation;
     }
     traj.states[i].position[2] = delta_orientation;
@@ -155,7 +155,7 @@ void refineTrajectory(tesseract_common::JointTrajectory &traj,
   // the last orientation is as same as the 2nd last
   if (n_rows > 1) {
     if (n_cols > 3) {
-      traj.states[n_rows - 1].position[3] -=
+      traj.states[n_rows - 1].position[3] +=
           traj.states[n_rows - 1].position[2] -
           traj.states[n_rows - 2].position[2];
     }

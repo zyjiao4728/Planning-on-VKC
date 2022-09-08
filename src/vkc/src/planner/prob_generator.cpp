@@ -38,7 +38,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                  // step(verified)
 
   // set profiles
-  double collision_margin = 0.05;
+  double collision_margin = 0.001;
   double collision_coeff = 10;
 
   auto pos_coeff = Eigen::Vector3d(10.0, 10.0, 10.0);
