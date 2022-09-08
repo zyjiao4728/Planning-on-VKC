@@ -21,7 +21,6 @@ devel_isolated/
 log-latest
 
 # Workspace settings
-.catkin_tools/
 **/.vscode/*
 
 # Dependencies

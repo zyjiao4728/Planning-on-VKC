@@ -161,7 +161,8 @@ void VKCEnvBasic::updateAttachLocations(
         attach_locations) {
   for (auto& attach_location : attach_locations) {
     auto new_attach_location = attach_location.second->clone();
-    // new_attach_location->connection.parent_link_name = attach_location->conne;
+    // new_attach_location->connection.parent_link_name =
+    // attach_location->conne;
     attach_locations_[attach_location.first] = std::move(new_attach_location);
     CONSOLE_BRIDGE_logDebug(
         "adding attach location: %s, base link: %s",
@@ -402,7 +403,8 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
   // Set the current state to the last state of the trajectory
   if (joint_names.size()) {
     assert(joint_names.size() == joint_states.size());
-    std::cout << "updating joint state with: " << joint_states.transpose() << std::endl;
+    std::cout << "updating joint state with: " << joint_states.transpose()
+              << std::endl;
     tesseract->getTesseract()->setState(joint_names, joint_states);
   }
 
@@ -412,6 +414,10 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
       // tesseract_->getTesseract()->
     }
     updateKinematicInfo(tesseract);
+    return DEFAULT_VKC_GROUP_ID;
+  }
+
+  if (!inverse_kinematic_chain) {
     return DEFAULT_VKC_GROUP_ID;
   }
 
@@ -511,6 +517,14 @@ bool VKCEnvBasic::reInit() {
   // ROS_INFO("[%s]revision: %u", __func__,
   //          plot_tesseract_->getTesseract()->getRevision());
   return true;
+}
+
+void VKCEnvBasic::disableInverseKinematicChain() {
+  inverse_kinematic_chain = false;
+}
+
+void VKCEnvBasic::enableInverseKinematicChain() {
+  inverse_kinematic_chain = true;
 }
 
 }  // namespace vkc

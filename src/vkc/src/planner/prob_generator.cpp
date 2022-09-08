@@ -1,5 +1,6 @@
 #include <fmt/ranges.h>
 #include <tesseract_command_language/command_language.h>
+#include <tesseract_motion_planners/3mo/profile/3mo_planner_ik_plan_profile.h>
 #include <tesseract_motion_planners/interface_utils.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_constrained_plan_profile.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_default_plan_profile.h>
@@ -115,28 +116,43 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
 
   auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>();
   auto profiles = std::make_shared<ProfileDictionary>();
+  std::string default_profile = "FREESPACE";
   if (wp.link_constraints.size()) {
-    auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
-    auto constraint =
-        std::make_shared<LinkConstraint>(kin_group, wp.link_constraints, 0.2);
-    ompl_profile->constraint = constraint;
-    ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
-    profiles->addProfile<OMPLConstrainedPlanProfile>(
-        profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
+    /* generate constrained ompl profile(deprecated)
+    // auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
+    // auto constraint =
+    //     std::make_shared<LinkConstraint>(kin_group, wp.link_constraints,
+    0.2);
+    // ompl_profile->constraint = constraint;
+    // ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
+    // profiles->addProfile<OMPLConstrainedPlanProfile>(
+    //     profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
+    */
+    default_profile = "IK_TRAJ";
+    auto ik_profile = std::make_shared<MMMOPlannerIKPlanProfile>();
+    ik_profile->min_steps = n_steps;
+    ik_profile->local_joint_origin_transform =
+        env.getAttachLocation("attach_door_north_handle_link")
+            ->local_joint_origin_transform;
+    ik_profile->attach_location_link =
+        env.getAttachLocation("attach_door_north_handle_link")->link_name_;
+
+    profiles->addProfile<MMMOPlannerIKPlanProfile>(
+        profile_ns::MMMO_DEFAULT_NAMESPACE, default_profile, ik_profile);
   } else {
     auto ompl_profile = std::make_shared<OMPLDefaultPlanProfile>();
     ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
     profiles->addProfile<OMPLDefaultPlanProfile>(
-        profile_ns::OMPL_DEFAULT_NAMESPACE, "FREESPACE", ompl_profile);
+        profile_ns::OMPL_DEFAULT_NAMESPACE, default_profile, ompl_profile);
   }
 
   CONSOLE_BRIDGE_logDebug("generating program");
-  CompositeInstruction program("FREESPACE", CompositeInstructionOrder::ORDERED,
-                               manip);
+  CompositeInstruction program(default_profile,
+                               CompositeInstructionOrder::ORDERED, manip);
   setStartInstruction(program, kin_group->getJointNames(),
                       env_->getCurrentJointValues(kin_group->getJointNames()));
   PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
-                                   "FREESPACE");
+                                   default_profile);
   if (action->joint_candidate.size()) {
     CONSOLE_BRIDGE_logDebug(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
@@ -145,15 +161,24 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", action->getActionName()));
-  program.push_back(plan_instruction);
+  auto seed_program = program;
+  auto seed_instrcution = plan_instruction;
+  seed_instrcution.setWaypoint(
+      JointWaypoint(kin_group->getJointNames(),
+                    env_->getCurrentJointValues(kin_group->getJointNames())));
+  seed_program.push_back(seed_instrcution);
 
+  program.push_back(plan_instruction);
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
   CompositeInstruction seed =
-      generateMixedSeed(program, cur_state, env.getVKCEnv()->getTesseract());
+      generateSeed(seed_program, cur_state, env.getVKCEnv()->getTesseract(),
+                   0.087, 0.15, 0.087, n_steps);
 
   PlannerRequest request;
-  request.name = process_planner_names::OMPL_PLANNER_NAME;
+  request.name = wp.link_constraints.size()
+                     ? "3MO_IK_TRAJ"
+                     : process_planner_names::OMPL_PLANNER_NAME;
   request.instructions = program;
   request.profiles = profiles;
   request.env_state = cur_state;

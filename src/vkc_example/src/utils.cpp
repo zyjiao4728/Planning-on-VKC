@@ -1,4 +1,5 @@
 #include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
+#include <tesseract_motion_planners/3mo/3mo_motion_planner.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
 #include <vkc_example/utils.h>
 
@@ -27,9 +28,16 @@ void solveOmplProb(PlannerRequest request, PlannerResponse &response,
   ROS_WARN("constructed ompl problem, solving...");
 
   OMPLMotionPlanner planner;
-  auto ompl_status = planner.solve(request, response, true);
+  tesseract_planning::MMMOMotionPlanner ik_planner;
+  tesseract_common::StatusCode planning_status;
+  if (request.name == "3MO_IK_TRAJ") {
+    planning_status = ik_planner.solve(request, response, true);
+  } else {
+    planning_status = planner.solve(request, response, true);
+  }
 
-  ROS_WARN("%d, %s", ompl_status.value(), ompl_status.message().c_str());
+  ROS_WARN("%d, %s", planning_status.value(),
+           planning_status.message().c_str());
   return;
 }
 

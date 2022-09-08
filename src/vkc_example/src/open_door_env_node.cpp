@@ -27,9 +27,10 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  seed_generator.generate(env, actions);
+  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
   ProbGenerator prob_generator;
+
+  env.disableInverseKinematicChain();
 
   int j = 0;
 
@@ -41,16 +42,17 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      // auto prob_ptr =
-      //     prob_generator.getOmplRequest(env, action, n_steps, n_iter);
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      CONSOLE_BRIDGE_logDebug("generating sampling based planning request");
+      auto prob_ptr =
+          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      // auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      solveProb(prob_ptr, response, n_iter);
-      // solveOmplProb(prob_ptr, response, n_iter);
+      // solveProb(prob_ptr, response, n_iter);
+      solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
       if (OMPLMotionPlannerStatusCategory::SolutionFound ==
@@ -67,7 +69,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             __func__, response.status.value(),
             response.status.message().c_str());
         ActionSeq sub_actions(ptr, actions.end());
-        seed_generator.generate(env, sub_actions);
+        // seed_generator.generate(env, sub_actions);
       }
     }
 
@@ -76,7 +78,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
     ROS_INFO("toJointTrajectory Success");
     joint_trajs.emplace_back(refined_traj);
-
+    
     // ROS_WARN("trajectory: ");
     // for (auto jo : refined_traj) {
     //   std::cout << jo.position << std::endl;
@@ -227,8 +229,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  console_bridge::setLogLevel(
-      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_DEBUG);
+  setupLog();
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");

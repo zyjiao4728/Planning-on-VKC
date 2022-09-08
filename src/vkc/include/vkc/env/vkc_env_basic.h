@@ -56,7 +56,8 @@ class VKCEnvBasic {
   virtual bool reInit();
   void setRobotEndEffector(std::string link_name);
 
-  void addAttachLocation(vkc::BaseObject::AttachLocation::Ptr attach_location_ptr);
+  void addAttachLocation(
+      vkc::BaseObject::AttachLocation::Ptr attach_location_ptr);
 
   void updateAttachLocations(
       std::unordered_map<std::string, vkc::BaseObject::AttachLocation::ConstPtr>
@@ -83,10 +84,15 @@ class VKCEnvBasic {
 
   std::string getEndEffectorLink();
 
+  void disableInverseKinematicChain();
+  void enableInverseKinematicChain();
+
  protected:
   ros::NodeHandle nh_;
   bool rviz_; /**< @brief Enable rviz updating */
   bool plotting_;
+
+  bool inverse_kinematic_chain = true;
 
   int steps_;
 
