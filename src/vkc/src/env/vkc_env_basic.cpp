@@ -11,21 +11,24 @@ namespace vkc {
 // namespace vkc starts
 
 VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, bool plotting, bool rviz,
-                         int steps)
+                         int steps, bool inverse_kinematic_chain)
     : nh_(nh),
       plotting_(plotting),
       rviz_(rviz),
       tesseract_(std::make_shared<vkc::ConstructVKC>()),
       steps_(steps),
+      inverse_kinematic_chain_(inverse_kinematic_chain),
       plot_tesseract_(nullptr) {}
 
 VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
-                         bool plotting, bool rviz, int steps)
+                         bool plotting, bool rviz, int steps,
+                         bool inverse_kinematic_chain)
     : nh_(nh),
       plotting_(plotting),
       rviz_(rviz),
       tesseract_(vkc),
       steps_(steps),
+      inverse_kinematic_chain_(inverse_kinematic_chain),
       plot_tesseract_(nullptr) {}
 
 /**
@@ -35,7 +38,8 @@ VKCEnvBasic::VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc,
  */
 VKCEnvBasic::UPtr VKCEnvBasic::clone() {
   auto cloned_vkc_env = std::make_unique<VKCEnvBasic>(
-      nh_, std::move(tesseract_->clone()), plotting_, rviz_, steps_);
+      nh_, std::move(tesseract_->clone()), plotting_, rviz_, steps_,
+      inverse_kinematic_chain_);
   cloned_vkc_env->setEndEffector(end_effector_link_);
   cloned_vkc_env->setRobotEndEffector(robot_end_effector_link_);
   cloned_vkc_env->updateAttachLocations(attach_locations_);
@@ -417,7 +421,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     return DEFAULT_VKC_GROUP_ID;
   }
 
-  if (!inverse_kinematic_chain) {
+  if (!inverse_kinematic_chain_) {
     return DEFAULT_VKC_GROUP_ID;
   }
 
@@ -520,11 +524,11 @@ bool VKCEnvBasic::reInit() {
 }
 
 void VKCEnvBasic::disableInverseKinematicChain() {
-  inverse_kinematic_chain = false;
+  inverse_kinematic_chain_ = false;
 }
 
 void VKCEnvBasic::enableInverseKinematicChain() {
-  inverse_kinematic_chain = true;
+  inverse_kinematic_chain_ = true;
 }
 
 }  // namespace vkc

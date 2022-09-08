@@ -40,9 +40,10 @@ class VKCEnvBasic {
   using Ptr = std::shared_ptr<VKCEnvBasic>;
   using UPtr = std::unique_ptr<VKCEnvBasic>;
 
-  VKCEnvBasic(ros::NodeHandle nh_, bool plotting, bool rviz, int steps);
+  VKCEnvBasic(ros::NodeHandle nh_, bool plotting, bool rviz, int steps,
+              bool inverse_kinematic_chain = true);
   VKCEnvBasic(ros::NodeHandle nh, ConstructVKC::Ptr vkc, bool plotting,
-              bool rviz, int steps);
+              bool rviz, int steps, bool inverse_kinematic_chain = true);
 
   virtual ~VKCEnvBasic() = default;
 
@@ -92,7 +93,7 @@ class VKCEnvBasic {
   bool rviz_; /**< @brief Enable rviz updating */
   bool plotting_;
 
-  bool inverse_kinematic_chain = true;
+  bool inverse_kinematic_chain_ = true;
 
   int steps_;
 

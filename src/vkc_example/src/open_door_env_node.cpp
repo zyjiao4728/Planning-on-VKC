@@ -31,8 +31,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
   // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
-  env.disableInverseKinematicChain();
-
   int j = 0;
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
@@ -47,16 +45,16 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     bool converged = false;
     while (try_cnt++ < nruns) {
       CONSOLE_BRIDGE_logDebug("generating sampling based planning request");
-      auto prob_ptr =
-          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
-      // auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      // auto prob_ptr =
+      //     prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      // solveProb(prob_ptr, response, n_iter);
-      solveOmplProb(prob_ptr, response, n_iter);
+      solveProb(prob_ptr, response, n_iter);
+      // solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
       if (OMPLMotionPlannerStatusCategory::SolutionFound ==
@@ -81,7 +79,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     tesseract_common::JointTrajectory refined_traj = toJointTrajectory(ci);
     ROS_INFO("toJointTrajectory Success");
     joint_trajs.emplace_back(refined_traj);
-    
+
     // ROS_WARN("trajectory: ");
     // for (auto jo : refined_traj) {
     //   std::cout << jo.position << std::endl;
@@ -109,7 +107,8 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     toDelimitedFile(ci,
                     "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-                    "trajectory/open_door_push_" + std::to_string(j) +".csv",
+                    "trajectory/open_door_push_" +
+                        std::to_string(j) + ".csv",
                     ',');
     // saveTrajToFile(refined_traj,
     // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
@@ -223,8 +222,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  setupLog(
-      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_WARN);
+  setupLog(console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_WARN);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");

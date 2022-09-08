@@ -79,13 +79,13 @@ bool OpenDoorEnv::createEnvironment() {
   door_north.createObject();
   door_north.createWorldJoint(
       Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-  if (inverse_kinematic_chain)
+  if (inverse_kinematic_chain_)
     door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
   vkc::BaseDrawer drawer0("drawer0");
   drawer0.createObject();
   drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3, 0.5, 1.57));
-  if (inverse_kinematic_chain)
+  if (inverse_kinematic_chain_)
     drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   updateAttachLocations(door_north.getAttachLocations());
