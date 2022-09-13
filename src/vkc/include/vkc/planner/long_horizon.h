@@ -2,6 +2,7 @@
 #define VKC_LONG_HORIZON_H
 
 #include <tesseract_common/macros.h>
+#include <tesseract_motion_planners/3mo/profile/3mo_planner_plan_profile.h>
 #include <vkc/action/action_base.h>
 #include <vkc/env/vkc_env_basic.h>
 TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
@@ -42,9 +43,23 @@ class LongHorizonSeedGenerator {
                       const tesseract_kinematics::IKSolutions &act_ik_set,
                       const Eigen::VectorXd cost_coeff);
 
+  std::vector<std::vector<Eigen::VectorXd>> getValidIKSets(
+      std::vector<std::vector<Eigen::VectorXd>> &act_iks);
+
+  void getValidIKSetsHelper_(
+      std::vector<std::vector<Eigen::VectorXd>> &accum,
+      std::vector<Eigen::VectorXd> stack,
+      std::vector<std::vector<Eigen::VectorXd>> sequences, int index);
+
+  void setMapInfo(int x, int y, double resolution);
+
+  bool astarChecking(Eigen::VectorXd start, Eigen::VectorXd end,
+                     tesseract_collision::DiscreteContactManager::Ptr
+                         discrete_contact_manager);
   int n_steps;
   int n_iter;
   size_t window_size;
+  tesseract_planning::MapInfo map_;
 };
 std::vector<tesseract_kinematics::IKSolutions> CartesianProduct(
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks);

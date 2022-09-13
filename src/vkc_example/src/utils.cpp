@@ -36,7 +36,7 @@ void solveOmplProb(PlannerRequest request, PlannerResponse &response,
     planning_status = planner.solve(request, response, true);
   }
 
-  ROS_WARN("%d, %s", planning_status.value(),
+  CONSOLE_BRIDGE_logWarn("%d, %s", planning_status.value(),
            planning_status.message().c_str());
   return;
 }

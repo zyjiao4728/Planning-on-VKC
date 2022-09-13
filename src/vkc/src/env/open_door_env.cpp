@@ -20,8 +20,8 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 
 namespace vkc {
 OpenDoorEnv::OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz,
-                         int steps)
-    : VKCEnvBasic(nh, plotting, rviz, steps) {
+                         int steps, bool inverse_kinematic_chain)
+    : VKCEnvBasic(nh, plotting, rviz, steps, inverse_kinematic_chain) {
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 
@@ -120,6 +120,8 @@ bool OpenDoorEnv::createEnvironment() {
       "door_north_door_link", "door_north_handle_link", "Never"));
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "robotiq_arg2f_base_link", "door_north_handle_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "left_gripper_flange", "door_north_handle_link", "Never"));
 
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "wall_west_wall_link", "wall_north_left_wall_link", "Never"));
