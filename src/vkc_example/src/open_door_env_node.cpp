@@ -35,26 +35,27 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
+  env.disableInverseKinematicChain();
+
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
-    // ActionSeq sub_actions(ptr, actions.end());
-    // seed_generator.generate(env, sub_actions);
     // action->switchCandidate();
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
       CONSOLE_BRIDGE_logDebug("generating sampling based planning request");
-      // auto prob_ptr =
-      //     prob_generator.getOmplRequest(env, action, n_steps, n_iter);
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      auto prob_ptr =
+          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      // auto prob_ptr = prob_generator.genRequest(env, action, n_steps,
+      // n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      solveProb(prob_ptr, response, n_iter);
-      // solveOmplProb(prob_ptr, response, n_iter);
+      // solveProb(prob_ptr, response, n_iter);
+      solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
       if (OMPLMotionPlannerStatusCategory::SolutionFound ==
@@ -245,13 +246,13 @@ int main(int argc, char **argv) {
   pnh.param<int>("niter", n_iter, n_iter);
   pnh.param<int>("nruns", nruns, nruns);
 
-  OpenDoorEnv env(nh, plotting, rviz, steps);
+  OpenDoorEnv env(nh, plotting, rviz, steps, false);
 
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pushDoor(actions, robot);
-  // pullDoor(actions, robot);
+  // pushDoor(actions, robot);
+  pullDoor(actions, robot);
   // pullDrawer(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
