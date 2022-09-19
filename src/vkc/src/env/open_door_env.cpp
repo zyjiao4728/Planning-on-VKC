@@ -79,19 +79,26 @@ bool OpenDoorEnv::createEnvironment() {
   door_north.createObject();
   door_north.createWorldJoint(
       Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-  if (inverse_kinematic_chain_)
-    door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
   vkc::BaseDrawer drawer0("drawer0");
   drawer0.createObject();
   drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3, 0.5, 1.57));
-  if (inverse_kinematic_chain_)
-    drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   updateAttachLocations(door_north.getAttachLocations());
   updateAttachLocations(drawer0.getAttachLocations());
 
   ROS_INFO("add attach location success.");
+
+  wall_north_left.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_north_right.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_west.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_east.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_south.addToEnvironment(tesseract_->getTesseractNonInverse());
+  door_north.addToEnvironment(tesseract_->getTesseractNonInverse());
+  drawer0.addToEnvironment(tesseract_->getTesseractNonInverse());
+
+  door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
+  drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   wall_north_left.addToEnvironment(tesseract_->getTesseract());
   wall_north_right.addToEnvironment(tesseract_->getTesseract());
@@ -137,6 +144,7 @@ bool OpenDoorEnv::createEnvironment() {
   ROS_INFO("applying add collision commands");
 
   tesseract_->getTesseract()->applyCommands(cmds);
+  tesseract_->getTesseractNonInverse()->applyCommands(cmds);
 
   // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_handle_left",
   // false);

@@ -62,14 +62,24 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                               filtered_ik_result.size());
       action->joint_candidates = filtered_ik_result;
     }
+
+    // check action astar map
+    if (!action->astar_init) {
+      tesseract_collision::DiscreteContactManager::Ptr
+          discrete_contact_manager = std::move(vkc_env->getVKCEnv()
+                                                   ->getTesseractNonInverse()
+                                                   ->getDiscreteContactManager()
+                                                   ->clone());
+      initAstarMap(action, discrete_contact_manager);
+    }
     act_iks.push_back(filtered_ik_result);
 
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
     CONSOLE_BRIDGE_logDebug(
         "long horizon udpate env success, processing next action...");
-    auto kg = vkc_env->getVKCEnv()->getTesseract()->getKinematicGroup(
-        action->getManipulatorID());
+    // auto kg = vkc_env->getVKCEnv()->getTesseract()->getKinematicGroup(
+    //     action->getManipulatorID());
     // std::cout << "get kg success" << std::endl;
     // fmt::print("kin group joints after update: {}\n", kg->getJointNames());
   }
@@ -78,7 +88,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   Eigen::VectorXd coeff(9);
   coeff.setOnes();
   // coeff(2) = 0;
-  auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff);
+  auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff, sub_actions);
   std::cout << "done." << std::endl;
   assert(ik_sets.front().size() == sub_actions.size());
   sub_actions.front()->joint_candidates.clear();
@@ -101,7 +111,8 @@ std::vector<tesseract_kinematics::IKSolutions>
 LongHorizonSeedGenerator::getOrderedIKSet(
     const Eigen::VectorXd current_state,
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
-    const Eigen::VectorXd cost_coeff) {
+    const Eigen::VectorXd cost_coeff,
+    const std::vector<ActionBase::Ptr> actions) {
   std::priority_queue<IKSetWithCost, std::vector<IKSetWithCost>,
                       std::greater<IKSetWithCost>>
       ik_set_queue;
@@ -114,8 +125,8 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   }
   // used push back before, so we need to reverse the ik sequence back
   std::reverse(set_input.begin(), set_input.end());
-  auto sets = CartesianProduct(set_input);
-  // auto sets = getValidIKSets(set_input);
+  // auto sets = CartesianProduct(set_input);
+  auto sets = getValidIKSets(set_input, actions);
   double lowest_cost = 10000;
   for (const auto &ik_set : sets) {
     double cost = getIKSetCost(current_state, ik_set, cost_coeff);
@@ -158,26 +169,29 @@ double LongHorizonSeedGenerator::getIKSetCost(
 
 std::vector<std::vector<Eigen::VectorXd>>
 LongHorizonSeedGenerator::getValidIKSets(
-    std::vector<std::vector<Eigen::VectorXd>> &act_iks) {
+    std::vector<std::vector<Eigen::VectorXd>> &act_iks,
+    const std::vector<ActionBase::Ptr> &actions) {
   std::vector<std::vector<Eigen::VectorXd>> accum;
   std::vector<Eigen::VectorXd> stack;
   if (act_iks.size() > 0)
-    CartesianRecurse_(accum, stack, act_iks, act_iks.size() - 1);
+    getValidIKSetsHelper_(accum, stack, act_iks, 0, actions);
   return accum;
 }
 
 void LongHorizonSeedGenerator::getValidIKSetsHelper_(
     std::vector<std::vector<Eigen::VectorXd>> &accum,
     std::vector<Eigen::VectorXd> stack,
-    std::vector<std::vector<Eigen::VectorXd>> sequences, int index) {
+    std::vector<std::vector<Eigen::VectorXd>> sequences, int index,
+    const std::vector<ActionBase::Ptr> &actions) {
   tesseract_kinematics::IKSolutions sequence = sequences[index];
   for (auto &i : sequence) {
-    // if (astarChecking(stack.back(), i), discrete_contact_manager)
+    if (index > 0 && !astarChecking(actions[index - 1], stack.back(), i))
+      continue;
     stack.push_back(i);
-    if (index == 0)
+    if (index == actions.size())
       accum.push_back(stack);
     else
-      getValidIKSetsHelper_(accum, stack, sequences, index - 1);
+      getValidIKSetsHelper_(accum, stack, sequences, index + 1, actions);
     stack.pop_back();
   }
 }
@@ -186,19 +200,12 @@ void LongHorizonSeedGenerator::setMapInfo(int x, int y, double resolution) {
   map_ = tesseract_planning::MapInfo(x, y, resolution);
 }
 
-bool LongHorizonSeedGenerator::astarChecking(
-    Eigen::VectorXd start, Eigen::VectorXd end,
+void LongHorizonSeedGenerator::initAstarMap(
+    ActionBase::Ptr action,
     tesseract_collision::DiscreteContactManager::Ptr discrete_contact_manager) {
-  AStar::Generator astar_generator;
-  astar_generator.setWorldSize({map_.grid_size_x, map_.grid_size_y});
-  astar_generator.setHeuristic(AStar::Heuristic::euclidean);
-  astar_generator.setDiagonalMovement(true);
-
-  int base_x = int(round((start[0] + map_.map_x / 2.0) / map_.step_size));
-  int base_y = int(round((start[1] + map_.map_y / 2.0) / map_.step_size));
-
-  int end_x = int(round((end[0] + map_.map_x / 2.0) / map_.step_size));
-  int end_y = int(round((end[1] + map_.map_y / 2.0) / map_.step_size));
+  action->astar_generator.setWorldSize({map_.grid_size_x, map_.grid_size_y});
+  action->astar_generator.setHeuristic(AStar::Heuristic::euclidean);
+  action->astar_generator.setDiagonalMovement(true);
 
   // add collisions
   tesseract_collision::ContactResultMap contact_results;
@@ -212,14 +219,14 @@ bool LongHorizonSeedGenerator::astarChecking(
                           -map_.map_y / 2.0 + y * map_.step_size, 0.145);
       if (!tesseract_planning::isEmptyCell(discrete_contact_manager,
                                            "base_link", base_tf,
-                                           contact_results) &&
-          (!(x == base_x && y == base_y) && !(x == end_x && y == end_y))) {
+                                           contact_results) /*&&
+          (!(x == base_x && y == base_y) && !(x == end_x && y == end_y))*/) {
         // std::cout << "o";
         // std::cout << x << ":\t" << y << std::endl;
-        astar_generator.addCollision({x, y});
-      } else if (x == base_x && y == base_y) {
+        action->astar_generator.addCollision({x, y});
+        // } else if (x == base_x && y == base_y) {
         // std::cout << "S";
-      } else if (x == end_x && y == end_y) {
+        // } else if (x == end_x && y == end_y) {
         // std::cout << "G";
       } else {
         // std::cout << "+";
@@ -227,7 +234,19 @@ bool LongHorizonSeedGenerator::astarChecking(
     }
     // std::cout << "" << std::endl;
   }
-  auto path = astar_generator.findPath({base_x, base_y}, {end_x, end_y});
+  action->astar_init = true;
+}
+
+bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
+                                             Eigen::VectorXd start,
+                                             Eigen::VectorXd end) {
+  int base_x = int(round((start[0] + map_.map_x / 2.0) / map_.step_size));
+  int base_y = int(round((start[1] + map_.map_y / 2.0) / map_.step_size));
+
+  int end_x = int(round((end[0] + map_.map_x / 2.0) / map_.step_size));
+  int end_y = int(round((end[1] + map_.map_y / 2.0) / map_.step_size));
+  auto path =
+      action->astar_generator.findPath({base_x, base_y}, {end_x, end_y});
   if (path.back().x != end_x || path.back().y != end_y) {
     // cannot find valid astar path
     return false;

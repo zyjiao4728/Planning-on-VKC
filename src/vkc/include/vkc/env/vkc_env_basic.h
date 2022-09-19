@@ -152,8 +152,7 @@ class VKCEnvBasic {
 
   std::string updateEnv_(const std::vector<std::string>& joint_names,
                          const Eigen::VectorXd& joint_states,
-                         ActionBase::Ptr action,
-                         vkc::ConstructVKC::Ptr tesseract);
+                         ActionBase::Ptr action);
 
   void updateKinematicInfo(vkc::ConstructVKC::Ptr env);
 };

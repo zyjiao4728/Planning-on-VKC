@@ -8,6 +8,7 @@
 
 // added: wanglei@bigai.ai
 // time: 2021-08-17
+#include <AStar.hpp>
 #include <iostream>
 #include <memory>
 
@@ -133,6 +134,9 @@ class ActionBase {
     // std::remove(joint_candidates.begin(), joint_candidates.end(),
     //             joint_candidate);
   }
+
+  AStar::Generator astar_generator; // TODO: change to shared_ptr and get/set
+  bool astar_init;
 
  protected:
   ActionType action_type_;
