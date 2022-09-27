@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot>
+  <gazebo >
+    <plugin name="dingo_ros_force_based_move" filename="libridgeback_ros_force_based_move.so">
+      <robotNamespace>/</robotNamespace>
+      <commandTopic>dingo_velocity_controller/cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>50.0</odometryRate>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <cmdVelTimeOut>0.25</cmdVelTimeOut>
+      <!-- Don't publish a transform: the controller does it. -->
+      <publishOdometryTf>0</publishOdometryTf>
+      <yaw_velocity_p_gain>500.0</yaw_velocity_p_gain>
+      <x_velocity_p_gain>10000.0</x_velocity_p_gain>
+      <y_velocity_p_gain>10000.0</y_velocity_p_gain>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="front_left_wheel_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="front_right_wheel_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="rear_left_wheel_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <gazebo reference="rear_right_wheel_link">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+</robot>

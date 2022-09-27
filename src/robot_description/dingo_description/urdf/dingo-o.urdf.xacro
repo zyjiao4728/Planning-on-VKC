@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<robot name="dingo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="PI" value="3.1415926535897931" />
+
+  <xacro:property name="wheelbase" value="0.570" />
+  <xacro:property name="track" value="0.3708" />
+  <xacro:property name="wheel_vertical_offset" value="0.035145" />
+
+  <xacro:property name="wheel_radius" value="0.050" />
+  <xacro:property name="wheel_mass" value="0.4" />
+  <xacro:property name="wheel_width" value="0.050" />
+
+  <xacro:property name="dummy_inertia" value="1e-09"/>
+
+
+  <material name="dark_grey"><color rgba="0.2 0.2 0.2 1.0" /></material>
+  <material name="light_grey"><color rgba="0.4 0.4 0.4 1.0" /></material>
+  <material name="yellow"><color rgba="0.8 0.8 0.0 1.0" /></material>
+  <material name="black"><color rgba="0.15 0.15 0.15 1.0" /></material>
+
+  <xacro:macro name="wheel" params="prefix *joint_pose">
+
+    <link name="${prefix}_wheel_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+        <material name="black" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+        <geometry>
+          <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${wheel_mass}"/>
+        <inertia
+          ixx="0.0003234" ixy="0" ixz="0"
+          iyy="0.0003234" iyz="0"
+          izz="0.0004901"/>
+      </inertial>
+    </link>
+
+    <joint name="${prefix}_wheel" type="continuous">
+      <parent link="chassis_link"/>
+      <child link="${prefix}_wheel_link" />
+      <xacro:insert_block name="joint_pose" />
+      <axis xyz="0 1 0" />
+    </joint>
+
+    <transmission name="${prefix}_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_wheel">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_actuator">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:wheel prefix="front_left">
+    <origin xyz="${wheelbase/2} ${track/2+wheel_width/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel prefix="front_right">
+    <origin xyz="${wheelbase/2} ${-track/2-wheel_width/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel prefix="rear_left">
+    <origin xyz="${-wheelbase/2} ${track/2+wheel_width/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+  <xacro:wheel prefix="rear_right">
+    <origin xyz="${-wheelbase/2} ${-track/2-wheel_width/2} ${wheel_vertical_offset}" rpy="0 0 0" />
+  </xacro:wheel>
+
+  <link name="base_link"></link>
+
+  <joint name="base_link_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="base_link"/>
+    <child link="chassis_link" />
+  </joint>
+
+  <link name="chassis_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dingo_description/meshes/omni_chassis.dae"/>
+      </geometry>
+      <material name="dark_grey" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://dingo_description/meshes/omni_chassis_collision.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <!-- Center of mass -->
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="14"/>
+      <!-- Moments of inertia: ( chassis without wheels ) -->
+      <inertia
+        ixx="0.35498" ixy="0" ixz="0"
+        iyy="0.7266" iyz="0"
+        izz="1.0553"/>
+      </inertial>
+  </link>
+
+
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.001"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${dummy_inertia}" ixy="0.0" ixz="0.0" iyy="${dummy_inertia}" iyz="0.0" izz="${dummy_inertia}"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="chassis_link" />
+    <child link="imu_link" />
+  </joint>
+
+  <!--
+    Mounting points for accessories in the top channel.
+    These are flush with the top of the robot and all oriented to face forwards.
+    Dingo-D has 6 evenly-spaced 80mm mounts
+    We name the mounts (from front to back)
+      - front
+      - front b
+      - front c
+      - mid
+      - rear c
+      - rear b
+      - rear
+  -->
+  <link name="front_mount"/>
+  <link name="front_b_mount"/>
+  <link name="front_c_mount"/>
+  <link name="rear_mount"/>
+  <link name="rear_b_mount"/>
+  <link name="rear_c_mount"/>
+  <link name="mid_mount"/>
+
+  <joint name="mid_mount_joint" type="fixed">
+    <origin xyz="0 0 0.069023" rpy="0 0 0" />
+    <parent link="chassis_link"/>
+    <child link="mid_mount" />
+  </joint>
+  <joint name="front_c_mount_joint" type="fixed">
+    <origin xyz="0.080 0 0" rpy="0 0 0" />
+    <parent link="mid_mount"/>
+    <child link="front_c_mount" />
+  </joint>
+  <joint name="front_b_mount_joint" type="fixed">
+    <origin xyz="0.080 0 0" rpy="0 0 0" />
+    <parent link="front_c_mount"/>
+    <child link="front_b_mount" />
+  </joint>
+  <joint name="front_mount_joint" type="fixed">
+    <origin xyz="0.080 0 0" rpy="0 0 0" />
+    <parent link="front_b_mount"/>
+    <child link="front_mount" />
+  </joint>
+  <joint name="rear_c_mount_joint" type="fixed">
+    <origin xyz="-0.080 0 0" rpy="0 0 0" />
+    <parent link="mid_mount"/>
+    <child link="rear_c_mount" />
+  </joint>
+  <joint name="rear_b_mount_joint" type="fixed">
+    <origin xyz="-0.080 0 0" rpy="0 0 0" />
+    <parent link="rear_c_mount"/>
+    <child link="rear_b_mount" />
+  </joint>
+  <joint name="rear_moint_joint" type="fixed">
+    <origin xyz="-0.080 0 0" rpy="0 0 0" />
+    <parent link="rear_b_mount"/>
+    <child link="rear_mount" />
+  </joint>
+
+  <!--
+    Mounting point for accessories on the front bumper.
+    Use with caution, but thin sensors (e.g Raspberry Pi NoIR camera) could
+    be mounted here for low-budget, front/rear-facing capabilities
+  -->
+  <link name="front_bumper_mount"></link>
+  <joint name="front_bumper_mount_joint" type="fixed">
+    <origin xyz="0.34159 0 0.0345115" rpy="0 0 0" />
+    <parent link="chassis_link"/>
+    <child link="front_bumper_mount" />
+  </joint>
+
+
+  <!-- Bring in simulation data for Gazebo. -->
+  <xacro:include filename="$(find dingo_description)/urdf/dingo.gazebo" />
+  <xacro:include filename="$(find dingo_description)/urdf/dingo-o.gazebo" />
+  <!-- Optional standard accessories, including their simulation data. The rendering
+       of these into the final description is controlled by optenv variables, which
+       default each one to off.-->
+  <!-- <xacro:include filename="$(find dingo_description)/urdf/accessories.urdf.xacro" /> -->
+
+  <!-- Optional custom includes. -->
+  <xacro:include filename="$(optenv DINGO_URDF_EXTRAS empty.urdf)" />
+</robot>
