@@ -11,10 +11,11 @@ class PlaceAction : public ActionBase {
 
   PlaceAction(std::string manipulator_id, std::string detached_object_id,
               std::vector<LinkDesiredPose> link_objectives,
-              std::vector<JointDesiredPose> joint_objectives
+              std::vector<JointDesiredPose> joint_objectives,
+              std::string name = "PlaceAction"
               // LinkDesiredPose base_objective
               )
-      : ActionBase(ActionType::PlaceAction, manipulator_id, "PlaceAction"),
+      : ActionBase(ActionType::PlaceAction, manipulator_id, name),
         detached_object_id_(detached_object_id),
         link_objectives_(link_objectives),
         joint_objectives_(joint_objectives),
@@ -25,10 +26,10 @@ class PlaceAction : public ActionBase {
   PlaceAction(std::string manipulator_id, std::string detached_object_id,
               std::vector<LinkDesiredPose> link_objectives,
               std::vector<JointDesiredPose> joint_objectives,
-              bool init_traj_required
+              bool init_traj_required, std::string name = "PlaceAction"
               // LinkDesiredPose base_objective
               )
-      : ActionBase(ActionType::PlaceAction, manipulator_id, "PlaceAction"),
+      : ActionBase(ActionType::PlaceAction, manipulator_id, name),
         detached_object_id_(detached_object_id),
         link_objectives_(link_objectives),
         joint_objectives_(joint_objectives),

@@ -9,16 +9,17 @@ class PickAction : public ActionBase {
  public:
   using Ptr = std::shared_ptr<PickAction>;
 
-  PickAction(std::string manipulator_id, std::string attached_object_id)
-      : ActionBase(ActionType::PickAction, manipulator_id, "PickAction"),
+  PickAction(std::string manipulator_id, std::string attached_object_id,
+             std::string name = "PickAction")
+      : ActionBase(ActionType::PickAction, manipulator_id, name),
         attached_object_id_(attached_object_id),
         is_rigid_object_(true) {
     init_traj_required_ = false;
   }
 
   PickAction(std::string manipulator_id, std::string attached_object_id,
-             bool init_traj_required)
-      : ActionBase(ActionType::PickAction, manipulator_id, "PickAction"),
+             bool init_traj_required, std::string name = "PickAction")
+      : ActionBase(ActionType::PickAction, manipulator_id, name),
         attached_object_id_(attached_object_id),
         is_rigid_object_(true) {
     init_traj_required_ = init_traj_required;
