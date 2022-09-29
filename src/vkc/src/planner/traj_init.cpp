@@ -662,9 +662,9 @@ CompositeInstruction generateMixedSeed(
       planner.getName(), instructions.getProfile(), profile);
   auto flat = flattenProgram(instructions);
   for (const auto &i : flat) {
-    if (isPlanInstruction(i.get()))
+    if (i.get().isMoveInstruction())
       profiles->addProfile<MMMOPlannerPlanProfile>(
-          planner.getName(), i.get().as<PlanInstruction>().getProfile(),
+          planner.getName(), i.get().as<MoveInstructionPoly>().getProfile(),
           profile);
   }
   request.profiles = profiles;

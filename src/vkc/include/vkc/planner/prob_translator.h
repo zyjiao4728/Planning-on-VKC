@@ -53,7 +53,7 @@ class ProbTranslator {
    * @param env tesseract environment before planning
    * @param manipulator string of manipulator name
    */
-  tesseract_planning::JointWaypoint setupStartWaypoint(VKCEnvBasic &env,
+  tesseract_planning::JointWaypointPoly setupStartWaypoint(VKCEnvBasic &env,
                                                        std::string manipulator);
 
   /**
@@ -62,7 +62,7 @@ class ProbTranslator {
    * @param env tesseract environment before planning
    * @param manipulator string of manipulator name
    */
-  tesseract_planning::JointWaypoint setupGoalWaypoint(VKCEnvBasic &env,
+  tesseract_planning::JointWaypointPoly setupGoalWaypoint(VKCEnvBasic &env,
                                                       std::string manipulator);
 
   /**
@@ -173,8 +173,8 @@ class ProbTranslator {
  private:
   // tesseract_motion_planners::ChainOmplInterface::Ptr coi_;
   tesseract_kinematics::KinematicGroup::ConstPtr kin;
-  tesseract_planning::JointWaypoint start_waypoint;
-  tesseract_planning::JointWaypoint goal_waypoint;
+  tesseract_planning::JointWaypointPoly start_waypoint;
+  tesseract_planning::JointWaypointPoly goal_waypoint;
   tesseract_environment::Environment::Ptr tesseract_;
   // tesseract_planning::OmplPlanParameters params_;
   Husky_IK::Option ik_option_;
