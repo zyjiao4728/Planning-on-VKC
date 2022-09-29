@@ -29,6 +29,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     // action->switchCandidate();
+
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -55,8 +56,6 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             response.status.message().c_str());
         // action->switchCandidate();
       }
-    }
-    const auto &ci = response.results;
 
     tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
     tesseract_common::JointTrajectory refined_traj = trajectory;

@@ -1,6 +1,5 @@
 #include <math.h>
 #include <ros/console.h>
-#include <tesseract_command_language/utils/utils.h>
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>

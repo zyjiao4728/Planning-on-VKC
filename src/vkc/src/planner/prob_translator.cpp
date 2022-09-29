@@ -1,3 +1,4 @@
+#include <tesseract_command_language/joint_waypoint.h>
 #include <tesseract_kinematics/kdl/kdl_inv_kin_chain_lma.h>
 #include <vkc/planner/prob_translator.h>
 
@@ -18,7 +19,7 @@ ProbTranslator::ProbTranslator(OmplPlanParameters params) {
   // we use the default random seed 1
 }
 
-tesseract_planning::JointWaypoint ProbTranslator::setupStartWaypoint(
+tesseract_planning::JointWaypointPoly ProbTranslator::setupStartWaypoint(
     VKCEnvBasic &env, std::string manipulator) {
   auto kin_ = env.getVKCEnv()->getTesseract()->getKinematicGroup(manipulator);
   // getFwdKinematicsManager(manipulator);
@@ -38,7 +39,8 @@ tesseract_planning::JointWaypoint ProbTranslator::setupStartWaypoint(
   if (!checkJointLimits(start_pos, kin_->getLimits())) {
     ROS_ERROR("[%s]Oho, start waypoint is invalid!", __func__);
   }
-  tesseract_planning::JointWaypoint jw(kin_->getJointNames(), start_pos);
+  tesseract_planning::JointWaypointPoly jw{
+      tesseract_planning::JointWaypoint(kin_->getJointNames(), start_pos)};
   return jw;
 }
 
@@ -46,7 +48,7 @@ tesseract_kinematics::KinematicGroup::ConstPtr ProbTranslator::getKinematics() {
   return kin;
 }
 
-tesseract_planning::JointWaypoint ProbTranslator::setupGoalWaypoint(
+tesseract_planning::JointWaypointPoly ProbTranslator::setupGoalWaypoint(
     VKCEnvBasic &env, std::string manipulator) {
   auto kin_ = env.getVKCEnv()->getTesseract()->getKinematicGroup(manipulator);
 
@@ -55,14 +57,15 @@ tesseract_planning::JointWaypoint ProbTranslator::setupGoalWaypoint(
       ROS_ERROR("2 types of objectives detected, using link objectives only");
     }
     Eigen::VectorXd solutions;
-    auto seed = (start_waypoint.size())
+    auto seed = (start_waypoint.getPosition().size())
                     ? Eigen::VectorXd::Zero(
                           (long unsigned int)kin_->getJointNames().size())
-                    : start_waypoint.waypoint;
+                    : start_waypoint.getPosition();
     auto pose = l_obj[0].tf;
     if (collisionFreeInverseKinematics(env, manipulator, solutions, pose,
                                        seed)) {
-      tesseract_planning::JointWaypoint jw(kin_->getJointNames(), solutions);
+      tesseract_planning::JointWaypointPoly jw{
+          tesseract_planning::JointWaypoint(kin_->getJointNames(), solutions)};
       return jw;
     }
     ROS_ERROR("Failed to find collision free solution!");
@@ -75,16 +78,17 @@ tesseract_planning::JointWaypoint ProbTranslator::setupGoalWaypoint(
         idx++;
       }
 
-      tesseract_planning::JointWaypoint jw(kin_->getJointNames(), solutions);
+      tesseract_planning::JointWaypointPoly jw{
+          tesseract_planning::JointWaypoint(kin_->getJointNames(), solutions)};
 
       return jw;
     }
     ROS_ERROR("Joint objectives detected size mismatched");
   }
-  JointWaypoint jw(
-      kin_->getJointNames(),
-      Eigen::VectorXd::Zero(kin_->numJoints()));  // TODO! Potentially wrong,
-                                                  // all the joints are zero.
+  JointWaypointPoly jw;
+  jw.setNames(kin_->getJointNames());
+  jw.setPosition(Eigen::VectorXd::Zero(
+      kin_->numJoints()));  // TODO! Potentially wrong, all the joints are zero.
   return jw;
 }
 
@@ -334,8 +338,7 @@ bool ProbTranslator::transPickProb(VKCEnvBasic &env, vkc::PickAction::Ptr act) {
   insertPlanners(planner_);
 
   // extract pose information
-  auto attach_location_ptr =
-      env.getAttachLocation(act->getAttachedObject());
+  auto attach_location_ptr = env.getAttachLocation(act->getAttachedObject());
   Eigen::Isometry3d target_pos =
       attach_location_ptr->world_joint_origin_transform;
 

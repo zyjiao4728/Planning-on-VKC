@@ -1,6 +1,5 @@
 #include <KMeansRexCore.h>
 #include <fmt/ranges.h>
-#include <tesseract_command_language/utils/utils.h>
 #include <tesseract_motion_planners/3mo/3mo_utils.h>
 #include <vkc/planner/long_horizon.h>
 #include <vkc/planner/prob_generator.h>

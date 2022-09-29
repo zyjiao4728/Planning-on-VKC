@@ -1,5 +1,9 @@
 #include <fmt/ranges.h>
-#include <tesseract_command_language/command_language.h>
+#include <tesseract_command_language/cartesian_waypoint.h>
+#include <tesseract_command_language/joint_waypoint.h>
+#include <tesseract_command_language/mixed_waypoint.h>
+#include <tesseract_command_language/move_instruction.h>
+#include <tesseract_command_language/state_waypoint.h>
 #include <tesseract_motion_planners/3mo/profile/3mo_planner_ik_plan_profile.h>
 #include <tesseract_motion_planners/interface_utils.h>
 #include <tesseract_motion_planners/ompl/profile/ompl_constrained_plan_profile.h>
@@ -20,16 +24,17 @@ ProbGenerator::ProbGenerator() {}
 PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
                                          ActionBase::Ptr action, int n_steps,
                                          int n_iter) {
-  Waypoint wp;
+  MixedWaypointPoly wp;
   wp = genMixedWaypoint(env, action);
   return genRequest(env, action, wp, n_steps, n_iter);
 }
 
 PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
-                                         Waypoint wp, int n_steps, int n_iter) {
+                                         MixedWaypointPoly wp, int n_steps,
+                                         int n_iter) {
   CONSOLE_BRIDGE_logDebug("generating planning request...");
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  ManipulatorInfo manip;
+  tesseract_common::ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
   manip.working_frame = "world";
   manip.manipulator = act->getManipulatorID();
@@ -57,20 +62,20 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
       env_->getCurrentJointValues(kinematic_group->getJointNames()));
   auto seed_program = program;
 
-  PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
+  MoveInstruction plan_instruction(wp, MoveInstructionType::FREESPACE,
                                    "DEFAULT");
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", act->getActionName()));
-  program.push_back(plan_instruction);
+  program.appendMoveInstruction(plan_instruction);
 
   auto seed_instruction = plan_instruction;
   if (act->joint_candidate.size()) {
     CONSOLE_BRIDGE_logInform(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
-    seed_instruction.setWaypoint(
-        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate));
+    seed_instruction.assignJointWaypoint(JointWaypointPoly{
+        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate)});
   }
-  seed_program.push_back(seed_instruction);
+  seed_program.appendMoveInstruction(seed_instruction);
 
   // generate seed
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
@@ -84,7 +89,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                         : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
-           getMoveInstructionCount(seed));
+           seed.getMoveInstructionCount());
 
   // seed.print(fmt::format("{} seed: ", act->getActionName()));
 
@@ -107,7 +112,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                                              int n_steps, int n_iter) {
   auto wp = genMixedWaypoint(env, action);
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
-  ManipulatorInfo manip;
+  tesseract_common::ManipulatorInfo manip;
   manip.tcp_frame = env.getEndEffectorLink();
   manip.working_frame = "world";
   manip.manipulator = action->getManipulatorID();
@@ -117,7 +122,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>();
   auto profiles = std::make_shared<ProfileDictionary>();
   std::string default_profile = "FREESPACE";
-  if (wp.link_constraints.size()) {
+  if (wp.getLinkConstraints().size()) {
     /* generate constrained ompl profile(deprecated)
     // auto ompl_profile = std::make_shared<OMPLConstrainedPlanProfile>();
     // auto constraint =
@@ -151,24 +156,24 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                                CompositeInstructionOrder::ORDERED, manip);
   setStartInstruction(program, kin_group->getJointNames(),
                       env_->getCurrentJointValues(kin_group->getJointNames()));
-  PlanInstruction plan_instruction(wp, PlanInstructionType::FREESPACE,
+  MoveInstruction plan_instruction(wp, MoveInstructionType::FREESPACE,
                                    default_profile);
   if (action->joint_candidate.size()) {
     CONSOLE_BRIDGE_logDebug(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
-    plan_instruction.setWaypoint(
-        JointWaypoint(kin_group->getJointNames(), action->joint_candidate));
+    plan_instruction.assignJointWaypoint(JointWaypointPoly{
+        JointWaypoint(kin_group->getJointNames(), action->joint_candidate)});
   }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", action->getActionName()));
   auto seed_program = program;
   auto seed_instrcution = plan_instruction;
-  seed_instrcution.setWaypoint(
+  seed_instrcution.assignJointWaypoint(JointWaypointPoly{
       JointWaypoint(kin_group->getJointNames(),
-                    env_->getCurrentJointValues(kin_group->getJointNames())));
-  seed_program.push_back(seed_instrcution);
+                    env_->getCurrentJointValues(kin_group->getJointNames()))});
+  seed_program.appendMoveInstruction(seed_instrcution);
 
-  program.push_back(plan_instruction);
+  program.appendMoveInstruction(plan_instruction);
   auto cur_state = env.getVKCEnv()->getTesseract()->getState();
 
   CompositeInstruction seed =
@@ -176,7 +181,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                    0.087, 0.15, 0.087, n_steps);
 
   PlannerRequest request;
-  request.name = wp.link_constraints.size()
+  request.name = wp.getLinkConstraints().size()
                      ? "3MO_IK_TRAJ"
                      : process_planner_names::OMPL_PLANNER_NAME;
   request.instructions = program;
@@ -190,8 +195,8 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   return request;
 }
 
-MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
-                                              ActionBase::Ptr action) {
+MixedWaypointPoly ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
+                                                  ActionBase::Ptr action) {
   switch (action->getActionType()) {
     case ActionType::PickAction: {
       PickAction::Ptr pick_act = std::dynamic_pointer_cast<PickAction>(action);
@@ -225,8 +230,8 @@ MixedWaypoint ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
   throw std::logic_error("action error");
 }
 
-MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
-                                                  PickAction::Ptr act) {
+MixedWaypointPoly ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
+                                                      PickAction::Ptr act) {
   CONSOLE_BRIDGE_logDebug("generating pick mixed waypoint");
   std::cout << "act manipulator id: " << act->getManipulatorID() << std::endl;
   std::cout << fmt::format("group joint names: {}",
@@ -236,7 +241,7 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
   // std::cout << fmt::format("{}", kin_group->getJointNames()) << std::endl;
-  MixedWaypoint waypoint(kin_group->getJointNames());
+  MixedWaypointPoly waypoint{MixedWaypoint(kin_group->getJointNames())};
   BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
@@ -258,11 +263,11 @@ MixedWaypoint ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
   return waypoint;
 }
 
-MixedWaypoint ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
-                                                   PlaceAction::Ptr act) {
+MixedWaypointPoly ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
+                                                       PlaceAction::Ptr act) {
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
-  MixedWaypoint waypoint(kin_group->getJointNames());
+  MixedWaypointPoly waypoint{MixedWaypoint(kin_group->getJointNames())};
 
   BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       env.getAttachLocation(act->getDetachedObject());
@@ -290,8 +295,8 @@ MixedWaypoint ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
   return waypoint;
 }
 
-MixedWaypoint ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
-                                                  GotoAction::Ptr act) {
+MixedWaypointPoly ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
+                                                      GotoAction::Ptr act) {
   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
       act->getManipulatorID());
   MixedWaypoint waypoint(kin_group->getJointNames());
@@ -334,8 +339,8 @@ Eigen::Vector4d ProbGenerator::getQuatFromIso(Eigen::Isometry3d iso) {
 }
 
 ProfileDictionary::Ptr ProbGenerator::genPlannerProfiles_(
-    VKCEnvBasic &env, ManipulatorInfo manip, double collision_margin,
-    double collision_coeff, Eigen::Vector3d pos_coeff,
+    VKCEnvBasic &env, tesseract_common::ManipulatorInfo manip,
+    double collision_margin, double collision_coeff, Eigen::Vector3d pos_coeff,
     Eigen::Vector3d rot_coeff) {
   Environment::Ptr env_ = env.getVKCEnv()->getTesseract();
   auto trajopt_composite_profile =
@@ -422,8 +427,9 @@ void ProbGenerator::setStartInstruction(CompositeInstruction &program,
   ss << joint_values.transpose();
   CONSOLE_BRIDGE_logDebug("start instruction set with state: %s",
                           ss.str().c_str());
-  Waypoint start_waypoint = StateWaypoint(joint_names, joint_values);
-  PlanInstruction start_instruction(start_waypoint, PlanInstructionType::START);
+  auto start_waypoint =
+      StateWaypointPoly{StateWaypoint(joint_names, joint_values)};
+  MoveInstruction start_instruction(start_waypoint, MoveInstructionType::START);
   start_instruction.setDescription("start instruction set by prob generator");
   program.setStartInstruction(start_instruction);
 }
@@ -431,10 +437,10 @@ void ProbGenerator::setStartInstruction(CompositeInstruction &program,
 void ProbGenerator::addCartWaypoint(CompositeInstruction &program,
                                     Eigen::Isometry3d pose,
                                     std::string description) {
-  PlanInstruction pick_plan(CartesianWaypoint(pose),
-                            PlanInstructionType::FREESPACE, "DEFAULT");
+  MoveInstruction pick_plan(CartesianWaypointPoly{CartesianWaypoint(pose)},
+                            MoveInstructionType::FREESPACE, "DEFAULT");
   pick_plan.setDescription(description);
-  program.push_back(pick_plan);
+  program.appendMoveInstruction(pick_plan);
 }
 
 void ProbGenerator::addJointTerm(ProblemConstructionInfo &pci, int joint_num) {

@@ -1,7 +1,7 @@
 #ifndef VKC_ACTION_BASE_H
 #define VKC_ACTION_BASE_H
 
-#include <tesseract_command_language/command_language.h>
+#include <tesseract_command_language/composite_instruction.h>
 
 #include <Eigen/Eigen>
 #include <string>
