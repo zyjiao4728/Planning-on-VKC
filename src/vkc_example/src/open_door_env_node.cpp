@@ -1,5 +1,4 @@
 #include <ros/console.h>
-#include <tesseract_command_language/utils/utils.h>
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
@@ -35,26 +34,27 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
+  env.disableInverseKinematicChain();
+
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
-    // ActionSeq sub_actions(ptr, actions.end());
-    // seed_generator.generate(env, sub_actions);
     // action->switchCandidate();
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
       CONSOLE_BRIDGE_logDebug("generating sampling based planning request");
-      // auto prob_ptr =
-      //     prob_generator.getOmplRequest(env, action, n_steps, n_iter);
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      auto prob_ptr =
+          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      // auto prob_ptr = prob_generator.genRequest(env, action, n_steps,
+      // n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      solveProb(prob_ptr, response, n_iter);
-      // solveOmplProb(prob_ptr, response, n_iter);
+      // solveProb(prob_ptr, response, n_iter);
+      solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
       if (OMPLMotionPlannerStatusCategory::SolutionFound ==
@@ -222,7 +222,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  setupLog(console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_WARN);
+  setupLog(console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_INFO);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
@@ -245,13 +245,13 @@ int main(int argc, char **argv) {
   pnh.param<int>("niter", n_iter, n_iter);
   pnh.param<int>("nruns", nruns, nruns);
 
-  OpenDoorEnv env(nh, plotting, rviz, steps);
+  OpenDoorEnv env(nh, plotting, rviz, steps, false);
 
   vector<TesseractJointTraj> joint_trajs;
 
   ActionSeq actions;
-  pushDoor(actions, robot);
-  // pullDoor(actions, robot);
+  // pushDoor(actions, robot);
+  pullDoor(actions, robot);
   // pullDrawer(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);

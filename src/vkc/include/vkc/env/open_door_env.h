@@ -26,7 +26,8 @@ namespace vkc {
  */
 class OpenDoorEnv : public VKCEnvBasic {
  public:
-  OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps);
+  OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps,
+              bool inverse_kinematic_chain = true);
 
   ~OpenDoorEnv() = default;
 

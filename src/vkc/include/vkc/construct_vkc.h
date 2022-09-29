@@ -19,7 +19,8 @@ class ConstructVKC {
   // Constructor and destructor
   ConstructVKC();
   ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model,
-               tesseract_environment::Environment::Ptr env);
+               tesseract_environment::Environment::Ptr env,
+               tesseract_environment::Environment::Ptr env_non_inverse);
   virtual ~ConstructVKC() = default;
 
   ConstructVKC::UPtr clone();
@@ -37,6 +38,7 @@ class ConstructVKC {
 
   // Return private members
   tesseract_environment::Environment::Ptr getTesseract();
+  tesseract_environment::Environment::Ptr getTesseractNonInverse();
   tesseract_scene_graph::SceneGraph::Ptr getSceneGraph();
   tesseract_monitoring::ROSEnvironmentMonitor::Ptr getMonitor();
   tesseract_srdf::SRDFModel::ConstPtr getSRDFModel() const;
@@ -53,6 +55,7 @@ class ConstructVKC {
   tesseract_srdf::SRDFModel::Ptr srdf_model_;
   tesseract_monitoring::ROSEnvironmentMonitor::Ptr monitor_;
   tesseract_environment::Environment::Ptr env_;
+  tesseract_environment::Environment::Ptr env_non_inverse_;
 
   // Copy a link and all its child links/joints to a new scene graph
   // tesseract_scene_graph::SceneGraph::Ptr breakSceneGraphatJoint(const

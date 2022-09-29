@@ -8,7 +8,6 @@
 #include <vkc_example/utils.h>
 // motion planning via OMPL
 #include <tesseract_collision/core/types.h>
-#include <tesseract_command_language/utils/utils.h>
 #include <tesseract_motion_planners/core/utils.h>
 
 #include <iostream>

@@ -390,7 +390,7 @@ void VKCEnvBasic::detachObject(std::string detach_location_name,
 std::string VKCEnvBasic::updateEnv(const std::vector<std::string>& joint_names,
                                    const Eigen::VectorXd& joint_states,
                                    ActionBase::Ptr action) {
-  return updateEnv_(joint_names, joint_states, action, tesseract_);
+  return updateEnv_(joint_names, joint_states, action);
 }
 std::string VKCEnvBasic::updatePlotEnv(
     const std::vector<std::string>& joint_names,
@@ -401,15 +401,15 @@ std::string VKCEnvBasic::updatePlotEnv(
 
 std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
                                     const Eigen::VectorXd& joint_states,
-                                    ActionBase::Ptr action,
-                                    vkc::ConstructVKC::Ptr tesseract) {
+                                    ActionBase::Ptr action) {
   std::cout << __func__ << ": action" << std::endl << action << std::endl;
   // Set the current state to the last state of the trajectory
   if (joint_names.size()) {
     assert(joint_names.size() == joint_states.size());
     std::cout << "updating joint state with: " << joint_states.transpose()
               << std::endl;
-    tesseract->getTesseract()->setState(joint_names, joint_states);
+    tesseract_->getTesseract()->setState(joint_names, joint_states);
+    tesseract_->getTesseractNonInverse()->setState(joint_names, joint_states);
   }
 
   if (action == nullptr) {
@@ -417,7 +417,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
       // Now update rviz environment
       // tesseract_->getTesseract()->
     }
-    updateKinematicInfo(tesseract);
+    updateKinematicInfo(tesseract_);
     return DEFAULT_VKC_GROUP_ID;
   }
 
@@ -434,13 +434,13 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
                 location_name.c_str());
       return DEFAULT_VKC_GROUP_ID;
     }
-    attachObject(location_name, tesseract);
+    attachObject(location_name, tesseract_);
   } else if (action->getActionType() == ActionType::PlaceAction) {
     PlaceAction::Ptr place_act = std::dynamic_pointer_cast<PlaceAction>(action);
     location_name = place_act->getDetachedObject();
     std::cout << "detach location_name: " << location_name << std::endl;
     std::cout << "pre end-effector: " << getEndEffectorLink() << std::endl;
-    detachObject(location_name, tesseract, place_act->getNewAttachObject());
+    detachObject(location_name, tesseract_, place_act->getNewAttachObject());
     std::cout << "current end-effector: " << getEndEffectorLink() << std::endl;
     // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   } else if (action->getActionType() == ActionType::UseAction) {
@@ -448,7 +448,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     location_name = use_act->getAttachedObject();
     // std::cout << location_name << std::endl;
     Eigen::Isometry3d* tf = &(use_act->getTransform());
-    attachObject(location_name, tesseract, tf);
+    attachObject(location_name, tesseract_, tf);
   }
 
   if (rviz_ && tesseract_->getMonitor() != nullptr) {
@@ -458,7 +458,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
 
   if (action->getActionType() != ActionType::GotoAction) {
     CONSOLE_BRIDGE_logDebug("action is not goto, updating kinematic group");
-    updateKinematicInfo(tesseract);
+    updateKinematicInfo(tesseract_);
   }
 
   return DEFAULT_VKC_GROUP_ID;
@@ -498,6 +498,7 @@ void VKCEnvBasic::updateKinematicInfo(vkc::ConstructVKC::Ptr tesseract) {
   auto cmd = std::make_shared<AddKinematicsInformationCommand>(kin_info);
 
   tesseract->getTesseract()->applyCommand(cmd);
+  tesseract_->getTesseractNonInverse()->applyCommand(cmd);
 }
 
 bool VKCEnvBasic::isGroupExist(std::string group_id) {

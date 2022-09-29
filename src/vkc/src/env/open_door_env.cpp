@@ -20,8 +20,8 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 
 namespace vkc {
 OpenDoorEnv::OpenDoorEnv(ros::NodeHandle nh, bool plotting, bool rviz,
-                         int steps)
-    : VKCEnvBasic(nh, plotting, rviz, steps) {
+                         int steps, bool inverse_kinematic_chain)
+    : VKCEnvBasic(nh, plotting, rviz, steps, inverse_kinematic_chain) {
   // Set Log Level
   util::gLogLevel = util::LevelInfo;
 
@@ -79,19 +79,26 @@ bool OpenDoorEnv::createEnvironment() {
   door_north.createObject();
   door_north.createWorldJoint(
       Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-  if (inverse_kinematic_chain_)
-    door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
   vkc::BaseDrawer drawer0("drawer0");
   drawer0.createObject();
   drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3, 0.5, 1.57));
-  if (inverse_kinematic_chain_)
-    drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   updateAttachLocations(door_north.getAttachLocations());
   updateAttachLocations(drawer0.getAttachLocations());
 
   ROS_INFO("add attach location success.");
+
+  wall_north_left.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_north_right.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_west.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_east.addToEnvironment(tesseract_->getTesseractNonInverse());
+  wall_south.addToEnvironment(tesseract_->getTesseractNonInverse());
+  door_north.addToEnvironment(tesseract_->getTesseractNonInverse());
+  drawer0.addToEnvironment(tesseract_->getTesseractNonInverse());
+
+  door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
+  drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   wall_north_left.addToEnvironment(tesseract_->getTesseract());
   wall_north_right.addToEnvironment(tesseract_->getTesseract());
@@ -120,6 +127,8 @@ bool OpenDoorEnv::createEnvironment() {
       "door_north_door_link", "door_north_handle_link", "Never"));
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "robotiq_arg2f_base_link", "door_north_handle_link", "Never"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "left_gripper_flange", "door_north_handle_link", "Never"));
 
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "wall_west_wall_link", "wall_north_left_wall_link", "Never"));
@@ -135,6 +144,7 @@ bool OpenDoorEnv::createEnvironment() {
   ROS_INFO("applying add collision commands");
 
   tesseract_->getTesseract()->applyCommands(cmds);
+  tesseract_->getTesseractNonInverse()->applyCommands(cmds);
 
   // tesseract_->getTesseract()->setLinkCollisionEnabled("drawer0_handle_left",
   // false);

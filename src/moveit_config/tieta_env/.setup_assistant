@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: env_description
+    relative_path: tieta_env/main.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/tieta_env.srdf
+  CONFIG:
+    author_name: Yida
+    author_email: niu.yid@northeastern.edu
+    generated_timestamp: 1663664982

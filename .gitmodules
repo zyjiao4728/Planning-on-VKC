@@ -4,3 +4,6 @@
 [submodule "src/KMeansRex"]
 	path = src/KMeansRex
 	url = git@github.com:BigAI-Robotics/KMeansRex.git
+[submodule "src/env_description"]
+	path = src/env_description
+	url = ssh://git@gitlab.mybigai.ac.cn:2222/robotics/env_description.git

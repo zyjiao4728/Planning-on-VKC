@@ -19,19 +19,23 @@ ConstructVKC::ConstructVKC() {
   ROS_INFO("Virtual Kinematic Chain constructor initialized...");
   clear();
 }
-ConstructVKC::ConstructVKC(tesseract_srdf::SRDFModel::Ptr srdf_model,
-                           tesseract_environment::Environment::Ptr env) {
+ConstructVKC::ConstructVKC(
+    tesseract_srdf::SRDFModel::Ptr srdf_model,
+    tesseract_environment::Environment::Ptr env,
+    tesseract_environment::Environment::Ptr env_non_inverse) {
   ROS_INFO("Virtual Kinematic Chain constructor initialized...");
   clear();
   srdf_model_ = srdf_model;
   env_ = env;
+  env_non_inverse_ = env_non_inverse;
   scene_graph_ = std::move(env->getSceneGraph()->clone());
 }
 
 ConstructVKC::UPtr ConstructVKC::clone() {
   ROS_WARN("srdf model is reused, may cause problem...");
   auto cloned_vkc =
-      std::make_unique<ConstructVKC>(srdf_model_, std::move(env_->clone()));
+      std::make_unique<ConstructVKC>(srdf_model_, std::move(env_->clone()),
+                                     std::move(env_non_inverse_->clone()));
   return cloned_vkc;
 }
 
@@ -93,6 +97,8 @@ bool ConstructVKC::initTesseract(std::string monitor_namespace) {
     ROS_INFO("Failed to initialize tesseract environment");
     throw std::runtime_error("tesseract init failed");
   }
+  env_non_inverse_ = std::make_shared<tesseract_environment::Environment>();
+  env_non_inverse_->init(*scene_graph_, srdf_model_);
   monitor_ = std::make_shared<tesseract_monitoring::ROSEnvironmentMonitor>(
       env_, monitor_namespace);
   monitor_->startPublishingEnvironment();
@@ -101,9 +107,16 @@ bool ConstructVKC::initTesseract(std::string monitor_namespace) {
 
 tesseract_environment::Environment::Ptr ConstructVKC::getTesseract() {
   if (env_ == nullptr) {
-    ROS_ERROR("Null tesseract!");
+    CONSOLE_BRIDGE_logError("Null tesseract!");
   }
   return env_;
+}
+
+tesseract_environment::Environment::Ptr ConstructVKC::getTesseractNonInverse() {
+  if (env_non_inverse_ == nullptr) {
+    CONSOLE_BRIDGE_logError("Null non inverse tesseract!");
+  }
+  return env_non_inverse_;
 }
 
 tesseract_scene_graph::SceneGraph::Ptr ConstructVKC::getSceneGraph() {
@@ -132,12 +145,14 @@ void ConstructVKC::clear() {
   srdf_model_ = nullptr;
   scene_graph_ = nullptr;
   env_ = nullptr;
+  env_non_inverse_ = nullptr;
   monitor_ = nullptr;
 }
 
 void ConstructVKC::clearTesseract() {
   monitor_ = nullptr;
   env_ = nullptr;
+  env_non_inverse_ = nullptr;
 }
 
 }  // namespace vkc

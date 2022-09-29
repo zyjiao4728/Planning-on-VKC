@@ -41,23 +41,23 @@ class ProbGenerator {
 
   tesseract_planning::PlannerRequest genRequest(
       VKCEnvBasic &env, ActionBase::Ptr action,
-      tesseract_planning::Waypoint waypoint, int n_steps, int n_iter);
+      tesseract_planning::MixedWaypointPoly waypoint, int n_steps, int n_iter);
 
   tesseract_planning::PlannerRequest getOmplRequest(VKCEnvBasic &env,
                                                     ActionBase::Ptr action,
                                                     int n_steps, int n_iter);
 
-  tesseract_planning::MixedWaypoint genMixedWaypoint(VKCEnvBasic &env,
-                                                     ActionBase::Ptr act);
+  tesseract_planning::MixedWaypointPoly genMixedWaypoint(VKCEnvBasic &env,
+                                                         ActionBase::Ptr act);
 
-  tesseract_planning::MixedWaypoint genPickMixedWaypoint(VKCEnvBasic &env,
-                                                         PickAction::Ptr act);
+  tesseract_planning::MixedWaypointPoly genPickMixedWaypoint(
+      VKCEnvBasic &env, PickAction::Ptr act);
 
-  tesseract_planning::MixedWaypoint genPlaceMixedWaypoint(VKCEnvBasic &env,
-                                                          PlaceAction::Ptr act);
+  tesseract_planning::MixedWaypointPoly genPlaceMixedWaypoint(
+      VKCEnvBasic &env, PlaceAction::Ptr act);
 
-  tesseract_planning::MixedWaypoint genGotoMixedWaypoint(VKCEnvBasic &env,
-                                                         GotoAction::Ptr act);
+  tesseract_planning::MixedWaypointPoly genGotoMixedWaypoint(
+      VKCEnvBasic &env, GotoAction::Ptr act);
 
   tesseract_planning::PlannerRequest genPickProb(VKCEnvBasic &env,
                                                  PickAction::Ptr act,
@@ -104,7 +104,7 @@ class ProbGenerator {
   Eigen::Vector4d getQuatFromIso(Eigen::Isometry3d iso);
 
   tesseract_planning::ProfileDictionary::Ptr genPlannerProfiles_(
-      VKCEnvBasic &env, tesseract_planning::ManipulatorInfo manip,
+      VKCEnvBasic &env, tesseract_common::ManipulatorInfo manip,
       double collision_margin, double collision_coeff,
       Eigen::Vector3d pos_coeff, Eigen::Vector3d rot_coeff);
 
@@ -149,7 +149,6 @@ class ProbGenerator {
  private:
   std::unordered_map<std::string, int> planned_joints;
 };
-
 
 }  // namespace vkc
 

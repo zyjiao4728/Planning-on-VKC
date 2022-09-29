@@ -634,7 +634,7 @@ CompositeInstruction generateMixedSeed(
     const std::pair<std::string, std::string> base_joint,
     const Eigen::VectorXd &ik_cost_coeff) {
   // srand(time(NULL));
-  CONSOLE_BRIDGE_logInform("generating mixed seed");
+  CONSOLE_BRIDGE_logDebug("generating mixed seed");
   PlannerRequest request;
   request.instructions = instructions;
   request.env_state = current_state;
@@ -651,8 +651,9 @@ CompositeInstruction generateMixedSeed(
           .c_str());
 
   if (ik_cost_coeff.size()) {
-    CONSOLE_BRIDGE_logDebug("setting ik cost coeff with length %ld",
-                            ik_cost_coeff.size());
+    std::stringstream ss;
+    ss << ik_cost_coeff.transpose();
+    CONSOLE_BRIDGE_logInform("setting ik cost coeff: %s", ss.str().c_str());
     profile->cost_coeff = ik_cost_coeff;
   }
 
@@ -661,9 +662,9 @@ CompositeInstruction generateMixedSeed(
       planner.getName(), instructions.getProfile(), profile);
   auto flat = flattenProgram(instructions);
   for (const auto &i : flat) {
-    if (isPlanInstruction(i.get()))
+    if (i.get().isMoveInstruction())
       profiles->addProfile<MMMOPlannerPlanProfile>(
-          planner.getName(), i.get().as<PlanInstruction>().getProfile(),
+          planner.getName(), i.get().as<MoveInstructionPoly>().getProfile(),
           profile);
   }
   request.profiles = profiles;
