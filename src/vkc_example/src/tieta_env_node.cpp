@@ -16,16 +16,28 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   ProbGenerator prob_generator;
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
-  Eigen::Isometry3d origin;
-  origin.setIdentity();
-  origin.translation() =
+  Eigen::Isometry3d cabinet_handle_pose;
+  cabinet_handle_pose.setIdentity();
+  cabinet_handle_pose.translation() =
       Eigen::Vector3d(1.56603773475, -2.12803775693, 1.10999932578);
-  origin.linear() = Eigen::Quaterniond(-0.00417585092715, -0.00241137511214,
+  cabinet_handle_pose.linear() = Eigen::Quaterniond(-0.00417585092715, -0.00241137511214,
                                        -0.000891939974928, 0.999987975919)
                         .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
-      "closet_base_joint", origin);
+      "closet_base_joint", cabinet_handle_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+
+  Eigen::Isometry3d table_pose;
+  table_pose.setIdentity();
+  table_pose.translation() =
+      Eigen::Vector3d(-0.128499117271, -2.12167326143, 0.741853607259);
+  table_pose.linear() = Eigen::Quaterniond(0.707105521577, 0.000190096986757,
+                                       6.89455638473e-05, 0.70710801188)
+                        .matrix();
+  cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "table0_table_base_joint", table_pose);
+  env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     // action->switchCandidate();

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot name="dingo" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:if value="$(optenv DINGO_OMNI 0)">
+    <xacro:include filename="$(find dingo_description)/urdf/dingo-o.urdf.xacro" />
+  </xacro:if>
+  <xacro:unless value="$(optenv DINGO_OMNI 0)">
+    <xacro:include filename="$(find dingo_description)/urdf/dingo-d.urdf.xacro" />
+  </xacro:unless>
+</robot>

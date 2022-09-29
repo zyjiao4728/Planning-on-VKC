@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>dingo_description</name>
+  <version>0.1.10</version>
+  <description>The dingo_description package</description>
+
+  <maintainer email="tbaltovski@clearpathrobotics.com">Tony Baltovski</maintainer>
+
+  <license>BSD</license>
+
+  <author email="tbaltovski@clearpathrobotics.com">Tony Baltovski</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>robot_state_publisher</depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
+  <exec_depend>lms1xx</exec_depend>
+  <exec_depend>realsense2_description</exec_depend>
+  <!-- <exec_depend>velodyne_description</exec_depend> -->
+
+  <export>
+  </export>
+</package>

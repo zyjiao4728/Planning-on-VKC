@@ -39,8 +39,8 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <!-- <mesh filename="package://ridgeback_dual_arm_description/mesh/ridgeback_2xur5-sup-simp-urdf.stl"/> -->
-        <mesh filename="package://ridgeback_dual_arm_description/mesh/ridgeback-2xur5e-all-urdf.stl" />
+        <mesh filename="package://ridgeback_dual_arm_description/mesh/ridgeback-2xur5e-all-simp-urdf.stl"/>
+        <!-- <mesh filename="package://ridgeback_dual_arm_description/mesh/ridgeback-2xur5e-all-urdf.stl" /> -->
       </geometry>
       <material name="">
         <color rgba="0.2 0.2 0.2 1" />

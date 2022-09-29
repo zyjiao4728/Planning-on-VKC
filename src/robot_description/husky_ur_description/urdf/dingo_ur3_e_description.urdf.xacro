@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot name="dingo_ur3e" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:include filename="$(find ur_e_description)/urdf/ur3e.urdf.xacro" />
+  <xacro:include filename="$(find dingo_description)/urdf/dingo-o.urdf.xacro" />
+
+  <link name="dingo_base_mount_link">
+    <inertial>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <mass value="1"/>
+      <inertia ixx="0.1"  ixy="0"  ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0" />
+      <geometry>
+        <cylinder radius="0.064" length="0.4"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.064" length="0.4"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="dingo_base_plate_link">
+    <inertial>
+      <origin xyz="0 0 0.01" rpy="0 0 0"/>
+      <mass value="1"/>
+      <inertia ixx="0.1"  ixy="0"  ixz="0" iyy="0.1" iyz="0" izz="0.1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.01" rpy="0 0 0" />
+      <geometry>
+        <box size="0.130 0.130 0.02" />
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.01" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.130 0.130 0.02" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="dingo_base_mount_joint" type="fixed">
+    <parent link="front_b_mount" />
+    <child link="dingo_base_mount_link" />
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="dingo_base_plate_joint" type="fixed">
+    <parent link="dingo_base_mount_link" />
+    <child link="dingo_base_plate_link" />
+    <origin xyz="0 0 0.3" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="arm_mount_joint" type="fixed">
+    <parent link="dingo_base_plate_link" />
+    <child link="ur_arm_base_link" />
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:ur3e_robot prefix="ur_arm_" joint_limited="true"/>
+</robot>
