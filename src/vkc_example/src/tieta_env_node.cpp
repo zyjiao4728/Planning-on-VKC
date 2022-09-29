@@ -19,7 +19,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d origin;
   origin.setIdentity();
   origin.translation() =
-      Eigen::Vector3d(1.56603773475,-2.12803775693, 1.10999932578);
+      Eigen::Vector3d(1.56603773475, -2.12803775693, 1.10999932578);
   origin.linear() = Eigen::Quaterniond(-0.00417585092715, -0.00241137511214,
                                        -0.000891939974928, 0.999987975919)
                         .matrix();
@@ -56,6 +56,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             response.status.message().c_str());
         // action->switchCandidate();
       }
+    }
+    const auto &ci = response.results;
 
     tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
     tesseract_common::JointTrajectory refined_traj = trajectory;
