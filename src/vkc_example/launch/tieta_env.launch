@@ -17,12 +17,14 @@
     <arg name="loc_y" default="0.0" />
     <arg name="orient" default="0.0" />
 
-    <arg name="end_effector_link" default="left_gripper_flange" />
+    <!-- <arg name="end_effector_link" default="left_gripper_flange" /> -->
+
+    <arg name="end_effector_link" default="right_gripper_flange" />
 
     <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_big_task.urdf.xacro' base_loc_x:=$(arg loc_x) base_loc_y:=$(arg loc_y) base_loc_orient:=$(arg orient)" />
     <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find env_description)/tieta_env/main.xacro'" />
 
-    <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene.srdf" />
+    <param name="$(arg env_description)_semantic" textfile="$(find ridgeback_ur_config)/config/scene_right_arm.srdf" />
     <param name="$(arg interactive_description)_semantic" textfile="$(find tieta_env)/config/tieta_env.srdf" />
 
     <param name="end_effector_link" type="str" value="$(arg end_effector_link)" />

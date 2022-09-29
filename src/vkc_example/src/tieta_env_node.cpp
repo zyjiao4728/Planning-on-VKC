@@ -2,6 +2,7 @@
 #include <tesseract_motion_planners/core/utils.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/env/urdf_scene_env.h>
+#include <vkc/planner/long_horizon.h>
 #include <vkc/planner/prob_generator.h>
 #include <vkc_example/utils.h>
 
@@ -9,22 +10,25 @@ using namespace vkc;
 using namespace tesseract_planning;
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
+  // int window_size = 3;
+  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   Eigen::Isometry3d origin;
   origin.setIdentity();
   origin.translation() =
-      Eigen::Vector3d(1.47760214196, -2.13416441508, 1.11073527513);
-  origin.linear() = Eigen::Quaterniond(0.999996115957, 0.00173539833477,
-                                       -0.00215198830349, 0.000354132881047)
+      Eigen::Vector3d(1.56603773475,-2.12803775693, 1.10999932578);
+  origin.linear() = Eigen::Quaterniond(-0.00417585092715, -0.00241137511214,
+                                       -0.000891939974928, 0.999987975919)
                         .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "closet_base_joint", origin);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
-
+    // action->switchCandidate();
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -49,6 +53,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
+        // action->switchCandidate();
       }
     }
     const auto &ci = response.results;
@@ -121,8 +126,10 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_closet_right_handle",
       "closet_bottom_right_handle",
       "closet_base_link",
-      {0.25, 0.019, 0.01},
+      {0.26, 0.000, 0.00},
       {0.6532815, 0.2705981, -0.6532815, -0.2705981},
+      // {0.923879532511287,0,0,0.382683432365090},
+      // {0.5,0.5,-0.5,-0.5},
       true});
   inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
       "closet_base_link", "closet_bottom_right_handle"});
