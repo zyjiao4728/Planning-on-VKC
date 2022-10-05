@@ -19,7 +19,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d cabinet_handle_pose;
   cabinet_handle_pose.setIdentity();
   cabinet_handle_pose.translation() =
-      Eigen::Vector3d(1.56603773475, -2.12803775693, 1.10999932578);
+      Eigen::Vector3d(1.56603773475, -2.12803775693, 1.10999932578); //1.10999932578
   cabinet_handle_pose.linear() = Eigen::Quaterniond(-0.00417585092715, -0.00241137511214,
                                        -0.000891939974928, 0.999987975919)
                         .matrix();
@@ -30,12 +30,23 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d table_pose;
   table_pose.setIdentity();
   table_pose.translation() =
-      Eigen::Vector3d(-0.128499117271, -2.12167326143, 0.741853607259);
+      Eigen::Vector3d(-10.128499117271, -2.12167326143, 0.741853607259);
   table_pose.linear() = Eigen::Quaterniond(0.707105521577, 0.000190096986757,
                                        6.89455638473e-05, 0.70710801188)
                         .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
-      "table0_table_base_joint", table_pose);
+      "table_table_base_joint", table_pose);
+  env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+
+  Eigen::Isometry3d drawer_pose;
+  drawer_pose.setIdentity();
+  drawer_pose.translation() =
+      Eigen::Vector3d(1.60919134161, -2.29974505471, 0.74223606381);
+  drawer_pose.linear() = Eigen::Quaterniond(-0.000927817441917, 0.00145746889854, -0.00129275269822,
+                                       0.999997671862)
+                        .matrix();
+  cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "drawer_world_joint", drawer_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
@@ -130,6 +141,26 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     actions.emplace_back(place_action);
   }
 
+  // action3: pick drawer handle
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_drawer_handle1");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action4: place drawer handle
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
+                                      link_objectives, joint_objectives, false);
+    actions.emplace_back(place_action);
+  }
+
   return actions;
 }
 
@@ -144,8 +175,20 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
       true});
+  attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
+      "attach_drawer_handle1",
+      "drawer_handle1",
+      "drawer_base_link",
+      {0.26, 0.000, 0.00},
+      // {0.707106781186548, 0, -0.707106781186548, 0},
+      {0.653281482438188,-0.270598050073098,-0.653281482438188,0.270598050073099},
+      // {1,0,0,0},
+      // {0.5,0.5,-0.5,-0.5},
+      true});
   inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
       "closet_base_link", "closet_bottom_right_handle"});
+  inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
+      "drawer_base_link", "drawer_handle1"});
   CONSOLE_BRIDGE_logDebug("environment info generation success");
 }
 
