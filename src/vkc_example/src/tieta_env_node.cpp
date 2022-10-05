@@ -240,6 +240,26 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     actions.emplace_back(place_action);
   }
 
+  // action3: pick drawer handle
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_drawer_handle1");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action4: place drawer handle
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
+                                      link_objectives, joint_objectives, false);
+    actions.emplace_back(place_action);
+  }
+
   return actions;
 }
 
