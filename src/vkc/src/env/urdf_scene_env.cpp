@@ -1,5 +1,5 @@
-#include <vkc/env/urdf_scene_env.h>
 #include <tesseract_srdf/utils.h>
+#include <vkc/env/urdf_scene_env.h>
 
 using namespace std;
 using namespace trajopt;
@@ -14,7 +14,8 @@ using namespace tesseract_rosutils;
 const std::string INTERACTIVE_SCENE_DESC_PARAM = "interactive_description";
 const std::string ENV_DESCRIPTION_PARAM = "env_description";
 const std::string ENV_SEMANTIC_PARAM = "env_description_semantic";
-const std::string INTERACTIVE_SCENE_SEMANTIC_PARAM = "interactive_description_semantic";
+const std::string INTERACTIVE_SCENE_SEMANTIC_PARAM =
+    "interactive_description_semantic";
 
 // Link name defined as end effector
 const std::string END_EFFECTOR_LINK = "end_effector_link";
@@ -211,6 +212,8 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(
   SceneGraph::Ptr iscene_sg =
       loadSceneGraphFromURDF_(INTERACTIVE_SCENE_DESC_PARAM);
 
+  updateSceneGraphToEnv_(iscene_sg, getVKCEnv()->getTesseractNonInverse());
+
   for (const auto &chain : inverse_chains) {
     ROS_INFO(
         "[%s][Debug]inversing chain, origin root: %s, destination root: %s",
@@ -224,7 +227,7 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(
                  : "no");
   }
 
-  updateInvertedEnv_(iscene_sg);
+  updateSceneGraphToEnv_(iscene_sg, getVKCEnv()->getTesseract());
 
   // Process scene srdf
   std::string scene_srdf_xml_file;
@@ -233,14 +236,15 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(
       std::make_shared<tesseract_srdf::SRDFModel>();
   nh_.getParam(INTERACTIVE_SCENE_SEMANTIC_PARAM, scene_srdf_xml_file);
   srdf->initString(*iscene_sg, scene_srdf_xml_file, *locator);
-  
+
   // Add allowed collision matrix to scene graph
   Commands cmds;
   cmds.clear();
-  for (const auto& pair : srdf->acm.getAllAllowedCollisions()){
-    cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(pair.first.first, pair.first.second, pair.second));
+  for (const auto &pair : srdf->acm.getAllAllowedCollisions()) {
+    cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+        pair.first.first, pair.first.second, pair.second));
   }
-  
+
   tesseract_->getTesseract()->applyCommands(cmds);
 
   return iscene_sg;
@@ -423,15 +427,17 @@ tesseract_scene_graph::SceneGraph::Ptr UrdfSceneEnv::inverseEnvChainHelper_(
 /*****************************************************************8
  * Update inverted SceneGraph to environment
  */
-void UrdfSceneEnv::updateInvertedEnv_(SceneGraph::ConstPtr sg) {
+void UrdfSceneEnv::updateSceneGraphToEnv_(
+    SceneGraph::ConstPtr sg, tesseract_environment::Environment::Ptr env) {
   string root_name = sg->getRoot();
 
   for (auto it : sg->getOutboundJoints(root_name)) {
-    addToEnv_(sg, it->child_link_name);
+    addToEnv_(sg, it->child_link_name, env);
   }
 }
 
-void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name) {
+void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name,
+                             tesseract_environment::Environment::Ptr env) {
   Joint::ConstPtr root_parent_joint = getLinkParentJoint_(sg, root_name);
   Link::ConstPtr link = sg->getLink(root_name);
 
@@ -440,12 +446,12 @@ void UrdfSceneEnv::addToEnv_(SceneGraph::ConstPtr sg, string root_name) {
   Commands cmds;
   cmds.clear();
   cmds.push_back(std::make_shared<AddLinkCommand>(*link, *root_parent_joint));
-  tesseract_->getTesseract()->applyCommands(cmds);
+  env->applyCommands(cmds);
 
   std::vector<Joint::ConstPtr> out_bound_joints =
       sg->getOutboundJoints(root_name);
   for (auto it : out_bound_joints) {
-    addToEnv_(sg, it->child_link_name);
+    addToEnv_(sg, it->child_link_name, env);
   }
 }
 

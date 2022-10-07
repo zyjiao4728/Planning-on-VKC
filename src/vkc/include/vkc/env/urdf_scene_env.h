@@ -151,10 +151,12 @@ class UrdfSceneEnv : public VKCEnvBasic {
       tesseract_scene_graph::SceneGraph::ConstPtr sg, std::string src,
       std::string dst);
 
-  void updateInvertedEnv_(tesseract_scene_graph::SceneGraph::ConstPtr sg);
+  void updateSceneGraphToEnv_(tesseract_scene_graph::SceneGraph::ConstPtr sg,
+                              tesseract_environment::Environment::Ptr env);
 
   void addToEnv_(tesseract_scene_graph::SceneGraph::ConstPtr sg,
-                 std::string root_name);
+                 std::string root_name,
+                 tesseract_environment::Environment::Ptr env);
 
   void newAttachLocation_(std::string attach_name,
                           std::string attach_object_link,

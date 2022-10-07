@@ -10,9 +10,8 @@ using namespace vkc;
 using namespace tesseract_planning;
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
-  // int window_size = 3;
-  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  // seed_generator.generate(env, actions);
+  int window_size = 3;
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
   ProbGenerator prob_generator;
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
@@ -51,7 +50,9 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
-    // action->switchCandidate();
+    ActionSeq sub_actions(ptr, actions.end());
+    seed_generator.generate(env, sub_actions);
+    action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -77,7 +78,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        // action->switchCandidate();
+        action->switchCandidate();
       }
     }
     const auto &ci = response.results;

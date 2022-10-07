@@ -31,7 +31,8 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   ProbGenerator prob_generator;
   VKCEnvBasic::Ptr vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
-  std::cout << fmt::format("{}", env->getGroupNames()).c_str() << std::endl;
+  std::cout << fmt::format("get group names: {}", env->getGroupNames()).c_str()
+            << std::endl;
   auto current_state = env->getCurrentJointValues();
 
   // get action iks
@@ -77,10 +78,6 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                        action);
     CONSOLE_BRIDGE_logDebug(
         "long horizon udpate env success, processing next action...");
-    // auto kg = vkc_env->getVKCEnv()->getTesseract()->getKinematicGroup(
-    //     action->getManipulatorID());
-    // std::cout << "get kg success" << std::endl;
-    // fmt::print("kin group joints after update: {}\n", kg->getJointNames());
   }
 
   std::cout << "getting ordered ik set...";
@@ -89,6 +86,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   // coeff(2) = 0;
   auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff, sub_actions);
   std::cout << "done." << std::endl;
+  assert(ik_sets.size() != 0);
   assert(ik_sets.front().size() == sub_actions.size());
   sub_actions.front()->joint_candidates.clear();
   for (auto ik_set : ik_sets) {
@@ -99,7 +97,6 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
       sub_actions.front()->joint_candidates.push_back(ik_set.front());
     }
   }
-  std::cout << sub_actions.front()->joint_candidates.size() << std::endl;
   CONSOLE_BRIDGE_logInform("generating long horizon seed success");
   raw_vkc_env.setEndEffector(origin_ee);
   raw_vkc_env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
@@ -117,15 +114,19 @@ LongHorizonSeedGenerator::getOrderedIKSet(
       ik_set_queue;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 10);
-    // CONSOLE_BRIDGE_logDebug("filtered iks length after kmeans: %d",
-    //                         filtered_iks[0].size());
+    auto filtered_iks = kmeans(act_ik, 50);
+    CONSOLE_BRIDGE_logDebug("filtered iks after kmeans: %d - %d/%d",
+                            filtered_iks[0].size(), filtered_iks.size(),
+                            act_ik.size());
     set_input.push_back(filtered_iks);
   }
   // used push back before, so we need to reverse the ik sequence back
-  std::reverse(set_input.begin(), set_input.end());
+  // std::reverse(set_input.begin(), set_input.end());
   // auto sets = CartesianProduct(set_input);
+  // no need to reverse for new function
   auto sets = getValidIKSets(set_input, actions);
+  if (sets.size() == 0)
+    throw std::runtime_error("no valid sets found for given ik set input.");
   double lowest_cost = 10000;
   for (const auto &ik_set : sets) {
     double cost = getIKSetCost(current_state, ik_set, cost_coeff);
@@ -184,10 +185,10 @@ void LongHorizonSeedGenerator::getValidIKSetsHelper_(
     const std::vector<ActionBase::Ptr> &actions) {
   tesseract_kinematics::IKSolutions sequence = sequences[index];
   for (auto &i : sequence) {
-    if (index > 0 && !astarChecking(actions[index - 1], stack.back(), i))
-      continue;
+    // if (index > 0 && !astarChecking(actions[index - 1], stack.back(), i))
+    //   continue;
     stack.push_back(i);
-    if (index == actions.size())
+    if (index == actions.size() - 1)
       accum.push_back(stack);
     else
       getValidIKSetsHelper_(accum, stack, sequences, index + 1, actions);
@@ -256,7 +257,10 @@ bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
 tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
     const tesseract_kinematics::IKSolutions &act_iks, int k) {
   const Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
-  int K = std::min(int(act_iks.size() * 0.8), k);
+  if (act_iks.size() < k) {
+    return act_iks;
+  }
+  int K = std::min(int(act_iks.size()), k);
   int n_features = act_iks[0].rows();
   int n_iters = 400;
   int seed = 42;

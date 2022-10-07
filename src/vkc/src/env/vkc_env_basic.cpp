@@ -408,6 +408,16 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     assert(joint_names.size() == joint_states.size());
     std::cout << "updating joint state with: " << joint_states.transpose()
               << std::endl;
+    // for (auto j: joint_names){
+    //   std::cout << j << std::endl;
+    // }
+    // for (auto j : tesseract_->getTesseract()->getActiveJointNames()) {
+    //   std::cout << "inverse: " << j << std::endl;
+    // }
+    // for (auto j:
+    // tesseract_->getTesseractNonInverse()->getActiveJointNames()){
+    //   std::cout << "non inverse: " << j << std::endl;
+    // }
     tesseract_->getTesseract()->setState(joint_names, joint_states);
     tesseract_->getTesseractNonInverse()->setState(joint_names, joint_states);
   }
@@ -436,6 +446,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     }
     attachObject(location_name, tesseract_);
   } else if (action->getActionType() == ActionType::PlaceAction) {
+    CONSOLE_BRIDGE_logDebug("detaching object...");
     PlaceAction::Ptr place_act = std::dynamic_pointer_cast<PlaceAction>(action);
     location_name = place_act->getDetachedObject();
     std::cout << "detach location_name: " << location_name << std::endl;

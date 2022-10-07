@@ -72,6 +72,9 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   if (act->joint_candidate.size()) {
     CONSOLE_BRIDGE_logInform(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
+    // std::cout << act->joint_candidate.size() << std::endl;
+    assert(kinematic_group->getJointNames().size() ==
+           act->joint_candidate.size());
     seed_instruction.assignJointWaypoint(JointWaypointPoly{
         JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate)});
   }
