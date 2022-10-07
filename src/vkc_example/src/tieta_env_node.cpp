@@ -88,7 +88,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        // action->switchCandidate();
+        action->switchCandidate();
       }
     }
     const auto &ci = response.results;
