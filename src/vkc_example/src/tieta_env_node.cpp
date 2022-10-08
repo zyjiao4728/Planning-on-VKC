@@ -35,7 +35,6 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
-
   Eigen::Isometry3d drawer_pose;
   drawer_pose.setIdentity();
   drawer_pose.translation() =
@@ -88,7 +87,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        action->switchCandidate();
+        // action->switchCandidate();
       }
     }
     const auto &ci = response.results;
@@ -256,6 +255,70 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
+                                      link_objectives, joint_objectives, false);
+    actions.emplace_back(place_action);
+  }
+
+  // action5: pick box
+  {
+    auto pick_action = std::make_shared<PickAction>(robot, "attach_box");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action6: place box
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() = Eigen::Vector3d(1.50900759836, -2.28265763207, 0.858400426377);
+    destination.linear() = Eigen::Quaterniond(0.523043102596, 0.506215280316, -0.503358685492, 0.465620055992).matrix();
+    link_objectives.push_back(
+        LinkDesiredPose("box_box_base_link", destination));
+
+    auto place_action = std::make_shared<PlaceAction>(
+        robot, "attach_box", link_objectives, joint_objectives, false);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(place_action);
+  }
+
+  // action7: pick drawer handle
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_drawer_handle1");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action8: place drawer handle
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("drawer_base_drawer1_joint", 0.0);
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
+                                      link_objectives, joint_objectives, false);
+    actions.emplace_back(place_action);
+  }
+
+  // action9: pick closet handle
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_closet_right_handle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action10: place closet handle
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("closet_bottom_right_door_joint", 0.0);
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
     actions.emplace_back(place_action);
   }
