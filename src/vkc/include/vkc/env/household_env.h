@@ -10,5 +10,5 @@ class HouseholdEnv : public UrdfSceneEnv {
   ~HouseholdEnv() = default;
 
   bool createEnvironment() override;
-}
+};
 }  // namespace vkc
