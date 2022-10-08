@@ -283,6 +283,7 @@ void baseline_reach(vkc::ActionSeq &actions, Eigen::VectorXd base_pose,
         make_shared<GotoAction>("arm", link_objectives, joint_objectives));
   }
 }
+
 void moveBase(vkc::ActionSeq &actions, Eigen::VectorXd base_pose) {
   /** move base **/
   // action 1: move base to target

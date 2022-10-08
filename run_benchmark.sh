@@ -2,7 +2,7 @@
 cd /home/jiao/BIGAI/vkc_ws/Planning-on-VKC
 source devel/setup.zsh
 
-for iter in {1..1000}
+for iter in {1..100}
 do  
     echo "Round $iter, Baseline: 0, Env: 1"
     echo "roslaunch vkc_example benchmark_env.launch envid:=1 baseline:=0 rviz:=false"

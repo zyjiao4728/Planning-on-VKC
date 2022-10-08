@@ -138,13 +138,13 @@ namespace vkc
             drawer0.createWorldJoint(Eigen::Vector4d(4., 2.5, 0.9, M_PI));
             if (!runbs) drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
-            vkc::BaseDrawer drawer1("drawer1");
-            drawer1.createObject();
-            drawer1.createWorldJoint(Eigen::Vector4d(4., 0.5, 0.9, M_PI));
-            if (!runbs) drawer1.inverseRootTip("world", drawer1.getName() + "_handle_link");
+            // vkc::BaseDrawer drawer1("drawer1");
+            // drawer1.createObject();
+            // drawer1.createWorldJoint(Eigen::Vector4d(4., 0.5, 0.9, M_PI));
+            // if (!runbs) drawer1.inverseRootTip("world", drawer1.getName() + "_handle_link");
 
             updateAttachLocations(drawer0.getAttachLocations());
-            updateAttachLocations(drawer1.getAttachLocations());
+            // updateAttachLocations(drawer1.getAttachLocations());
 
             ROS_INFO("add attach location success.");
 
@@ -164,7 +164,7 @@ namespace vkc
             table2.createWorldJoint(Eigen::Vector4d(2.25, 6, 0, 0));
 
             drawer0.addToEnvironment(tesseract_->getTesseract());
-            drawer1.addToEnvironment(tesseract_->getTesseract());
+            // drawer1.addToEnvironment(tesseract_->getTesseract());
             table0.addToEnvironment(tesseract_->getTesseract());
             table1.addToEnvironment(tesseract_->getTesseract());
             table2.addToEnvironment(tesseract_->getTesseract());

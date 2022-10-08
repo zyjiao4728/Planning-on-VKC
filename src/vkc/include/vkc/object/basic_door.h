@@ -282,13 +282,13 @@ class BaseDoor : public BaseObject {
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(0.7071, 0.7071, 0.0, 0.0).matrix();
     attach_location.local_joint_origin_transform.translation() +=
-            Eigen::Vector3d(-0.21, mir_ * 0.13, 0.0);
-        // Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
+            // Eigen::Vector3d(-0.21, mir_ * 0.13, 0.0);
+        Eigen::Vector3d(-0.15, mir_ * 0.08, 0.0);
     // attach_location.local_joint_origin_transform.linear() =
         // Eigen::Quaterniond(0.7071, 0.0, 0.7071, 0.0).matrix();
     attach_location.local_joint_origin_transform.linear() =
-        Eigen::Quaterniond(0.653281482438188,  0.270598050073098,   0.653281482438188,   0.270598050073099).matrix();
-        // Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
+        // Eigen::Quaterniond(0.653281482438188,  0.270598050073098,   0.653281482438188,   0.270598050073099).matrix();
+        Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
     attach_location.fixed_base = true;
 
     // Define connection joint
