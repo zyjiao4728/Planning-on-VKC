@@ -1059,6 +1059,7 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
       joint_trajs[0].states.back().position.segment(3, 6);
 
   env.getVKCEnv()->getTesseract()->setState(joint_target);
+  std::cout << "After set state" << std::endl;
 
   Eigen::Isometry3d pose_place =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
@@ -1236,7 +1237,6 @@ int main(int argc, char **argv) {
     std::vector<double> data;
 
     interpVKCData(data, elapsed_time, joint_trajs);
-
     if (long_horizon) {
       saveDataToFile(data,
                      "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
