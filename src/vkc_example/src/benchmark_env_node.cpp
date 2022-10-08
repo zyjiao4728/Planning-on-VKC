@@ -45,7 +45,7 @@ int saveDataToFile(const std::vector<double> &data,
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
                         int n_iter, bool rviz_enabled, unsigned int nruns,
-                        bool long_horizon = false) {
+                        bool long_horizon = false, bool use_ompl = false) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
   if (long_horizon) {
@@ -65,7 +65,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      tesseract_planning::PlannerRequest prob_ptr;
+      if (!use_ompl)
+        prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      else
+        prob_ptr = prob_generator.getOmplRequest(env, action, n_steps, n_iter);
 
       if (rviz_enabled) {
         env.getPlotter()->waitForInput(
@@ -74,7 +78,10 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
       auto start = chrono::steady_clock::now();
-      solveProb(prob_ptr, response, n_iter);
+      if (!use_ompl)
+        solveProb(prob_ptr, response, n_iter);
+      else
+        solveOmplProb(prob_ptr, response, n_iter);
       auto end = chrono::steady_clock::now();
 
       // break;
@@ -281,6 +288,19 @@ void baseline_reach(vkc::ActionSeq &actions, Eigen::VectorXd base_pose,
 
     actions.emplace_back(
         make_shared<GotoAction>("arm", link_objectives, joint_objectives));
+  }
+}
+
+void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::Isometry3d ee_pose) {
+  // action 1: move vkc to target
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
+
+    actions.emplace_back(
+        make_shared<GotoAction>("vkc", link_objectives, joint_objectives));
   }
 }
 
@@ -871,11 +891,137 @@ std::vector<double> run_baseline2(vector<TesseractJointTraj> &joint_trajs,
   return data;
 }
 
+std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
+                             vkc::VKCEnvBasic &env, vkc::ActionSeq &actions,
+                             int n_steps, int n_iter, bool rviz_enabled,
+                             unsigned int nruns, int envid) {
+  std::string target_joint("");
+  double target_value = 0.;
+  vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr;
+  if (envid == 1) {
+    target_joint = "door_north_door_joint";
+    target_value = 1.5;
+    attach_location_ptr =
+        env.getAttachLocation("attach_door_north_handle_link");
+  } else if (envid == 2) {
+    target_joint = "drawer0_base_drawer_joint";
+    target_value = 0.6;
+    attach_location_ptr = env.getAttachLocation("attach_drawer0_handle_link");
+  } else {
+    ROS_ERROR("Run baseline 1: Unknown environment id.");
+  }
+
+  std::unordered_map<std::string, double> joint_target;
+  joint_target[target_joint] = target_value;
+  std::unordered_map<std::string, double> joint_init;
+  joint_init[target_joint] = 0.0;
+
+  Eigen::Isometry3d pose_close =
+      env.getVKCEnv()->getTesseract()->getLinkTransform(
+          attach_location_ptr->link_name_) *
+      attach_location_ptr->local_joint_origin_transform;
+
+  // baseline_reach(actions, sampleBasePose(env, pose_close), pose_close);
+  vkc_ompl_reach(actions, pose_close);
+
+  auto elapsed_time = run(joint_trajs, env, actions, n_steps, n_iter,
+                          rviz_enabled, nruns, false, true);
+  std::vector<double> data;
+  interpBaselineReach(data, elapsed_time, joint_trajs);
+  env.getVKCEnv()->getTesseract()->setState(joint_target);
+
+  Eigen::Isometry3d pose_place =
+      env.getVKCEnv()->getTesseract()->getLinkTransform(
+          attach_location_ptr->link_name_) *
+      attach_location_ptr->local_joint_origin_transform;
+  int try_cnt = 0;
+  auto start = chrono::steady_clock::now();
+  auto end = chrono::steady_clock::now();
+  bool success = true;
+  std::vector<double> base_time;
+  std::vector<Eigen::VectorXd> base_trajectory;
+  std::vector<Eigen::VectorXd> arm_trajectory;
+
+  while (try_cnt++ < nruns) {
+    actions.clear();
+    base_time.clear();
+    joint_trajs.clear();
+    success = true;
+    if (envid == 2) {
+      env.getVKCEnv()->getTesseract()->setState(joint_init);
+    }
+    moveBase(actions, sampleBasePose(env, pose_place));
+    base_time =
+        run(joint_trajs, env, actions, n_steps, n_iter, rviz_enabled, nruns);
+    if (base_time[0] < 0.) continue;
+
+    base_trajectory.clear();
+    arm_trajectory.clear();
+    for (auto state : joint_trajs[0].states) {
+      base_trajectory.emplace_back(state.position.head(2));
+    }
+
+    tesseract_common::JointTrajectory base_traj = joint_trajs.back();
+    vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
+    Eigen::VectorXd base_values = Eigen::Vector2d(0, 0);
+
+    env.getVKCEnv()->getTesseract()->setState(joint_init);
+
+    Eigen::VectorXd arm_pose;
+    start = chrono::steady_clock::now();
+    for (int i = 0; i < n_steps; i++) {
+      base_values[0] = base_traj.states[i + 1].position[0];
+      base_values[1] = base_traj.states[i + 1].position[1];
+      env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+
+      auto ik_status = sampleArmPose2(env, target_joint, target_value, arm_pose,
+                                      attach_location_ptr, n_steps - i);
+      success = success && ik_status;
+      if (!ik_status) break;
+      arm_trajectory.emplace_back(arm_pose);
+      env.getVKCEnv()->getTesseract()->setState(env.getVKCEnv()
+                                                    ->getTesseract()
+                                                    ->getKinematicGroup("arm")
+                                                    ->getJointNames(),
+                                                arm_pose);
+      if (rviz_enabled)
+        env.getPlotter()->waitForInput("press Enter key to go on...");
+    }
+    end = chrono::steady_clock::now();
+    if (success) {
+      break;
+    } else {
+      joint_init[target_joint] = 0.0;
+      env.getVKCEnv()->getTesseract()->setState(joint_target);
+      base_values[0] = base_traj.states[0].position[0];
+      base_values[1] = base_traj.states[0].position[1];
+      env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+    }
+  }
+  if (base_time[0] < 0. || !success) {
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    data.emplace_back(-1);
+    data.emplace_back(0);
+    return data;
+  }
+  data.emplace_back(
+      chrono::duration_cast<chrono::milliseconds>(end - start).count() / 1000. +
+      base_time[0]);
+  data.emplace_back(computeTrajLength(base_trajectory));
+  data.emplace_back(computeTrajLength(arm_trajectory));
+  auto current_value = env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+      std::vector<std::string>({target_joint}))[0];
+
+  data.emplace_back(success && (std::abs(current_value - target_value) < 0.1));
+
+  return data;
+}
+
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  console_bridge::setLogLevel(
-      console_bridge::LogLevel::CONSOLE_BRIDGE_LOG_INFO);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
@@ -885,9 +1031,10 @@ int main(int argc, char **argv) {
 
   bool plotting = true;
   bool rviz = true;
-  bool long_horizon = true;
+  bool long_horizon = false;
+  bool ompl = false;
   int steps = 30;
-  int n_iter = 1000;
+  int n_iter = 100;
   int nruns = 5;
   int envid = 1;
   int runbs = 0;
@@ -903,6 +1050,7 @@ int main(int argc, char **argv) {
   pnh.param<int>("envid", envid, envid);
   pnh.param<int>("baseline", runbs, runbs);
   pnh.param<bool>("longhorizon", long_horizon, long_horizon);
+  pnh.param<bool>("ompl", ompl, ompl);
 
   BenchmarkEnv env(nh, plotting, rviz, steps, envid, runbs);
 
@@ -914,7 +1062,7 @@ int main(int argc, char **argv) {
 
   ActionSeq actions;
 
-  if (envid == 1 && !runbs) {
+  if (envid == 1 && !runbs && !ompl) {
     pushDoor(actions, robot);
     auto elapsed_time = run(joint_trajs, env, actions, steps, n_iter, rviz,
                             nruns, long_horizon);
@@ -949,10 +1097,10 @@ int main(int argc, char **argv) {
                      "open_door_push_vkc.csv");
     }
 
-  } else if (envid == 2 && !runbs) {
+  } else if (envid == 2 && !runbs && !ompl) {
     pullDrawer(actions, robot);
-    auto elapsed_time =
-        run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, long_horizon);
+    auto elapsed_time = run(joint_trajs, env, actions, steps, n_iter, rviz,
+                            nruns, long_horizon);
 
     std::vector<double> data;
 
@@ -1007,6 +1155,18 @@ int main(int argc, char **argv) {
       saveDataToFile(data,
                      "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
                      "open_door_pull_bl2.csv");
+    }
+  } else if (ompl) {
+    auto data = run_ompl(joint_trajs, env, actions, steps, n_iter, rviz,
+                              nruns, envid);
+    if (envid == 2) {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_drawer_pull_ompl.csv");
+    } else if (envid == 1) {
+      saveDataToFile(data,
+                     "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
+                     "open_door_pull_ompl.csv");
     }
   }
   //   pullDoor(actions, robot);
