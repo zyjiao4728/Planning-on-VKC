@@ -12,6 +12,14 @@ do
     echo "roslaunch vkc_example benchmark_env.launch envid:=2 baseline:=0 rviz:=false"
     roslaunch vkc_example benchmark_env.launch envid:=2 baseline:=0 rviz:=false
 
+    echo "Round $iter, Baseline: 0, Env: 1"
+    echo "roslaunch vkc_example benchmark_env.launch envid:=1 baseline:=0 rviz:=false"
+    roslaunch vkc_example benchmark_env.launch envid:=1 baseline:=0 rviz:=false ompl:=true
+
+    echo "Round $iter, Baseline: 0, Env: 2"
+    echo "roslaunch vkc_example benchmark_env.launch envid:=2 baseline:=0 rviz:=false"
+    roslaunch vkc_example benchmark_env.launch envid:=2 baseline:=0 rviz:=false ompl:=true
+
     # echo "Round $iter, Baseline: 0, Env: 1"
     # echo "roslaunch vkc_example benchmark_env.launch envid:=1 baseline:=0 rviz:=false"
     # roslaunch vkc_example benchmark_env.launch envid:=1 baseline:=0 rviz:=false longhorizon:=true

@@ -26,13 +26,13 @@ namespace vkc {
  */
 class BenchmarkEnv : public VKCEnvBasic {
  public:
-  BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id, bool runbs);
+  BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id, bool runbs, bool ompl);
 
   ~BenchmarkEnv() = default;
 
   bool createEnvironment() override;
 
-  bool createBenchmarkEnv(int exp_id, bool runbs, bool rviz);
+  bool createBenchmarkEnv(int exp_id, bool runbs, bool rviz, bool ompl);
 };
 
 }  // namespace vkc

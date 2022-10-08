@@ -1,6 +1,7 @@
 #include <math.h>
 #include <ros/console.h>
 #include <tesseract_motion_planners/core/utils.h>
+#include <tesseract_motion_planners/ompl/ompl_motion_planner_status_category.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/benchmark_env.h>
@@ -85,23 +86,45 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
       auto end = chrono::steady_clock::now();
 
       // break;
-      if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
-          response.status.value())  // optimization converges
-      {
-        converged = true;
-        elapsed_time.emplace_back(
-            chrono::duration_cast<chrono::milliseconds>(end - start).count() /
-            1000.);
-        break;
+      if (!use_ompl) {
+        if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
+            response.status.value())  // optimization converges
+        {
+          converged = true;
+          elapsed_time.emplace_back(
+              chrono::duration_cast<chrono::milliseconds>(end - start).count() /
+              1000.);
+          break;
+        } else {
+          ROS_WARN(
+              "[%s]optimization could not converge, response code: %d, "
+              "description: %s",
+              __func__, response.status.value(),
+              response.status.message().c_str());
+          if (long_horizon) {
+            ActionSeq sub_actions(ptr, actions.end());
+            seed_generator.generate(env, sub_actions);
+          }
+        }
       } else {
-        ROS_WARN(
-            "[%s]optimization could not converge, response code: %d, "
-            "description: %s",
-            __func__, response.status.value(),
-            response.status.message().c_str());
-        if (long_horizon) {
-          ActionSeq sub_actions(ptr, actions.end());
-          seed_generator.generate(env, sub_actions);
+        if (OMPLMotionPlannerStatusCategory::SolutionFound ==
+            response.status.value())  // optimization converges
+        {
+          converged = true;
+          elapsed_time.emplace_back(
+              chrono::duration_cast<chrono::milliseconds>(end - start).count() /
+              1000.);
+          break;
+        } else {
+          ROS_WARN(
+              "[%s]optimization could not converge, response code: %d, "
+              "description: %s",
+              __func__, response.status.value(),
+              response.status.message().c_str());
+          if (long_horizon) {
+            ActionSeq sub_actions(ptr, actions.end());
+            seed_generator.generate(env, sub_actions);
+          }
         }
       }
     }
@@ -129,7 +152,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     }
 
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
-                  action);
+                    action);
 
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
@@ -634,6 +657,30 @@ void interpBaselineReach(std::vector<double> &data,
   return;
 }
 
+void interpVKCData(std::vector<double> &data, std::vector<double> &elapsed_time,
+                   std::vector<TesseractJointTraj> &joint_trajs) {
+  for (int i = 0; i < elapsed_time.size(); i++) {
+    data.emplace_back(elapsed_time[i]);
+    if (elapsed_time[i] < 0.) {
+      data.emplace_back(-1);
+      data.emplace_back(-1);
+      data.emplace_back(0);
+      continue;
+    }
+    std::vector<Eigen::VectorXd> base_trajectory;
+    std::vector<Eigen::VectorXd> arm_trajectory;
+    for (auto state : joint_trajs[i].states) {
+      base_trajectory.emplace_back(state.position.head(2));
+      arm_trajectory.emplace_back(state.position.segment(3, 6));
+    }
+    double base_cost = computeTrajLength(base_trajectory);
+    double arm_cost = computeTrajLength(arm_trajectory);
+    data.emplace_back(base_cost);
+    data.emplace_back(arm_cost);
+    data.emplace_back(1);
+  }
+}
+
 std::vector<double> run_baseline1(vector<TesseractJointTraj> &joint_trajs,
                                   vkc::VKCEnvBasic &env,
                                   vkc::ActionSeq &actions, int n_steps,
@@ -908,7 +955,7 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
     target_value = 0.6;
     attach_location_ptr = env.getAttachLocation("attach_drawer0_handle_link");
   } else {
-    ROS_ERROR("Run baseline 1: Unknown environment id.");
+    ROS_ERROR("Run ompl: Unknown environment id.");
   }
 
   std::unordered_map<std::string, double> joint_target;
@@ -927,13 +974,18 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
   auto elapsed_time = run(joint_trajs, env, actions, n_steps, n_iter,
                           rviz_enabled, nruns, false, true);
   std::vector<double> data;
-  interpBaselineReach(data, elapsed_time, joint_trajs);
+  interpVKCData(data, elapsed_time, joint_trajs);
+
+  std::cout << "Before set state" << std::endl;
   env.getVKCEnv()->getTesseract()->setState(joint_target);
+  std::cout << "After set state" << std::endl;
 
   Eigen::Isometry3d pose_place =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
+
+  std::cout << pose_place.translation() << std::endl;    
   int try_cnt = 0;
   auto start = chrono::steady_clock::now();
   auto end = chrono::steady_clock::now();
@@ -1052,7 +1104,7 @@ int main(int argc, char **argv) {
   pnh.param<bool>("longhorizon", long_horizon, long_horizon);
   pnh.param<bool>("ompl", ompl, ompl);
 
-  BenchmarkEnv env(nh, plotting, rviz, steps, envid, runbs);
+  BenchmarkEnv env(nh, plotting, rviz, steps, envid, runbs, ompl);
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
@@ -1069,24 +1121,7 @@ int main(int argc, char **argv) {
 
     std::vector<double> data;
 
-    for (int i = 0; i < elapsed_time.size(); i++) {
-      data.emplace_back(elapsed_time[i]);
-      std::vector<Eigen::VectorXd> base_trajectory;
-      std::vector<Eigen::VectorXd> arm_trajectory;
-      for (auto state : joint_trajs[i].states) {
-        base_trajectory.emplace_back(state.position.head(2));
-        arm_trajectory.emplace_back(state.position.segment(3, 6));
-      }
-      double base_cost = computeTrajLength(base_trajectory);
-      double arm_cost = computeTrajLength(arm_trajectory);
-      data.emplace_back(base_cost);
-      data.emplace_back(arm_cost);
-    }
-    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.) {
-      data.emplace_back(0);
-    } else {
-      data.emplace_back(1);
-    }
+    interpVKCData(data, elapsed_time, joint_trajs);
     if (long_horizon) {
       saveDataToFile(data,
                      "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
@@ -1104,24 +1139,8 @@ int main(int argc, char **argv) {
 
     std::vector<double> data;
 
-    for (int i = 0; i < elapsed_time.size(); i++) {
-      data.emplace_back(elapsed_time[i]);
-      std::vector<Eigen::VectorXd> base_trajectory;
-      std::vector<Eigen::VectorXd> arm_trajectory;
-      for (auto state : joint_trajs[i].states) {
-        base_trajectory.emplace_back(state.position.head(2));
-        arm_trajectory.emplace_back(state.position.segment(3, 6));
-      }
-      double base_cost = computeTrajLength(base_trajectory);
-      double arm_cost = computeTrajLength(arm_trajectory);
-      data.emplace_back(base_cost);
-      data.emplace_back(arm_cost);
-    }
-    if (elapsed_time[0] < 0. || elapsed_time[1] < 0.) {
-      data.emplace_back(0);
-    } else {
-      data.emplace_back(1);
-    }
+    interpVKCData(data, elapsed_time, joint_trajs);
+    
     if (long_horizon) {
       saveDataToFile(data,
                      "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"
@@ -1157,8 +1176,8 @@ int main(int argc, char **argv) {
                      "open_door_pull_bl2.csv");
     }
   } else if (ompl) {
-    auto data = run_ompl(joint_trajs, env, actions, steps, n_iter, rviz,
-                              nruns, envid);
+    auto data =
+        run_ompl(joint_trajs, env, actions, steps, n_iter, rviz, nruns, envid);
     if (envid == 2) {
       saveDataToFile(data,
                      "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/benchmarking/"

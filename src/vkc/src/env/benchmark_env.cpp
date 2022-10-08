@@ -20,7 +20,7 @@ const std::string MODIFY_ENVIRONMENT_SERVICE = "modify_tesseract_rviz";
 
 namespace vkc
 {
-    BenchmarkEnv::BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id, bool runbs) : VKCEnvBasic(nh, plotting, rviz, steps)
+    BenchmarkEnv::BenchmarkEnv(ros::NodeHandle nh, bool plotting, bool rviz, int steps, int env_id, bool runbs, bool ompl) : VKCEnvBasic(nh, plotting, rviz, steps)
     {
         // Set Log Level
         util::gLogLevel = util::LevelInfo;
@@ -34,7 +34,7 @@ namespace vkc
 
         ROS_INFO("Sucessfully load the robot model, now creating environment...");
 
-        createBenchmarkEnv(env_id, runbs, rviz);
+        createBenchmarkEnv(env_id, runbs, rviz, ompl);
 
         ROS_INFO("Sucessfully create the environment, now creating optimization problem...");
     }
@@ -44,7 +44,7 @@ namespace vkc
         return false;
     }
 
-    bool BenchmarkEnv::createBenchmarkEnv(int env_id, bool runbs, bool rviz)
+    bool BenchmarkEnv::createBenchmarkEnv(int env_id, bool runbs, bool rviz, bool ompl)
     {
         if (env_id == 1)
         {
@@ -85,7 +85,7 @@ namespace vkc
             door_north.createObject();
             door_north.createWorldJoint(
                 Eigen::Vector4d(arena_x / 2.0, door_width / 2, 0.0, 0));
-            if (!runbs) door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
+            if (!runbs && !ompl) door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
 
             updateAttachLocations(door_north.getAttachLocations());
 
@@ -136,7 +136,7 @@ namespace vkc
             vkc::BaseDrawer drawer0("drawer0");
             drawer0.createObject();
             drawer0.createWorldJoint(Eigen::Vector4d(4., 2.5, 0.9, M_PI));
-            if (!runbs) drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
+            if (!runbs && !ompl) drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
             // vkc::BaseDrawer drawer1("drawer1");
             // drawer1.createObject();
