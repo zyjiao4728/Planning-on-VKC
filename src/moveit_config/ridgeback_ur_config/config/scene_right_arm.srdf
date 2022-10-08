@@ -42,9 +42,9 @@
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
     <disable_collisions link1="body_link" link2="chassis_link" reason="Adjacent"/>
     <disable_collisions link1="body_link" link2="right_arm_base_link_inertia" reason="Adjacent"/>
-    <disable_collisions link1="body_link" link2="right_arm_forearm_link" reason="Default"/>
+    <!-- <disable_collisions link1="body_link" link2="right_arm_forearm_link" reason="Default"/>
     <disable_collisions link1="body_link" link2="right_arm_shoulder_link" reason="Never"/>
-    <disable_collisions link1="body_link" link2="right_arm_upper_arm_link" reason="Default"/>
+    <disable_collisions link1="body_link" link2="right_arm_upper_arm_link" reason="Default"/> -->
     <disable_collisions link1="chassis_link" link2="right_arm_base_link_inertia" reason="Adjacent"/>
     <disable_collisions link1="chassis_link" link2="right_arm_shoulder_link" reason="Never"/>
     <disable_collisions link1="chassis_link" link2="right_arm_upper_arm_link" reason="Never"/>
