@@ -7,11 +7,12 @@
   <arg name="plotting" default="true" />
   <arg name="rviz" default="true" />
   <arg name="steps" default="30" />
-  <arg name="niter" default="500" />
+  <arg name="niter" default="100" />
   <arg name="nruns" default="5" />
   <arg name="envid" default="1" />
   <arg name="baseline" default="0" />
   <arg name="longhorizon" default="false" />
+  <arg name="ompl" default="false" />
 
   <arg name="husky_locx" default="0.0" />
   <arg name="husky_locy" default="0.0" />
@@ -52,6 +53,7 @@
     <param name="envid" type="int" value="$(arg envid)" />
     <param name="baseline" type="int" value="$(arg baseline)" />
     <param name="longhorizon" type="bool" value="$(arg longhorizon)" />
+    <param name="ompl" type="bool" value="$(arg ompl)" />
   </node>
 
   <!-- Launch visualization -->
