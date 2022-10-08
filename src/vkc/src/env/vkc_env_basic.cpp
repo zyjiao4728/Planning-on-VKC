@@ -419,7 +419,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     //   std::cout << "non inverse: " << j << std::endl;
     // }
     tesseract_->getTesseract()->setState(joint_names, joint_states);
-    tesseract_->getTesseractNonInverse()->setState(joint_names, joint_states);
+    // tesseract_->getTesseractNonInverse()->setState(joint_names, joint_states);
   }
 
   if (action == nullptr) {
