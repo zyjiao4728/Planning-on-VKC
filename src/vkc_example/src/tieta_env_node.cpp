@@ -52,7 +52,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d box_pose;
   box_pose.setIdentity();
   box_pose.translation() =
-      Eigen::Vector3d(-0.602559512554, -1.99703909641, 0.789209201603);
+      Eigen::Vector3d(-0.581300601898, 0.4534834593, 0.799965909074);
   box_pose.linear() = Eigen::Quaterniond(0.521764047853, -0.493107984387,
                                          -0.501485712804, -0.482823853963)
                           .matrix();
