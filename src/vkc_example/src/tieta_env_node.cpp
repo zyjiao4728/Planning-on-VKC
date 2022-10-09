@@ -273,7 +273,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
     Eigen::Isometry3d destination;
     destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(1.48923090634, -0.0293613335911, 0.893318659126);
+    destination.translation() = Eigen::Vector3d(1.48923090634, -0.0293613335911, 0.903318659126);
     destination.linear() = Eigen::Quaterniond(0.486998480026, 0.507122806861, -0.495137284219, 0.510390055733).matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
