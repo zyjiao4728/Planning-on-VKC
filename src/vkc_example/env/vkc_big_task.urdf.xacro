@@ -47,7 +47,7 @@
   <joint name="world_to_base_footprint" type="fixed">
     <parent link="world"/>
     <child link="$(arg robot_prefix)virtual_base_x"/>
-    <origin xyz="$(arg base_loc_x) $(arg base_loc_y) 0.0" rpy="0 0 $(arg base_loc_orient)" />
+    <origin xyz="$(arg base_loc_x) $(arg base_loc_y) 0.01965" rpy="0 0 $(arg base_loc_orient)" />
   </joint>
 
 

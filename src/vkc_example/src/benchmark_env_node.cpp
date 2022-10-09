@@ -1073,7 +1073,7 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
 int main(int argc, char **argv) {
   srand(time(NULL));
 
-  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_WARN);
 
   ros::init(argc, argv, "open_door_env_node");
   ros::NodeHandle pnh("~");
