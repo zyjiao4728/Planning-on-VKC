@@ -138,7 +138,6 @@
       </geometry>
       <material name="black" />
     </visual>
-
     <inertial>
       <origin xyz="0.012 0.002 0.067" rpy="${PI/2} 0 ${PI/2}"/>
       <mass value="165.304"/>
