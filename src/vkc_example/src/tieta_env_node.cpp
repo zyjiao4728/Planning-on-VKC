@@ -35,6 +35,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+
   Eigen::Isometry3d drawer_pose;
   drawer_pose.setIdentity();
   drawer_pose.translation() =
@@ -358,8 +359,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
     Eigen::Isometry3d destination;
     destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(1.50900759836, -2.28265763207, 0.858400426377);
-    destination.linear() = Eigen::Quaterniond(0.523043102596, 0.506215280316, -0.503358685492, 0.465620055992).matrix();
+    destination.translation() = Eigen::Vector3d(1.48923090634, -0.0293613335911, 0.893318659126);
+    destination.linear() = Eigen::Quaterniond(0.486998480026, 0.507122806861, -0.495137284219, 0.510390055733).matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
 
