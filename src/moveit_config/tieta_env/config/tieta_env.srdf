@@ -24,7 +24,6 @@
     <disable_collisions link1="box_box_link" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="box_box_link" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_left_door_link" reason="Adjacent"/>
-    <disable_collisions link1="closet_base_link" link2="closet_bottom_left_handle" reason="Never"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_right_door_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_right_handle" reason="Never"/>
     <disable_collisions link1="closet_base_link" link2="closet_top_left_door_link" reason="Adjacent"/>
