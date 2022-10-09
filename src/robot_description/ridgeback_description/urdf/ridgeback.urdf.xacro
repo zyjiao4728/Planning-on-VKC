@@ -134,7 +134,7 @@
       <origin xyz="0 0 0.15"/>
       <geometry>
         <!-- <mesh filename="package://ridgeback_description/meshes/body-collision.stl"/> -->
-        <box size="0.95 0.8 0.3"/>
+        <box size="0.95 0.8 0.5"/>
       </geometry>
     </collision>
     <inertial>
