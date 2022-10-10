@@ -124,8 +124,8 @@ namespace vkc
                 "wall_west_wall_link", "wall_south_wall_link", "Never"));
             cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
                 "wall_east_wall_link", "wall_south_wall_link", "Never"));
-            cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-                "door_north_handle_link", "left_gripper_palm", "Never"));
+            // cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+            //     "door_north_handle_link", "left_gripper_palm", "Never"));
 
             ROS_INFO("applying add collision commands");
 
