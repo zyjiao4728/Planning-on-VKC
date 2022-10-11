@@ -114,7 +114,15 @@
     <limit effort="0" velocity="0" />
   </xacro:rocker>
 
-  <link name="base_link"></link>
+  <link name="base_link">
+      <collision>
+      <origin xyz="0 0 0.15"/>
+      <geometry>
+        <!-- <mesh filename="package://ridgeback_description/meshes/body-collision.stl"/> -->
+        <box size="0.95 0.8 0.5"/>
+      </geometry>
+    </collision>
+    </link>
 
   <joint name="base_link_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0" />
@@ -130,13 +138,7 @@
       </geometry>
       <material name="black" />
     </visual>
-    <collision>
-      <origin xyz="0 0 0.15"/>
-      <geometry>
-        <!-- <mesh filename="package://ridgeback_description/meshes/body-collision.stl"/> -->
-        <box size="0.95 0.8 0.5"/>
-      </geometry>
-    </collision>
+
     <inertial>
       <origin xyz="0.012 0.002 0.067" rpy="${PI/2} 0 ${PI/2}"/>
       <mass value="165.304"/>
