@@ -150,4 +150,5 @@
     <disable_collisions link1="drawer_right_wall" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_right_wall" link2="table_table_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_top_wall" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="closet_bottom_right_door_link" reason="Never"/>
 </robot>
