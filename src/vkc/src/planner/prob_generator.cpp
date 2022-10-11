@@ -122,7 +122,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   tesseract_kinematics::KinematicGroup::Ptr kin_group =
       std::move(env_->getKinematicGroup(action->getManipulatorID()));
 
-  auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>();
+  auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>(); //LazyPRMstar, RRTConnect
   auto profiles = std::make_shared<ProfileDictionary>();
   std::string default_profile = "FREESPACE";
   if (wp.getLinkConstraints().size()) {
@@ -149,6 +149,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
         profile_ns::MMMO_DEFAULT_NAMESPACE, default_profile, ik_profile);
   } else {
     auto ompl_profile = std::make_shared<OMPLDefaultPlanProfile>();
+    ompl_profile->planning_time = 30;
     ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
     profiles->addProfile<OMPLDefaultPlanProfile>(
         profile_ns::OMPL_DEFAULT_NAMESPACE, default_profile, ompl_profile);

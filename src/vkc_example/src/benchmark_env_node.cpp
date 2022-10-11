@@ -70,10 +70,12 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     bool converged = false;
     while (try_cnt++ < nruns) {
       tesseract_planning::PlannerRequest prob_ptr;
-      if (!use_ompl)
+      if (!use_ompl){
         prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
-      else
+      }
+      else{
         prob_ptr = prob_generator.getOmplRequest(env, action, n_steps, n_iter);
+      }
 
       if (rviz_enabled) {
         env.getPlotter()->waitForInput(
@@ -329,8 +331,9 @@ void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::Isometry3d ee_pose) {
 
     link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
 
-    actions.emplace_back(
-        make_shared<GotoAction>("vkc", link_objectives, joint_objectives));
+    auto action = make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
+
+    actions.emplace_back(action);
   }
 }
 
@@ -1028,12 +1031,7 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
   auto elapsed_time = run(joint_trajs, env, actions, n_steps, n_iter,
                           rviz_enabled, nruns, false, true);
   std::vector<double> data;
-
-  tesseract_common::TrajArray arm_init =
-      joint_trajs[0].states.front().position.segment(3, 6);
-  tesseract_common::TrajArray arm_goal =
-      joint_trajs[0].states.back().position.segment(3, 6);
-
+  
   interpVKCData(data, elapsed_time, joint_trajs);
 
   if (elapsed_time[0] < 0.) {
@@ -1043,9 +1041,13 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
     data.emplace_back(0);
     return data;
   }
-  std::cout << "Before set state" << std::endl;
+
+  tesseract_common::TrajArray arm_init =
+      joint_trajs[0].states.front().position.segment(3, 6);
+  tesseract_common::TrajArray arm_goal =
+      joint_trajs[0].states.back().position.segment(3, 6);
+
   env.getVKCEnv()->getTesseract()->setState(joint_target);
-  std::cout << "After set state" << std::endl;
 
   Eigen::Isometry3d pose_place =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
@@ -1061,6 +1063,9 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
   std::vector<Eigen::VectorXd> arm_trajectory;
 
   while (try_cnt++ < nruns) {
+    std::cout << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
+    std::cout << try_cnt << ": " << nruns << std::endl;
+    std::cout << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
     actions.clear();
     base_time.clear();
     joint_trajs.clear();
