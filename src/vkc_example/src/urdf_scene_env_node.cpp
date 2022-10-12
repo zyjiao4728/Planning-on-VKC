@@ -29,7 +29,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          ActionSeq &actions, int n_steps, int n_iter, bool rviz_enabled,
          unsigned int nruns) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
 
   ProbGenerator prob_generator;
 

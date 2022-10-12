@@ -24,7 +24,8 @@ struct IKSetWithCost {
 
 class LongHorizonSeedGenerator {
  public:
-  LongHorizonSeedGenerator(int n_steps, int n_iter, size_t window_size);
+  LongHorizonSeedGenerator(int n_steps, int n_iter, size_t window_size,
+                           size_t robot_vkc_length);
   /**
    * @brief generate long horizon seeds inside actions
    *
@@ -34,7 +35,6 @@ class LongHorizonSeedGenerator {
   std::vector<tesseract_kinematics::IKSolutions> getOrderedIKSet(
       const Eigen::VectorXd current_state,
       const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
-      const Eigen::VectorXd cost_coeff,
       const std::vector<ActionBase::Ptr> actions);
 
   tesseract_kinematics::IKSolutions kmeans(
@@ -42,7 +42,7 @@ class LongHorizonSeedGenerator {
 
   double getIKSetCost(const Eigen::VectorXd current_state,
                       const tesseract_kinematics::IKSolutions &act_ik_set,
-                      const Eigen::VectorXd cost_coeff);
+                      const std::vector<Eigen::VectorXd> cost_coeffs);
 
   std::vector<std::vector<Eigen::VectorXd>> getValidIKSets(
       std::vector<std::vector<Eigen::VectorXd>> &act_iks,
@@ -66,6 +66,7 @@ class LongHorizonSeedGenerator {
   int n_iter;
   size_t window_size;
   tesseract_planning::MapInfo map_;
+  size_t robot_vkc_length_;
 };
 std::vector<tesseract_kinematics::IKSolutions> CartesianProduct(
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks);

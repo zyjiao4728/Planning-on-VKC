@@ -51,7 +51,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         int n_iter, bool rviz_enabled, unsigned int nruns,
                         bool long_horizon = false, bool use_ompl = false) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   if (long_horizon) {
     seed_generator.generate(env, actions);
   }

@@ -10,8 +10,12 @@
 namespace vkc {
 
 LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
-                                                   size_t window_size)
-    : n_steps(n_steps), n_iter(n_iter), window_size(window_size) {
+                                                   size_t window_size,
+                                                   size_t robot_vkc_length)
+    : n_steps(n_steps),
+      n_iter(n_iter),
+      window_size(window_size),
+      robot_vkc_length_(robot_vkc_length) {
   map_ = tesseract_planning::MapInfo();
 }
 
@@ -84,7 +88,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   Eigen::VectorXd coeff(9);
   coeff.setOnes();
   // coeff(2) = 0;
-  auto ik_sets = getOrderedIKSet(current_state, act_iks, coeff, sub_actions);
+  auto ik_sets = getOrderedIKSet(current_state, act_iks, sub_actions);
   std::cout << "done." << std::endl;
   assert(ik_sets.size() != 0);
   assert(ik_sets.front().size() == sub_actions.size());
@@ -107,12 +111,12 @@ std::vector<tesseract_kinematics::IKSolutions>
 LongHorizonSeedGenerator::getOrderedIKSet(
     const Eigen::VectorXd current_state,
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks,
-    const Eigen::VectorXd cost_coeff,
     const std::vector<ActionBase::Ptr> actions) {
   std::priority_queue<IKSetWithCost, std::vector<IKSetWithCost>,
                       std::greater<IKSetWithCost>>
       ik_set_queue;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
+
   for (auto &act_ik : act_iks) {
     auto filtered_iks = kmeans(act_ik, 50);
     CONSOLE_BRIDGE_logDebug("filtered iks after kmeans: %d - %d/%d",
@@ -128,8 +132,20 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   if (sets.size() == 0)
     throw std::runtime_error("no valid sets found for given ik set input.");
   double lowest_cost = 10000;
+
+  // generate cost coeffs
+  std::vector<Eigen::VectorXd> cost_coeffs;
+  for (const auto &act : actions) {
+    if (act->getIKCostCoeff().size())
+      cost_coeffs.push_back(act->getIKCostCoeff());
+    else {
+      Eigen::VectorXd coeff_;
+      coeff_.setOnes(robot_vkc_length_);
+      cost_coeffs.push_back(coeff_);
+    }
+  }
   for (const auto &ik_set : sets) {
-    double cost = getIKSetCost(current_state, ik_set, cost_coeff);
+    double cost = getIKSetCost(current_state, ik_set, cost_coeffs);
     if (cost > 0) ik_set_queue.emplace(ik_set, cost);
   }
   std::vector<tesseract_kinematics::IKSolutions> sets_result;
@@ -145,21 +161,25 @@ LongHorizonSeedGenerator::getOrderedIKSet(
 double LongHorizonSeedGenerator::getIKSetCost(
     const Eigen::VectorXd current_state,
     const std::vector<Eigen::VectorXd> &act_ik_set,
-    const Eigen::VectorXd cost_coeff) {
-  const int coeff_length = cost_coeff.size();
-  assert(current_state.size() >= cost_coeff.size());
-  assert(act_ik_set.size() > 0 && act_ik_set[0].size() >= coeff_length);
-  double cost =
-      (act_ik_set[0].head(coeff_length) - current_state.head(coeff_length))
-          .cwiseProduct(cost_coeff)
-          .array()
-          .abs()
-          .sum();
-  for (int i = 0; i < act_ik_set.size() - 1; i++) {
-    assert(act_ik_set[i].size() >= coeff_length);
-    cost += (act_ik_set[i].head(coeff_length) -
-             act_ik_set[i + 1].head(coeff_length))
-                .cwiseProduct(cost_coeff)
+    const std::vector<Eigen::VectorXd> cost_coeffs) {
+  assert(act_ik_set.size() > 0 && act_ik_set[0].size() == cost_coeffs.size());
+  assert(cost_coeffs[0].size() == robot_vkc_length_);
+  std::stringstream ss;
+  ss << "calculating ik set cost with cost coeffs: " << std::endl
+     << cost_coeffs[0].transpose() << std::endl;
+  ;
+  double cost = (act_ik_set[0].head(robot_vkc_length_) -
+                 current_state.head(robot_vkc_length_))
+                    .cwiseProduct(cost_coeffs[0])
+                    .array()
+                    .abs()
+                    .sum();
+  for (int i = 1; i < act_ik_set.size(); i++) {
+    assert(cost_coeffs[i].size() == robot_vkc_length_);
+    ss << cost_coeffs[i].transpose() << std::endl;
+    cost += (act_ik_set[i - 1].head(robot_vkc_length_) -
+             act_ik_set[i].head(robot_vkc_length_))
+                .cwiseProduct(cost_coeffs[i])
                 .array()
                 .abs()
                 .sum();
