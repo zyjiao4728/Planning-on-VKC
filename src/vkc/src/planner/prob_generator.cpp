@@ -86,10 +86,11 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
-      act->seed.empty() ? generateMixedSeed(seed_program, cur_state,
-                                            env.getVKCEnv()->getTesseract(),
-                                            n_steps, act->getBaseJoint())
-                        : act->seed;
+      act->seed.empty()
+          ? generateMixedSeed(seed_program, cur_state,
+                              env.getVKCEnv()->getTesseract(), n_steps,
+                              act->getBaseJoint(), act->getIKCostCoeff())
+          : act->seed;
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            seed.getMoveInstructionCount());

@@ -66,7 +66,9 @@ class ActionBase {
         init_traj_required_(
             false)  // initial trajectory for this action is required,  added:
                     // wanglei@bigai.ai, time: 2021-08-27
-  {}
+  {
+    ik_cost_coeff_ = Eigen::VectorXd();
+  }
 
   virtual ~ActionBase() = default;
 
@@ -117,14 +119,19 @@ class ActionBase {
 
   const VKCTraj& getInitTraj() const { return init_traj_; }
 
-  std::pair<std::string, std::string> getBaseJoint() const {
-    return base_joint_;
-  }
 
   void setBaseJoint(std::string base_joint_x, std::string base_joint_y) {
     base_joint_ = std::make_pair<std::string, std::string>(
         std::move(base_joint_x), std::move(base_joint_y));
   }
+  std::pair<std::string, std::string> getBaseJoint() const {
+    return base_joint_;
+  }
+
+  void setIKCostCoeff(Eigen::VectorXd ik_cost_coeff) {
+    ik_cost_coeff_ = ik_cost_coeff;
+  }
+  Eigen::VectorXd getIKCostCoeff() { return ik_cost_coeff_; }
 
   void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
 
@@ -135,7 +142,7 @@ class ActionBase {
     //             joint_candidate);
   }
 
-  AStar::Generator astar_generator; // TODO: change to shared_ptr and get/set
+  AStar::Generator astar_generator;  // TODO: change to shared_ptr and get/set
   bool astar_init;
 
  protected:
@@ -149,6 +156,7 @@ class ActionBase {
   VKCTraj init_traj_;
   bool init_traj_required_;
   std::pair<std::string, std::string> base_joint_;
+  Eigen::VectorXd ik_cost_coeff_;
 };
 
 // added: wanglei@bigai.ai
