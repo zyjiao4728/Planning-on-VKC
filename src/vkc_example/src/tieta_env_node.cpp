@@ -14,7 +14,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   ProbGenerator prob_generator;
 
-  env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+    env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   Eigen::Isometry3d cabinet_handle_pose;
   cabinet_handle_pose.setIdentity();
   cabinet_handle_pose.translation() = Eigen::Vector3d(1.24748926979, 0.0795272607703, 1.15487884514);
@@ -29,8 +29,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d table_pose;
   table_pose.setIdentity();
   table_pose.translation() =
-      Eigen::Vector3d(-0.256890942294, 0.06, 0.771871020222);
-  table_pose.linear() = Eigen::Quaterniond(0.999982951639, -0.000148883592137, -0.00413967365723, 0.00411550333488)
+      Eigen::Vector3d(-0.505623316002, 0.0720372811975, 0.767919456786);
+  table_pose.linear() = Eigen::Quaterniond(0.999995378251, -0.000870022109151, -0.000279317347915, 0.00289974475127)
                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
@@ -51,8 +51,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d box_pose;
   box_pose.setIdentity();
   box_pose.translation() =
-      Eigen::Vector3d(-0.251640627693, -0.0127567861381, 0.817309686325);
-  box_pose.linear() = Eigen::Quaterniond(0.488104597967, 0.506340876355, -0.493232594684, 0.511951585521)
+      Eigen::Vector3d(-0.488343376063, 0.221549065267, 0.8100664763);
+  box_pose.linear() = Eigen::Quaterniond(0.513140008661, -0.484234159589, -0.514466554295, -0.487369238576)
                           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "box_box_base_joint", box_pose);
