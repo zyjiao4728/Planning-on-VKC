@@ -70,10 +70,9 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     bool converged = false;
     while (try_cnt++ < nruns) {
       tesseract_planning::PlannerRequest prob_ptr;
-      if (!use_ompl){
+      if (!use_ompl) {
         prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
-      }
-      else{
+      } else {
         prob_ptr = prob_generator.getOmplRequest(env, action, n_steps, n_iter);
       }
 
@@ -157,9 +156,9 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
         env.getPlotter()->waitForInput(
             "Finished optimization. Press <Enter> to start next action");
       }
-
-      env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
-                    action);
+      if (!use_ompl)
+        env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
+                      action);
 
       if (env.getPlotter() != nullptr && rviz_enabled)
         env.getPlotter()->clear();
@@ -323,15 +322,17 @@ void baseline_reach(vkc::ActionSeq &actions, Eigen::VectorXd base_pose,
   }
 }
 
-void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::Isometry3d ee_pose) {
+void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::VectorXd vkc_pose) {
   // action 1: move vkc to target
   {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
+    // link_objectives.emplace_back("robotiq_arg2f_base_link", ee_pose);
 
-    auto action = make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
+    auto action =
+        make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
+    action->joint_candidate = vkc_pose;
 
     actions.emplace_back(action);
   }
@@ -1026,12 +1027,22 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
       attach_location_ptr->local_joint_origin_transform;
 
   // baseline_reach(actions, sampleBasePose(env, pose_close), pose_close);
-  vkc_ompl_reach(actions, pose_close);
+  int try_cnt = 0;
+  std::vector<double> elapsed_time;
+  while (try_cnt++ < nruns) {
+    auto vkc_pose = sampleBasePose(env, pose_close);
+    std::cout << vkc_pose << std::endl;
+    vkc_ompl_reach(actions, vkc_pose);
+    elapsed_time = run(joint_trajs, env, actions, n_steps, n_iter,
+                            rviz_enabled, 1, false, true);
+    std::cout << elapsed_time[0] << std::endl;
+    if (elapsed_time[0] > 0.) break;
+  }
+  env.updateEnv(joint_trajs.back().back().joint_names,
+                joint_trajs.back().back().position, actions.back());
 
-  auto elapsed_time = run(joint_trajs, env, actions, n_steps, n_iter,
-                          rviz_enabled, nruns, false, true);
   std::vector<double> data;
-  
+
   interpVKCData(data, elapsed_time, joint_trajs);
 
   if (elapsed_time[0] < 0.) {
@@ -1054,7 +1065,7 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
           attach_location_ptr->link_name_) *
       attach_location_ptr->local_joint_origin_transform;
 
-  int try_cnt = 0;
+  try_cnt = 0;
   auto start = chrono::steady_clock::now();
   auto end = chrono::steady_clock::now();
   bool success = true;
@@ -1063,9 +1074,6 @@ std::vector<double> run_ompl(vector<TesseractJointTraj> &joint_trajs,
   std::vector<Eigen::VectorXd> arm_trajectory;
 
   while (try_cnt++ < nruns) {
-    std::cout << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
-    std::cout << try_cnt << ": " << nruns << std::endl;
-    std::cout << "+++++++++++++++++++++++++++++++++++++++++" << std::endl;
     actions.clear();
     base_time.clear();
     joint_trajs.clear();

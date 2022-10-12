@@ -394,11 +394,11 @@ void ProbGenerator::setCompositeProfile(
 
   profile->smooth_accelerations = true;
   profile->smooth_velocities = true;
-  profile->smooth_jerks = false;
+  profile->smooth_jerks = true;
 
   profile->velocity_coeff.setConstant(num_joints, 5);
-  profile->velocity_coeff[0] = 30;
-  profile->velocity_coeff[1] = 30;
+  // profile->velocity_coeff[0] = 30;
+  // profile->velocity_coeff[1] = 30;
 
   profile->acceleration_coeff.setConstant(num_joints, 5);
 }
@@ -416,7 +416,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-2;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-2;
   trajopt_solver_profile->opt_info.inflate_constraints_individually = true;
-  trajopt_solver_profile->opt_info.max_time = 60.;
+  trajopt_solver_profile->opt_info.max_time = 20.;
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);

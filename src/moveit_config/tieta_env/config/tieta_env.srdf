@@ -5,10 +5,29 @@
 -->
 <robot name="tieta_env">
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="box_box_link" link2="closet_base_link" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="closet_bottom_left_door_link" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_bottom_right_door_link" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_bottom_right_handle" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_top_left_door_link" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_top_left_handle" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_top_right_door_link" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="closet_top_right_handle" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="drawer_back_wall" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="drawer_bottom_wall" reason="Adjacent"/>
+    <!-- <disable_collisions link1="box_box_link" link2="drawer_drawer1" reason="Adjacent"/> -->
+    <disable_collisions link1="box_box_link" link2="drawer_drawer2" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="drawer_handle1" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="drawer_handle2" reason="Never"/>
+    <disable_collisions link1="box_box_link" link2="drawer_left_wall" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="drawer_right_wall" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="drawer_top_wall" reason="Adjacent"/>
+    <disable_collisions link1="box_box_link" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_left_door_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_right_door_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_bottom_right_handle" reason="Never"/>
     <disable_collisions link1="closet_base_link" link2="closet_top_left_door_link" reason="Adjacent"/>
+    <disable_collisions link1="closet_base_link" link2="closet_top_left_handle" reason="Never"/>
     <disable_collisions link1="closet_base_link" link2="closet_top_right_door_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="closet_top_right_handle" reason="Never"/>
     <disable_collisions link1="closet_base_link" link2="drawer_back_wall" reason="Adjacent"/>
@@ -21,6 +40,7 @@
     <disable_collisions link1="closet_base_link" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="closet_base_link" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_bottom_right_door_link" reason="Default"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_bottom_right_handle" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_top_left_door_link" reason="Never"/>
@@ -30,6 +50,7 @@
     <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_back_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_left_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="wall_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_bottom_right_handle" reason="Adjacent"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_top_left_door_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_top_left_handle" reason="Never"/>
@@ -59,8 +80,10 @@
     <disable_collisions link1="closet_bottom_right_handle" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_handle" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_handle" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="closet_bottom_right_handle" link2="wall_link" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="closet_top_left_handle" reason="Adjacent"/>
     <disable_collisions link1="closet_top_left_door_link" link2="closet_top_right_handle" reason="Never"/>
+    <disable_collisions link1="closet_top_left_door_link" link2="closet_top_right_door_link" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="drawer_back_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="drawer_bottom_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="drawer_drawer1" reason="Never"/>
@@ -71,7 +94,7 @@
     <disable_collisions link1="closet_top_left_door_link" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_door_link" link2="table_table_link" reason="Never"/>
-    <disable_collisions link1="closet_top_left_door_link" link2="closet_top_right_door_link" reason="Never"/>
+    <disable_collisions link1="closet_top_left_door_link" link2="wall_link" reason="Never"/>
     <disable_collisions link1="closet_top_left_handle" link2="closet_top_right_door_link" reason="Never"/>
     <disable_collisions link1="closet_top_left_handle" link2="closet_top_right_handle" reason="Never"/>
     <disable_collisions link1="closet_top_left_handle" link2="drawer_back_wall" reason="Never"/>
@@ -84,6 +107,7 @@
     <disable_collisions link1="closet_top_left_handle" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_handle" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="closet_top_left_handle" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="closet_top_left_handle" link2="wall_link" reason="Never"/>
     <disable_collisions link1="closet_top_right_door_link" link2="closet_top_right_handle" reason="Adjacent"/>
     <disable_collisions link1="closet_top_right_door_link" link2="drawer_back_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_door_link" link2="drawer_bottom_wall" reason="Never"/>
@@ -95,6 +119,7 @@
     <disable_collisions link1="closet_top_right_door_link" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_door_link" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_door_link" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="closet_top_right_door_link" link2="wall_link" reason="Never"/>
     <disable_collisions link1="closet_top_right_handle" link2="drawer_back_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_handle" link2="drawer_bottom_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_handle" link2="drawer_drawer1" reason="Never"/>
@@ -105,6 +130,7 @@
     <disable_collisions link1="closet_top_right_handle" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_handle" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="closet_top_right_handle" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="closet_top_right_handle" link2="wall_link" reason="Never"/>
     <disable_collisions link1="drawer_back_wall" link2="drawer_bottom_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_back_wall" link2="drawer_drawer1" reason="Adjacent"/>
     <disable_collisions link1="drawer_back_wall" link2="drawer_drawer2" reason="Adjacent"/>
@@ -114,6 +140,7 @@
     <disable_collisions link1="drawer_back_wall" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_back_wall" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_back_wall" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_back_wall" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_bottom_wall" link2="drawer_drawer1" reason="Adjacent"/>
     <disable_collisions link1="drawer_bottom_wall" link2="drawer_drawer2" reason="Adjacent"/>
     <disable_collisions link1="drawer_bottom_wall" link2="drawer_handle1" reason="Never"/>
@@ -122,6 +149,7 @@
     <disable_collisions link1="drawer_bottom_wall" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_bottom_wall" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_bottom_wall" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_bottom_wall" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer1" link2="drawer_drawer2" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer1" link2="drawer_handle1" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer1" link2="drawer_handle2" reason="Never"/>
@@ -129,26 +157,34 @@
     <disable_collisions link1="drawer_drawer1" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer1" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer1" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_drawer1" link2="wall_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_drawer2" link2="drawer_handle1" reason="Never"/>
     <disable_collisions link1="drawer_drawer2" link2="drawer_handle2" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer2" link2="drawer_handle1" reason="Never"/>
     <disable_collisions link1="drawer_drawer2" link2="drawer_left_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer2" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer2" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_drawer2" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_drawer2" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_handle1" link2="drawer_handle2" reason="Never"/>
     <disable_collisions link1="drawer_handle1" link2="drawer_left_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle1" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle1" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle1" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="drawer_handle1" link2="wall_link" reason="Never"/>
     <disable_collisions link1="drawer_handle2" link2="drawer_left_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle2" link2="drawer_right_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle2" link2="drawer_top_wall" reason="Never"/>
     <disable_collisions link1="drawer_handle2" link2="table_table_link" reason="Never"/>
+    <disable_collisions link1="drawer_handle2" link2="wall_link" reason="Never"/>
     <disable_collisions link1="drawer_left_wall" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_left_wall" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_left_wall" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_left_wall" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_right_wall" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="drawer_right_wall" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="drawer_right_wall" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_top_wall" link2="table_table_link" reason="Adjacent"/>
-    <disable_collisions link1="box_box_link" link2="closet_bottom_right_door_link" reason="Never"/>
+    <disable_collisions link1="drawer_top_wall" link2="wall_link" reason="Adjacent"/>
+    <disable_collisions link1="table_table_link" link2="wall_link" reason="Adjacent"/>
 </robot>
