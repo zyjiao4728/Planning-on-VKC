@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: env_description
+    relative_path: household_env/main.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/household_env.srdf
+  CONFIG:
+    author_name: Jiao
+    author_email: zyjiao@ucla.edu
+    generated_timestamp: 1665641563

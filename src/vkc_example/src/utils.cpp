@@ -132,6 +132,8 @@ void refineTrajectory(tesseract_common::JointTrajectory &traj,
     traj.states[i].position = initial_state;
   }
 
+  double prev_orientation = 0.0;
+
   for (int i = 0; i < n_rows - 1; i++) {
     double delta_y =
         traj.states[i + 1].position[1] - traj.states[i].position[1];
@@ -139,9 +141,19 @@ void refineTrajectory(tesseract_common::JointTrajectory &traj,
         traj.states[i + 1].position[0] - traj.states[i].position[0];
     double delta_orientation = atan2(delta_y, delta_x);
 
-    if (delta_orientation > 3.14159265359) delta_orientation -= 3.14159265359;
+    if (i == 0){
+      prev_orientation = delta_orientation;
+    }
 
-    if (delta_orientation < -3.14159265359) delta_orientation += 3.14159265359;
+    if (abs(delta_orientation - prev_orientation) > M_PI){
+      if (delta_orientation > prev_orientation){
+        delta_orientation -= 2.0*M_PI;
+      }
+      else{
+        delta_orientation += 2.0*M_PI;
+      }
+    }
+    prev_orientation = delta_orientation;
 
     if (n_cols > 3) {
       traj.states[i].position[3] +=

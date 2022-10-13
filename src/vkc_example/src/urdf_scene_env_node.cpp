@@ -30,7 +30,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          unsigned int nruns) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
-
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -44,10 +43,10 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())
     //                          ->getJointNames());
-    seed_generator.generate(env, sub_actions);
+    // seed_generator.generate(env, sub_actions);
     // std::cout << "sg after generate" << std::endl;
     // printSceneGraph(env.getVKCEnv()->getTesseract()->getSceneGraph());
-    action->switchCandidate();
+    // action->switchCandidate();
     // fmt::print("kg: {}", env.getVKCEnv()
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())
@@ -77,7 +76,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
             __func__, response.status.value(),
             response.status.message().c_str());
 
-        action->switchCandidate();
+        // action->switchCandidate();
       }
     }
 
@@ -100,6 +99,11 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
           "Finished optimization. Press <Enter> to start next action");
     }
 
+    toDelimitedFile(ci,
+                    "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
+                    "trajectory/urdf_scene_env_" + std::to_string(j) +".csv",
+                    ',');
+
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
     CONSOLE_BRIDGE_logInform("update env finished");
@@ -111,6 +115,16 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
   }
+}
+
+void setInitState(VKCEnvBasic &env) {
+  vector<string> joint_names(
+      {"dishwasher_12065_joint_0", "dishwasher_12065_joint_1",
+       "dishwasher_12065_joint_2",
+       "cabinet_48479_joint_0"});  //, "cabinet_48479_joint_0"
+  Eigen::Vector4d joint_values({-0.3080, -0.1359, -0.6457,
+                                -0.12});  // open: 0.9250 close -0.6457 , -0.12
+  env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
 }
 
 void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
@@ -190,44 +204,9 @@ void genVKCDemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
   }
 }
 
-void setInitState(VKCEnvBasic &env) {
-  vector<string> dishwasher_joints({"dishwasher_12065_joint_0",
-                                    "dishwasher_12065_joint_1",
-                                    "dishwasher_12065_joint_2"});
-  Eigen::Vector3d dishwasher_values(
-      {-0.3080, -0.1359, -0.6457});  // open: 0.9250 close -0.6457
-  env.getVKCEnv()->getTesseract()->setState(dishwasher_joints,
-                                            dishwasher_values);
-}
-
-int main(int argc, char **argv) {
-  srand((unsigned)time(
-      NULL));  // for generating waypoint randomly motion planning
-  ros::init(argc, argv, "urdf_scene_env_node");
-  ros::NodeHandle pnh("~");
-  ros::NodeHandle nh;
-  ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
-                                 ros::console::levels::Info);
-  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_INFO);
-  ROS_INFO("Initializaing environment node...");
-
-  bool plotting = true;
-  bool rviz = true;
-  int steps = 10;
-  int n_iter = 1000;
-  int nruns = 5;
-  std::string robot{"vkc"};
-
-  // Get ROS Parameters
-  pnh.param<std::string>("robot", robot, robot);
-  pnh.param("plotting", plotting, plotting);
-  pnh.param("rviz", rviz, rviz);
-  pnh.param<int>("steps", steps, steps);
-  pnh.param<int>("niter", n_iter, n_iter);
-  pnh.param<int>("nruns", nruns, nruns);
-
-  UrdfSceneEnv::AttachObjectInfos attaches;
-
+void genVKCDemoEnvironmentInfo(
+    UrdfSceneEnv::AttachObjectInfos &attaches,
+    UrdfSceneEnv::InverseChainsInfos &inverse_chains) {
   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_bottle",
                                                        "bottle_link_0",
                                                        "bottle",
@@ -272,8 +251,6 @@ int main(int argc, char **argv) {
   //                                                      {0.6, -0.65, 0.2},
   //                                                      {0.5, 0.5, 0.5, -0.5},
   //                                                      true});
-
-  UrdfSceneEnv::InverseChainsInfos inverse_chains;
   inverse_chains.emplace_back(
       UrdfSceneEnv::InverseChainsInfo{"bottle", "bottle_link_0"});
   inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
@@ -286,11 +263,154 @@ int main(int argc, char **argv) {
   // "dishwasher_12065_link_0"});
   // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"cabinet_44781",
   // "link_1"});
+  CONSOLE_BRIDGE_logDebug("environment info generation success");
+}
+
+void genTRODemoDeq(vkc::ActionSeq &actions, const std::string &robot) {
+  PickAction::Ptr pick_action;
+  PlaceAction::Ptr place_action;
+
+  // action 1: pick fridge handle
+  {
+    pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action 2: open fridge door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
+                                 joint_objectives, false);
+
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+
+    actions.emplace_back(place_action);
+  }
+
+  // // action 3: pick bottle
+  // {
+  //   pick_action = make_shared<PickAction>(robot, "attach_bottle");
+  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(pick_action);
+  // }
+
+  // // action 4: place bottle in the fridge
+  // {
+  //   std::vector<LinkDesiredPose> link_objectives;
+  //   std::vector<JointDesiredPose> joint_objectives;
+  //   Eigen::Isometry3d destination;
+  //   destination.setIdentity();
+  //   destination.translation() = Eigen::Vector3d(3.0, 3.0, 0.76);
+  //   destination.linear() =
+  //       Eigen::Quaterniond(0.70710678118, 0.70710678118, 0.0, 0).matrix();
+  //   // destination.translation() = Eigen::Vector3d(-1.6, 1.6, 0.9);
+  //   // destination.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50,
+  //   // -0.50).matrix();
+  //   link_objectives.push_back(LinkDesiredPose("bottle", destination));
+
+  //   place_action = make_shared<PlaceAction>(
+  //       robot, "attach_bottle", link_objectives, joint_objectives, false);
+
+  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(place_action);
+  // }
+
+  // action 5: pick fridge handle
+  {
+    pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+
+  // action 6: close fridge door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
+    place_action =
+        make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
+                                 joint_objectives, false);
+
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+
+    actions.emplace_back(place_action);
+  }
+}
+
+void genTRODemoEnvironmentInfo(
+    UrdfSceneEnv::AttachObjectInfos &attaches,
+    UrdfSceneEnv::InverseChainsInfos &inverse_chains) {
+  attaches.emplace_back(
+      UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
+                                     "fridge_0001_dof_rootd_Aa002_r",
+                                     "fridge_0001",
+                                     {0.65, -0.25, -0.65},
+                                     {0.5, -0.5, 0.5, 0.5},
+                                     true});
+
+  // attaches.emplace_back(
+  //     UrdfSceneEnv::AttachObjectInfo{"attach_door",
+  //                                    "door_8966_link_2",
+  //                                    "door_8966_base",
+  //                                    {0, 0, -0.3},
+  //                                    {0.707106781, 0, -0.707106781, 0},
+  //                                    true});
+
+  // attaches.emplace_back(
+  //     UrdfSceneEnv::AttachObjectInfo{"attach_dishwasher",
+  //                                    "dishwasher_12065_link_0",
+  //                                    "dishwasher_12065",
+  //                                    {0.0, -0.2, 0.35},
+  //                                    {0.707106781, 0, 0.707106781, 0},
+  //                                    true});
+
+  inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
+      "fridge_0001", "fridge_0001_dof_rootd_Aa002_r"});
+  // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"door_8966_base",
+  // "door_8966_link_2"});
+  // inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{"dishwasher_12065",
+  // "dishwasher_12065_link_0"});
+  CONSOLE_BRIDGE_logDebug("environment info generation success");
+}
+
+int main(int argc, char **argv) {
+  srand((unsigned)time(
+      NULL));  // for generating waypoint randomly motion planning
+  ros::init(argc, argv, "urdf_scene_env_node");
+  ros::NodeHandle pnh("~");
+  ros::NodeHandle nh;
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+  ROS_INFO("Initializaing environment node...");
+
+  bool plotting = true;
+  bool rviz = true;
+  int steps = 10;
+  int n_iter = 1000;
+  int nruns = 5;
+  std::string robot{"vkc"};
+
+  // Get ROS Parameters
+  pnh.param<std::string>("robot", robot, robot);
+  pnh.param("plotting", plotting, plotting);
+  pnh.param("rviz", rviz, rviz);
+  pnh.param<int>("steps", steps, steps);
+  pnh.param<int>("niter", n_iter, n_iter);
+  pnh.param<int>("nruns", nruns, nruns);
+
+  UrdfSceneEnv::AttachObjectInfos attaches;
+  UrdfSceneEnv::InverseChainsInfos inverse_chains;
+  genTRODemoEnvironmentInfo(attaches, inverse_chains);
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
-  setInitState(env);
+  // setInitState(env);
   ActionSeq actions;
-  genVKCDemoDeq(actions, robot);
+  genTRODemoDeq(actions, robot);
   vector<TesseractJointTraj> joint_trajs;
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

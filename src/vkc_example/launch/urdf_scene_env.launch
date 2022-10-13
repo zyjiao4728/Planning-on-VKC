@@ -19,11 +19,13 @@
 
   <!-- Load universal environment description format (URDF) -->
   <param name="$(arg env_description)" command="$(find xacro)/xacro '$(find vkc_example)/env/vkc_demo.urdf.xacro' husky_locx:=$(arg husky_locx) husky_locy:=$(arg husky_locy) husky_orient:=$(arg husky_orient) has_gripper:=$(arg has_gripper)"/>
-  <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find scene_builder)/output/vkc_demo/main.xacro'" />
+  <!-- <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find scene_builder)/output/vkc_demo/main.xacro'" /> -->
+  <param name="$(arg interactive_description)" command="$(find xacro)/xacro '$(find env_description)/household_env/main.xacro'" />
 
   <!-- The semantic description that corresponds to the URDF -->
   <param name="$(arg env_description)_semantic" textfile="$(find vkc_demo)/config/scene.srdf" />
-  <param name="$(arg interactive_description)_semantic" textfile="$(find vkc_demo)/config/vkc_demo.srdf" />
+  <!-- <param name="$(arg interactive_description)_semantic" textfile="$(find vkc_demo)/config/vkc_demo.srdf" /> -->
+  <param name="$(arg interactive_description)_semantic" textfile="$(find household_env)/config/household_env.srdf" />
 
   <param name="end_effector_link" type="str" value="$(arg end_effector_link)"/>
 

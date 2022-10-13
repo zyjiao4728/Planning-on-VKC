@@ -417,7 +417,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-2;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-2;
   trajopt_solver_profile->opt_info.inflate_constraints_individually = true;
-  trajopt_solver_profile->opt_info.max_time = 20.;
+  trajopt_solver_profile->opt_info.max_time = 30.;
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);
