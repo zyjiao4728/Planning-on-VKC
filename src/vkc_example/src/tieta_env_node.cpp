@@ -17,10 +17,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
     env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   Eigen::Isometry3d cabinet_handle_pose;
   cabinet_handle_pose.setIdentity();
-  cabinet_handle_pose.translation() = Eigen::Vector3d(1.24748926979, 0.0795272607703, 1.15487884514);
+  cabinet_handle_pose.translation() = Eigen::Vector3d(1.31505893452, 0.449725210284, 1.14977833795);
   
   cabinet_handle_pose.linear() =
-      Eigen::Quaterniond(-0.0276394300716, -0.00732565483015, 0.00295412146665, 0.999586749539)
+      Eigen::Quaterniond(-0.00849650417196, -0.00522137984114, 0.00494717210066, 0.999938034129)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "closet_base_joint", cabinet_handle_pose);
@@ -29,8 +29,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d table_pose;
   table_pose.setIdentity();
   table_pose.translation() =
-      Eigen::Vector3d(-0.505623316002, 0.0720372811975, 0.767919456786);
-  table_pose.linear() = Eigen::Quaterniond(0.999995378251, -0.000870022109151, -0.000279317347915, 0.00289974475127)
+      Eigen::Vector3d(-0.430711066179, 0.570862182021, 0.767112441058);
+  table_pose.linear() = Eigen::Quaterniond(0.999930487371, -0.000663265643433, 0.000169615006243, -0.0117708001427)
                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
@@ -39,10 +39,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d drawer_pose;
   drawer_pose.setIdentity();
   drawer_pose.translation() =
-      Eigen::Vector3d(1.2955805008, -0.0981322452166, 0.788374883425);
+      Eigen::Vector3d(1.36509617676, 0.270370526735, 0.782564325676);
   
   drawer_pose.linear() =
-      Eigen::Quaterniond(0.000381468008155, -0.00647296044046, -0.0020959194287, 0.999976780924)
+      Eigen::Quaterniond(0.00350572326757, 0.00407371756734, -0.00123618866122, 0.999984793168)
           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "drawer_world_joint", drawer_pose);
@@ -51,8 +51,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d box_pose;
   box_pose.setIdentity();
   box_pose.translation() =
-      Eigen::Vector3d(-0.488343376063, 0.221549065267, 0.8100664763);
-  box_pose.linear() = Eigen::Quaterniond(0.513140008661, -0.484234159589, -0.514466554295, -0.487369238576)
+      Eigen::Vector3d(-0.409349758737, 0.720243738486, 0.809744381474);
+  box_pose.linear() = Eigen::Quaterniond(0.510034686864, -0.488224718021, -0.510313740678, -0.491000131348)
                           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "box_box_base_joint", box_pose);
@@ -187,7 +187,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
     Eigen::Isometry3d destination;
     destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(1.19828555737, -0.109178547221, 0.801900872831 +0.15);
+    destination.translation() = Eigen::Vector3d(1.26923511474, 0.255995713973, 0.79604748475 +0.15);
     destination.linear() = Eigen::Quaterniond(0.527083066682, 0.535179179479, -0.436224629928, 0.495454093649).matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
@@ -249,7 +249,7 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_closet_right_handle",
       "closet_bottom_right_handle",
       "closet_base_link",
-      {0.26, 0.000, 0.00},
+      {0.245, 0.000, 0.00},
       {0.6532815, 0.2705981, -0.6532815, -0.2705981},
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
@@ -258,7 +258,7 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_drawer_handle1",
       "drawer_handle1",
       "drawer_base_link",
-      {0.26, 0.000, 0.00},
+      {0.255, 0.000, 0.00},
       // {0.707106781186548, 0, -0.707106781186548, 0},
       {0.653281482438188, -0.270598050073098, -0.653281482438188,
        0.270598050073099},
