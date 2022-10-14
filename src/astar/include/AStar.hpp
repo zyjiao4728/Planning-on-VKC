@@ -47,6 +47,7 @@ namespace AStar
         void setWorldSize(Vec2i worldSize_);
         void setDiagonalMovement(bool enable_);
         void setHeuristic(HeuristicFunction heuristic_);
+        void printMap(Vec2i source_, Vec2i target_);
         CoordinateList findPath(Vec2i source_, Vec2i target_);
         void addCollision(Vec2i coordinates_);
         void removeCollision(Vec2i coordinates_);

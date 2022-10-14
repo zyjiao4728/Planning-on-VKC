@@ -1,4 +1,5 @@
 #include <AStar.hpp>
+#include <iostream>
 #include <algorithm>
 
 using namespace std::placeholders;
@@ -66,6 +67,28 @@ void AStar::Generator::removeCollision(Vec2i coordinates_)
 void AStar::Generator::clearCollisions()
 {
     walls.clear();
+}
+
+void AStar::Generator::printMap(Vec2i source_, Vec2i target_) {
+  for (int x = 0; x < worldSize.x; x++) {
+    for (int y = 0; y < worldSize.y; y++) {
+      if (detectCollision({x, y})) {
+        if (x == source_.x && y == source_.y)
+          std::cout << "s!";
+        else if (x == target_.x && y == target_.y)
+          std::cout << "g!";
+        else
+          std::cout << "o";
+      } else if (x == source_.x && y == source_.y) {
+        std::cout << "S";
+      } else if (x == target_.x && y == target_.y) {
+        std::cout << "G";
+      } else {
+        std::cout << "+";
+      }
+    }
+    std::cout << std::endl;
+  }
 }
 
 AStar::CoordinateList AStar::Generator::findPath(Vec2i source_, Vec2i target_)
