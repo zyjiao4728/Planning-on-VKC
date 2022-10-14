@@ -35,8 +35,9 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   ProbGenerator prob_generator;
   VKCEnvBasic::Ptr vkc_env = std::move(raw_vkc_env.clone());
   auto env = vkc_env->getVKCEnv()->getTesseract();
-  std::cout << fmt::format("get group names: {}", env->getGroupNames()).c_str()
-            << std::endl;
+  // std::cout << fmt::format("get group names: {}",
+  // env->getGroupNames()).c_str()
+  //           << std::endl;
   auto current_state = env->getCurrentJointValues();
 
   // get action iks
@@ -47,6 +48,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                             action->getActionName().c_str());
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
         std::move(env->getKinematicGroup(action->getManipulatorID()));
+
     // fmt::print("kin group joint names: {}", kin_group->getJointNames());
     auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
     CONSOLE_BRIDGE_logDebug("mixed waypoint for long horizon seed generated");
@@ -56,14 +58,16 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     if (action->joint_candidates.size()) {
       filtered_ik_result = action->joint_candidates;
     } else {
-      auto ik_result = tesseract_planning::getIKs(kin_group, wp, "world");
+      filtered_ik_result = tesseract_planning::getIKs(
+          env, kin_group,
+          env->getCurrentJointValues(kin_group->getJointNames()), wp, "world");
 
       CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
-                              ik_result.size());
-      filtered_ik_result =
-          tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
-      CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
                               filtered_ik_result.size());
+      // filtered_ik_result =
+      //     tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
+      // CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
+      //                         filtered_ik_result.size());
       action->joint_candidates = filtered_ik_result;
     }
 
@@ -71,7 +75,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     if (!action->astar_init) {
       tesseract_collision::DiscreteContactManager::Ptr
           discrete_contact_manager = std::move(vkc_env->getVKCEnv()
-                                                   ->getTesseractNonInverse()
+                                                   ->getTesseract()
                                                    ->getDiscreteContactManager()
                                                    ->clone());
       initAstarMap(action, discrete_contact_manager);
@@ -98,9 +102,17 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                   sub_actions.front()->joint_candidates.end(),
                   ik_set.front()) ==
         sub_actions.front()->joint_candidates.end()) {
+      // ik not exist for this action
       sub_actions.front()->joint_candidates.push_back(ik_set.front());
     }
   }
+  std::cout << "first 10 ik candidates: " << std::endl;
+  for (int i = 0; i < 10; i++) {
+    std::cout << sub_actions.front()->joint_candidates[i].transpose()
+              << std::endl;
+  }
+  CONSOLE_BRIDGE_logDebug("candidates for first action: %d",
+                          sub_actions.front()->joint_candidates.size());
   CONSOLE_BRIDGE_logInform("generating long horizon seed success");
   raw_vkc_env.setEndEffector(origin_ee);
   raw_vkc_env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
@@ -117,8 +129,11 @@ LongHorizonSeedGenerator::getOrderedIKSet(
       ik_set_queue;
   std::vector<tesseract_kinematics::IKSolutions> set_input;
 
+  set_input.insert(set_input.begin(), {current_state});
+
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 50);
+    auto filtered_iks = kmeans(act_ik, 80);
+    // auto filtered_iks = act_ik;
     CONSOLE_BRIDGE_logDebug("filtered iks after kmeans: %d - %d/%d",
                             filtered_iks[0].size(), filtered_iks.size(),
                             act_ik.size());
@@ -128,7 +143,9 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   // std::reverse(set_input.begin(), set_input.end());
   // auto sets = CartesianProduct(set_input);
   // no need to reverse for new function
+  // std::cout << set_input.size() << std::endl;
   auto sets = getValidIKSets(set_input, actions);
+  // std::cout << sets.front().size() << std::endl;
   if (sets.size() == 0)
     throw std::runtime_error("no valid sets found for given ik set input.");
   double lowest_cost = 10000;
@@ -141,17 +158,25 @@ LongHorizonSeedGenerator::getOrderedIKSet(
     else {
       Eigen::VectorXd coeff_;
       coeff_.setOnes(robot_vkc_length_);
+      coeff_[3] = 5.;
+      coeff_[0] = 2.;
+      coeff_[1] = 2.;
+      coeff_[2] = 0.5;
       cost_coeffs.push_back(coeff_);
     }
   }
+
   for (const auto &ik_set : sets) {
-    double cost = getIKSetCost(current_state, ik_set, cost_coeffs);
+    double cost = getIKSetCost(ik_set, cost_coeffs);
     if (cost > 0) ik_set_queue.emplace(ik_set, cost);
   }
+
   std::vector<tesseract_kinematics::IKSolutions> sets_result;
 
   while (ik_set_queue.size() > 0) {
-    sets_result.push_back(ik_set_queue.top().ik_set);
+    auto set = ik_set_queue.top().ik_set;
+    set.erase(set.begin());
+    sets_result.push_back(set);  // small to large
     // std::cout << ik_set_queue.top().cost << std::endl;
     ik_set_queue.pop();
   }
@@ -159,26 +184,16 @@ LongHorizonSeedGenerator::getOrderedIKSet(
 }
 
 double LongHorizonSeedGenerator::getIKSetCost(
-    const Eigen::VectorXd current_state,
     const std::vector<Eigen::VectorXd> &act_ik_set,
     const std::vector<Eigen::VectorXd> cost_coeffs) {
-  assert(act_ik_set.size() > 0 && act_ik_set[0].size() == cost_coeffs.size());
-  assert(cost_coeffs[0].size() == robot_vkc_length_);
+  assert(cost_coeffs.size() > 0);
+  assert(act_ik_set.size() == cost_coeffs.size() + 1);
   std::stringstream ss;
-  ss << "calculating ik set cost with cost coeffs: " << std::endl
-     << cost_coeffs[0].transpose() << std::endl;
-  ;
-  double cost = (act_ik_set[0].head(robot_vkc_length_) -
-                 current_state.head(robot_vkc_length_))
-                    .cwiseProduct(cost_coeffs[0])
-                    .array()
-                    .abs()
-                    .sum();
-  for (int i = 1; i < act_ik_set.size(); i++) {
+  double cost = 0;
+  for (int i = 0; i < act_ik_set.size() - 1; i++) {
     assert(cost_coeffs[i].size() == robot_vkc_length_);
-    ss << cost_coeffs[i].transpose() << std::endl;
-    cost += (act_ik_set[i - 1].head(robot_vkc_length_) -
-             act_ik_set[i].head(robot_vkc_length_))
+    cost += (act_ik_set[i].head(robot_vkc_length_) -
+             act_ik_set[i + 1].head(robot_vkc_length_))
                 .cwiseProduct(cost_coeffs[i])
                 .array()
                 .abs()
@@ -193,8 +208,10 @@ LongHorizonSeedGenerator::getValidIKSets(
     const std::vector<ActionBase::Ptr> &actions) {
   std::vector<std::vector<Eigen::VectorXd>> accum;
   std::vector<Eigen::VectorXd> stack;
+  CONSOLE_BRIDGE_logDebug("getting valid ik sets...");
   if (act_iks.size() > 0)
     getValidIKSetsHelper_(accum, stack, act_iks, 0, actions);
+  CONSOLE_BRIDGE_logDebug("valid ik sets: %ld", accum.size());
   return accum;
 }
 
@@ -204,11 +221,11 @@ void LongHorizonSeedGenerator::getValidIKSetsHelper_(
     std::vector<std::vector<Eigen::VectorXd>> sequences, int index,
     const std::vector<ActionBase::Ptr> &actions) {
   tesseract_kinematics::IKSolutions sequence = sequences[index];
-  for (auto &i : sequence) {
-    // if (index > 0 && !astarChecking(actions[index - 1], stack.back(), i))
-    //   continue;
-    stack.push_back(i);
-    if (index == actions.size() - 1)
+  for (auto &ik : sequence) {
+    if (index > 0 && !astarChecking(actions[index - 1], stack.back(), ik))
+      continue;
+    stack.push_back(ik);
+    if (index == sequences.size() - 1)
       accum.push_back(stack);
     else
       getValidIKSetsHelper_(accum, stack, sequences, index + 1, actions);
@@ -252,7 +269,7 @@ void LongHorizonSeedGenerator::initAstarMap(
         // std::cout << "+";
       }
     }
-    // std::cout << "" << std::endl;
+    // std::cout << std::endl;
   }
   action->astar_init = true;
 }
@@ -260,18 +277,31 @@ void LongHorizonSeedGenerator::initAstarMap(
 bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
                                              Eigen::VectorXd start,
                                              Eigen::VectorXd end) {
+  if (start.size() == 0 || end.size() == 0) return false;
+  assert(start.size() > 0);
+  assert(end.size() > 0);
   int base_x = int(round((start[0] + map_.map_x / 2.0) / map_.step_size));
   int base_y = int(round((start[1] + map_.map_y / 2.0) / map_.step_size));
 
   int end_x = int(round((end[0] + map_.map_x / 2.0) / map_.step_size));
   int end_y = int(round((end[1] + map_.map_y / 2.0) / map_.step_size));
+  bool base_collision =
+      action->astar_generator.detectCollision({base_x, base_y});
+  bool end_collision = action->astar_generator.detectCollision({end_x, end_y});
+  // action->astar_generator.printMap({base_x, base_y}, {end_x, end_y});
+  action->astar_generator.removeCollision({base_x, base_y});
+  action->astar_generator.removeCollision({end_x, end_y});
   auto path =
       action->astar_generator.findPath({base_x, base_y}, {end_x, end_y});
-  if (path.back().x != end_x || path.back().y != end_y) {
+  bool solution_found = true;
+  if (path.front().x != end_x || path.front().y != end_y) {
     // cannot find valid astar path
-    return false;
+    solution_found = false;
   }
-  return true;
+  if (base_collision) action->astar_generator.addCollision({base_x, base_y});
+  if (end_collision) action->astar_generator.addCollision({end_x, end_y});
+  // std::cout << solution_found << "\t";
+  return solution_found;
 }
 
 tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
@@ -319,6 +349,7 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
     double dist_ = (data_all.row(i) - mu.row(z(i))).matrix().norm();
     if (dist_ < best_dist(z(i))) {
       best_dist(z(i)) = dist_;
+      // if (!data_all.row(i).size()) continue;
       closest[z(i)] = data_all.row(i).transpose();
     }
   }

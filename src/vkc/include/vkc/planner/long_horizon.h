@@ -40,8 +40,7 @@ class LongHorizonSeedGenerator {
   tesseract_kinematics::IKSolutions kmeans(
       const tesseract_kinematics::IKSolutions &act_iks, int k);
 
-  double getIKSetCost(const Eigen::VectorXd current_state,
-                      const tesseract_kinematics::IKSolutions &act_ik_set,
+  double getIKSetCost(const tesseract_kinematics::IKSolutions &act_ik_set,
                       const std::vector<Eigen::VectorXd> cost_coeffs);
 
   std::vector<std::vector<Eigen::VectorXd>> getValidIKSets(
