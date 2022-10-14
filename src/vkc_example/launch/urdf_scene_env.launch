@@ -11,6 +11,7 @@
   <arg name="steps" default="30" />
   <arg name="niter" default="500" />
   <arg name="nruns" default="5" />
+  <arg name="taskid" default="1" />
 
   <arg name="husky_locx" default="0.0"/>
   <arg name="husky_locy" default="0.0"/>
@@ -38,6 +39,7 @@
     <param name="steps" type="int" value="$(arg steps)" />
     <param name="niter" type="int" value="$(arg niter)" />
     <param name="nruns" type="int" value="$(arg nruns)" />
+    <param name="taskid" type="int" value="$(arg taskid)" />
   </node>
 
   <!-- Launch visualization -->

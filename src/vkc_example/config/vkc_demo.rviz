@@ -59,13 +59,13 @@ Visualization Manager:
       Value: true
     - Alpha: 1
       Class: rviz/Axes
-      Enabled: false
+      Enabled: true
       Length: 1
       Name: Axes
       Radius: 0.10000000149011612
       Reference Frame: world
       Show Trail: false
-      Value: false
+      Value: true
     - Class: tesseract_rviz/EnvironmentState
       Enabled: false
       Environment:
@@ -109,24 +109,23 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        base_link:
+        bar_chair_2_base:
           Alpha: 1
           Collision:
             ACM:
-              ur_arm_base_link: Adjacent
-              ur_arm_shoulder_link: Never
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        bed_base:
-          Alpha: 1
-          Collision:
-            ACM:
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -147,8 +146,148 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bar_chair_2_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        bar_chair_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bar_chair_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_footprint:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        base_link:
+          Alpha: 1
+          Collision:
+            ACM:
+              ur_arm_base_link: Adjacent
+              ur_arm_shoulder_link: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        bed_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -167,7 +306,19 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -188,8 +339,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -225,6 +383,580 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        cabinet_48479_base:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cabinet_48479_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cabinet_48479_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_back: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_48479_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_back: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_48479_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Adjacent
+              cabinet_48479_link_1: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        coffee_table_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        coffee_table_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cup_cup_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        cup_cup_link:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        dishwasher_link_0:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_1: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_link_1:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_link_2:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_back: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_link_3:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
+              bed_base: Never
+              cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Never
+              door_8966_link_1: Never
+              door_8966_link_2: Never
+              drawer_back_wall: Never
+              drawer_bottom_wall: Never
+              drawer_drawer1: Never
+              drawer_drawer2: Never
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Never
+              drawer_right_wall: Never
+              drawer_top_wall: Never
+              fridge_0001: Never
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
+              swivel_chair_base: Never
+              table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
+              wall_main_back: Never
+              wall_main_front: Never
+              wall_main_left: Never
+              wall_main_right: Never
+              wall_room_front_right: Never
+              wall_room_front_top: Never
+              wall_room_left: Never
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dishwasher_link_4:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Adjacent
+              dishwasher_link_1: Adjacent
+              dishwasher_link_2: Adjacent
+              dishwasher_link_3: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
         door_8936_base:
           Alpha: 1
           Show Axes: false
@@ -233,8 +965,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
               door_8966_link_1: Never
@@ -254,8 +998,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -270,8 +1021,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_2: Adjacent
               door_8966_link_1: Never
@@ -291,8 +1054,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -307,8 +1077,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Adjacent
               door_8936_link_1: Adjacent
               door_8966_link_1: Adjacent
@@ -328,8 +1110,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -352,8 +1141,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -373,8 +1174,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -389,8 +1197,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -410,14 +1230,22 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
               wall_main_right: Never
               wall_room_front_right: Never
               wall_room_front_top: Never
+              wall_room_left: Never
           Show Axes: false
           Show Trail: false
           Value: true
@@ -425,8 +1253,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -446,8 +1286,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -466,8 +1313,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -487,8 +1346,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -503,8 +1369,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -524,8 +1402,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -540,8 +1425,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -561,8 +1458,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -577,8 +1481,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -598,8 +1514,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -614,8 +1537,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -635,8 +1570,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -651,8 +1593,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -672,8 +1626,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -688,8 +1649,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -709,8 +1682,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -725,8 +1705,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -746,8 +1738,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -762,8 +1761,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -783,8 +1794,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Adjacent
               fridge_0001_dof_rootd_Ba002_t: Adjacent
               fridge_0001_dof_rootd_Ba003_t: Adjacent
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -799,8 +1817,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -820,8 +1850,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -836,8 +1873,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -857,8 +1906,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Default
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -873,8 +1929,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -894,8 +1962,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -910,8 +1985,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -931,8 +2018,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Never
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -947,8 +2041,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Never
+              bar_chair_base: Never
               bed_base: Never
               cabinet_13: Never
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Never
+              coffee_table_base: Never
+              cup_cup_link: Never
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Never
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Never
@@ -968,8 +2074,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Aa002_r: Default
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
+              kitchen_cabinet_lower: Never
+              kitchen_cabinet_top: Never
+              kitchen_washer: Never
+              pot_base: Never
+              sofa_base: Never
               swivel_chair_base: Never
               table_25569_base: Never
+              table_rect_base: Never
+              tv_base: Never
               wall_main_back: Never
               wall_main_front: Never
               wall_main_left: Never
@@ -1003,6 +2116,178 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        kitchen_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        kitchen_cabinet_lower:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        kitchen_cabinet_top:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        kitchen_washer:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
         left_inner_finger:
           Alpha: 1
           Show Axes: false
@@ -1028,6 +2313,66 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        pot_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        pot_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         rear_bumper_link:
           Alpha: 1
           Show Axes: false
@@ -1079,12 +2424,24 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        swivel_chair_base:
+        sofa_base:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1105,7 +2462,74 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        sofa_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        swivel_chair_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1124,8 +2548,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1146,7 +2582,14 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1158,6 +2601,66 @@ Visualization Manager:
           Show Trail: false
           Value: true
         table_25569_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        table_rect_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              tv_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        table_rect_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -1176,6 +2679,66 @@ Visualization Manager:
           Show Trail: false
           Value: true
         top_plate_rear_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        tv_base:
+          Alpha: 1
+          Collision:
+            ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
+              bed_base: Adjacent
+              cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
+              door_8936_link_0: Never
+              door_8936_link_1: Never
+              door_8936_link_2: Adjacent
+              door_8966_link_1: Adjacent
+              door_8966_link_2: Never
+              drawer_back_wall: Adjacent
+              drawer_bottom_wall: Adjacent
+              drawer_drawer1: Adjacent
+              drawer_drawer2: Adjacent
+              drawer_handle1: Never
+              drawer_handle2: Never
+              drawer_left_wall: Adjacent
+              drawer_right_wall: Adjacent
+              drawer_top_wall: Adjacent
+              fridge_0001: Adjacent
+              fridge_0001_dof_rootd_Aa001_r: Never
+              fridge_0001_dof_rootd_Aa002_r: Never
+              fridge_0001_dof_rootd_Ba001_t: Never
+              fridge_0001_dof_rootd_Ba002_t: Never
+              fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
+              swivel_chair_base: Adjacent
+              table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              wall_main_back: Adjacent
+              wall_main_front: Adjacent
+              wall_main_left: Adjacent
+              wall_main_right: Adjacent
+              wall_room_front_right: Adjacent
+              wall_room_front_top: Adjacent
+              wall_room_left: Adjacent
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        tv_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -1301,8 +2864,18 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1323,8 +2896,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
               wall_main_right: Adjacent
@@ -1338,8 +2918,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1360,8 +2952,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_left: Adjacent
               wall_main_right: Adjacent
@@ -1375,8 +2974,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1397,8 +3008,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_right: Adjacent
@@ -1412,8 +3030,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Default
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1434,8 +3064,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1449,8 +3086,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1471,8 +3120,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1486,8 +3142,20 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
@@ -1508,8 +3176,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1523,12 +3198,25 @@ Visualization Manager:
           Alpha: 1
           Collision:
             ACM:
+              bar_chair_2_base: Adjacent
+              bar_chair_base: Adjacent
               bed_base: Adjacent
               cabinet_13: Adjacent
+              cabinet_48479_link_0: Never
+              cabinet_48479_link_1: Never
+              cabinet_48479_link_2: Adjacent
+              coffee_table_base: Adjacent
+              cup_cup_link: Adjacent
+              dishwasher_link_0: Never
+              dishwasher_link_1: Never
+              dishwasher_link_2: Never
+              dishwasher_link_3: Never
+              dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
               door_8966_link_1: Adjacent
+              door_8966_link_2: Never
               drawer_back_wall: Adjacent
               drawer_bottom_wall: Adjacent
               drawer_drawer1: Adjacent
@@ -1544,8 +3232,15 @@ Visualization Manager:
               fridge_0001_dof_rootd_Ba001_t: Never
               fridge_0001_dof_rootd_Ba002_t: Never
               fridge_0001_dof_rootd_Ba003_t: Never
+              kitchen_cabinet_lower: Adjacent
+              kitchen_cabinet_top: Adjacent
+              kitchen_washer: Adjacent
+              pot_base: Adjacent
+              sofa_base: Adjacent
               swivel_chair_base: Adjacent
               table_25569_base: Adjacent
+              table_rect_base: Adjacent
+              tv_base: Adjacent
               wall_main_back: Adjacent
               wall_main_front: Adjacent
               wall_main_left: Adjacent
@@ -1566,7 +3261,7 @@ Visualization Manager:
       Trajectory Visualization:
         Display Mode: Loop
         Interrupt Display: false
-        Time Scale: 0.5
+        Time Scale: 1.5
         Trail Step Size: 1
         Value: ""
       Value: true
@@ -1616,7 +3311,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.497051239013672
+      Distance: 5.142156600952148
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -1624,17 +3319,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: -0.1419326663017273
-        Y: -0.3335096836090088
-        Z: 1.7928143739700317
+        X: 1.4627455472946167
+        Y: 1.4932336807250977
+        Z: 0.8834556341171265
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.1047968864440918
+      Pitch: 0.8147963881492615
       Target Frame: <Fixed Frame>
-      Yaw: 0.02843736857175827
+      Yaw: 5.866629123687744
     Saved: ~
 Window Geometry:
   Displays:
