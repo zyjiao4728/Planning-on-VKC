@@ -14,13 +14,15 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   ProbGenerator prob_generator;
 
-    env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+  env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   Eigen::Isometry3d cabinet_handle_pose;
   cabinet_handle_pose.setIdentity();
-  cabinet_handle_pose.translation() = Eigen::Vector3d(0.964992289136, -0.0153599504487, 1.14594864303);
-  
+  cabinet_handle_pose.translation() =
+      Eigen::Vector3d(1.24748926979, 0.0795272607703, 1.15487884514);
+
   cabinet_handle_pose.linear() =
-      Eigen::Quaterniond(-0.02620042974, -0.00255692387567, 0.00665097591866, 0.999631314106)
+      Eigen::Quaterniond(-0.0276394300716, -0.00732565483015, 0.00295412146665,
+                         0.999586749539)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "closet_base_joint", cabinet_handle_pose);
@@ -29,8 +31,9 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d table_pose;
   table_pose.setIdentity();
   table_pose.translation() =
-      Eigen::Vector3d(-0.748031271632, 0.155491280629, 0.765383015236);
-  table_pose.linear() = Eigen::Quaterniond(0.999982975986, -0.00273865443743, 0.000789511413217, 0.00509157943406)
+      Eigen::Vector3d(-0.505623316002, 0.0720372811975, 0.767919456786);
+  table_pose.linear() = Eigen::Quaterniond(0.999995378251, -0.000870022109151,
+                                           -0.000279317347915, 0.00289974475127)
                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
@@ -39,10 +42,11 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d drawer_pose;
   drawer_pose.setIdentity();
   drawer_pose.translation() =
-      Eigen::Vector3d(1.02378573789, -0.202389358416, 0.779723742807);
-  
+      Eigen::Vector3d(1.2955805008, -0.0981322452166, 0.788374883425);
+
   drawer_pose.linear() =
-      Eigen::Quaterniond(-0.00149230337749, 5.2858015831e-05, 0.0019211496097, 0.999997039706)
+      Eigen::Quaterniond(0.000381468008155, -0.00647296044046, -0.0020959194287,
+                         0.999976780924)
           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "drawer_world_joint", drawer_pose);
@@ -51,8 +55,9 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d box_pose;
   box_pose.setIdentity();
   box_pose.translation() =
-      Eigen::Vector3d(-0.731249972819, 0.305246844446, 0.807117940401);
-  box_pose.linear() = Eigen::Quaterniond(0.50908570865, -0.489181847338, -0.511384233042, -0.489917368216)
+      Eigen::Vector3d(-0.488343376063, 0.221549065267, 0.8100664763);
+  box_pose.linear() = Eigen::Quaterniond(0.513140008661, -0.484234159589,
+                                         -0.514466554295, -0.487369238576)
                           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "box_box_base_joint", box_pose);
@@ -61,8 +66,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
-    // seed_generator.generate(env, sub_actions);
-    // action->switchCandidate();
+    seed_generator.generate(env, sub_actions);
+    action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -88,7 +93,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        // action->switchCandidate();
+        action->switchCandidate();
       }
     }
     const auto &ci = response.results;
@@ -145,7 +150,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("closet_bottom_right_door_joint", -1.9198621771937625);
+    joint_objectives.emplace_back("closet_bottom_right_door_joint",
+                                  -1.9198621771937625);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
@@ -187,8 +193,11 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
     Eigen::Isometry3d destination;
     destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(0.933080679631, -0.205241474359, 0.794452699032 +0.15);
-    destination.linear() = Eigen::Quaterniond(0.5332182813, 0.527659491216, -0.444703651251, 0.489379595387).matrix();
+    destination.translation() =
+        Eigen::Vector3d(1.19828555737, -0.109178547221, 0.801900872831 + 0.15);
+    destination.linear() = Eigen::Quaterniond(0.527083066682, 0.535179179479,
+                                              -0.436224629928, 0.495454093649)
+                               .matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
 
