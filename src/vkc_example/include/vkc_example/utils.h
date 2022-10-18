@@ -77,6 +77,13 @@ void TrajectoryVisualize(
     vkc::VKCEnvBasic &env, vkc::ActionSeq &actions,
     std::vector<tesseract_common::JointTrajectory> &joint_trajs);
 
+int saveDataToFile(const std::vector<double> &data, const std::string filename);
+
+void interpVKCData(std::vector<double> &data, std::vector<double> &elapsed_time,
+                   std::vector<tesseract_common::JointTrajectory> &joint_trajs);
+
+void setBaseJoint(vkc::ActionBase::Ptr action);
+
 class OutputHandlerColorSTD : public console_bridge::OutputHandlerSTD {
   void log(const std::string &text, console_bridge::LogLevel level,
            const char *filename, int line) {
@@ -120,4 +127,15 @@ void setupLog(
   console_bridge::setLogLevel(level);
 }
 
+Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
+                               Eigen::Isometry3d ee_goal);
+
+bool sampleArmPose1(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal,
+                    Eigen::VectorXd &ik_result);
+
+bool sampleArmPose2(
+    vkc::VKCEnvBasic &env, std::string target_joint, double target_value,
+    Eigen::VectorXd &ik_result,
+    vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr,
+    int remaining_steps);
 #endif

@@ -150,7 +150,7 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
         profile_ns::MMMO_DEFAULT_NAMESPACE, default_profile, ik_profile);
   } else {
     auto ompl_profile = std::make_shared<OMPLDefaultPlanProfile>();
-    ompl_profile->planning_time = 30;
+    ompl_profile->planning_time = 10.;
     ompl_profile->planners = {ompl_planner_config, ompl_planner_config};
     profiles->addProfile<OMPLDefaultPlanProfile>(
         profile_ns::OMPL_DEFAULT_NAMESPACE, default_profile, ompl_profile);

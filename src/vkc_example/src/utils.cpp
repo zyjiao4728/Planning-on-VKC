@@ -1,5 +1,5 @@
-#include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/3mo/3mo_motion_planner.h>
+#include <tesseract_motion_planners/ompl/ompl_motion_planner.h>
 #include <tesseract_motion_planners/trajopt/profile/trajopt_default_solver_profile.h>
 #include <vkc_example/utils.h>
 
@@ -37,7 +37,7 @@ void solveOmplProb(PlannerRequest request, PlannerResponse &response,
   }
 
   CONSOLE_BRIDGE_logWarn("%d, %s", planning_status.value(),
-           planning_status.message().c_str());
+                         planning_status.message().c_str());
   return;
 }
 
@@ -141,16 +141,15 @@ void refineTrajectory(tesseract_common::JointTrajectory &traj,
         traj.states[i + 1].position[0] - traj.states[i].position[0];
     double delta_orientation = atan2(delta_y, delta_x);
 
-    if (i == 0){
+    if (i == 0) {
       prev_orientation = delta_orientation;
     }
 
-    if (abs(delta_orientation - prev_orientation) > M_PI){
-      if (delta_orientation > prev_orientation){
-        delta_orientation -= 2.0*M_PI;
-      }
-      else{
-        delta_orientation += 2.0*M_PI;
+    if (abs(delta_orientation - prev_orientation) > M_PI) {
+      if (delta_orientation > prev_orientation) {
+        delta_orientation -= 2.0 * M_PI;
+      } else {
+        delta_orientation += 2.0 * M_PI;
       }
     }
     prev_orientation = delta_orientation;
@@ -228,6 +227,56 @@ int saveTrajToFile(const tesseract_common::TrajArray &traj,
   return 0;
 }
 
+int saveDataToFile(const std::vector<double> &data,
+                   const std::string filename) {
+  ofstream fileout;
+  fileout.open(filename, std::ios_base::app);
+
+  if (!fileout.is_open()) {
+    std::cout << "Cannot open file: " << filename << std::endl;
+    return 0;
+  }
+
+  for (auto item : data) {
+    fileout << item << ",";
+  }
+  fileout << "\n";
+  fileout.close();
+  std::cout << "Trajectory file save at: " << filename << std::endl;
+
+  return 1;
+}
+
+void interpVKCData(
+    std::vector<double> &data, std::vector<double> &elapsed_time,
+    std::vector<tesseract_common::JointTrajectory> &joint_trajs) {
+  for (int i = 0; i < elapsed_time.size(); i++) {
+    data.emplace_back(elapsed_time[i]);
+    if (elapsed_time[i] < 0.) {
+      data.emplace_back(-1);
+      data.emplace_back(-1);
+      data.emplace_back(0);
+      continue;
+    }
+    std::vector<Eigen::VectorXd> base_trajectory;
+    std::vector<Eigen::VectorXd> arm_trajectory;
+    for (auto state : joint_trajs[i].states) {
+      base_trajectory.emplace_back(state.position.head(2));
+      arm_trajectory.emplace_back(state.position.segment(3, 6));
+    }
+    double base_cost = computeTrajLength(base_trajectory);
+    double arm_cost = computeTrajLength(arm_trajectory);
+    data.emplace_back(base_cost);
+    data.emplace_back(arm_cost);
+    data.emplace_back(1);
+  }
+}
+
+void setBaseJoint(vkc::ActionBase::Ptr action) {
+  action->setBaseJoint(std::string("base_y_base_x"),
+                       std::string("base_theta_base_y"));
+}
+
 std::vector<vkc::JointDesiredPose> getJointHome(
     std::unordered_map<std::string, double> home_pose) {
   std::vector<vkc::JointDesiredPose> joint_home;
@@ -298,4 +347,261 @@ double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory) {
   }
 
   return dist_travelled;
+}
+
+Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
+                               Eigen::Isometry3d ee_goal) {
+  tesseract_kinematics::KinematicGroup::Ptr kin =
+      std::move(env.getVKCEnv()->getTesseract()->getKinematicGroup("vkc"));
+  tesseract_kinematics::KinGroupIKInputs ik_inputs;
+
+  ik_inputs.push_back(tesseract_kinematics::KinGroupIKInput(
+      ee_goal, "world", "robotiq_arg2f_base_link"));
+
+  tesseract_common::KinematicLimits limits = kin->getLimits();
+  tesseract_collision::ContactResultMap contact_results;
+  tesseract_srdf::JointGroup joint_names = kin->getJointNames();
+  Eigen::VectorXd initial_joint_values =
+      env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+          kin->getJointNames());
+
+  double max_cost = 1e6;
+  Eigen::VectorXd ik_result = initial_joint_values;
+  int sample_base_pose_tries = 0;
+  int feasible_poses = 0;
+  while (sample_base_pose_tries < 10000 && feasible_poses < 100) {
+    sample_base_pose_tries++;
+    Eigen::VectorXd ik_seed =
+        tesseract_common::generateRandomNumber(limits.joint_limits);
+    tesseract_kinematics::IKSolutions result =
+        kin->calcInvKin(ik_inputs, ik_seed);
+    for (const auto &res : result) {
+      env.getVKCEnv()->getTesseract()->setState(joint_names, res);
+      env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+          contact_results, tesseract_collision::ContactTestType::ALL);
+      if (contact_results.size() == 0) {
+        if ((ik_seed.head(2) - res.head(2)).array().abs().sum() < max_cost) {
+          ik_result = res;
+          max_cost = (ik_seed.head(2) - res.head(2)).array().abs().sum();
+        }
+        feasible_poses++;
+      }
+      contact_results.clear();
+    }
+  }
+  env.getVKCEnv()->getTesseract()->setState(joint_names, initial_joint_values);
+  return ik_result;
+}
+
+bool sampleArmPose1(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal,
+                    Eigen::VectorXd &ik_result) {
+  tesseract_kinematics::KinematicGroup::Ptr kin =
+      std::move(env.getVKCEnv()->getTesseract()->getKinematicGroup("arm"));
+  tesseract_kinematics::KinGroupIKInputs ik_inputs;
+
+  ik_inputs.push_back(tesseract_kinematics::KinGroupIKInput(
+      ee_goal, "world", "robotiq_arg2f_base_link"));
+
+  tesseract_collision::ContactResultMap contact_results;
+  tesseract_srdf::JointGroup joint_names = kin->getJointNames();
+  Eigen::VectorXd ik_seed =
+      env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+          kin->getJointNames());
+
+  ik_result = ik_seed;
+  tesseract_kinematics::IKSolutions result;
+  for (int tries = 0; tries < 200; tries++) {
+    result = kin->calcInvKin(ik_inputs, ik_seed);
+    if (result.size() > 0) break;
+  }
+
+  double max_cost = 1e6;
+  bool in_collision = true;
+  for (const auto &res : result) {
+    if ((ik_seed - res).array().abs().sum() < max_cost) {
+      env.getVKCEnv()->getTesseract()->setState(joint_names, res);
+      env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+          contact_results, tesseract_collision::ContactTestType::ALL);
+      if (contact_results.size() > 0) {
+        in_collision = true;
+      } else {
+        ik_result = res;
+        max_cost = (ik_seed - res).array().abs().sum();
+        in_collision = false;
+        std::cout << "found ik, collision: " << in_collision
+                  << ", cost: " << max_cost << std::endl;
+      }
+    }
+  }
+  if (in_collision) {
+    std::cout << "ik not found." << std::endl;
+  }
+  contact_results.clear();
+  return !in_collision;
+}
+
+bool sampleArmPose2(
+    vkc::VKCEnvBasic &env, std::string target_joint, double target_value,
+    Eigen::VectorXd &ik_result,
+    vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr,
+    int remaining_steps) {
+  std::unordered_map<std::string, double> joint_init;
+  joint_init[target_joint] =
+      env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+          std::vector<std::string>({target_joint}))[0];
+
+  // std::cout << 1 << std::endl;
+  tesseract_kinematics::KinematicGroup::Ptr kin =
+      std::move(env.getVKCEnv()->getTesseract()->getKinematicGroup("arm"));
+
+  if (abs(joint_init[target_joint] - target_value) < 0.02) {
+    ik_result = env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+        kin->getJointNames());
+    return true;
+  }
+
+  int max_inc = 100;
+  double joint_res =
+      (target_value - joint_init[target_joint]) / remaining_steps;
+  double joint_fineres =
+      (target_value - joint_init[target_joint]) / remaining_steps / 10;
+  int n_inc = 0;
+
+  bool no_collision = false;
+  bool found_ik = false;
+
+  joint_init[target_joint] += joint_res;
+
+  env.getVKCEnv()->getTesseract()->setState(joint_init);
+
+  tesseract_kinematics::IKSolutions result;
+
+  tesseract_kinematics::KinGroupIKInputs ik_inputs;
+  Eigen::Isometry3d ee_target =
+      env.getVKCEnv()->getTesseract()->getLinkTransform(
+          attach_location_ptr->link_name_) *
+      attach_location_ptr->local_joint_origin_transform;
+  ik_inputs.push_back(tesseract_kinematics::KinGroupIKInput(
+      ee_target, "world", "robotiq_arg2f_base_link"));
+  tesseract_srdf::JointGroup joint_names = kin->getJointNames();
+  Eigen::VectorXd ik_seed =
+      env.getVKCEnv()->getTesseract()->getCurrentJointValues(
+          kin->getJointNames());
+  ik_result = ik_seed;
+  // std::cout << 2 << std::endl;
+  for (int tries = 0; tries < 200; tries++) {
+    result = kin->calcInvKin(ik_inputs, ik_seed);
+    if (result.size() > 0) {
+      found_ik = true;
+      ik_result = result[0];
+      break;
+    }
+  }
+  // std::cout << 3 << std::endl;
+  tesseract_collision::ContactResultMap contact_results;
+  double max_cost = 1e6;
+  for (const auto &res : result) {
+    if ((ik_seed - res).array().abs().sum() < max_cost) {
+      env.getVKCEnv()->getTesseract()->setState(joint_names, res);
+      env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+          contact_results, tesseract_collision::ContactTestType::ALL);
+      if (contact_results.size() > 0) {
+        for (auto contact_result : contact_results) {
+          std::cout << contact_result.first.first << ":\t"
+                    << contact_result.first.second << std::endl;
+        }
+        no_collision = false;
+      } else {
+        max_cost = (ik_seed - res).array().abs().sum();
+        ik_result = res;
+        no_collision = true;
+      }
+    }
+  }
+  // std::cout << 4 << std::endl;
+  if (no_collision) {
+    std::cout << std::boolalpha;
+    std::cout << "found ik " << found_ik << " in collision: " << !no_collision
+              << ", cost: " << max_cost
+              << ", joint_init: " << joint_init[target_joint] << std::endl;
+    return (found_ik && no_collision);
+  }
+
+  auto temp_joint_init = joint_init;
+  // std::cout << 5 << std::endl;
+  while (!no_collision && n_inc < max_inc) {
+    n_inc++;
+    ik_inputs.clear();
+
+    if (found_ik) {
+      temp_joint_init[target_joint] += joint_fineres;
+      if (abs(temp_joint_init[target_joint]-joint_init[target_joint])>abs(target_value-joint_init[target_joint])){
+        temp_joint_init[target_joint] = target_value;
+      }
+      env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
+    } else {
+      temp_joint_init[target_joint] -= joint_fineres;
+      if (target_value > 0){
+        temp_joint_init[target_joint] =
+          std::max(0.0, temp_joint_init[target_joint]);
+      }
+      else{
+        temp_joint_init[target_joint] =
+          std::min(0.0, temp_joint_init[target_joint]);
+      }
+      
+      env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
+    }
+    // std::cout << 6 << std::endl;
+    Eigen::Isometry3d ee_target =
+        env.getVKCEnv()->getTesseract()->getLinkTransform(
+            attach_location_ptr->link_name_) *
+        attach_location_ptr->local_joint_origin_transform;
+    ik_inputs.push_back(tesseract_kinematics::KinGroupIKInput(
+        ee_target, "world", "robotiq_arg2f_base_link"));
+
+    for (int tries = 0; tries < 200; tries++) {
+      result = kin->calcInvKin(ik_inputs, ik_seed);
+      if (result.size() > 0) {
+        ik_result = result[0];
+        found_ik = true;
+        break;
+      } else {
+        found_ik = false;
+      }
+    }
+    max_cost = 1e6;
+    // std::cout << 7 << std::endl;
+    for (const auto &res : result) {
+      if ((ik_seed - res).array().abs().sum() < max_cost) {
+        env.getVKCEnv()->getTesseract()->setState(joint_names, res);
+        env.getVKCEnv()
+            ->getTesseract()
+            ->getDiscreteContactManager()
+            ->contactTest(contact_results,
+                          tesseract_collision::ContactTestType::ALL);
+        if (contact_results.size() > 0) {
+          // for (auto contact_result : contact_results) {
+          //   std::cout << contact_result.first.first << ":\t"
+          //             << contact_result.first.second << std::endl;
+          // }
+          no_collision = false;
+        } else {
+          max_cost = (ik_seed - res).array().abs().sum();
+          ik_result = res;
+          no_collision = true;
+        }
+      }
+      contact_results.clear();
+    }
+    // std::cout << 8 << std::endl;
+    if (found_ik) {
+      std::cout << std::boolalpha;
+      std::cout << "found ik " << found_ik << " in collision: " << !no_collision
+                << ", cost: " << max_cost
+                << ", temp_joint_init: " << temp_joint_init[target_joint]
+                << std::endl;
+    }
+  }
+  return (found_ik && no_collision);
 }

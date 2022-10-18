@@ -123,7 +123,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -183,7 +182,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -256,7 +254,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -316,7 +313,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -391,6 +387,16 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+        cabinet_48479_handle0:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        cabinet_48479_handle1:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         cabinet_48479_link_0:
           Alpha: 1
           Collision:
@@ -405,7 +411,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -461,7 +466,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -517,7 +521,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -573,7 +576,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -637,7 +639,6 @@ Visualization Manager:
               coffee_table_base: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -728,6 +729,7 @@ Visualization Manager:
               table_25569_base: Never
               table_rect_base: Never
               tv_base: Never
+              wall_main_back: Default
               wall_main_front: Never
               wall_main_left: Never
               wall_main_right: Never
@@ -782,6 +784,7 @@ Visualization Manager:
               table_25569_base: Never
               table_rect_base: Never
               tv_base: Never
+              wall_main_back: Default
               wall_main_front: Never
               wall_main_left: Never
               wall_main_right: Never
@@ -793,55 +796,6 @@ Visualization Manager:
           Value: true
         dishwasher_link_2:
           Alpha: 1
-          Collision:
-            ACM:
-              bar_chair_2_base: Never
-              bar_chair_base: Never
-              bed_base: Never
-              cabinet_13: Never
-              cabinet_48479_link_0: Never
-              cabinet_48479_link_1: Never
-              cabinet_48479_link_2: Never
-              coffee_table_base: Never
-              cup_cup_link: Never
-              dishwasher_link_3: Never
-              dishwasher_link_4: Adjacent
-              door_8936_link_0: Never
-              door_8936_link_1: Never
-              door_8936_link_2: Never
-              door_8966_link_1: Never
-              door_8966_link_2: Never
-              drawer_back_wall: Never
-              drawer_bottom_wall: Never
-              drawer_drawer1: Never
-              drawer_drawer2: Never
-              drawer_handle1: Never
-              drawer_handle2: Never
-              drawer_left_wall: Never
-              drawer_right_wall: Never
-              drawer_top_wall: Never
-              fridge_0001: Never
-              fridge_0001_dof_rootd_Aa001_r: Never
-              fridge_0001_dof_rootd_Aa002_r: Never
-              fridge_0001_dof_rootd_Ba001_t: Never
-              fridge_0001_dof_rootd_Ba002_t: Never
-              fridge_0001_dof_rootd_Ba003_t: Never
-              kitchen_cabinet_lower: Never
-              kitchen_cabinet_top: Never
-              kitchen_washer: Never
-              pot_base: Never
-              sofa_base: Never
-              swivel_chair_base: Never
-              table_25569_base: Never
-              table_rect_base: Never
-              tv_base: Never
-              wall_main_back: Never
-              wall_main_front: Never
-              wall_main_left: Never
-              wall_main_right: Never
-              wall_room_front_right: Never
-              wall_room_front_top: Never
-              wall_room_left: Never
           Show Axes: false
           Show Trail: false
           Value: true
@@ -860,7 +814,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
@@ -916,7 +869,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Adjacent
               dishwasher_link_1: Adjacent
-              dishwasher_link_2: Adjacent
               dishwasher_link_3: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
@@ -976,7 +928,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_1: Never
@@ -1032,7 +983,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1088,7 +1038,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Adjacent
@@ -1152,7 +1101,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1208,7 +1156,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1245,7 +1192,6 @@ Visualization Manager:
               wall_main_right: Never
               wall_room_front_right: Never
               wall_room_front_top: Never
-              wall_room_left: Never
           Show Axes: false
           Show Trail: false
           Value: true
@@ -1264,7 +1210,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1324,7 +1269,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1380,7 +1324,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1436,7 +1379,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1492,7 +1434,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1548,7 +1489,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1604,7 +1544,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1660,7 +1599,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1716,7 +1654,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1772,7 +1709,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -1828,7 +1764,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1884,7 +1819,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1940,7 +1874,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -1996,7 +1929,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -2052,7 +1984,6 @@ Visualization Manager:
               cup_cup_link: Never
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Never
               door_8936_link_0: Never
@@ -2135,7 +2066,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2191,7 +2121,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2247,7 +2176,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2328,7 +2256,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2439,7 +2366,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2499,7 +2425,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2559,7 +2484,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2619,7 +2543,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2697,7 +2620,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2873,7 +2795,8 @@ Visualization Manager:
               cabinet_48479_link_2: Adjacent
               coffee_table_base: Adjacent
               cup_cup_link: Adjacent
-              dishwasher_link_2: Never
+              dishwasher_link_0: Default
+              dishwasher_link_1: Default
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2929,7 +2852,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -2985,7 +2907,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -3041,7 +2962,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Default
@@ -3097,7 +3017,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -3153,7 +3072,6 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
@@ -3209,14 +3127,12 @@ Visualization Manager:
               cup_cup_link: Adjacent
               dishwasher_link_0: Never
               dishwasher_link_1: Never
-              dishwasher_link_2: Never
               dishwasher_link_3: Never
               dishwasher_link_4: Adjacent
               door_8936_link_0: Never
               door_8936_link_1: Never
               door_8936_link_2: Adjacent
               door_8966_link_1: Adjacent
-              door_8966_link_2: Never
               drawer_back_wall: Adjacent
               drawer_bottom_wall: Adjacent
               drawer_drawer1: Adjacent
@@ -3311,7 +3227,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.142156600952148
+      Distance: 9.062236785888672
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -3319,17 +3235,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 1.4627455472946167
-        Y: 1.4932336807250977
-        Z: 0.8834556341171265
+        X: 0.21336625516414642
+        Y: 0.17979775369167328
+        Z: 1.7539180517196655
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.8147963881492615
+      Pitch: 1.2147960662841797
       Target Frame: <Fixed Frame>
-      Yaw: 5.866629123687744
+      Yaw: 6.2766289710998535
     Saved: ~
 Window Geometry:
   Displays:

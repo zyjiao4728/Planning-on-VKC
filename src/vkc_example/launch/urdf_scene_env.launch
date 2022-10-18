@@ -8,6 +8,7 @@
 
   <arg name="plotting" default="true" />
   <arg name="rviz" default="true" />
+  <arg name="baseline" default="0" />
   <arg name="steps" default="30" />
   <arg name="niter" default="500" />
   <arg name="nruns" default="5" />
@@ -33,13 +34,14 @@
   <!-- If needed, broadcast static tf for robot root -->
   <node pkg="tf" type="static_transform_publisher" name="virtual_joint_broadcaster_0" args="0 0 0 0 0 0 world base_link 100" />
 
-  <node pkg="vkc_example" type="vkc_example_urdf_scene_env_node" name="urdf_scene_env_node" output="screen">
+  <node pkg="vkc_example" type="vkc_example_urdf_scene_env_node" name="urdf_scene_env_node" output="screen" required="true">
     <param name="plotting" type="bool" value="$(arg plotting)" />
     <param name="rviz" type="bool" value="$(arg rviz)" />
     <param name="steps" type="int" value="$(arg steps)" />
     <param name="niter" type="int" value="$(arg niter)" />
     <param name="nruns" type="int" value="$(arg nruns)" />
     <param name="taskid" type="int" value="$(arg taskid)" />
+    <param name="baseline" type="int" value="$(arg baseline)" />
   </node>
 
   <!-- Launch visualization -->

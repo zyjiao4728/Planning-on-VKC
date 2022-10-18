@@ -31,7 +31,6 @@
     <disable_collisions link1="bar_chair_2_base" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="bar_chair_2_base" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="bar_chair_2_base" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="bar_chair_2_base" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="bar_chair_2_base" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="bar_chair_2_base" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="bar_chair_2_base" link2="door_8936_link_0" reason="Never"/>
@@ -79,7 +78,6 @@
     <disable_collisions link1="bar_chair_base" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="bar_chair_base" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="bar_chair_base" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="bar_chair_base" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="bar_chair_base" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="bar_chair_base" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="bar_chair_base" link2="door_8936_link_0" reason="Never"/>
@@ -126,7 +124,6 @@
     <disable_collisions link1="bed_base" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="bed_base" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="bed_base" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="bed_base" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="bed_base" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="bed_base" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="bed_base" link2="door_8936_link_0" reason="Never"/>
@@ -172,7 +169,6 @@
     <disable_collisions link1="cabinet_13" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="cabinet_13" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="cabinet_13" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="cabinet_13" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="cabinet_13" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="cabinet_13" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="cabinet_13" link2="door_8936_link_0" reason="Never"/>
@@ -217,7 +213,6 @@
     <disable_collisions link1="cabinet_48479_link_0" link2="cup_cup_link" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_0" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_0" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="cabinet_48479_link_0" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_0" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_0" link2="dishwasher_link_4" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_0" link2="door_8936_link_0" reason="Never"/>
@@ -261,7 +256,6 @@
     <disable_collisions link1="cabinet_48479_link_1" link2="cup_cup_link" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_1" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_1" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="cabinet_48479_link_1" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_1" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_1" link2="dishwasher_link_4" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_1" link2="door_8936_link_0" reason="Never"/>
@@ -304,7 +298,6 @@
     <disable_collisions link1="cabinet_48479_link_2" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="cabinet_48479_link_2" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_2" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="cabinet_48479_link_2" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_2" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="cabinet_48479_link_2" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="cabinet_48479_link_2" link2="door_8936_link_0" reason="Never"/>
@@ -346,7 +339,6 @@
     <disable_collisions link1="coffee_table_base" link2="cup_cup_link" reason="Adjacent"/>
     <disable_collisions link1="coffee_table_base" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="coffee_table_base" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="coffee_table_base" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="coffee_table_base" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="coffee_table_base" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="coffee_table_base" link2="door_8936_link_0" reason="Never"/>
@@ -387,7 +379,6 @@
     <disable_collisions link1="coffee_table_base" link2="wall_room_left" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="dishwasher_link_0" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="dishwasher_link_1" reason="Never"/>
-    <disable_collisions link1="cup_cup_link" link2="dishwasher_link_2" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="dishwasher_link_3" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="door_8936_link_0" reason="Never"/>
@@ -458,6 +449,7 @@
     <disable_collisions link1="dishwasher_link_0" link2="table_25569_base" reason="Never"/>
     <disable_collisions link1="dishwasher_link_0" link2="table_rect_base" reason="Never"/>
     <disable_collisions link1="dishwasher_link_0" link2="tv_base" reason="Never"/>
+    <disable_collisions link1="dishwasher_link_0" link2="wall_main_back" reason="Default"/>
     <disable_collisions link1="dishwasher_link_0" link2="wall_main_front" reason="Never"/>
     <disable_collisions link1="dishwasher_link_0" link2="wall_main_left" reason="Never"/>
     <disable_collisions link1="dishwasher_link_0" link2="wall_main_right" reason="Never"/>
@@ -495,50 +487,13 @@
     <disable_collisions link1="dishwasher_link_1" link2="table_25569_base" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="table_rect_base" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="tv_base" reason="Never"/>
+    <disable_collisions link1="dishwasher_link_1" link2="wall_main_back" reason="Default"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_main_front" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_main_left" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_main_right" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_room_front_right" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_room_front_top" reason="Never"/>
     <disable_collisions link1="dishwasher_link_1" link2="wall_room_left" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="dishwasher_link_3" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="dishwasher_link_4" reason="Adjacent"/>
-    <disable_collisions link1="dishwasher_link_2" link2="door_8936_link_0" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="door_8936_link_1" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="door_8936_link_2" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="door_8966_link_1" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="door_8966_link_2" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_back_wall" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_bottom_wall" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_drawer1" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_drawer2" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_handle1" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_handle2" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_left_wall" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_right_wall" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="drawer_top_wall" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001_dof_rootd_Aa001_r" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001_dof_rootd_Aa002_r" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001_dof_rootd_Ba001_t" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001_dof_rootd_Ba002_t" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="fridge_0001_dof_rootd_Ba003_t" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="kitchen_cabinet_lower" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="kitchen_cabinet_top" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="kitchen_washer" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="pot_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="sofa_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="swivel_chair_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="table_25569_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="table_rect_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="tv_base" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_main_back" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_main_front" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_main_left" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_main_right" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_room_front_right" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_room_front_top" reason="Never"/>
-    <disable_collisions link1="dishwasher_link_2" link2="wall_room_left" reason="Never"/>
     <disable_collisions link1="dishwasher_link_3" link2="dishwasher_link_4" reason="Adjacent"/>
     <disable_collisions link1="dishwasher_link_3" link2="door_8936_link_0" reason="Never"/>
     <disable_collisions link1="dishwasher_link_3" link2="door_8936_link_1" reason="Never"/>
