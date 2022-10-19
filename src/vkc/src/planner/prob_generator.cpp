@@ -70,8 +70,11 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
 
   auto seed_instruction = plan_instruction;
   if (act->joint_candidate.size()) {
+    std::stringstream ss;
+    ss << act->joint_candidate.transpose();
     CONSOLE_BRIDGE_logInform(
-        "joint candidate found, resetting seed waypoint to joint waypoint...");
+        "joint candidate found, resetting seed waypoint to joint waypoint: %s",
+        ss.str().c_str());
     // std::cout << act->joint_candidate.size() << std::endl;
     assert(kinematic_group->getJointNames().size() ==
            act->joint_candidate.size());
@@ -123,7 +126,8 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
   tesseract_kinematics::KinematicGroup::Ptr kin_group =
       std::move(env_->getKinematicGroup(action->getManipulatorID()));
 
-  auto ompl_planner_config = std::make_shared<RRTConnectConfigurator>(); //LazyPRMstar, RRTConnect
+  auto ompl_planner_config =
+      std::make_shared<RRTConnectConfigurator>();  // LazyPRMstar, RRTConnect
   auto profiles = std::make_shared<ProfileDictionary>();
   std::string default_profile = "FREESPACE";
   if (wp.getLinkConstraints().size()) {

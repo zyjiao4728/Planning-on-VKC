@@ -1,6 +1,7 @@
 #ifndef VKC_ACTION_BASE_H
 #define VKC_ACTION_BASE_H
 
+#include <console_bridge/console.h>
 #include <tesseract_command_language/composite_instruction.h>
 
 #include <Eigen/Eigen>
@@ -119,7 +120,6 @@ class ActionBase {
 
   const VKCTraj& getInitTraj() const { return init_traj_; }
 
-
   void setBaseJoint(std::string base_joint_x, std::string base_joint_y) {
     base_joint_ = std::make_pair<std::string, std::string>(
         std::move(base_joint_x), std::move(base_joint_y));
@@ -138,6 +138,9 @@ class ActionBase {
   void switchCandidate() {
     joint_candidate = joint_candidates.front();
     joint_candidates.erase(joint_candidates.begin());
+    std::stringstream ss;
+    ss << joint_candidate.transpose();
+    CONSOLE_BRIDGE_logDebug("current joint candidate: %s", ss.str().c_str());
     // std::remove(joint_candidates.begin(), joint_candidates.end(),
     //             joint_candidate);
   }

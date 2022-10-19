@@ -7,6 +7,8 @@
 #include <AStar.hpp>
 #include <queue>
 
+const int K = 20;
+
 namespace vkc {
 
 LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
@@ -21,7 +23,7 @@ LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
 
 void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                                         std::vector<ActionBase::Ptr> &actions) {
-  CONSOLE_BRIDGE_logDebug("\n\rgenerating long horizon seed\n");
+  CONSOLE_BRIDGE_logDebug("\ngenerating long horizon seed\n");
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
   std::string origin_ee = raw_vkc_env.getEndEffectorLink();
@@ -84,30 +86,43 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
 
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
+
+    std::stringstream ss;
+    ss << filtered_ik_result.at(0).transpose();
     CONSOLE_BRIDGE_logDebug(
-        "long horizon udpate env success, processing next action...");
+        "long horizon udpate env with %s success, processing next action...",
+        ss.str().c_str());
   }
 
-  std::cout << "getting ordered ik set...";
-  Eigen::VectorXd coeff(9);
-  coeff.setOnes();
-  // coeff(2) = 0;
+  CONSOLE_BRIDGE_logDebug("getting ordered ik set...");
+
   auto ik_sets = getOrderedIKSet(current_state, act_iks, sub_actions);
   std::cout << "done." << std::endl;
   assert(ik_sets.size() != 0);
   assert(ik_sets.front().size() == sub_actions.size());
   sub_actions.front()->joint_candidates.clear();
   for (auto ik_set : ik_sets) {
-    if (std::find(sub_actions.front()->joint_candidates.begin(),
-                  sub_actions.front()->joint_candidates.end(),
-                  ik_set.front()) ==
-        sub_actions.front()->joint_candidates.end()) {
-      // ik not exist for this action
+    bool is_diff = true;
+    for (auto ik : sub_actions.front()->joint_candidates) {
+      if ((ik_set.front() - ik).matrix().norm() < 0.05) {
+        is_diff = false;
+        break;
+      }
+    }
+    if (is_diff) {
       sub_actions.front()->joint_candidates.push_back(ik_set.front());
     }
+    // if (std::find(sub_actions.front()->joint_candidates.begin(),
+    //               sub_actions.front()->joint_candidates.end(),
+    //               ik_set.front()) ==
+    //     sub_actions.front()->joint_candidates.end()) {
+    //   // ik not exist for this action
+    //   sub_actions.front()->joint_candidates.push_back(ik_set.front());
+    // }
   }
   std::cout << "first 10 ik candidates: " << std::endl;
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0;
+       i < min(10, (int)sub_actions.front()->joint_candidates.size()); i++) {
     std::cout << sub_actions.front()->joint_candidates[i].transpose()
               << std::endl;
   }
@@ -132,7 +147,7 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   set_input.insert(set_input.begin(), {current_state});
 
   for (auto &act_ik : act_iks) {
-    auto filtered_iks = kmeans(act_ik, 80);
+    auto filtered_iks = kmeans(act_ik, K);
     // auto filtered_iks = act_ik;
     CONSOLE_BRIDGE_logDebug("filtered iks after kmeans: %d - %d/%d",
                             filtered_iks[0].size(), filtered_iks.size(),
@@ -311,11 +326,12 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
     return act_iks;
   }
   int K = std::min(int(act_iks.size()), k);
-  int n_features = act_iks[0].rows();
+  int n_features = 3;
+  // int n_features = act_iks[0].rows();
   int n_iters = 400;
   int seed = 42;
   int n_examples_ttl = act_iks.size();
-  Eigen::ArrayXXd data_all(n_examples_ttl, n_features);
+  Eigen::ArrayXXd data_all(n_examples_ttl, act_iks[0].rows());
 
   for (int i = 0; i < act_iks.size(); i++) {
     data_all.row(i) = act_iks[i].transpose();
@@ -340,17 +356,25 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
   // std::cout << mu.format(CleanFmt) << "\n";
 
   // get closest ik for each cluster
+  CONSOLE_BRIDGE_logDebug("getting closest ik for each cluster...");
   tesseract_kinematics::IKSolutions closest;
   closest.resize(K);
-  Eigen::ArrayXd best_dist = z;
-  best_dist.fill(1000);
+  Eigen::ArrayXd best_dist = z;  // z: label for datas
+  best_dist.fill(10000);
 
   for (int i = 0; i < data_all.rows(); i++) {
-    double dist_ = (data_all.row(i) - mu.row(z(i))).matrix().norm();
+    double dist_ =
+        (data_all.row(i).head(n_features) - mu.row(z(i))).matrix().norm();
     if (dist_ < best_dist(z(i))) {
       best_dist(z(i)) = dist_;
       // if (!data_all.row(i).size()) continue;
       closest[z(i)] = data_all.row(i).transpose();
+    }
+  }
+
+  for (int i = 0; i < closest.size(); i++) {
+    if (closest[i].size() == 0) {
+      CONSOLE_BRIDGE_logWarn("size of ik %d in closest is zero!", i);
     }
   }
 
