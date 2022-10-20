@@ -137,14 +137,19 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
 ActionSeq getTietaEnvSeq(const std::string robot) {
   ActionSeq actions;
 
+  Eigen::VectorXd pick_coeff(9);
+  pick_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
+
+  Eigen::VectorXd place_coeff(9);
+  place_coeff << 2, 2, 5, 5, 1, 1, 10, 1, 1;
+
   // action1: pick closet handle
   {
     auto pick_action =
         std::make_shared<PickAction>(robot, "attach_closet_right_handle");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 2, 2, 0.5, 5, 2, 1, 1, 1, 1;
-    pick_action->setIKCostCoeff(coeff);
+    
+    pick_action->setIKCostCoeff(pick_coeff);
     actions.emplace_back(pick_action);
   }
 
@@ -159,10 +164,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
     // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 1, 1, 0.5, 5, 2, 1, 1, 1, 1;
-    coeff *= 2;
-    place_action->setIKCostCoeff(coeff);
+    place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
 
@@ -183,10 +185,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
                                       link_objectives, joint_objectives, false);
-    Eigen::VectorXd coeff(9);
-    coeff << 1, 1, 1, 7, 2, 1, 1, 1, 1;
-    coeff *= 1.5;
-    place_action->setIKCostCoeff(coeff);
+    place_action->setIKCostCoeff(place_coeff);
     // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
@@ -195,9 +194,6 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
   {
     auto pick_action = std::make_shared<PickAction>(robot, "attach_box");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 2, 2, 0.5, 5, 2, 1, 1, 1, 1;
-    pick_action->setIKCostCoeff(coeff);
     actions.emplace_back(pick_action);
   }
 
@@ -218,9 +214,6 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto place_action = std::make_shared<PlaceAction>(
         robot, "attach_box", link_objectives, joint_objectives, false);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 2, 2, 0.5, 5, 2, 1, 1, 1, 1;
-    place_action->setIKCostCoeff(coeff);
     actions.emplace_back(place_action);
   }
 
@@ -229,9 +222,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto pick_action =
         std::make_shared<PickAction>(robot, "attach_drawer_handle1");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 2, 2, 0.5, 5, 2, 1, 1, 1, 1;
-    pick_action->setIKCostCoeff(coeff);
+    pick_action->setIKCostCoeff(pick_coeff);
     actions.emplace_back(pick_action);
   }
 
@@ -245,10 +236,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
                                       link_objectives, joint_objectives, false);
     // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 1, 1, 1, 7, 2, 1, 1, 1, 1;
-    coeff *= 1.5;
-    place_action->setIKCostCoeff(coeff);
+    place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
 
@@ -270,10 +258,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
     // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    Eigen::VectorXd coeff(9);
-    coeff << 2, 2, 0.5, 5, 2, 1, 1, 1, 1;
-    coeff *= 2;
-    place_action->setIKCostCoeff(coeff);
+    place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
 
