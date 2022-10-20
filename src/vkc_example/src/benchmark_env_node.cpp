@@ -49,6 +49,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
+      auto start = chrono::steady_clock::now();
       tesseract_planning::PlannerRequest prob_ptr;
       if (!use_ompl) {
         prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
@@ -62,7 +63,6 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
       }
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      auto start = chrono::steady_clock::now();
       if (!use_ompl)
         solveProb(prob_ptr, response, n_iter);
       else
