@@ -396,11 +396,11 @@
     <disable_collisions link1="cup_cup_link" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001" reason="Adjacent"/>
-    <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Aa001_r" reason="Never"/>
+    <!-- <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Aa001_r" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Aa002_r" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Ba001_t" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Ba002_t" reason="Never"/>
-    <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Ba003_t" reason="Never"/>
+    <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Ba003_t" reason="Never"/> -->
     <disable_collisions link1="cup_cup_link" link2="kitchen_cabinet_lower" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="kitchen_cabinet_top" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="kitchen_washer" reason="Adjacent"/>

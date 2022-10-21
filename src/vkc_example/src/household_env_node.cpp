@@ -1,4 +1,5 @@
 #include <fmt/ranges.h>
+#include <ros/package.h>
 #include <tesseract_visualization/markers/toolpath_marker.h>
 #include <vkc/action/actions.h>
 #include <vkc/env/urdf_scene_env.h>
@@ -55,17 +56,20 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
                         int n_iter, bool rviz_enabled, unsigned int nruns) {
-  // int window_size = 3;
-  // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  int window_size = 3;
+  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   ProbGenerator prob_generator;
 
   int j = 0;
 
   std::vector<double> elapsed_time;
+  // env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
+    seed_generator.generate(env, sub_actions);
+    action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -98,8 +102,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-
-        // action->switchCandidate();
+        action->switchCandidate();
       }
     }
 
@@ -162,10 +165,9 @@ Eigen::VectorXd getPickCoeff(int size = 9) {
   return coeff;
 }
 
-Eigen::VectorXd getPlaceCoeff(int size = 10) {
+Eigen::VectorXd getPlaceCoeff(int size = 9) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
-  coeff[size - 1] = 0.;
   return coeff;
 }
 
@@ -303,6 +305,37 @@ void genOpenCabinetSeq(vkc::ActionSeq &actions, const std::string &robot) {
   }
 }
 
+void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
+  // action1: pick dishwasher handle
+  {
+    auto pick_action = std::make_shared<PickAction>(robot, "attach_dishwasher");
+    auto pick_coeff = getPickCoeff();
+    setBaseJoint(pick_action);
+    pick_coeff.setZero(9);
+    pick_coeff[0] = 1.;
+    pick_coeff[1] = 1.;
+    pick_action->setIKCostCoeff(pick_coeff);
+    actions.emplace_back(pick_action);
+  }
+
+  // action2: place dishwasher handle
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
+    auto place_action = std::make_shared<PlaceAction>(
+        robot, "attach_dishwasher", link_objectives, joint_objectives, false);
+    // cost_coeff[6] = 5.;
+    // cost_coeff[3] = 3.;
+    // cost_coeff[0] = 3.;
+    // cost_coeff[1] = 3.;
+    // place_action->setIKCostCoeff(cost_coeff);
+    setBaseJoint(place_action);
+    actions.emplace_back(place_action);
+  }
+}
+
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
                    const std::string &robot, int task_id) {
   PickAction::Ptr pick_action;
@@ -310,12 +343,12 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   Eigen::VectorXd cost_coeff;
   Eigen::VectorXd pick_coeff;
-  pick_coeff.setOnes(9);
-  // pick_coeff[0] = 1;
-  // pick_coeff[1] = 1;
-  cost_coeff.setOnes(10);
-  cost_coeff[9] = 0.;
   switch (task_id) {
+    case 0:
+      genOpenFridgeSeq(actions, robot);
+      genMoveCupSeq(actions, robot);
+
+      break;
     case 1:
       genOpenFridgeSeq(actions, robot);
       break;
@@ -340,121 +373,110 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
       genOpenCabinetSeq(actions, robot);
       break;
     case 6:
-      // action1: pick dishwasher handle
-      {
-        auto pick_action =
-            std::make_shared<PickAction>(robot, "attach_dishwasher");
-        setBaseJoint(pick_action);
-        pick_coeff.setZero(9);
-        pick_coeff[0] = 1.;
-        pick_coeff[1] = 1.;
-        pick_action->setIKCostCoeff(pick_coeff);
-        actions.emplace_back(pick_action);
-      }
-
-      // action2: place dishwasher handle
-      {
-        std::vector<LinkDesiredPose> link_objectives;
-        std::vector<JointDesiredPose> joint_objectives;
-
-        joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
-        auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_dishwasher", link_objectives, joint_objectives,
-            false);
-        // cost_coeff[6] = 5.;
-        // cost_coeff[3] = 3.;
-        // cost_coeff[0] = 3.;
-        // cost_coeff[1] = 3.;
-        // place_action->setIKCostCoeff(cost_coeff);
-        setBaseJoint(place_action);
-        actions.emplace_back(place_action);
-      }
+      genOpenDishwasherSeq(actions, robot);
       break;
   }
+}
+
+void genEnvironmentInfo(
+    UrdfSceneEnv::AttachObjectInfos &attaches,
+    UrdfSceneEnv::InverseChainsInfos &inverse_chains,
+    const UrdfSceneEnv::AttachObjectInfo &attach_object_info, int baseline) {
+  attaches.emplace_back(attach_object_info);
+  if (baseline == 0)
+    inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
+        attach_object_info.base_link, attach_object_info.attach_link});
 }
 
 void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                UrdfSceneEnv::InverseChainsInfos &inverse_chains,
                                int task_id, int baseline = 0) {
   switch (task_id) {
-    case 1:
-      attaches.emplace_back(
+    case 0:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
           UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
                                          "fridge_0001_dof_rootd_Aa002_r",
                                          "fridge_0001",
                                          {0.65, -0.25, -0.65},
                                          {0.5, -0.5, 0.5, 0.5},
-                                         true});
-      if (baseline == 0)
-        inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-            "fridge_0001", "fridge_0001_dof_rootd_Aa002_r"});
-      break;
-
-    case 2:
-      attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
-                                                           "door_8966_link_2",
-                                                           "door_8966_base",
-                                                           {0.0, 0.0, 0.25},
-                                                           {0, 0, 1, 0},
-                                                           true});
-
-      if (baseline == 0)
-        inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-            "door_8966_base", "door_8966_link_2"});
-      break;
-
-    case 3:
-      attaches.emplace_back(
+                                         true},
+          baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
           UrdfSceneEnv::AttachObjectInfo{"attach_cup",
                                          "cup_cup_link",
                                          "cup_cup_base_link",
                                          {0.04, 0.05, -0.12},
                                          {0.707106781, 0, 0, 0.707106781},
-                                         false});
-      if (baseline == 0)
-        inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-            "cup_cup_base_link", "cup_cup_link"});
+                                         false},
+          baseline);
       break;
-
+    case 1:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
+                                         "fridge_0001_dof_rootd_Aa002_r",
+                                         "fridge_0001",
+                                         {0.65, -0.25, -0.65},
+                                         {0.5, -0.5, 0.5, 0.5},
+                                         true},
+          baseline);
+      break;
+    case 2:
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
+                                                        "door_8966_link_2",
+                                                        "door_8966_base",
+                                                        {0.0, 0.0, 0.25},
+                                                        {0, 0, 1, 0},
+                                                        true},
+                         baseline);
+      break;
+    case 3:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_cup",
+                                         "cup_cup_link",
+                                         "cup_cup_base_link",
+                                         {0.04, 0.05, -0.12},
+                                         {0.707106781, 0, 0, 0.707106781},
+                                         false},
+          baseline);
+      break;
     case 4:
-      attaches.emplace_back(
+      genEnvironmentInfo(
+          attaches, inverse_chains,
           UrdfSceneEnv::AttachObjectInfo{"attach_drawer",
                                          "drawer_handle1",
                                          "drawer_base_link",
                                          {0.16, 0.000, 0.00},
                                          {0.5000, -0.5000, -0.5000, 0.5000},
-                                         true});
-      if (baseline == 0)
-        inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-            "drawer_base_link", "drawer_handle1"});
+                                         true},
+          baseline);
       break;
-
     case 5:
-      attaches.emplace_back(
+      genEnvironmentInfo(
+          attaches, inverse_chains,
           UrdfSceneEnv::AttachObjectInfo{"attach_cabinet",
                                          "cabinet_48479_handle0",
                                          "cabinet_48479_base_link",
                                          {0.0, 0.0, 0.15},
                                          {0, -0.707106781, -0.707106781, 0},
-                                         true});
-      if (baseline == 0)
-        inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-            "cabinet_48479_base_link", "cabinet_48479_handle0"});
+                                         true},
+          baseline);
       break;
-
     case 6:
-      attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
-          "attach_dishwasher",
-          "dishwasher_link_2",
-          "dishwasher",
-          {0.45, 0.55, 0.70},
-          {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
-          true});
-      if (baseline == 0)
-        inverse_chains.emplace_back(
-            UrdfSceneEnv::InverseChainsInfo{"dishwasher", "dishwasher_link_2"});
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{
+                             "attach_dishwasher",
+                             "dishwasher_link_2",
+                             "dishwasher",
+                             {0.45, 0.55, 0.70},
+                             {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
+                             true},
+                         baseline);
       break;
-
     default:
       break;
   }
@@ -468,7 +490,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "household_env_node");
   ros::NodeHandle pnh("~");
   ros::NodeHandle nh;
-  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_WARN);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
   ROS_INFO("Initializaing environment node...");
 
   bool plotting = true;
@@ -505,8 +527,8 @@ int main(int argc, char **argv) {
   auto elapsed_time =
       run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
   interpVKCData(data, elapsed_time, joint_trajs);
-  saveDataToFile(data,
-                 "/home/jiao/Dropbox/UCLA/Research/2022-TRO-VKC/exp/exp2/"
-                 "household_env_vkc_" +
-                     std::to_string(taskid) + ".csv");
+  std::string save_path = ros::package::getPath("vkc_example") +
+                          "/trajectory/household_env_" +
+                          std::to_string(taskid) + ".csv";
+  saveDataToFile(data, save_path);
 }
