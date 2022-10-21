@@ -225,12 +225,10 @@ MixedWaypointPoly ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
       return genPlaceMixedWaypoint(env, place_act);
     }
 
-      // case ActionType::UseAction:
-      // {
-      //   UseAction::Ptr use_act =
-      //   std::dynamic_pointer_cast<UseAction>(action); return genUseProb(env,
-      //   use_act, n_steps);
-      // }
+    // case ActionType::UseAction: {
+    //   UseAction::Ptr use_act = std::dynamic_pointer_cast<UseAction>(action);
+    //   return genUseMixedWaypoint(env, use_act);
+    // }
 
     default: {
       ROS_ERROR("Undefined action type.");
@@ -254,8 +252,8 @@ MixedWaypointPoly ProbGenerator::genPickMixedWaypoint(VKCEnvBasic &env,
   BaseObject::AttachLocation::ConstPtr attach_location_ptr =
       env.getAttachLocation(act->getAttachedObject());
   // std::cout << "test" << std::endl << act->getAttachedObject() << std::endl;
-  // CONSOLE_BRIDGE_logDebug("attack location: %s",
-  //                         attach_location_ptr->link_name_.c_str());
+  CONSOLE_BRIDGE_logDebug("attach location: %s",
+                          attach_location_ptr->link_name_.c_str());
   Eigen::Isometry3d pick_pose_world_transform =
       env.getVKCEnv()->getTesseract()->getLinkTransform(
           attach_location_ptr->link_name_) *

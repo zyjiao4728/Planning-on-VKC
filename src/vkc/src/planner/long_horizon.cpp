@@ -23,7 +23,7 @@ LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
 
 void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
                                         std::vector<ActionBase::Ptr> &actions) {
-  CONSOLE_BRIDGE_logDebug("\ngenerating long horizon seed\n");
+  CONSOLE_BRIDGE_logDebug("\n=====generating long horizon seed=====\n");
   std::vector<ActionBase::Ptr> sub_actions(
       actions.begin(), actions.begin() + std::min(window_size, actions.size()));
   std::string origin_ee = raw_vkc_env.getEndEffectorLink();
