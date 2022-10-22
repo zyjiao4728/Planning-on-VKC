@@ -162,6 +162,8 @@ void setInitState(VKCEnvBasic &env) {
 Eigen::VectorXd getPickCoeff(int size = 9) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
+  coeff[0] = 3.;
+  coeff[1] = 3.;
   return coeff;
 }
 
@@ -193,9 +195,35 @@ void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
     place_coeff[6] = 5.;
-    // cost_coeff[3] = 3.;
-    // cost_coeff[0] = 3.;
-    // cost_coeff[1] = 3.;
+    place_coeff[3] = 3.;
+    place_action->setIKCostCoeff(place_coeff);
+    actions.emplace_back(place_action);
+  }
+}
+
+void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
+  // action 1: pick fridge handle
+  {
+    auto pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    setBaseJoint(pick_action);
+    pick_action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(pick_action);
+  }
+
+  // action 2: close fridge door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
+    auto place_action =
+        make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
+                                 joint_objectives, false);
+
+    setBaseJoint(place_action);
+    auto place_coeff = getPlaceCoeff();
+    place_coeff[6] = 5.;
+    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -347,6 +375,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
     case 0:
       genOpenFridgeSeq(actions, robot);
       genMoveCupSeq(actions, robot);
+      genCloseFridgeSeq(actions, robot);
 
       break;
     case 1:
