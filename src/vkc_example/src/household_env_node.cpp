@@ -28,10 +28,12 @@ using TesseractJointTraj = tesseract_common::JointTrajectory;
 
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
-                        int n_iter, bool rviz_enabled, unsigned int nruns) {
+                        int n_iter, bool rviz_enabled, unsigned int nruns,
+                        bool longhorizon = false) {
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   ProbGenerator prob_generator;
+  seed_generator.setMapInfo(15,15,0.15);
 
   int j = 0;
 
@@ -41,8 +43,10 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
-    // seed_generator.generate(env, sub_actions);
-    // action->switchCandidate();
+    if (longhorizon) {
+      seed_generator.generate(env, sub_actions);
+      action->switchCandidate();
+    }
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -75,7 +79,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        // action->switchCandidate();
+        if (longhorizon) action->switchCandidate();
       }
     }
 
@@ -149,25 +153,16 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
   }
 }
 
-void setInitState(VKCEnvBasic &env) {
-  vector<string> joint_names(
-      {"dishwasher_12065_joint_0", "dishwasher_12065_joint_1",
-       "dishwasher_12065_joint_2",
-       "cabinet_48479_joint_0"});  //, "cabinet_48479_joint_0"
-  Eigen::Vector4d joint_values({-0.3080, -0.1359, -0.6457,
-                                -0.12});  // open: 0.9250 close -0.6457 , -0.12
-  env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
-}
-
 Eigen::VectorXd getPickCoeff(int size = 9) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
-  coeff[0] = 3.;
-  coeff[1] = 3.;
+  coeff[0] = 2.;
+  coeff[1] = 2.;
+  coeff[3] = 2.;
   return coeff;
 }
 
-Eigen::VectorXd getPlaceCoeff(int size = 9) {
+Eigen::VectorXd getPlaceCoeff(int size = 10) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
   return coeff;
@@ -250,17 +245,43 @@ void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
     place_coeff[6] = 5.;
-    // cost_coeff[4] = 5.;
-    // cost_coeff[8] = 5.;
-    // cost_coeff[0] = 3.;
-    // cost_coeff[1] = 3.;
+    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
 
     actions.emplace_back(place_action);
   }
 }
 
-void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot) {
+void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
+  // action 1: pick door handle
+  {
+    auto pick_action = make_shared<PickAction>(robot, "attach_door_handle");
+    setBaseJoint(pick_action);
+    pick_action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(pick_action);
+  }
+
+  // action 2: close door door
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    joint_objectives.emplace_back("door_8966_joint_1", 0.0);
+    auto place_action = make_shared<PlaceAction>(
+        robot, "attach_door_handle", link_objectives, joint_objectives, false);
+
+    setBaseJoint(place_action);
+    auto place_coeff = getPlaceCoeff();
+    place_coeff[6] = 5.;
+    place_coeff[3] = 3.;
+    place_action->setIKCostCoeff(place_coeff);
+
+    actions.emplace_back(place_action);
+  }
+}
+
+void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot,
+                   Eigen::Isometry3d destination) {
   // action 1: pick cup
   {
     auto pick_action = make_shared<PickAction>(robot, "attach_cup");
@@ -273,16 +294,35 @@ void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot) {
   {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
-    Eigen::Isometry3d destination;
-    destination.setIdentity();
-    destination.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
-    destination.linear() =
-        Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
     link_objectives.push_back(
         LinkDesiredPose("cup_cup_base_link", destination));
 
     auto place_action = make_shared<PlaceAction>(
         robot, "attach_cup", link_objectives, joint_objectives, true);
+
+    setBaseJoint(place_action);
+    actions.emplace_back(place_action);
+  }
+}
+
+void genThrowTrashSeq(vkc::ActionSeq &actions, const std::string &robot,
+                      Eigen::Isometry3d destination) {
+  // action 1: pick up trash
+  {
+    auto pick_action = make_shared<PickAction>(robot, "attach_trash_2");
+    setBaseJoint(pick_action);
+    pick_action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(pick_action);
+  }
+
+  // action 2: throw trash
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    link_objectives.push_back(LinkDesiredPose("trash_base_link", destination));
+
+    auto place_action = make_shared<PlaceAction>(
+        robot, "attach_trash_2", link_objectives, joint_objectives, true);
 
     setBaseJoint(place_action);
     actions.emplace_back(place_action);
@@ -395,6 +435,20 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
                                       joint_objectives, "place trash");
     actions.emplace_back(action);
   }
+  // place broom
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d transform;
+    transform.setIdentity();
+    transform.translation() = Eigen::Vector3d(3.28, 0.5, 0.0);
+    transform.linear() =
+        Eigen::Quaterniond(0.5000, 0.5000, -0.5000, -0.5000).matrix();
+    link_objectives.emplace_back("broom_base_link", transform);
+    auto action = std::make_shared<PlaceAction>(
+        robot, "attach_broom", link_objectives, joint_objectives, true);
+    actions.emplace_back(action);
+  }
 }
 
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
@@ -404,12 +458,33 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   Eigen::VectorXd cost_coeff;
   Eigen::VectorXd pick_coeff;
+
+  Eigen::Isometry3d onKitchenTable;
+  onKitchenTable.setIdentity();
+  onKitchenTable.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
+  onKitchenTable.linear() =
+      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
+
+  Eigen::Isometry3d onDesk;
+  onDesk.setIdentity();
+  onDesk.translation() = Eigen::Vector3d(-1.9, 0.4, 0.755);
+  onDesk.linear() =
+      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
+
+  Eigen::Isometry3d inTrashCan;
+  inTrashCan.setIdentity();
+  inTrashCan.translation() = Eigen::Vector3d(3.2, 1.1, 0.5);
+  inTrashCan.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+
   switch (task_id) {
     case 0:
-      genOpenFridgeSeq(actions, robot);
-      genMoveCupSeq(actions, robot);
-      genCloseFridgeSeq(actions, robot);
-
+      // genOpenFridgeSeq(actions, robot);
+      // genMoveCupSeq(actions, robot, onKitchenTable);
+      // genCloseFridgeSeq(actions, robot);
+      genOpenDoorSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onDesk);
+      genCloseDoorSeq(actions, robot);
+      genUseBroomSeq(actions, robot);
       break;
     case 1:
       genOpenFridgeSeq(actions, robot);
@@ -418,7 +493,15 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
       genOpenDoorSeq(actions, robot);
       break;
     case 3:
-      genMoveCupSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onDesk);
+      // Set door to open for individual task
+      {
+        vector<string> joint_names({"door_8966_joint_1"});
+        Eigen::VectorXd joint_values;
+        joint_values.setZero(1);
+        joint_values[0] = -1.5;
+        env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
+      }
       break;
     case 4:
       genOpenDrawerSeq(actions, robot);
@@ -439,6 +522,9 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
       break;
     case 7:
       genUseBroomSeq(actions, robot);
+      break;
+    case 8:
+      genThrowTrashSeq(actions, robot, inTrashCan);
       break;
     default:
       throw std::logic_error("no task id supported");
@@ -478,6 +564,40 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          {0.707106781, 0, 0, 0.707106781},
                                          false},
           baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
+                                                        "door_8966_link_2",
+                                                        "door_8966_base",
+                                                        {0.0, 0.0, 0.25},
+                                                        {0, 0, 1, 0},
+                                                        true},
+                         baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
+                                         "broom_base",
+                                         "broom_base_link",
+                                         {0, 1.0, 0.11},
+                                         {0, 0.7071068, 0.7071068, 0},
+                                         false},
+          baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
+                                         "trash_base",
+                                         "trash_base_link",
+                                         {-0.1, 0.18, 0.02},
+                                         {0, 0, 0.258819, 0.9659258},
+                                         false},
+          baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
+                                                        "trash_base",
+                                                        "trash_base_link",
+                                                        {0.0, 0.0, 0.15},
+                                                        {0, 0, 1, 0},
+                                                        false},
+                         1);
       break;
     case 1:
       genEnvironmentInfo(
@@ -563,6 +683,15 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          {0, 0, 0.258819, 0.9659258},
                                          false},
           baseline);
+    case 8:
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
+                                                        "trash_base",
+                                                        "trash_base_link",
+                                                        {0.0, 0.0, 0.15},
+                                                        {0, 0, 1, 0},
+                                                        false},
+                         baseline);
     default:
       break;
   }
@@ -581,6 +710,7 @@ int main(int argc, char **argv) {
 
   bool plotting = true;
   bool rviz = true;
+  bool longhorizon = false;
   int baseline = 0;
   int steps = 10;
   int n_iter = 1000;
@@ -590,8 +720,9 @@ int main(int argc, char **argv) {
 
   // Get ROS Parameters
   pnh.param<std::string>("robot", robot, robot);
-  pnh.param("plotting", plotting, plotting);
-  pnh.param("rviz", rviz, rviz);
+  pnh.param<bool>("plotting", plotting, plotting);
+  pnh.param<bool>("rviz", rviz, rviz);
+  pnh.param<bool>("longhorizon", longhorizon, longhorizon);
   pnh.param<int>("steps", steps, steps);
   pnh.param<int>("niter", n_iter, n_iter);
   pnh.param<int>("nruns", nruns, nruns);
@@ -611,7 +742,7 @@ int main(int argc, char **argv) {
 
   genTRODemoSeq(env, actions, robot, taskid);
   auto elapsed_time =
-      run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
+      run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
   interpVKCData(data, elapsed_time, joint_trajs);
   std::string save_path = ros::package::getPath("vkc_example") +
                           "/trajectory/household_env_" +
