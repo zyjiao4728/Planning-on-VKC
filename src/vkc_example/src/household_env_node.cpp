@@ -354,6 +354,19 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
     auto coeff = getPickCoeff();
     actions.emplace_back(action);
   }
+  // place trash
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d transform;
+    transform.setIdentity();
+    transform.translation() = Eigen::Vector3d(2.32, 1.25, 0.05);
+    link_objectives.emplace_back("trash_base_link", transform);
+    auto action =
+        std::make_shared<PlaceAction>(robot, "attach_trash", link_objectives,
+                                      joint_objectives, "place trash");
+    actions.emplace_back(action);
+  }
 }
 
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
