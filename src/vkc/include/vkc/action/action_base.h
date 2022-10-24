@@ -80,19 +80,23 @@ class ActionBase {
   ActionType getActionType() { return action_type_; }
 
   std::string getActionName() {
+    std::string str;
     switch (action_type_) {
       case ActionType::GotoAction:
-        return "Goto";
+        str = "Goto";
+        break;
       case ActionType::PickAction:
-        return "Pick";
+        str = "Pick";
+        break;
       case ActionType::PlaceAction:
-        return "Place";
+        str = "Place";
+        break;
       case ActionType::UseAction:
         return "Use";
       default:
-        return "Unknown Action";
+        throw std::runtime_error("unknown action");
     }
-    throw std::runtime_error("unknown action");
+    return str + ": " + name_;
   }
 
   std::string getManipulatorID() { return manipulator_id_; }
