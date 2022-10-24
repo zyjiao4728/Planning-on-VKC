@@ -26,33 +26,6 @@ using namespace trajopt;
 using TesseractJointTraj = tesseract_common::JointTrajectory;
 // using namespace vkc_example;
 
-void sampleInitBasePose(vkc::VKCEnvBasic &env) {
-  bool init_base_position = false;
-  vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
-  Eigen::VectorXd base_values = Eigen::Vector2d(0., 0.);
-  tesseract_collision::ContactResultMap contact_results;
-
-  while (!init_base_position) {
-    init_base_position = true;
-    contact_results.clear();
-    base_values = Eigen::Vector2d(rand() % 100 / 99. * 2. + 0.5,
-                                  -rand() % 100 / 99. * 3. + 0.5);
-    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
-
-    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
-    env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
-        contact_results, tesseract_collision::ContactTestType::ALL);
-
-    for (auto &collision : contact_results) {
-      if (collision.first.first == "base_link" ||
-          collision.first.second == "base_link") {
-        init_base_position = false;
-        break;
-      }
-    }
-  }
-}
-
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
                         int n_iter, bool rviz_enabled, unsigned int nruns) {
@@ -68,8 +41,8 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
-    seed_generator.generate(env, sub_actions);
-    action->switchCandidate();
+    // seed_generator.generate(env, sub_actions);
+    // action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
@@ -102,7 +75,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "description: %s",
             __func__, response.status.value(),
             response.status.message().c_str());
-        action->switchCandidate();
+        // action->switchCandidate();
       }
     }
 
@@ -147,6 +120,33 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     ++j;
   }
   return elapsed_time;
+}
+
+void sampleInitBasePose(vkc::VKCEnvBasic &env) {
+  bool init_base_position = false;
+  vector<string> base_joints({"base_y_base_x", "base_theta_base_y"});
+  Eigen::VectorXd base_values = Eigen::Vector2d(0., 0.);
+  tesseract_collision::ContactResultMap contact_results;
+
+  while (!init_base_position) {
+    init_base_position = true;
+    contact_results.clear();
+    base_values = Eigen::Vector2d(rand() % 100 / 99. * 2. + 0.5,
+                                  -rand() % 100 / 99. * 3. + 0.5);
+    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+
+    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
+    env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
+        contact_results, tesseract_collision::ContactTestType::ALL);
+
+    for (auto &collision : contact_results) {
+      if (collision.first.first == "base_link" ||
+          collision.first.second == "base_link") {
+        init_base_position = false;
+        break;
+      }
+    }
+  }
 }
 
 void setInitState(VKCEnvBasic &env) {
@@ -336,6 +336,26 @@ void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
   }
 }
 
+void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
+  // pick broom
+  {
+    auto action = std::make_shared<PickAction>(robot, "attach_broom");
+    auto coeff = getPickCoeff();
+    setBaseJoint(action);
+    coeff.setZero(9);
+    coeff[0] = 1.;
+    coeff[1] = 1.;
+    action->setIKCostCoeff(coeff);
+    actions.emplace_back(action);
+  }
+  // pick trash
+  {
+    auto action = std::make_shared<PickAction>(robot, "attach_trash");
+    auto coeff = getPickCoeff();
+    actions.emplace_back(action);
+  }
+}
+
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
                    const std::string &robot, int task_id) {
   PickAction::Ptr pick_action;
@@ -375,6 +395,11 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
     case 6:
       genOpenDishwasherSeq(actions, robot);
       break;
+    case 7:
+      genUseBroomSeq(actions, robot);
+      break;
+    default:
+      throw std::logic_error("no task id supported");
   }
 }
 
@@ -477,6 +502,25 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                              true},
                          baseline);
       break;
+    case 7:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
+                                         "broom_base",
+                                         "broom_base_link",
+                                         {0, 1.0, 0.11},
+                                         {0, 0.7071068, 0.7071068, 0},
+                                         false},
+          baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
+                                         "trash_base",
+                                         "trash_base_link",
+                                         {-0.1, 0.18, 0.02},
+                                         {0, 0, 0.258819, 0.9659258},
+                                         false},
+          baseline);
     default:
       break;
   }
