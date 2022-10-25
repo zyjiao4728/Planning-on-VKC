@@ -33,7 +33,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
   ProbGenerator prob_generator;
-  seed_generator.setMapInfo(15,15,0.15);
+  seed_generator.setMapInfo(15, 15, 0.15);
 
   int j = 0;
 
@@ -238,7 +238,7 @@ void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("door_8966_joint_1", 1.5);
+    joint_objectives.emplace_back("door_8966_joint_1", 1.52);
     auto place_action = make_shared<PlaceAction>(
         robot, "attach_door_handle", link_objectives, joint_objectives, false);
 
@@ -451,86 +451,6 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
   }
 }
 
-void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
-                   const std::string &robot, int task_id) {
-  PickAction::Ptr pick_action;
-  PlaceAction::Ptr place_action;
-
-  Eigen::VectorXd cost_coeff;
-  Eigen::VectorXd pick_coeff;
-
-  Eigen::Isometry3d onKitchenTable;
-  onKitchenTable.setIdentity();
-  onKitchenTable.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
-  onKitchenTable.linear() =
-      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
-
-  Eigen::Isometry3d onDesk;
-  onDesk.setIdentity();
-  onDesk.translation() = Eigen::Vector3d(-1.9, 0.4, 0.755);
-  onDesk.linear() =
-      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
-
-  Eigen::Isometry3d inTrashCan;
-  inTrashCan.setIdentity();
-  inTrashCan.translation() = Eigen::Vector3d(3.2, 1.1, 0.5);
-  inTrashCan.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
-
-  switch (task_id) {
-    case 0:
-      // genOpenFridgeSeq(actions, robot);
-      // genMoveCupSeq(actions, robot, onKitchenTable);
-      // genCloseFridgeSeq(actions, robot);
-      genOpenDoorSeq(actions, robot);
-      genMoveCupSeq(actions, robot, onDesk);
-      genCloseDoorSeq(actions, robot);
-      genUseBroomSeq(actions, robot);
-      break;
-    case 1:
-      genOpenFridgeSeq(actions, robot);
-      break;
-    case 2:
-      genOpenDoorSeq(actions, robot);
-      break;
-    case 3:
-      genMoveCupSeq(actions, robot, onDesk);
-      // Set door to open for individual task
-      {
-        vector<string> joint_names({"door_8966_joint_1"});
-        Eigen::VectorXd joint_values;
-        joint_values.setZero(1);
-        joint_values[0] = -1.5;
-        env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
-      }
-      break;
-    case 4:
-      genOpenDrawerSeq(actions, robot);
-      // Set door to open for individual task
-      {
-        vector<string> joint_names({"door_8966_joint_1"});
-        Eigen::VectorXd joint_values;
-        joint_values.setZero(1);
-        joint_values[0] = -1.5;
-        env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
-      }
-      break;
-    case 5:
-      genOpenCabinetSeq(actions, robot);
-      break;
-    case 6:
-      genOpenDishwasherSeq(actions, robot);
-      break;
-    case 7:
-      genUseBroomSeq(actions, robot);
-      break;
-    case 8:
-      genThrowTrashSeq(actions, robot, inTrashCan);
-      break;
-    default:
-      throw std::logic_error("no task id supported");
-  }
-}
-
 void genEnvironmentInfo(
     UrdfSceneEnv::AttachObjectInfos &attaches,
     UrdfSceneEnv::InverseChainsInfos &inverse_chains,
@@ -697,6 +617,86 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
   }
 
   CONSOLE_BRIDGE_logDebug("environment info generation success");
+}
+
+void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
+                   const std::string &robot, int task_id) {
+  PickAction::Ptr pick_action;
+  PlaceAction::Ptr place_action;
+
+  Eigen::VectorXd cost_coeff;
+  Eigen::VectorXd pick_coeff;
+
+  Eigen::Isometry3d onKitchenTable;
+  onKitchenTable.setIdentity();
+  onKitchenTable.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
+  onKitchenTable.linear() =
+      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
+
+  Eigen::Isometry3d onDesk;
+  onDesk.setIdentity();
+  onDesk.translation() = Eigen::Vector3d(-1.9, 0.4, 0.755);
+  onDesk.linear() =
+      Eigen::Quaterniond(0.5000, -0.5000, -0.5000, 0.5000).matrix();
+
+  Eigen::Isometry3d inTrashCan;
+  inTrashCan.setIdentity();
+  inTrashCan.translation() = Eigen::Vector3d(3.2, 1.1, 0.5);
+  inTrashCan.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+
+  switch (task_id) {
+    case 0:
+      // genOpenFridgeSeq(actions, robot);
+      // genMoveCupSeq(actions, robot, onKitchenTable);
+      // genCloseFridgeSeq(actions, robot);
+      genOpenDoorSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onDesk);
+      genCloseDoorSeq(actions, robot);
+      genUseBroomSeq(actions, robot);
+      break;
+    case 1:
+      genOpenFridgeSeq(actions, robot);
+      break;
+    case 2:
+      genOpenDoorSeq(actions, robot);
+      break;
+    case 3:
+      genMoveCupSeq(actions, robot, onDesk);
+      // Set door to open for individual task
+      {
+        vector<string> joint_names({"door_8966_joint_1"});
+        Eigen::VectorXd joint_values;
+        joint_values.setZero(1);
+        joint_values[0] = -1.5;
+        env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
+      }
+      break;
+    case 4:
+      genOpenDrawerSeq(actions, robot);
+      // Set door to open for individual task
+      {
+        vector<string> joint_names({"door_8966_joint_1"});
+        Eigen::VectorXd joint_values;
+        joint_values.setZero(1);
+        joint_values[0] = -1.5;
+        env.getVKCEnv()->getTesseract()->setState(joint_names, joint_values);
+      }
+      break;
+    case 5:
+      genOpenCabinetSeq(actions, robot);
+      break;
+    case 6:
+      genOpenDishwasherSeq(actions, robot);
+      break;
+    case 7:
+      genUseBroomSeq(actions, robot);
+      break;
+    case 8:
+      genThrowTrashSeq(actions, robot, inTrashCan);
+      break;
+    default:
+      throw std::logic_error("no task id supported");
+  }
 }
 
 int main(int argc, char **argv) {

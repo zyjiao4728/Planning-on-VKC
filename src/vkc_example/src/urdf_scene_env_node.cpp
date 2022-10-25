@@ -277,7 +277,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        joint_objectives.emplace_back("door_8966_joint_1", 1.5);
+        joint_objectives.emplace_back("door_8966_joint_1", 1.52);
         place_action =
             make_shared<PlaceAction>(robot, "attach_door_handle",
                                      link_objectives, joint_objectives);

@@ -77,15 +77,66 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     if (!action->astar_init) {
       tesseract_collision::DiscreteContactManager::Ptr
           discrete_contact_manager = std::move(vkc_env->getVKCEnv()
-                                                   ->getTesseract()
+                                                   ->getTesseractNonInverse()
                                                    ->getDiscreteContactManager()
                                                    ->clone());
+      CONSOLE_BRIDGE_logDebug("initializing astar generator...");
+      if (action->getActionType() == ActionType::PlaceAction) {
+        auto place_action = std::static_pointer_cast<PlaceAction>(action);
+        auto detach_object =
+            vkc_env->getAttachLocation(place_action->getDetachedObject());
+        if (detach_object->fixed_base) {
+          CONSOLE_BRIDGE_logDebug(
+              "place action with fixed base object found, disabling collision: "
+              "%s for object to avoid astar problems",
+              detach_object->link_name_.c_str());
+          auto scene_graph_ =
+              vkc_env->getVKCEnv()->getTesseractNonInverse()->getSceneGraph();
+          auto outbound_joints =
+              scene_graph_->getOutboundJoints(detach_object->base_link_);
+          discrete_contact_manager->disableCollisionObject(
+              detach_object->base_link_);
+          while (outbound_joints.size()) {
+            for (int i = outbound_joints.size() - 1; i >= 0; i--) {
+              discrete_contact_manager->disableCollisionObject(
+                  outbound_joints[i]->child_link_name);
+              auto child_outbound_joints = scene_graph_->getOutboundJoints(
+                  outbound_joints[i]->child_link_name);
+              outbound_joints.insert(outbound_joints.end(),
+                                     child_outbound_joints.begin(),
+                                     child_outbound_joints.end());
+              outbound_joints.erase(outbound_joints.begin() + i);
+            }
+          }
+        }
+      }
       initAstarMap(action, discrete_contact_manager);
+      // std::cout << "door joint value: "
+      //           << vkc_env->getVKCEnv()
+      //                  ->getTesseractNonInverse()
+      //                  ->getCurrentJointValues({"door_8966_joint_1"})
+      //           << std::endl;
+      CONSOLE_BRIDGE_logDebug("init astar map success");
     }
     act_iks.push_back(filtered_ik_result);
 
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
+
+    if (action->getActionType() == ActionType::PlaceAction &&
+        action->getJointObjectives().size()) {
+      CONSOLE_BRIDGE_logDebug(
+          "place action with joint objectives found, updating specific "
+          "joints...");
+      for (auto &jo : action->getJointObjectives()) {
+        Eigen::VectorXd v;
+        v.resize(1);
+        v[0] = jo.second;
+        CONSOLE_BRIDGE_logDebug("updating %s with %f", jo.first.c_str(),
+                                jo.second);
+        vkc_env->getVKCEnv()->getTesseract()->setState({jo.first}, v);
+      }
+    }
 
     std::stringstream ss;
     ss << filtered_ik_result.at(0).transpose();
@@ -206,10 +257,10 @@ double LongHorizonSeedGenerator::getIKSetCost(
   std::stringstream ss;
   double cost = 0;
   for (int i = 0; i < act_ik_set.size() - 1; i++) {
-    assert(cost_coeffs[i].size() == robot_vkc_length_);
+    assert(cost_coeffs[i].size() >= robot_vkc_length_);
     cost += (act_ik_set[i].head(robot_vkc_length_) -
              act_ik_set[i + 1].head(robot_vkc_length_))
-                .cwiseProduct(cost_coeffs[i])
+                .cwiseProduct(cost_coeffs[i].head(robot_vkc_length_))
                 .array()
                 .abs()
                 .sum();
@@ -286,6 +337,7 @@ void LongHorizonSeedGenerator::initAstarMap(
     }
     // std::cout << std::endl;
   }
+  // action->astar_generator.printMap({0, 0}, {0, 0});
   action->astar_init = true;
 }
 
