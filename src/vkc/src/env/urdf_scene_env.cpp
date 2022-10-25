@@ -246,6 +246,7 @@ TesseractSceneGraphPtr UrdfSceneEnv::configInverseChains_(
   }
 
   tesseract_->getTesseract()->applyCommands(cmds);
+  tesseract_->getTesseractNonInverse()->applyCommands(cmds);
 
   return iscene_sg;
 }
