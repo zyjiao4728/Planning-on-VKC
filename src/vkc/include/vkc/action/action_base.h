@@ -152,6 +152,22 @@ class ActionBase {
   AStar::Generator astar_generator;  // TODO: change to shared_ptr and get/set
   bool astar_init;
 
+  std::unordered_map<std::string, Eigen::Isometry3d>& getLinkObjectives() {
+    return link_objectives_;
+  }
+  void addLinkObjectives(LinkDesiredPose link_pose) {
+    link_objectives_[link_pose.link_name] = link_pose.tf;
+    return;
+  }
+
+  std::unordered_map<std::string, double>& getJointObjectives() {
+    return joint_objectives_;
+  }
+  void addJointObjectives(std::string joint_name, double joint_val) {
+    joint_objectives_[joint_name] = joint_val;
+    return;
+  }
+
  protected:
   ActionType action_type_;
   std::string manipulator_id_;
@@ -164,6 +180,8 @@ class ActionBase {
   bool init_traj_required_;
   std::pair<std::string, std::string> base_joint_;
   Eigen::VectorXd ik_cost_coeff_;
+  std::unordered_map<std::string, Eigen::Isometry3d> link_objectives_;
+  std::unordered_map<std::string, double> joint_objectives_;
 };
 
 // added: wanglei@bigai.ai

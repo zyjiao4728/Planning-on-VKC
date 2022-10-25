@@ -250,9 +250,8 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint",
                                       -1.6);
-        place_action =
-            make_shared<PlaceAction>(robot, "attach_fridge_handle",
-                                     link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(
+            robot, "attach_fridge_handle", link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
 
@@ -281,7 +280,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
         joint_objectives.emplace_back("door_8966_joint_1", 1.5);
         place_action =
             make_shared<PlaceAction>(robot, "attach_door_handle",
-                                     link_objectives, joint_objectives, false);
+                                     link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
 
@@ -317,7 +316,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
             LinkDesiredPose("cup_cup_base_link", destination));
 
         place_action = make_shared<PlaceAction>(
-            robot, "attach_cup", link_objectives, joint_objectives, true);
+            robot, "attach_cup", link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
         actions.emplace_back(place_action);
@@ -339,7 +338,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_drawer", link_objectives, joint_objectives, false);
+            robot, "attach_drawer", link_objectives, joint_objectives);
         setBaseJoint(place_action);
         actions.emplace_back(place_action);
       }
@@ -370,7 +369,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("cabinet_48479_joint_0", -0.4);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_cabinet", link_objectives, joint_objectives, false);
+            robot, "attach_cabinet", link_objectives, joint_objectives);
         // setBaseJoint(place_action);
         actions.emplace_back(place_action);
       }
@@ -395,8 +394,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_dishwasher", link_objectives, joint_objectives,
-            false);
+            robot, "attach_dishwasher", link_objectives, joint_objectives);
         // cost_coeff[6] = 5.;
         // cost_coeff[3] = 3.;
         // cost_coeff[0] = 3.;

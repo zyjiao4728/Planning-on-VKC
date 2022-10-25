@@ -61,7 +61,7 @@ tesseract_planning::JointWaypointPoly ProbTranslator::setupGoalWaypoint(
                     ? Eigen::VectorXd::Zero(
                           (long unsigned int)kin_->getJointNames().size())
                     : start_waypoint.getPosition();
-    auto pose = l_obj[0].tf;
+    auto pose = l_obj.begin(0)->second;
     if (collisionFreeInverseKinematics(env, manipulator, solutions, pose,
                                        seed)) {
       tesseract_planning::JointWaypointPoly jw{
@@ -74,7 +74,7 @@ tesseract_planning::JointWaypointPoly ProbTranslator::setupGoalWaypoint(
       Eigen::VectorXd solutions = Eigen::VectorXd::Zero(kin_->numJoints());
       int idx = 0;
       for (auto j : j_obj) {
-        solutions(idx) = j.joint_angle;
+        solutions(idx) = j.second;
         idx++;
       }
 
@@ -342,7 +342,7 @@ bool ProbTranslator::transPickProb(VKCEnvBasic &env, vkc::PickAction::Ptr act) {
   Eigen::Isometry3d target_pos =
       attach_location_ptr->world_joint_origin_transform;
 
-  this->l_obj = {LinkDesiredPose(env.getEndEffectorLink(), target_pos)};
+  this->l_obj = {{env.getEndEffectorLink(), target_pos}};
   this->j_obj.clear();
 
   return getStartAndGoalState(env, act->getManipulatorID());

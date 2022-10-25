@@ -423,12 +423,17 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     std::vector<double> non_inverse_joint_values;
     auto all_non_inverse_joints =
         tesseract_->getTesseractNonInverse()->getActiveJointNames();
+    auto joint_objectives = action->getJointObjectives();
     for (int i = 0; i < joint_names.size(); i++) {
       if (std::find(all_non_inverse_joints.begin(),
                     all_non_inverse_joints.end(),
                     joint_names[i]) != all_non_inverse_joints.end()) {
-        non_inverse_joint_names.push_back(joint_names[i]);
-        non_inverse_joint_values.push_back(joint_states[i]);
+          non_inverse_joint_names.push_back(joint_names[i]);
+        if (joint_objectives.size()) {
+          // non_inverse_joi
+        } else {
+          non_inverse_joint_values.push_back(joint_states[i]);
+        }
       }
     }
     Eigen::VectorXd non_inverse_joint_states =

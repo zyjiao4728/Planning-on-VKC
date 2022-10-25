@@ -225,10 +225,11 @@ MixedWaypointPoly ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
       return genPlaceMixedWaypoint(env, place_act);
     }
 
-    // case ActionType::UseAction: {
-    //   UseAction::Ptr use_act = std::dynamic_pointer_cast<UseAction>(action);
-    //   return genUseMixedWaypoint(env, use_act);
-    // }
+      // case ActionType::UseAction: {
+      //   UseAction::Ptr use_act =
+      //   std::dynamic_pointer_cast<UseAction>(action); return
+      //   genUseMixedWaypoint(env, use_act);
+      // }
 
     default: {
       ROS_ERROR("Undefined action type.");
@@ -292,11 +293,11 @@ MixedWaypointPoly ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
 
   for (auto jo : act->getJointObjectives()) {
     // std::cout << jo.joint_angle << std::endl;
-    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
+    waypoint.addJointTarget(jo.first, jo.second);
   }
 
   for (auto lo : act->getLinkObjectives()) {
-    waypoint.addLinkTarget(lo.link_name, lo.tf);
+    waypoint.addLinkTarget(lo.first, lo.second);
     // addCartWaypoint(program, lo.tf, "place object");
   }
   return waypoint;
@@ -309,13 +310,13 @@ MixedWaypointPoly ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
   MixedWaypoint waypoint(kin_group->getJointNames());
 
   for (auto jo : act->getJointObjectives()) {
-    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
+    waypoint.addJointTarget(jo.first, jo.second);
   }
 
   for (auto lo : act->getLinkObjectives()) {
-    waypoint.addLinkTarget(lo.link_name, lo.tf);
-    std::cout << lo.tf.linear() << std::endl;
-    std::cout << lo.tf.translation() << std::endl;
+    waypoint.addLinkTarget(lo.first, lo.second);
+    std::cout << lo.second.linear() << std::endl;
+    std::cout << lo.second.translation() << std::endl;
   }
   return waypoint;
 }

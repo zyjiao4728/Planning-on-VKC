@@ -33,7 +33,7 @@ void GenerateGraspCup3WithoutToolActions(vkc::ActionSeq &actions, const std::str
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_front", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_front", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
