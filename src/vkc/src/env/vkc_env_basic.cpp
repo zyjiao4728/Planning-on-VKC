@@ -428,9 +428,10 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
       if (std::find(all_non_inverse_joints.begin(),
                     all_non_inverse_joints.end(),
                     joint_names[i]) != all_non_inverse_joints.end()) {
-          non_inverse_joint_names.push_back(joint_names[i]);
-        if (joint_objectives.size()) {
-          // non_inverse_joi
+        non_inverse_joint_names.push_back(joint_names[i]);
+        if (joint_objectives.size() &&
+            joint_objectives.find(joint_names[i]) != joint_objectives.end()) {
+          non_inverse_joint_values.push_back(joint_objectives[joint_names[i]]);
         } else {
           non_inverse_joint_values.push_back(joint_states[i]);
         }
