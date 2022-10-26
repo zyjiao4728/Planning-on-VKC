@@ -431,7 +431,7 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
         non_inverse_joint_names.push_back(joint_names[i]);
         if (joint_objectives.size() &&
             joint_objectives.find(joint_names[i]) != joint_objectives.end()) {
-          non_inverse_joint_values.push_back(joint_objectives[joint_names[i]]);
+          non_inverse_joint_values.push_back(-1 * joint_objectives[joint_names[i]]);
         } else {
           non_inverse_joint_values.push_back(joint_states[i]);
         }
