@@ -11,7 +11,7 @@ using namespace tesseract_planning;
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
   int window_size = 2;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(6,6,0.4);
 
