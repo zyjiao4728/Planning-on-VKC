@@ -75,11 +75,10 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     // check action astar map
     if (!action->astar_init) {
       tesseract_collision::DiscreteContactManager::Ptr
-          discrete_contact_manager =
-              std::move(vkc_env->getVKCEnv()
-                            ->getTesseractNonInverse()
-                            ->clone()
-                            ->getDiscreteContactManager());
+          discrete_contact_manager = std::move(vkc_env->getVKCEnv()
+                                                   ->getTesseractNonInverse()
+                                                   ->getDiscreteContactManager()
+                                                   ->clone());
       CONSOLE_BRIDGE_logDebug("initializing astar generator...");
       if (action->getActionType() == ActionType::PlaceAction) {
         auto place_action = std::static_pointer_cast<PlaceAction>(action);
