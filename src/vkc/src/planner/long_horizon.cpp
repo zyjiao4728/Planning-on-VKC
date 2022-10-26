@@ -11,11 +11,10 @@ const int K = 20;
 
 namespace vkc {
 
-LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_steps, int n_iter,
+LongHorizonSeedGenerator::LongHorizonSeedGenerator(int n_iter,
                                                    size_t window_size,
                                                    size_t robot_vkc_length)
-    : n_steps(n_steps),
-      n_iter(n_iter),
+    : n_iter(n_iter),
       window_size(window_size),
       robot_vkc_length_(robot_vkc_length) {
   map_ = tesseract_planning::MapInfo();
@@ -76,10 +75,11 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     // check action astar map
     if (!action->astar_init) {
       tesseract_collision::DiscreteContactManager::Ptr
-          discrete_contact_manager = std::move(vkc_env->getVKCEnv()
-                                                   ->getTesseractNonInverse()
-                                                   ->getDiscreteContactManager()
-                                                   ->clone());
+          discrete_contact_manager =
+              std::move(vkc_env->getVKCEnv()
+                            ->getTesseractNonInverse()
+                            ->clone()
+                            ->getDiscreteContactManager());
       CONSOLE_BRIDGE_logDebug("initializing astar generator...");
       if (action->getActionType() == ActionType::PlaceAction) {
         auto place_action = std::static_pointer_cast<PlaceAction>(action);
@@ -114,7 +114,8 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
       // std::cout << "door joint value: "
       //           << vkc_env->getVKCEnv()
       //                  ->getTesseractNonInverse()
-      //                  ->getCurrentJointValues({"door_8966_joint_1"})
+      //                  ->getCurrentJointValues(
+      //                      {"fridge_0001_dof_rootd_Aa002_r_joint"})
       //           << std::endl;
       CONSOLE_BRIDGE_logDebug("init astar map success");
     }
@@ -337,7 +338,7 @@ void LongHorizonSeedGenerator::initAstarMap(
     }
     // std::cout << std::endl;
   }
-  // action->astar_generator.printMap({0, 0}, {0, 0});
+  action->astar_generator.printMap({0, 0}, {0, 0});
   action->astar_init = true;
 }
 

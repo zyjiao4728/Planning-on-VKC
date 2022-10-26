@@ -31,7 +31,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         int n_iter, bool rviz_enabled, unsigned int nruns,
                         bool longhorizon = false) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(15, 15, 0.15);
 
@@ -646,13 +646,14 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   switch (task_id) {
     case 0:
-      // genOpenFridgeSeq(actions, robot);
-      // genMoveCupSeq(actions, robot, onKitchenTable);
-      // genCloseFridgeSeq(actions, robot);
+      genOpenFridgeSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onKitchenTable);
+      genCloseFridgeSeq(actions, robot);
       genOpenDoorSeq(actions, robot);
       genMoveCupSeq(actions, robot, onDesk);
       genCloseDoorSeq(actions, robot);
       genUseBroomSeq(actions, robot);
+      genThrowTrashSeq(actions, robot, inTrashCan);
       break;
     case 1:
       genOpenFridgeSeq(actions, robot);

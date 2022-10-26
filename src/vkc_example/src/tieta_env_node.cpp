@@ -155,7 +155,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto pick_action =
         std::make_shared<PickAction>(robot, "attach_closet_right_handle");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    
+
     pick_action->setIKCostCoeff(pick_coeff);
     actions.emplace_back(pick_action);
   }
