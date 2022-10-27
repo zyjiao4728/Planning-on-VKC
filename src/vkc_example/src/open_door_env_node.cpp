@@ -27,7 +27,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
          unsigned int nruns) {
   // int window_size = 3;
   // LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size);
-  // seed_generator.generate(env, actions);
   ProbGenerator prob_generator;
 
   int j = 0;
@@ -38,7 +37,6 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
-    // action->switchCandidate();
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
@@ -137,7 +135,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
                               -0.169994, 0.145632, 0.594092, -1.57026};
     double *ptr_ = &jt[0];
     Eigen::Map<Eigen::VectorXd> joint_target(ptr_, 9);
-    pick_action->joint_candidate = joint_target;
+    pick_action->setJointCandidates({joint_target});
     // std::cout << pick_action->joint_candidate << std::endl;
     actions.emplace_back(pick_action);
     setBaseJoint(*actions.rbegin());
@@ -158,7 +156,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
                               -1.57026,  -0.6};
     double *ptr_ = &jt[0];
     Eigen::Map<Eigen::VectorXd> joint_target(ptr_, 10);
-    place_action->joint_candidate = joint_target;
+    place_action->setJointCandidates({joint_target});
     setBaseJoint(place_action);
 
     actions.emplace_back(place_action);

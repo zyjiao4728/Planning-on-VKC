@@ -74,8 +74,6 @@ class ActionBase {
   virtual ~ActionBase() = default;
 
   tesseract_planning::CompositeInstruction seed;
-  Eigen::VectorXd joint_candidate;
-  std::vector<Eigen::VectorXd> joint_candidates;
 
   ActionType getActionType() { return action_type_; }
 
@@ -139,9 +137,33 @@ class ActionBase {
 
   void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
 
+  void setJointCandidates(
+      const std::vector<Eigen::VectorXd>& joint_candidates) {
+    joint_candidates_ = joint_candidates;
+    joint_candidate_index = 0;
+  };
+
+  std::vector<Eigen::VectorXd>& getJointCandidates() {
+    return joint_candidates_;
+  }
+
+  Eigen::VectorXd getJointCandidate() {
+    if (joint_candidate_index < 0) {
+      CONSOLE_BRIDGE_logWarn(
+          "no joint candidate found, returning empty eigen vector");
+      return Eigen::VectorXd();
+    }
+    return joint_candidates_[joint_candidate_index];
+  };
+
   void switchCandidate() {
-    joint_candidate = joint_candidates.front();
-    joint_candidates.erase(joint_candidates.begin());
+    joint_candidate_index += 1;
+    if (joint_candidate_index == joint_candidates_.size()) {
+      CONSOLE_BRIDGE_logWarn(
+          "no joint candidate left, setting joint candidate index to -1");
+      joint_candidate_index = -1;
+    }
+    auto joint_candidate = getJointCandidate();
     std::stringstream ss;
     ss << joint_candidate.transpose();
     CONSOLE_BRIDGE_logDebug("current joint candidate: %s", ss.str().c_str());
@@ -182,6 +204,8 @@ class ActionBase {
   Eigen::VectorXd ik_cost_coeff_;
   std::unordered_map<std::string, Eigen::Isometry3d> link_objectives_;
   std::unordered_map<std::string, double> joint_objectives_;
+  std::vector<Eigen::VectorXd> joint_candidates_;
+  int joint_candidate_index = -1;
 };
 
 // added: wanglei@bigai.ai

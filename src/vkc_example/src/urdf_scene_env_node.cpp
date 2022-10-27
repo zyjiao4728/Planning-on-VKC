@@ -70,10 +70,8 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())
     //                          ->getJointNames());
-    // seed_generator.generate(env, sub_actions);
     // std::cout << "sg after generate" << std::endl;
     // printSceneGraph(env.getVKCEnv()->getTesseract()->getSceneGraph());
-    // action->switchCandidate();
     // fmt::print("kg: {}", env.getVKCEnv()
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())

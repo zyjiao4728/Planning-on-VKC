@@ -56,8 +56,8 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     filtered_ik_result.clear();
 
     // get collision free ik for action
-    if (action->joint_candidates.size()) {
-      filtered_ik_result = action->joint_candidates;
+    if (action->getJointCandidates().size()) {
+      filtered_ik_result = action->getJointCandidates();
     } else {
       filtered_ik_result = tesseract_planning::getIKs(
           env, kin_group,
@@ -69,7 +69,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
       //     tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
       // CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
       //                         filtered_ik_result.size());
-      action->joint_candidates = filtered_ik_result;
+      action->setJointCandidates(filtered_ik_result);
     }
 
     // check action astar map
@@ -154,17 +154,17 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   std::cout << "done." << std::endl;
   assert(ik_sets.size() != 0);
   assert(ik_sets.front().size() == sub_actions.size());
-  sub_actions.front()->joint_candidates.clear();
+  sub_actions.front()->getJointCandidates().clear();
   for (auto ik_set : ik_sets) {
     bool is_diff = true;
-    for (auto ik : sub_actions.front()->joint_candidates) {
+    for (auto ik : sub_actions.front()->getJointCandidates()) {
       if ((ik_set.front() - ik).matrix().norm() < 0.05) {
         is_diff = false;
         break;
       }
     }
     if (is_diff) {
-      sub_actions.front()->joint_candidates.push_back(ik_set.front());
+      sub_actions.front()->getJointCandidates().push_back(ik_set.front());
     }
     // if (std::find(sub_actions.front()->joint_candidates.begin(),
     //               sub_actions.front()->joint_candidates.end(),
@@ -176,12 +176,13 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   }
   std::cout << "first 10 ik candidates: " << std::endl;
   for (int i = 0;
-       i < min(10, (int)sub_actions.front()->joint_candidates.size()); i++) {
-    std::cout << sub_actions.front()->joint_candidates[i].transpose()
+       i < min(10, (int)sub_actions.front()->getJointCandidates().size());
+       i++) {
+    std::cout << sub_actions.front()->getJointCandidates()[i].transpose()
               << std::endl;
   }
   CONSOLE_BRIDGE_logDebug("candidates for first action: %d",
-                          sub_actions.front()->joint_candidates.size());
+                          sub_actions.front()->getJointCandidates().size());
   CONSOLE_BRIDGE_logInform("generating long horizon seed success");
   raw_vkc_env.setEndEffector(origin_ee);
   raw_vkc_env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
