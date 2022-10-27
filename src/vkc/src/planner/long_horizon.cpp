@@ -319,7 +319,7 @@ void LongHorizonSeedGenerator::initAstarMap(
       contact_results.clear();
       base_tf.translation() =
           Eigen::Vector3d(-map_.map_x / 2.0 + x * map_.step_size,
-                          -map_.map_y / 2.0 + y * map_.step_size, 0.145);
+                          -map_.map_y / 2.0 + y * map_.step_size, 0.02);
       if (!tesseract_planning::isEmptyCell(discrete_contact_manager,
                                            "base_link", base_tf,
                                            contact_results) /*&&
