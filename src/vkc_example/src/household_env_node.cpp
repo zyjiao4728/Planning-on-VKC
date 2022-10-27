@@ -33,7 +33,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
-  seed_generator.setMapInfo(15, 15, 0.15);
+  seed_generator.setMapInfo(10, 10, 0.2);
 
   int j = 0;
 
@@ -165,6 +165,8 @@ Eigen::VectorXd getPickCoeff(int size = 9) {
 Eigen::VectorXd getPlaceCoeff(int size = 10) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
+  coeff[0] = 3.;
+  coeff[1] = 3.;
   return coeff;
 }
 
@@ -646,9 +648,9 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   switch (task_id) {
     case 0:
-      genOpenFridgeSeq(actions, robot);
-      genMoveCupSeq(actions, robot, onKitchenTable);
-      genCloseFridgeSeq(actions, robot);
+      // genOpenFridgeSeq(actions, robot);
+      // genMoveCupSeq(actions, robot, onKitchenTable);
+      // genCloseFridgeSeq(actions, robot);
       genOpenDoorSeq(actions, robot);
       genMoveCupSeq(actions, robot, onDesk);
       genCloseDoorSeq(actions, robot);
