@@ -109,7 +109,10 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
           }
         }
       }
-      initAstarMap(action, discrete_contact_manager);
+      setupAstarGenerator(action->astar_generator, discrete_contact_manager,
+                          map_, "base_link",
+                          env->getLinkTransform("base_link").translation()[2]);
+      // initAstarMap(action, discrete_contact_manager);
       // std::cout << "door joint value: "
       //           << vkc_env->getVKCEnv()
       //                  ->getTesseractNonInverse()
@@ -352,7 +355,7 @@ bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
 
   int end_x = int(round((end[0] + map_.map_x / 2.0) / map_.step_size));
   int end_y = int(round((end[1] + map_.map_y / 2.0) / map_.step_size));
-  bool base_collision =
+  bool start_collision =
       action->astar_generator.detectCollision({base_x, base_y});
   bool end_collision = action->astar_generator.detectCollision({end_x, end_y});
   // action->astar_generator.printMap({base_x, base_y}, {end_x, end_y});
@@ -365,7 +368,7 @@ bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
     // cannot find valid astar path
     solution_found = false;
   }
-  if (base_collision) action->astar_generator.addCollision({base_x, base_y});
+  if (start_collision) action->astar_generator.addCollision({base_x, base_y});
   if (end_collision) action->astar_generator.addCollision({end_x, end_y});
   // std::cout << solution_found << "\t";
   return solution_found;
