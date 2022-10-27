@@ -33,8 +33,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
       Eigen::Vector3d(1.6008290705, -0.119028821604, 1.16077205044);
 
   cabinet_handle_pose.linear() =
+<<<<<<< HEAD
       Eigen::Quaterniond(0.01213719228, 0.00147056921893, 0.00352577932278,
                          0.999919044158)
+=======
+      Eigen::Quaterniond(0.01213719228, 0.00147056921893, 0.00352577932278, 0.999919044158)
+>>>>>>> record positions
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "closet_base_joint", cabinet_handle_pose);
@@ -50,8 +54,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   table_pose.setIdentity();
   table_pose.translation() =
       Eigen::Vector3d(-0.000741231206823, -0.00100066802074, 0.778162612167);
+<<<<<<< HEAD
   table_pose.linear() = Eigen::Quaterniond(0.999926188341, -0.00112456813974,
                                            -2.28605265373e-05, -0.0120976317792)
+=======
+  table_pose.linear() = Eigen::Quaterniond(0.999926188341, -0.00112456813974, -2.28605265373e-05, -0.0120976317792)
+>>>>>>> record positions
                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
@@ -65,8 +73,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   drawer_pose.translation() =
       Eigen::Vector3d(1.63689526462, -0.277244723554, 0.797022783282);
 
+<<<<<<< HEAD
   drawer_pose.linear() = Eigen::Quaterniond(0.0166118400848, -0.00847124317006,
                                             -0.00158642556722, 0.999824868696)
+=======
+  drawer_pose.linear() = Eigen::Quaterniond(0.0166118400848, -0.00847124317006, -0.00158642556722, 0.999824868696)
+>>>>>>> record positions
                              .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "drawer_world_joint", drawer_pose);
@@ -79,8 +91,12 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   box_pose.setIdentity();
   box_pose.translation() =
       Eigen::Vector3d(0.0220869188096, 0.131105779323, 0.820314461283);
+<<<<<<< HEAD
   box_pose.linear() = Eigen::Quaterniond(0.498370590928, 0.4978297229,
                                          -0.501032788889, 0.502750898113)
+=======
+  box_pose.linear() = Eigen::Quaterniond(0.498370590928, 0.4978297229, -0.501032788889, 0.502750898113)
+>>>>>>> record positions
                           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "box_box_base_joint", box_pose);
@@ -176,7 +192,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
 
   Eigen::VectorXd place_coeff(9);
   place_coeff << 3, 3, 3, 8, 1, 1, 10, 1, 1;
-  // place_coeff << 2, 4, 5, 6, 1, 1, 10, 1, 1;
+  // place_coeff << 2, 2, 5, 8, 1, 1, 10, 1, 1;
 
   // action1: pick closet handle
   {
@@ -239,9 +255,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     Eigen::Isometry3d destination;
     destination.setIdentity();
     destination.translation() =
-        Eigen::Vector3d(1.67385044825, -0.31798151287, 0.808954863262 + 0.15);
-    destination.linear() = Eigen::Quaterniond(0.489760054482, 0.513191195407,
-                                              -0.495901627301, 0.500850738275)
+        Eigen::Vector3d(1.520242745, -0.267358451194, 0.810395824685 + 0.15);
+    destination.linear() = Eigen::Quaterniond(0.509883484332, -0.499930970934, -0.491384342801, -0.498627400327)
                                .matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
@@ -288,7 +303,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("closet_bottom_right_door_joint", 0.0);
+    joint_objectives.emplace_back("closet_bottom_right_door_joint", 0);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
