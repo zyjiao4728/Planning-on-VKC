@@ -33,7 +33,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
-  seed_generator.setMapInfo(10, 10, 0.2);
+  seed_generator.setMapInfo(8,8,0.2);
 
   int j = 0;
 
@@ -70,7 +70,6 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
         elapsed_time.emplace_back(
             chrono::duration_cast<chrono::milliseconds>(end - start).count() /
             1000.);
-        std::cout << elapsed_time.back() << std::endl;
         break;
       } else {
         ROS_WARN(
@@ -90,11 +89,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
 
     tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
     tesseract_common::JointTrajectory refined_traj = trajectory;
-    refineTrajectory(refined_traj, env);
     joint_trajs.emplace_back(trajectory);
 
     if (rviz_enabled && env.getPlotter() != nullptr) {
       ROS_INFO("plotting result");
+      refineTrajectory(refined_traj, env);
       tesseract_common::Toolpath toolpath =
           toToolpath(ci, *env.getVKCEnv()->getTesseract());
       env.getPlotter()->plotMarker(
@@ -166,6 +165,8 @@ Eigen::VectorXd getPlaceCoeff(int size = 10) {
   coeff.setOnes(size);
   coeff[0] = 3.;
   coeff[1] = 3.;
+  coeff[2] = 3.;
+  coeff[9] = 0;
   return coeff;
 }
 
@@ -647,9 +648,9 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   switch (task_id) {
     case 0:
-      // genOpenFridgeSeq(actions, robot);
-      // genMoveCupSeq(actions, robot, onKitchenTable);
-      // genCloseFridgeSeq(actions, robot);
+      genOpenFridgeSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onKitchenTable);
+      genCloseFridgeSeq(actions, robot);
       genOpenDoorSeq(actions, robot);
       genMoveCupSeq(actions, robot, onDesk);
       genCloseDoorSeq(actions, robot);
