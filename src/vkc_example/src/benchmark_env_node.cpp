@@ -307,7 +307,7 @@ void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::VectorXd vkc_pose) {
 
     auto action =
         make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
-    action->joint_candidate = vkc_pose;
+    action->setJointCandidates({vkc_pose});
 
     actions.emplace_back(action);
   }

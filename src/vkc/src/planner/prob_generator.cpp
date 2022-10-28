@@ -69,17 +69,17 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   program.appendMoveInstruction(plan_instruction);
 
   auto seed_instruction = plan_instruction;
-  if (act->joint_candidate.size()) {
+  if (act->getJointCandidate().size()) {
     std::stringstream ss;
-    ss << act->joint_candidate.transpose();
+    ss << act->getJointCandidate().transpose();
     CONSOLE_BRIDGE_logInform(
         "joint candidate found, resetting seed waypoint to joint waypoint: %s",
         ss.str().c_str());
     // std::cout << act->joint_candidate.size() << std::endl;
     assert(kinematic_group->getJointNames().size() ==
-           act->joint_candidate.size());
-    seed_instruction.assignJointWaypoint(JointWaypointPoly{
-        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate)});
+           act->getJointCandidate().size());
+    seed_instruction.assignJointWaypoint(JointWaypointPoly{JointWaypoint(
+        kinematic_group->getJointNames(), act->getJointCandidate())});
   }
   seed_program.appendMoveInstruction(seed_instruction);
 
@@ -167,11 +167,11 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                       env_->getCurrentJointValues(kin_group->getJointNames()));
   MoveInstruction plan_instruction(wp, MoveInstructionType::FREESPACE,
                                    default_profile);
-  if (action->joint_candidate.size()) {
+  if (action->getJointCandidate().size()) {
     CONSOLE_BRIDGE_logDebug(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
-    plan_instruction.assignJointWaypoint(JointWaypointPoly{
-        JointWaypoint(kin_group->getJointNames(), action->joint_candidate)});
+    plan_instruction.assignJointWaypoint(JointWaypointPoly{JointWaypoint(
+        kin_group->getJointNames(), action->getJointCandidate())});
   }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", action->getActionName()));

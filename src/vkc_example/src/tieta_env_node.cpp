@@ -90,7 +90,6 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
     seed_generator.generate(env, sub_actions);
-    action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;

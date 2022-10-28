@@ -45,7 +45,6 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     ActionSeq sub_actions(ptr, actions.end());
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
-      action->switchCandidate();
     }
 
     PlannerResponse response;
