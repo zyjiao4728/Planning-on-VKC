@@ -3,6 +3,8 @@
 
 #include <console_bridge/console.h>
 #include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_common/utils.h>
+#include <vkc/utils.h>
 
 #include <Eigen/Eigen>
 #include <string>
@@ -190,6 +192,50 @@ class ActionBase {
     return;
   }
 
+  void loadTrajectorySeed(std::string file_path) {
+    std::ifstream csv_file(file_path);
+
+    std::vector<std::string> joint_names;
+    std::vector<Eigen::VectorXd> joint_states;
+    if (!csv_file.is_open())
+      throw std::runtime_error("Could not open csv file");
+
+    std::string line;
+    bool is_header = true;
+
+    while (std::getline(csv_file, line)) {
+      std::vector<std::string> tokens;
+      boost::split(tokens, line, boost::is_any_of(","),
+                   boost::token_compress_on);
+      if (is_header) {
+        is_header = false;
+        for (const auto& t : tokens) {
+          joint_names.push_back(t);
+        }
+        continue;
+      }
+      if (!tesseract_common::isNumeric(tokens[0]))
+        throw std::runtime_error("loadTrajectorySeed: Invalid format");
+      std::vector<double> state_vector;
+      for (const auto& t : tokens) {
+        double value = 0;
+        tesseract_common::toNumeric<double>(t, value);
+        state_vector.push_back(value);
+      }
+      Eigen::VectorXd joint_state =
+          Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(state_vector.data(),
+                                                        state_vector.size());
+      joint_states.push_back(joint_state);
+    }
+    trajectory_seed_.first = joint_names;
+    trajectory_seed_.second = joint_states;
+  }
+
+  std::pair<std::vector<std::string>, std::vector<Eigen::VectorXd>>&
+  getTrajectorySeed() {
+    return trajectory_seed_;
+  }
+
  protected:
   ActionType action_type_;
   std::string manipulator_id_;
@@ -206,6 +252,8 @@ class ActionBase {
   std::unordered_map<std::string, double> joint_objectives_;
   std::vector<Eigen::VectorXd> joint_candidates_;
   int joint_candidate_index = -1;
+  std::pair<std::vector<std::string>, std::vector<Eigen::VectorXd>>
+      trajectory_seed_;
 };
 
 // added: wanglei@bigai.ai
