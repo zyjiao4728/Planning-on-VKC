@@ -98,7 +98,7 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
     while (try_cnt++ < nruns) {
       tesseract_planning::PlannerRequest prob_ptr;
       if (j == 2 || j == 8) {
-        prob_ptr = prob_generator.genRequest(env, action, 50, n_iter);
+        prob_ptr = prob_generator.genRequest(env, action, 60, n_iter);
       } else {
         prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
       }
@@ -194,7 +194,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -217,7 +217,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
                                       link_objectives, joint_objectives, false);
     place_action->setIKCostCoeff(place_coeff);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
 
@@ -265,8 +265,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
                                       link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    // place_action->setIKCostCoeff(place_coeff);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
 
@@ -287,7 +287,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
