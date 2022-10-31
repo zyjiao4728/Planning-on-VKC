@@ -25,6 +25,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
                                          ActionBase::Ptr action, int n_steps,
                                          int n_iter) {
   MixedWaypointPoly wp;
+  CONSOLE_BRIDGE_logDebug("generating mixed waypoint...");
   wp = genMixedWaypoint(env, action);
   return genRequest(env, action, wp, n_steps, n_iter);
 }
@@ -89,16 +90,18 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
-      act->seed.empty()
-          ? generateMixedSeed(seed_program, cur_state,
+      act->getTrajectorySeed().first.size()
+          ? generateTrajectorySeed(program, act->getTrajectorySeed().first,
+                                   act->getTrajectorySeed().second,
+                                   env.getVKCEnv()->getTesseract())
+          : generateMixedSeed(seed_program, cur_state,
                               env.getVKCEnv()->getTesseract(), n_steps,
-                              act->getBaseJoint(), act->getIKCostCoeff())
-          : act->seed;
+                              act->getBaseJoint(), act->getIKCostCoeff());
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            seed.getMoveInstructionCount());
 
-  // seed.print(fmt::format("{} seed: ", act->getActionName()));
+  seed.print(fmt::format("{} seed: ", act->getActionName()));
 
   // compose request
   PlannerRequest request;

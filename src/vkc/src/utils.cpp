@@ -6,6 +6,8 @@ CompositeInstruction generateTrajectorySeed(
     CompositeInstruction& program, std::vector<std::string> joint_names,
     std::vector<Eigen::VectorXd> joint_states,
     tesseract_environment::Environment::Ptr env) {
+  CONSOLE_BRIDGE_logDebug("generating trajectory seed...");
+  assert(joint_names.size() == joint_states.front().size());
   if (!program.hasStartInstruction())
     throw std::runtime_error(
         "Top most composite instruction is missing start instruction!");
@@ -26,10 +28,10 @@ CompositeInstruction generateTrajectorySeed(
           "no nested composite instruction should be provided for trajectory "
           "seed");
     }
+    if (!i.isMoveInstruction()) {
+      throw std::runtime_error("wrong instruction type provided");
+    }
     auto& base_instruction = i.as<MoveInstructionPoly>();
-    tesseract_common::ManipulatorInfo mi =
-        mi.getCombined(base_instruction.getManipulatorInfo());
-
     CompositeInstruction ci;
     ci.setProfile(base_instruction.getProfile());
     ci.setDescription(base_instruction.getDescription());
@@ -49,6 +51,11 @@ CompositeInstruction generateTrajectorySeed(
         move_instruction.setPathProfile(base_instruction.getPathProfile());
         move_instruction.setPathProfileOverrides(
             base_instruction.getPathProfileOverrides());
+      }
+      if (j == 0) {
+        // move_instruction.setMoveType(MoveInstructionType::START);
+        // ci.setStartInstruction(move_instruction);
+        continue;
       }
       ci.appendMoveInstruction(move_instruction);
     }
