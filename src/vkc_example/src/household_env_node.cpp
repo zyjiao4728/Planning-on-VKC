@@ -33,7 +33,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   int window_size = 3;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
-  seed_generator.setMapInfo(8,8,0.2);
+  seed_generator.setMapInfo(8, 8, 0.2);
 
   int j = 0;
 
@@ -43,14 +43,21 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
+    auto start = chrono::steady_clock::now();
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
     }
+    auto end = chrono::steady_clock::now();
+
+    double seed_time =
+        chrono::duration_cast<chrono::milliseconds>(end - start).count() /
+        1000.;
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
+      start = chrono::steady_clock::now();
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       if (rviz_enabled) {
@@ -58,18 +65,17 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "optimization is ready. Press <Enter> to process the request.");
       }
 
-      auto start = chrono::steady_clock::now();
       solveProb(prob_ptr, response, n_iter);
-      auto end = chrono::steady_clock::now();
-
+      end = chrono::steady_clock::now();
       // break;
       if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
           response.status.value())  // optimization converges
       {
         converged = true;
         elapsed_time.emplace_back(
+            seed_time +
             chrono::duration_cast<chrono::milliseconds>(end - start).count() /
-            1000.);
+                1000.);
         break;
       } else {
         ROS_WARN(
@@ -104,11 +110,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    // toDelimitedFile(ci,
-    //                 "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-    //                 "trajectory/urdf_scene_env_" +
-    //                     std::to_string(j) + ".csv",
-    //                 ',');
+    toDelimitedFile(ci,
+                    "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/src/vkc_example/"
+                    "trajectory/household_env_" +
+                        std::to_string(j) + ".csv",
+                    ',');
 
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
@@ -154,18 +160,15 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
 Eigen::VectorXd getPickCoeff(int size = 9) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
-  coeff[0] = 2.;
-  coeff[1] = 2.;
-  coeff[3] = 2.;
   return coeff;
 }
 
 Eigen::VectorXd getPlaceCoeff(int size = 10) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
-  coeff[0] = 3.;
-  coeff[1] = 3.;
   coeff[2] = 3.;
+  coeff[3] = 3.;
+  coeff[6] = 5.;
   coeff[9] = 0;
   return coeff;
 }
@@ -191,8 +194,6 @@ void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -219,8 +220,6 @@ void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -246,8 +245,6 @@ void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
 
     actions.emplace_back(place_action);
@@ -274,8 +271,6 @@ void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
 
     setBaseJoint(place_action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
     place_action->setIKCostCoeff(place_coeff);
 
     actions.emplace_back(place_action);
@@ -396,10 +391,6 @@ void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
     auto place_action = std::make_shared<PlaceAction>(
         robot, "attach_dishwasher", link_objectives, joint_objectives, false);
-    // cost_coeff[6] = 5.;
-    // cost_coeff[3] = 3.;
-    // cost_coeff[0] = 3.;
-    // cost_coeff[1] = 3.;
     // place_action->setIKCostCoeff(cost_coeff);
     setBaseJoint(place_action);
     actions.emplace_back(place_action);
@@ -435,6 +426,10 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
     auto action =
         std::make_shared<PlaceAction>(robot, "attach_trash", link_objectives,
                                       joint_objectives, "place trash");
+    auto place_coeff = getPlaceCoeff();
+    place_coeff.setOnes();
+    place_coeff[4] = 10;
+    action->setIKCostCoeff(place_coeff);
     actions.emplace_back(action);
   }
   // place broom
@@ -747,8 +742,8 @@ int main(int argc, char **argv) {
   auto elapsed_time =
       run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
   interpVKCData(data, elapsed_time, joint_trajs);
-  std::string save_path = ros::package::getPath("vkc_example") +
-                          "/trajectory/household_env_" +
-                          std::to_string(taskid) + ".csv";
+  std::string save_path =
+      ros::package::getPath("vkc_example") + "/trajectory/household_env_" +
+      std::to_string(taskid) + "_" + to_string(longhorizon) + ".csv";
   saveDataToFile(data, save_path);
 }
