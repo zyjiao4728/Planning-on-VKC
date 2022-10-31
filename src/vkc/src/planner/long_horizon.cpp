@@ -50,79 +50,91 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     tesseract_kinematics::KinematicGroup::Ptr kin_group =
         std::move(env->getKinematicGroup(action->getManipulatorID()));
 
-    // fmt::print("kin group joint names: {}", kin_group->getJointNames());
-    auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
-    CONSOLE_BRIDGE_logDebug("mixed waypoint for long horizon seed generated");
-    filtered_ik_result.clear();
-
-    // get collision free ik for action
-    if (action->getJointCandidates().size()) {
-      filtered_ik_result = action->getJointCandidates();
+    if (action->getTrajectorySeed().first.size()) {
+      std::stringstream ss;
+      ss << action->getTrajectorySeed().second.back().transpose();
+      CONSOLE_BRIDGE_logInform(
+          "trajectory seed found, setting filtered ik result with last joint "
+          "state of trajectory: %s",
+          ss.str().c_str());
+      filtered_ik_result = {action->getTrajectorySeed().second.back()};
     } else {
-      filtered_ik_result = tesseract_planning::getIKs(
-          env, kin_group,
-          env->getCurrentJointValues(kin_group->getJointNames()), wp, "world");
+      // fmt::print("kin group joint names: {}", kin_group->getJointNames());
+      auto wp = prob_generator.genMixedWaypoint(*vkc_env, action);
+      CONSOLE_BRIDGE_logDebug("mixed waypoint for long horizon seed generated");
+      filtered_ik_result.clear();
 
-      CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
-                              filtered_ik_result.size());
-      // filtered_ik_result =
-      //     tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
-      // CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
-      //                         filtered_ik_result.size());
-      action->setJointCandidates(filtered_ik_result);
-    }
+      // get collision free ik for action
+      if (action->getJointCandidates().size()) {
+        filtered_ik_result = action->getJointCandidates();
+      } else {
+        filtered_ik_result = tesseract_planning::getIKs(
+            env, kin_group,
+            env->getCurrentJointValues(kin_group->getJointNames()), wp,
+            "world");
 
-    // check action astar map
-    if (!action->astar_init) {
-      tesseract_collision::DiscreteContactManager::Ptr
-          discrete_contact_manager = std::move(vkc_env->getVKCEnv()
-                                                   ->getTesseractNonInverse()
-                                                   ->getDiscreteContactManager()
-                                                   ->clone());
-      CONSOLE_BRIDGE_logDebug("initializing astar generator...");
-      if (action->getActionType() == ActionType::PlaceAction) {
-        auto place_action = std::static_pointer_cast<PlaceAction>(action);
-        auto detach_object =
-            vkc_env->getAttachLocation(place_action->getDetachedObject());
-        if (detach_object->fixed_base) {
-          CONSOLE_BRIDGE_logDebug(
-              "place action with fixed base object found, disabling collision: "
-              "%s for object to avoid astar problems",
-              detach_object->link_name_.c_str());
-          auto scene_graph_ =
-              vkc_env->getVKCEnv()->getTesseractNonInverse()->getSceneGraph();
-          auto outbound_joints =
-              scene_graph_->getOutboundJoints(detach_object->base_link_);
-          discrete_contact_manager->disableCollisionObject(
-              detach_object->base_link_);
-          while (outbound_joints.size()) {
-            for (int i = outbound_joints.size() - 1; i >= 0; i--) {
-              discrete_contact_manager->disableCollisionObject(
-                  outbound_joints[i]->child_link_name);
-              auto child_outbound_joints = scene_graph_->getOutboundJoints(
-                  outbound_joints[i]->child_link_name);
-              outbound_joints.insert(outbound_joints.end(),
-                                     child_outbound_joints.begin(),
-                                     child_outbound_joints.end());
-              outbound_joints.erase(outbound_joints.begin() + i);
+        CONSOLE_BRIDGE_logDebug("long horizon ik_result num: %ld",
+                                filtered_ik_result.size());
+        // filtered_ik_result =
+        //     tesseract_planning::filterCollisionIK(env, kin_group, ik_result);
+        // CONSOLE_BRIDGE_logDebug("ik after filtering collision: %ld",
+        //                         filtered_ik_result.size());
+        action->setJointCandidates(filtered_ik_result);
+      }
+
+      // check action astar map
+      if (!action->astar_init) {
+        tesseract_collision::DiscreteContactManager::Ptr
+            discrete_contact_manager =
+                std::move(vkc_env->getVKCEnv()
+                              ->getTesseractNonInverse()
+                              ->getDiscreteContactManager()
+                              ->clone());
+        CONSOLE_BRIDGE_logDebug("initializing astar generator...");
+        if (action->getActionType() == ActionType::PlaceAction) {
+          auto place_action = std::static_pointer_cast<PlaceAction>(action);
+          auto detach_object =
+              vkc_env->getAttachLocation(place_action->getDetachedObject());
+          if (detach_object->fixed_base) {
+            CONSOLE_BRIDGE_logDebug(
+                "place action with fixed base object found, disabling "
+                "collision: "
+                "%s for object to avoid astar problems",
+                detach_object->link_name_.c_str());
+            auto scene_graph_ =
+                vkc_env->getVKCEnv()->getTesseractNonInverse()->getSceneGraph();
+            auto outbound_joints =
+                scene_graph_->getOutboundJoints(detach_object->base_link_);
+            discrete_contact_manager->disableCollisionObject(
+                detach_object->base_link_);
+            while (outbound_joints.size()) {
+              for (int i = outbound_joints.size() - 1; i >= 0; i--) {
+                discrete_contact_manager->disableCollisionObject(
+                    outbound_joints[i]->child_link_name);
+                auto child_outbound_joints = scene_graph_->getOutboundJoints(
+                    outbound_joints[i]->child_link_name);
+                outbound_joints.insert(outbound_joints.end(),
+                                       child_outbound_joints.begin(),
+                                       child_outbound_joints.end());
+                outbound_joints.erase(outbound_joints.begin() + i);
+              }
             }
           }
         }
+        setupAstarGenerator(
+            action->astar_generator, discrete_contact_manager, map_,
+            "base_link", env->getLinkTransform("base_link").translation()[2]);
+        // initAstarMap(action, discrete_contact_manager);
+        // std::cout << "door joint value: "
+        //           << vkc_env->getVKCEnv()
+        //                  ->getTesseractNonInverse()
+        //                  ->getCurrentJointValues(
+        //                      {"fridge_0001_dof_rootd_Aa002_r_joint"})
+        //           << std::endl;
+        CONSOLE_BRIDGE_logDebug("init astar map success");
       }
-      setupAstarGenerator(action->astar_generator, discrete_contact_manager,
-                          map_, "base_link",
-                          env->getLinkTransform("base_link").translation()[2]);
-      // initAstarMap(action, discrete_contact_manager);
-      // std::cout << "door joint value: "
-      //           << vkc_env->getVKCEnv()
-      //                  ->getTesseractNonInverse()
-      //                  ->getCurrentJointValues(
-      //                      {"fridge_0001_dof_rootd_Aa002_r_joint"})
-      //           << std::endl;
-      CONSOLE_BRIDGE_logDebug("init astar map success");
     }
     act_iks.push_back(filtered_ik_result);
-
     vkc_env->updateEnv(kin_group->getJointNames(), filtered_ik_result.at(0),
                        action);
 
@@ -202,6 +214,7 @@ LongHorizonSeedGenerator::getOrderedIKSet(
   set_input.insert(set_input.begin(), {current_state});
 
   for (auto &act_ik : act_iks) {
+    assert(act_ik.size());
     auto filtered_iks = kmeans(act_ik, K);
     // auto filtered_iks = act_ik;
     CONSOLE_BRIDGE_logDebug("filtered iks after kmeans: %d - %d/%d",
@@ -292,8 +305,11 @@ void LongHorizonSeedGenerator::getValidIKSetsHelper_(
     const std::vector<ActionBase::Ptr> &actions) {
   tesseract_kinematics::IKSolutions sequence = sequences[index];
   for (auto &ik : sequence) {
-    if (index > 0 && !astarChecking(actions[index - 1], stack.back(), ik))
+    // index is moved 1 afterward because current state is inserted
+    if (index > 0 && !actions[index - 1]->getTrajectorySeed().first.size() &&
+        !astarChecking(actions[index - 1], stack.back(), ik)) {
       continue;
+    }
     stack.push_back(ik);
     if (index == sequences.size() - 1)
       accum.push_back(stack);
@@ -379,6 +395,9 @@ tesseract_kinematics::IKSolutions LongHorizonSeedGenerator::kmeans(
     const tesseract_kinematics::IKSolutions &act_iks, int k) {
   const Eigen::IOFormat CleanFmt(3, 0, " ", "\n", "[", "]");
   if (act_iks.size() < k) {
+    CONSOLE_BRIDGE_logDebug(
+        "%d act iks found, k is %d, returning without kmeans.", act_iks.size(),
+        k);
     return act_iks;
   }
   int K = std::min(int(act_iks.size()), k);
