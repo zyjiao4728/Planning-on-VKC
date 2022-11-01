@@ -136,13 +136,13 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
   Eigen::VectorXd base_values = Eigen::Vector2d(0., 0.);
   tesseract_collision::ContactResultMap contact_results;
 
+  // env.getVKCEnv()->getTesseract()->setState(base_joints, Eigen::Vector2d(2,-2));
+  // return;
   while (!init_base_position) {
     init_base_position = true;
     contact_results.clear();
     base_values = Eigen::Vector2d(rand() % 100 / 99. * 2. + 0.5,
                                   -rand() % 100 / 99. * 3. + 0.5);
-    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
-
     env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
     env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
         contact_results, tesseract_collision::ContactTestType::ALL);
@@ -176,10 +176,10 @@ Eigen::VectorXd getPlaceCoeff(int size = 10) {
 void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick fridge handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: open fridge door
@@ -188,24 +188,24 @@ void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
-    auto place_action =
+    auto action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
                                  joint_objectives, false);
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_action->setIKCostCoeff(place_coeff);
-    actions.emplace_back(place_action);
+    action->setIKCostCoeff(place_coeff);
+    actions.emplace_back(action);
   }
 }
 
 void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick fridge handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_fridge_handle");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: close fridge door
@@ -214,24 +214,24 @@ void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
-    auto place_action =
+    auto action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
                                  joint_objectives, false);
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_action->setIKCostCoeff(place_coeff);
-    actions.emplace_back(place_action);
+    action->setIKCostCoeff(place_coeff);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick door handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_door_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_door_handle");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: open door door
@@ -240,24 +240,24 @@ void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("door_8966_joint_1", 1.52);
-    auto place_action = make_shared<PlaceAction>(
+    auto action = make_shared<PlaceAction>(
         robot, "attach_door_handle", link_objectives, joint_objectives, false);
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_action->setIKCostCoeff(place_coeff);
+    action->setIKCostCoeff(place_coeff);
 
-    actions.emplace_back(place_action);
+    actions.emplace_back(action);
   }
 }
 
 void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick door handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_door_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_door_handle");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: close door door
@@ -266,14 +266,14 @@ void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("door_8966_joint_1", 0.0);
-    auto place_action = make_shared<PlaceAction>(
+    auto action = make_shared<PlaceAction>(
         robot, "attach_door_handle", link_objectives, joint_objectives, false);
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_action->setIKCostCoeff(place_coeff);
+    action->setIKCostCoeff(place_coeff);
 
-    actions.emplace_back(place_action);
+    actions.emplace_back(action);
   }
 }
 
@@ -281,10 +281,10 @@ void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot,
                    Eigen::Isometry3d destination) {
   // action 1: pick cup
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_cup");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_cup");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: place cup on the table
@@ -294,11 +294,11 @@ void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot,
     link_objectives.push_back(
         LinkDesiredPose("cup_cup_base_link", destination));
 
-    auto place_action = make_shared<PlaceAction>(
-        robot, "attach_cup", link_objectives, joint_objectives, true);
+    auto action = make_shared<PlaceAction>(robot, "attach_cup", link_objectives,
+                                           joint_objectives, true);
 
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
@@ -306,10 +306,10 @@ void genThrowTrashSeq(vkc::ActionSeq &actions, const std::string &robot,
                       Eigen::Isometry3d destination) {
   // action 1: pick up trash
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_trash_2");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_trash_2");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: throw trash
@@ -318,21 +318,21 @@ void genThrowTrashSeq(vkc::ActionSeq &actions, const std::string &robot,
     std::vector<JointDesiredPose> joint_objectives;
     link_objectives.push_back(LinkDesiredPose("trash_base_link", destination));
 
-    auto place_action = make_shared<PlaceAction>(
+    auto action = make_shared<PlaceAction>(
         robot, "attach_trash_2", link_objectives, joint_objectives, true);
 
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDrawerSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick drawer handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_drawer");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = std::make_shared<PickAction>(robot, "attach_drawer");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action2: place drawer handle
@@ -341,20 +341,20 @@ void genOpenDrawerSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
-    auto place_action = std::make_shared<PlaceAction>(
+    auto action = std::make_shared<PlaceAction>(
         robot, "attach_drawer", link_objectives, joint_objectives, false);
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenCabinetSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick cabinet handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_cabinet");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = std::make_shared<PickAction>(robot, "attach_cabinet");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action2: place cabinet handle
@@ -363,24 +363,24 @@ void genOpenCabinetSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("cabinet_48479_joint_0", -0.4);
-    auto place_action = std::make_shared<PlaceAction>(
+    auto action = std::make_shared<PlaceAction>(
         robot, "attach_cabinet", link_objectives, joint_objectives, false);
-    // setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    // setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick dishwasher handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_dishwasher");
+    auto action = std::make_shared<PickAction>(robot, "attach_dishwasher");
     auto pick_coeff = getPickCoeff();
-    setBaseJoint(pick_action);
+    setBaseJoint(action);
     pick_coeff.setZero(9);
     pick_coeff[0] = 1.;
     pick_coeff[1] = 1.;
-    pick_action->setIKCostCoeff(pick_coeff);
-    actions.emplace_back(pick_action);
+    action->setIKCostCoeff(pick_coeff);
+    actions.emplace_back(action);
   }
 
   // action2: place dishwasher handle
@@ -389,11 +389,11 @@ void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
-    auto place_action = std::make_shared<PlaceAction>(
+    auto action = std::make_shared<PlaceAction>(
         robot, "attach_dishwasher", link_objectives, joint_objectives, false);
-    // place_action->setIKCostCoeff(cost_coeff);
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    // action->setIKCostCoeff(cost_coeff);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
@@ -612,12 +612,6 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
 
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
                    const std::string &robot, int task_id) {
-  PickAction::Ptr pick_action;
-  PlaceAction::Ptr place_action;
-
-  Eigen::VectorXd cost_coeff;
-  Eigen::VectorXd pick_coeff;
-
   Eigen::Isometry3d onKitchenTable;
   onKitchenTable.setIdentity();
   onKitchenTable.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
@@ -691,6 +685,17 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
   }
 }
 
+void setTrajSeed(vkc::ActionSeq &actions) {
+  int idx = 0;
+  for (auto act : actions) {
+    // if (idx == 16) return;
+    act->loadTrajectorySeed(ros::package::getPath("vkc_example") +
+                            "/trajectory/household_env_" + std::to_string(idx) +
+                            ".csv");
+    idx++;
+  }
+}
+
 int main(int argc, char **argv) {
   srand((unsigned)time(
       NULL));  // for generating waypoint randomly motion planning
@@ -733,6 +738,7 @@ int main(int argc, char **argv) {
   std::vector<double> data;
 
   genTRODemoSeq(env, actions, robot, taskid);
+  // setTrajSeed(actions);
   auto elapsed_time =
       run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
   interpVKCData(data, elapsed_time, joint_trajs);
