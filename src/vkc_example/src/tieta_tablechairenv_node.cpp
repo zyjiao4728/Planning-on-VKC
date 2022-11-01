@@ -22,28 +22,44 @@ void setObjectPose(VKCEnvBasic &env, std::string base_link_name,
 
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
-  int window_size = 2;
+  int window_size = 1;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(6, 6, 0.3);
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
-  Eigen::Isometry3d table_interactive_pose;
-  table_interactive_pose.setIdentity();
-  table_interactive_pose.translation() =
-      Eigen::Vector3d(0.171295140475, -3.43593165704, 1.04112748758);
+//   Eigen::Isometry3d table_interactive_pose;
+//   table_interactive_pose.setIdentity();
+//   table_interactive_pose.translation() =
+//       Eigen::Vector3d(0.171295140475, -3.43593165704, 1.04112748758);
 
-  table_interactive_pose.linear() =
-      Eigen::Quaterniond(0.575062976058, 0.412359288219, -0.410486054582, 0.5751205004)
+//   table_interactive_pose.linear() =
+//       Eigen::Quaterniond(0.575062976058, 0.412359288219, -0.410486054582, 0.5751205004)
+//           .matrix();
+//   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+//       "foldable_table_table_base_joint", table_interactive_pose);
+//   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+//   Eigen::Isometry3d InverseModelPoseAdjust;
+//   InverseModelPoseAdjust.setIdentity();
+// //   InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
+// //   InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+//   setObjectPose(env, "foldable_table_base_link", "foldable_table_table_base_joint",
+//                 InverseModelPoseAdjust);
+  Eigen::Isometry3d chair_interactive_pose;
+  chair_interactive_pose.setIdentity();
+  chair_interactive_pose.translation() =
+      Eigen::Vector3d(0.931603414259, -1.85498997986, 0.714269000451);
+
+  chair_interactive_pose.linear() =
+      Eigen::Quaterniond(0.0173585930925, 0.0036216218678, 0.000867396334879, 0.999842392942)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
-      "foldable_table_table_base_joint", table_interactive_pose);
+      "world_chair_chair", chair_interactive_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
   Eigen::Isometry3d InverseModelPoseAdjust;
   InverseModelPoseAdjust.setIdentity();
-//   InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
-//   InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
-  setObjectPose(env, "foldable_table_base_link", "foldable_table_table_base_joint",
+
+  setObjectPose(env, "chair_base_link", "world_chair_chair",
                 InverseModelPoseAdjust);
 
   
@@ -133,13 +149,13 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
   pick_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
 
   Eigen::VectorXd place_coeff(9);
-  place_coeff << 1, 1, 1, 10, 1, 1, 1, 1, 1;
+  place_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
   // place_coeff << 2, 2, 5, 8, 1, 1, 10, 1, 1;
 
   // action1: pick closet handle
   {
     auto pick_action =
-        std::make_shared<PickAction>(robot, "attach_table");
+        std::make_shared<PickAction>(robot, "attach_chair");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
 
     pick_action->setIKCostCoeff(pick_coeff);
@@ -151,13 +167,18 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("foldable_table_base_tableplane_joint",
-                                  1.24);
-    auto place_action =
-        std::make_shared<PlaceAction>(robot, "attach_table",
-                                      link_objectives, joint_objectives, false);
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() =
+        Eigen::Vector3d(-0.267931308502, -2.82380096045, 0.714269);
+    destination.linear() = Eigen::Quaterniond(0.699605813483, -0.00424594217432, 0.0178684189802, -0.71429293523)
+                               .matrix();
+    link_objectives.push_back(
+        LinkDesiredPose("chair_base_link", destination));
+
+    auto place_action = std::make_shared<PlaceAction>(
+        robot, "attach_chair", link_objectives, joint_objectives, false);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
 
@@ -176,11 +197,11 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
 //       // {0.5,0.5,-0.5,-0.5},
 //       true});
   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
-      "attach_table",
-      "foldable_table_table_interactive",
-      "foldable_table_base_link",
-      {0.20, 0.0, 0.00},
-      {-0.6532815492816837, 0.27059803510614483, 0.6532815110394719, -0.27059803510614483},
+      "attach_chair",
+      "chair_chair_interactive_part",
+      "chair_base_link",
+      {0.22, 0.0, 0.00},
+      {0.6532815, 0.2705981, -0.6532815, -0.2705981},
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
       true});
@@ -209,8 +230,10 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
 //       "closet_base_link", "closet_bottom_right_handle"});
 //   inverse_chains.emplace_back(
 //       UrdfSceneEnv::InverseChainsInfo{"drawer_base_link", "drawer_handle1"});
+//   inverse_chains.emplace_back(
+//       UrdfSceneEnv::InverseChainsInfo{"foldable_table_base_link", "foldable_table_table_interactive"});
   inverse_chains.emplace_back(
-      UrdfSceneEnv::InverseChainsInfo{"foldable_table_base_link", "foldable_table_table_interactive"});
+      UrdfSceneEnv::InverseChainsInfo{"chair_base_link", "chair_chair_interactive_part"});
   CONSOLE_BRIDGE_logDebug("environment info generation success");
 }
 
@@ -242,30 +265,61 @@ int main(int argc, char **argv) {
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   Commands cmds;
   cmds.clear();
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_1_link_0", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_1_link_1", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_1_link_2", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_1_link_3", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_2_link_0", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_2_link_1", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_2_link_2", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_2_link_3", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_middle_link_0", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_middle_link_1", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_middle_link_2", "foldable_table_table_plane", "Always"));
-//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-//       "right_gripper_finger_middle_link_3", "foldable_table_table_plane", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_0", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_1", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_2", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_3", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_0", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_1", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_2", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_3", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_0", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_1", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_2", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_3", "chair_chair_interactive_part", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_palm", "chair_chair_interactive_part", "Always"));
+
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_0", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_1", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_2", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_1_link_3", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_0", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_1", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_2", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_2_link_3", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_0", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_1", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_2", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_finger_middle_link_3", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_palm", "chair_base_link", "Always"));
+  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+      "right_gripper_flange", "chair_base_link", "Always"));
 
 
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
