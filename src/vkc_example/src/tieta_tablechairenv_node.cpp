@@ -22,7 +22,7 @@ void setObjectPose(VKCEnvBasic &env, std::string base_link_name,
 
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
-  int window_size = 1;
+  int window_size = 2;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(6, 6, 0.3);
@@ -31,10 +31,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d table_interactive_pose;
   table_interactive_pose.setIdentity();
   table_interactive_pose.translation() =
-      Eigen::Vector3d(0.186945140571, -3.42937002294, 1.04420252922);
+      Eigen::Vector3d(0.171295140475, -3.43593165704, 1.04112748758);
 
   table_interactive_pose.linear() =
-      Eigen::Quaterniond(0.578806761365, 0.407919503781, -0.41526268211, 0.571087835872)
+      Eigen::Quaterniond(0.575062976058, 0.412359288219, -0.410486054582, 0.5751205004)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "foldable_table_table_base_joint", table_interactive_pose);
@@ -133,7 +133,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
   pick_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
 
   Eigen::VectorXd place_coeff(9);
-  place_coeff << 3, 3, 3, 8, 1, 1, 10, 1, 1;
+  place_coeff << 1, 1, 1, 10, 1, 1, 1, 1, 1;
   // place_coeff << 2, 2, 5, 8, 1, 1, 10, 1, 1;
 
   // action1: pick closet handle
@@ -152,7 +152,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("foldable_table_base_tableplane_joint",
-                                  0.0);
+                                  1.24);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_table",
                                       link_objectives, joint_objectives, false);
@@ -179,7 +179,7 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_table",
       "foldable_table_table_interactive",
       "foldable_table_base_link",
-      {0.25, 0.0, 0.00},
+      {0.20, 0.0, 0.00},
       {-0.6532815492816837, 0.27059803510614483, 0.6532815110394719, -0.27059803510614483},
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
@@ -242,30 +242,30 @@ int main(int argc, char **argv) {
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   Commands cmds;
   cmds.clear();
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_0", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_1", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_2", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_3", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_0", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_1", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_2", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_3", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_0", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_1", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_2", "foldable_table_table_plane", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_3", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_0", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_1", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_2", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_3", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_0", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_1", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_2", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_3", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_0", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_1", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_2", "foldable_table_table_plane", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_3", "foldable_table_table_plane", "Always"));
 
 
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
