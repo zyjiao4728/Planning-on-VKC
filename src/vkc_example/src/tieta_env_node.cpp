@@ -362,15 +362,6 @@ int main(int argc, char **argv) {
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
 
-  Commands cmds;
-  cmds.clear();
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "coke_can0_coke_can", "kortex_robotiq_arg2f_base_link", "Never"));
-
-
-  env.getVKCEnv()->getTesseract()->applyCommands(cmds);
-
-
   ActionSeq actions = getTietaEnvSeq("vkc");
 
   run(env, actions, steps, n_iter, rviz, nruns);
