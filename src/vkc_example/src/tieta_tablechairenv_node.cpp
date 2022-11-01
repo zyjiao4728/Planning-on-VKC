@@ -48,10 +48,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d chair_interactive_pose;
   chair_interactive_pose.setIdentity();
   chair_interactive_pose.translation() =
-      Eigen::Vector3d(0.931603414259, -1.85498997986, 0.714269000451);
+      Eigen::Vector3d(0.83308299502, -1.77097809362, 0.748170103763);
 
   chair_interactive_pose.linear() =
-      Eigen::Quaterniond(0.0173585930925, 0.0036216218678, 0.000867396334879, 0.999842392942)
+      Eigen::Quaterniond(-0.0135474539174, -0.00204362822551, 0.00107470349053, 0.999905563085)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "world_chair_chair", chair_interactive_pose);
@@ -170,8 +170,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     Eigen::Isometry3d destination;
     destination.setIdentity();
     destination.translation() =
-        Eigen::Vector3d(-0.267931308502, -2.82380096045, 0.714269);
-    destination.linear() = Eigen::Quaterniond(0.699605813483, -0.00424594217432, 0.0178684189802, -0.71429293523)
+        Eigen::Vector3d(-0.248122554727, -2.86443359278, 0.751175945417);
+    destination.linear() = Eigen::Quaterniond(0.729212060959, -0.00107033903696, 0.000662264311468, 0.684286625569)
                                .matrix();
     link_objectives.push_back(
         LinkDesiredPose("chair_base_link", destination));
