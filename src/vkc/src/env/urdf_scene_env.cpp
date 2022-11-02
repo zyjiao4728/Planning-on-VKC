@@ -174,8 +174,8 @@ void UrdfSceneEnv::newAttachLocation_(
     std::string attach_name, std::string attach_object_link,
     std::string object_baselink, std::vector<double> local_joint_tf_trans,
     std::vector<double> local_joint_tf_quat,
-    const std::unordered_map<std::string, Eigen::VectorXd>&
-        cartesian_constraints) {
+    const std::unordered_map<std::string, Eigen::VectorXd>
+        &cartesian_constraints) {
   // define AttachLocation object
   vkc::BaseObject::AttachLocation attach_location(attach_name,
                                                   attach_object_link);

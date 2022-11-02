@@ -101,7 +101,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   ROS_INFO("number of move instructions in pick seed: %ld",
            seed.getMoveInstructionCount());
 
-  seed.print(fmt::format("{} seed: ", act->getActionName()));
+  // seed.print(fmt::format("{} seed: ", act->getActionName()));
 
   // compose request
   PlannerRequest request;
