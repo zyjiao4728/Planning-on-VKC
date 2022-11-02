@@ -50,6 +50,7 @@ class Generator {
   void clearCollisions();
 
  private:
+  CoordinateList findPath_(Vec2i source_, Vec2i target_);
   HeuristicFunction heuristic;
   CoordinateList direction, walls;
   Vec2i worldSize;

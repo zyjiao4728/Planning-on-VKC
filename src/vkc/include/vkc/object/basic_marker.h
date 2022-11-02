@@ -71,7 +71,7 @@ class BaseMarker : public BaseObject {
         Eigen::Quaterniond(0.70710678, 0, -0.70710678, 0).matrix();
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(1, 0, 0, 0).matrix();
-    attach_location.fixed_base = false;
+    // attach_location.fixed_base = false;
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

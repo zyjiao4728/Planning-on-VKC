@@ -416,7 +416,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "fridge_0001",
                                          {0.65, -0.25, -0.65},
                                          {0.5, -0.5, 0.5, 0.5},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "fridge_0001", "fridge_0001_dof_rootd_Aa002_r"});
@@ -428,7 +428,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                                            "door_8966_base",
                                                            {0.0, 0.0, 0.25},
                                                            {0, 0, 1, 0},
-                                                           true});
+                                                           Eigen::VectorXd()});
 
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
@@ -441,8 +441,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cup_cup_link",
                                          "cup_cup_base_link",
                                          {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false});
+                                         {0.707106781, 0, 0, 0.707106781}});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "cup_cup_base_link", "cup_cup_link"});
@@ -455,7 +454,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "drawer_base_link",
                                          {0.16, 0.000, 0.00},
                                          {0.5000, -0.5000, -0.5000, 0.5000},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "drawer_base_link", "drawer_handle1"});
@@ -468,7 +467,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cabinet_48479_base_link",
                                          {0.0, 0.0, 0.15},
                                          {0, -0.707106781, -0.707106781, 0},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "cabinet_48479_base_link", "cabinet_48479_handle0"});
@@ -481,7 +480,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
           "dishwasher",
           {0.45, 0.55, 0.70},
           {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
-          true});
+          Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(
             UrdfSceneEnv::InverseChainsInfo{"dishwasher", "dishwasher_link_2"});

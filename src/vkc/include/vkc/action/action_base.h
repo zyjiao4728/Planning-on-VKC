@@ -151,8 +151,9 @@ class ActionBase {
 
   Eigen::VectorXd getJointCandidate() {
     if (joint_candidate_index < 0) {
-      CONSOLE_BRIDGE_logWarn(
-          "no joint candidate found, returning empty eigen vector");
+      CONSOLE_BRIDGE_logDebug(
+          "getting joint candidate but nothing found, returning empty eigen "
+          "vector");
       return Eigen::VectorXd();
     }
     return joint_candidates_[joint_candidate_index];

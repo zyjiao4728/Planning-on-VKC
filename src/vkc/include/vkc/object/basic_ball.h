@@ -60,7 +60,7 @@ class BaseBall : public BaseObject {
                         (radius_ + 0.1) * sqrt(2) / 2.0);
     attach_location.local_joint_origin_transform.linear() =
         Eigen::Quaterniond(0.0, 0.3827, 0.0, -0.9239).matrix();
-    attach_location.fixed_base = false;
+    // attach_location.fixed_base = false;
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

@@ -95,7 +95,9 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
           auto place_action = std::static_pointer_cast<PlaceAction>(action);
           auto detach_object =
               vkc_env->getAttachLocation(place_action->getDetachedObject());
-          if (detach_object->fixed_base) {
+          auto links = kin_group->getActiveLinkNames();
+          
+          if (detach_object->cartesian_constraints_.size()) {
             CONSOLE_BRIDGE_logDebug(
                 "place action with fixed base object found, disabling "
                 "collision: "

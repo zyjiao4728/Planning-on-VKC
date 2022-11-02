@@ -365,29 +365,30 @@ bool ProbTranslator::transPlaceProb(VKCEnvBasic &env,
   // -----------------------
   BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       std::move(env.getAttachLocation(act->getDetachedObject()));
-  if (detach_location_ptr->fixed_base) {
-    // std::string fix_link_name = detach_location_ptr->base_link_;
-    // std::cout << fix_link_name.c_str() << std::endl;
-    // Eigen::Isometry3d fix_link_trans = env.getVKCEnv()
-    //                                        ->getTesseract()
-    //                                        ->getEnvironment()
-    //                                        ->getLinkTransform(detach_location_ptr->base_link_);
-    // std::cout << fix_link_trans.matrix() << std::endl;
+  throw std::runtime_error("translate not implemented");
+  // if (detach_location_ptr->cartesian_constraints_.size()) {
+  // std::string fix_link_name = detach_location_ptr->base_link_;
+  // std::cout << fix_link_name.c_str() << std::endl;
+  // Eigen::Isometry3d fix_link_trans = env.getVKCEnv()
+  //                                        ->getTesseract()
+  //                                        ->getEnvironment()
+  //                                        ->getLinkTransform(detach_location_ptr->base_link_);
+  // std::cout << fix_link_trans.matrix() << std::endl;
 
-    // // this->coi_->setConstraintsStd(fix_link_name, fix_link_trans, 0.3);
+  // // this->coi_->setConstraintsStd(fix_link_name, fix_link_trans, 0.3);
 
-    // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-    //     this->coi_->spaceInformation(),
-    //     env.getVKCEnv()->getTesseract(),
-    //     this->kin, fix_link_name, fix_link_trans, 0.3));
+  // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+  //     this->coi_->spaceInformation(),
+  //     env.getVKCEnv()->getTesseract(),
+  //     this->kin, fix_link_name, fix_link_trans, 0.3));
 
-    ROS_ERROR("Fixed based method is not valid with OMPL!");
-  } else {
-    // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-    //     this->coi_->spaceInformation(),
-    //     env.getVKCEnv()->getTesseract(),
-    //     kin));
-  }
+  ROS_ERROR("Fixed based method is not valid with OMPL!");
+  // } else {
+  // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+  //     this->coi_->spaceInformation(),
+  //     env.getVKCEnv()->getTesseract(),
+  //     kin));
+  // }
 
   insertPlanners(planner_);
 

@@ -57,7 +57,48 @@ class UrdfSceneEnv : public VKCEnvBasic {
     std::string base_link;
     std::vector<double> local_joint_tf_trans;
     std::vector<double> local_joint_tf_quat;
-    bool fixed_base;
+    std::unordered_map<std::string, Eigen::VectorXd> cartesian_constraints;
+
+    AttachObjectInfo(std::string attach_name, std::string attach_link,
+                     std::string base_link,
+                     std::vector<double> local_joint_tf_trans,
+                     std::vector<double> local_joint_tf_quat)
+        : attach_name(attach_name),
+          attach_link(attach_link),
+          base_link(base_link),
+          local_joint_tf_trans(local_joint_tf_trans),
+          local_joint_tf_quat(local_joint_tf_quat) {
+      cartesian_constraints.clear();
+    }
+
+    AttachObjectInfo(std::string attach_name, std::string attach_link,
+                     std::string base_link,
+                     std::vector<double> local_joint_tf_trans,
+                     std::vector<double> local_joint_tf_quat, bool fixed_base)
+        : attach_name(attach_name),
+          attach_link(attach_link),
+          base_link(base_link),
+          local_joint_tf_trans(local_joint_tf_trans),
+          local_joint_tf_quat(local_joint_tf_quat) {
+      cartesian_constraints.clear();
+      if (fixed_base) {
+        cartesian_constraints[base_link] = Eigen::VectorXd();
+      }
+    }
+
+    AttachObjectInfo(std::string attach_name, std::string attach_link,
+                     std::string base_link,
+                     std::vector<double> local_joint_tf_trans,
+                     std::vector<double> local_joint_tf_quat,
+                     const Eigen::VectorXd &cartesian_constraint_coeff)
+        : attach_name(attach_name),
+          attach_link(attach_link),
+          base_link(base_link),
+          local_joint_tf_trans(local_joint_tf_trans),
+          local_joint_tf_quat(local_joint_tf_quat) {
+      cartesian_constraints.clear();
+      cartesian_constraints[base_link] = cartesian_constraint_coeff;
+    }
   };
 
   struct InverseChainsInfo {
@@ -163,7 +204,8 @@ class UrdfSceneEnv : public VKCEnvBasic {
                           std::string object_baselink,
                           std::vector<double> local_joint_tf_trans,
                           std::vector<double> local_joint_tf_quat,
-                          bool fixed_base);
+                          const std::unordered_map<std::string, Eigen::VectorXd>
+                              &cartesian_constraints);
 
   std::string getLinkParentName_(tesseract_scene_graph::SceneGraph::ConstPtr sg,
                                  std::string link_name);

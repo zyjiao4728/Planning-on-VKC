@@ -17,11 +17,13 @@
 
   <link name="$(arg robot_prefix)virtual_base_theta"/>
   <joint name="$(arg robot_prefix)base_link_base_theta" type="revolute">
+  <!-- <joint name="$(arg robot_prefix)base_link_base_theta" type="continuous"> -->
     <parent link="$(arg robot_prefix)virtual_base_theta" />
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     <child link="base_link" />
     <axis xyz="0 0 1"/>
     <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14"/>
+    <!-- <limit effort="20" velocity="5.0"/> -->
   </joint>
 
   <link name="$(arg robot_prefix)virtual_base_y"/>

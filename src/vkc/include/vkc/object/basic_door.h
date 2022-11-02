@@ -289,7 +289,7 @@ class BaseDoor : public BaseObject {
     attach_location.local_joint_origin_transform.linear() =
         // Eigen::Quaterniond(0.653281482438188,  0.270598050073098,   0.653281482438188,   0.270598050073099).matrix();
         Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
-    attach_location.fixed_base = true;
+    attach_location.setFixedCartesianConstraint();
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

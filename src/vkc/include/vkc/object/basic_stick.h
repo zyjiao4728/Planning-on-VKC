@@ -90,7 +90,7 @@ class BaseStick : public BaseObject {
         Eigen::Vector3d(0.0, -length_ - 0.1, 0.0);
     attach_location.local_joint_origin_transform.linear() =
         Eigen::Quaterniond(0.6533, -0.2706, -0.2706, 0.6533).matrix();
-    attach_location.fixed_base = false;
+    // attach_location.fixed_base = false;
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

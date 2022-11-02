@@ -162,20 +162,20 @@ void UrdfSceneEnv::configAttachLocations_(
         "%s, fixed base: "
         "%s",
         __func__, attach.attach_name.c_str(), attach.attach_link.c_str(),
-        attach.base_link.c_str(), (attach.fixed_base ? "yes" : "no"));
+        attach.base_link.c_str(), ("unknown, waiting for fix"));
 
     newAttachLocation_(attach.attach_name, attach.attach_link, attach.base_link,
                        attach.local_joint_tf_trans, attach.local_joint_tf_quat,
-                       attach.fixed_base);
+                       attach.cartesian_constraints);
   }
 }
 
-void UrdfSceneEnv::newAttachLocation_(std::string attach_name,
-                                      std::string attach_object_link,
-                                      std::string object_baselink,
-                                      std::vector<double> local_joint_tf_trans,
-                                      std::vector<double> local_joint_tf_quat,
-                                      bool fixed_base) {
+void UrdfSceneEnv::newAttachLocation_(
+    std::string attach_name, std::string attach_object_link,
+    std::string object_baselink, std::vector<double> local_joint_tf_trans,
+    std::vector<double> local_joint_tf_quat,
+    const std::unordered_map<std::string, Eigen::VectorXd>&
+        cartesian_constraints) {
   // define AttachLocation object
   vkc::BaseObject::AttachLocation attach_location(attach_name,
                                                   attach_object_link);
@@ -187,8 +187,8 @@ void UrdfSceneEnv::newAttachLocation_(std::string attach_name,
       Eigen::Quaterniond(local_joint_tf_quat[0], local_joint_tf_quat[1],
                          local_joint_tf_quat[2], local_joint_tf_quat[3])
           .matrix();
-  attach_location.fixed_base = fixed_base;
-
+  // attach_location.fixed_base = fixed_base;
+  attach_location.cartesian_constraints_ = cartesian_constraints;
   // Define connection joint
   attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;
   attach_location.connection.child_link_name = attach_object_link;

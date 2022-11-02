@@ -284,14 +284,22 @@ MixedWaypointPoly ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
-  if (detach_location_ptr->fixed_base) {
-    auto detach_pose = env.getVKCEnv()->getTesseract()->getLinkTransform(
-        detach_location_ptr->base_link_);
+  for (auto &cc : detach_location_ptr->cartesian_constraints_) {
+    auto detach_pose =
+        env.getVKCEnv()->getTesseract()->getLinkTransform(cc.first);
     // waypoint.addLinkTarget(manip.tcp_frame, detach_pose);
     // addCartWaypoint(program, detach_pose, "place object(fixed base)");
-    act->addLinkObjectives(
-        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
-    waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
+    // fixed base object need to have new link objectives
+    if (cc.second.size() == 0)
+      act->addLinkObjectives(
+          LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+    else if (!act->getLinkObjectives().size()) {
+      CONSOLE_BRIDGE_logError(
+          "cartesian constraint with non-fixed base set, but no link objective "
+          "provided!!!");
+    }
+    waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose,
+                               cc.second);
   }
 
   for (auto jo : act->getJointObjectives()) {

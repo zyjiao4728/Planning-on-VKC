@@ -461,6 +461,8 @@ void genEnvironmentInfo(
 void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                UrdfSceneEnv::InverseChainsInfos &inverse_chains,
                                int task_id, int baseline = 0) {
+  Eigen::VectorXd constraint_plane(6);
+  constraint_plane << 0, 0, 10, 10, 10, 0;
   switch (task_id) {
     case 0:
       genEnvironmentInfo(
@@ -470,7 +472,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "fridge_0001",
                                          {0.65, -0.25, -0.65},
                                          {0.5, -0.5, 0.5, 0.5},
-                                         true},
+                                         Eigen::VectorXd()},
           baseline);
       genEnvironmentInfo(
           attaches, inverse_chains,
@@ -478,8 +480,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cup_cup_link",
                                          "cup_cup_base_link",
                                          {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false},
+                                         {0.707106781, 0, 0, 0.707106781}},
           baseline);
       genEnvironmentInfo(attaches, inverse_chains,
                          UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
@@ -487,7 +488,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                                         "door_8966_base",
                                                         {0.0, 0.0, 0.25},
                                                         {0, 0, 1, 0},
-                                                        true},
+                                                        Eigen::VectorXd()},
                          baseline);
       genEnvironmentInfo(
           attaches, inverse_chains,
@@ -495,8 +496,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "broom_base",
                                          "broom_base_link",
                                          {0, 1.0, 0.11},
-                                         {0, 0.7071068, 0.7071068, 0},
-                                         false},
+                                         {0, 0.7071068, 0.7071068, 0}},
           baseline);
       genEnvironmentInfo(
           attaches, inverse_chains,
@@ -504,16 +504,14 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "trash_base",
                                          "trash_base_link",
                                          {-0.1, 0.18, 0.02},
-                                         {0, 0, 0.258819, 0.9659258},
-                                         false},
+                                         {0, 0, 0.258819, 0.9659258}},
           baseline);
       genEnvironmentInfo(attaches, inverse_chains,
                          UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
                                                         "trash_base",
                                                         "trash_base_link",
                                                         {0.0, 0.0, 0.15},
-                                                        {0, 0, 1, 0},
-                                                        false},
+                                                        {0, 0, 1, 0}},
                          1);
       break;
     case 1:
@@ -524,7 +522,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "fridge_0001",
                                          {0.65, -0.25, -0.65},
                                          {0.5, -0.5, 0.5, 0.5},
-                                         true},
+                                         Eigen::VectorXd()},
           baseline);
       break;
     case 2:
@@ -534,7 +532,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                                         "door_8966_base",
                                                         {0.0, 0.0, 0.25},
                                                         {0, 0, 1, 0},
-                                                        true},
+                                                        Eigen::VectorXd()},
                          baseline);
       break;
     case 3:
@@ -544,8 +542,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cup_cup_link",
                                          "cup_cup_base_link",
                                          {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false},
+                                         {0.707106781, 0, 0, 0.707106781}},
           baseline);
       break;
     case 4:
@@ -556,7 +553,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "drawer_base_link",
                                          {0.16, 0.000, 0.00},
                                          {0.5000, -0.5000, -0.5000, 0.5000},
-                                         true},
+                                         Eigen::VectorXd()},
           baseline);
       break;
     case 5:
@@ -567,7 +564,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cabinet_48479_base_link",
                                          {0.0, 0.0, 0.15},
                                          {0, -0.707106781, -0.707106781, 0},
-                                         true},
+                                         Eigen::VectorXd()},
           baseline);
       break;
     case 6:
@@ -578,7 +575,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                              "dishwasher",
                              {0.45, 0.55, 0.70},
                              {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
-                             true},
+                             Eigen::VectorXd()},
                          baseline);
       break;
     case 7:
@@ -588,27 +585,24 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "broom_base",
                                          "broom_base_link",
                                          {0, 1.0, 0.11},
-                                         {0, 0.7071068, 0.7071068, 0},
-                                         false},
+                                         {0, 0.7071068, 0.7071068, 0}},
           baseline);
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
-                                         "trash_base",
-                                         "trash_base_link",
-                                         {-0.1, 0.18, 0.02},
-                                         {0, 0, 0.258819, 0.9659258},
-                                         false},
-          baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo(
+                             "attach_trash", "trash_base", "trash_base_link",
+                             {-0.1, 0.18, 0.02}, {0, 0, 0.258819, 0.9659258},
+                             constraint_plane),
+                         baseline);
+      break;
     case 8:
       genEnvironmentInfo(attaches, inverse_chains,
                          UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
                                                         "trash_base",
                                                         "trash_base_link",
                                                         {0.0, 0.0, 0.15},
-                                                        {0, 0, 1, 0},
-                                                        false},
+                                                        {0, 0, 1, 0}},
                          baseline);
+      break;
     default:
       break;
   }
