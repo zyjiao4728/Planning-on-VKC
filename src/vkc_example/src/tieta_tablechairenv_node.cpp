@@ -152,7 +152,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
   place_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
   // place_coeff << 2, 2, 5, 8, 1, 1, 10, 1, 1;
 
-  // action1: pick closet handle
+  // action1: pick 
   {
     auto pick_action =
         std::make_shared<PickAction>(robot, "attach_chair");
@@ -162,7 +162,37 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     actions.emplace_back(pick_action);
   }
 
-  // action2: place closet handle
+  // action2: place 
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() =
+        Eigen::Vector3d(-0.303397584258, -1.6476948177, 0.761020196958);
+    destination.linear() = Eigen::Quaterniond(0.707213263773, 0.000927994070908, 6.1097000184e-05, 0.706999670889)
+                               .matrix();
+    link_objectives.push_back(
+        LinkDesiredPose("chair_base_link", destination));
+
+    auto place_action = std::make_shared<PlaceAction>(
+        robot, "attach_chair", link_objectives, joint_objectives, false);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(place_action);
+  }
+
+   // action3: pick 
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_chair");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+
+    pick_action->setIKCostCoeff(pick_coeff);
+    actions.emplace_back(pick_action);
+  }
+
+  // action4: place 
   {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
@@ -292,60 +322,60 @@ int main(int argc, char **argv) {
   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
       "right_gripper_palm", "chair_chair_interactive_part", "Always"));
 
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_0", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_1", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_2", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_3", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_0", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_1", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_2", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_3", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_0", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_1", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_2", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_3", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_palm", "chair_base_link", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_flange", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_0", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_1", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_2", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_3", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_0", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_1", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_2", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_3", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_0", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_1", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_2", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_3", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_palm", "chair_base_link", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_flange", "chair_base_link", "Always"));
 
 
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_0", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_1", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_2", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_3", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_0", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_1", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_2", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_3", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_0", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_1", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_2", "foldable_table_table_plane_below", "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_3", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_0", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_1", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_2", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_1_link_3", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_0", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_1", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_2", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_2_link_3", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_0", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_1", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_2", "foldable_table_table_plane_below", "Always"));
+//   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+//       "right_gripper_finger_middle_link_3", "foldable_table_table_plane_below", "Always"));
 
 
 
