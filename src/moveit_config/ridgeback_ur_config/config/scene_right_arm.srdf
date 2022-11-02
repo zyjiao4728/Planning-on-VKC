@@ -19,7 +19,7 @@
     <group_state name="home" group="vkc">
         <joint name="base_link_base_theta" value="0"/>
         <joint name="base_theta_base_y" value="-2.0"/>
-        <joint name="base_y_base_x" value="0"/>
+        <joint name="base_y_base_x" value="-1.5"/>
         <joint name="right_arm_shoulder_pan_joint" value="2.42"/>
         <joint name="right_arm_shoulder_lift_joint" value="0.28"/>
         <joint name="right_arm_elbow_joint" value="-2.3"/>

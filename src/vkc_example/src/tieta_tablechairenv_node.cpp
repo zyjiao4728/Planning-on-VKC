@@ -48,10 +48,10 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   Eigen::Isometry3d chair_interactive_pose;
   chair_interactive_pose.setIdentity();
   chair_interactive_pose.translation() =
-      Eigen::Vector3d(0.83308299502, -1.77097809362, 0.748170103763);
+      Eigen::Vector3d(-0.593504205005, -1.89276314108, 0.764137691402);
 
   chair_interactive_pose.linear() =
-      Eigen::Quaterniond(-0.0135474539174, -0.00204362822551, 0.00107470349053, 0.999905563085)
+      Eigen::Quaterniond(-0.0072840637032, 0.00620284798162, 0.0018296048984, 0.999952558694)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "world_chair_chair", chair_interactive_pose);
