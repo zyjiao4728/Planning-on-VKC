@@ -69,6 +69,12 @@ void setJointAngle(VKCEnvBasic &env, std::string joint_name,
 
 ActionSeq getDemoSeq(VKCEnvBasic &env, const std::string robot) {
   ActionSeq actions;
+    Eigen::VectorXd pick_coeff(9);
+  pick_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
+
+  Eigen::VectorXd place_coeff(9);
+  place_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
+
   // pick stick
   {
     auto action = std::make_shared<PickAction>(robot, "attach_stick");
@@ -89,47 +95,75 @@ ActionSeq getDemoSeq(VKCEnvBasic &env, const std::string robot) {
     link_objectives.emplace_back("closet_base_link", transform);
     auto action = std::make_shared<PlaceAction>(
         robot, "attach_closet_top", link_objectives, joint_objectives, false);
-    // action->setIKCostCoeff(cost_coeff);
+    action->setIKCostCoeff(place_coeff);
     setBaseJoint(action);
     actions.emplace_back(action);
   }
+//   {
+//     auto action = std::make_shared<PickAction>(robot, "attach_closet_top");
+//     actions.push_back(action);
+//   }
+//   {
+//     std::vector<LinkDesiredPose> link_objectives;
+//     std::vector<JointDesiredPose> joint_objectives;
+
+//     Eigen::Isometry3d transform =
+//         env.getVKCEnv()->getTesseract()->getLinkTransform("closet_base_link");
+//     std::cout << transform.translation().transpose() << std::endl;
+//     joint_objectives.emplace_back("closet_top_right_door_joint", 0.);
+//     link_objectives.emplace_back("closet_base_link", transform);
+//     auto action = std::make_shared<PlaceAction>(
+//         robot, "attach_closet_top", link_objectives, joint_objectives, false);
+//     // action->setIKCostCoeff(cost_coeff);
+//     setBaseJoint(action);
+//     actions.emplace_back(action);
+//   }
   {
-    auto action = std::make_shared<PickAction>(robot, "attach_closet_top");
-    actions.push_back(action);
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d stick_pose;
+    stick_pose.setIdentity();
+    stick_pose.translation() =
+        Eigen::Vector3d(0.458259387629, 1.06640115086, 0.846336094397);
+
+    stick_pose.linear() = Eigen::Quaterniond(0.512840350468, 0.516000555752,
+                                             -0.48827043224, -0.48200641738)
+                              .matrix();
+
+    link_objectives.push_back(LinkDesiredPose("stick_base_link", stick_pose));
+
+    auto action = std::make_shared<PlaceAction>(
+        robot, "attach_stick", link_objectives, joint_objectives, true);
+
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
   {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    Eigen::Isometry3d transform =
-        env.getVKCEnv()->getTesseract()->getLinkTransform("closet_base_link");
-    std::cout << transform.translation().transpose() << std::endl;
-    joint_objectives.emplace_back("closet_top_right_door_joint", 0.);
-    link_objectives.emplace_back("closet_base_link", transform);
-    auto action = std::make_shared<PlaceAction>(
-        robot, "attach_closet_top", link_objectives, joint_objectives, false);
-    // action->setIKCostCoeff(cost_coeff);
+    Eigen::Isometry3d tf;
+    tf.setIdentity();
+    tf.translation() += Eigen::Vector3d(0, 0, 1.0);
+    tf.linear() = Eigen::Quaterniond(1., 0., 0., 0.).matrix();
+
+    link_objectives.emplace_back("right_gripper_flange", tf);
+
+    auto action =
+        std::make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
+    // Eigen::VectorXd vkc_pose(9);
+    // vkc_pose <<  0,-1,-1,2.42,0.28,-2.3,1.4,0.03,1.15; 
+    // action->setJointCandidates({vkc_pose});
+
     setBaseJoint(action);
     actions.emplace_back(action);
   }
-//   {
-//     std::vector<LinkDesiredPose> link_objectives;
-//     std::vector<JointDesiredPose> joint_objectives;
-//     link_objectives.push_back(
-//         LinkDesiredPose("cup_cup_base_link", destination));
-
-//     auto action = make_shared<PlaceAction>(robot, "attach_cup", link_objectives,
-//                                            joint_objectives, true);
-
-//     setBaseJoint(action);
-//     actions.emplace_back(action);
-//   }
   return actions;
 }
 
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
-  int window_size = 1;
+  int window_size = 2;
   LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(6, 6, 0.3);
@@ -191,8 +225,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
     bool converged = false;
     while (try_cnt++ < nruns) {
       tesseract_planning::PlannerRequest prob_ptr;
-      if (j == 2 || j == 8) {
-        prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      if (j == 3) {
+        prob_ptr = prob_generator.genRequest(env, action, 60, n_iter);
       } else {
         prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
       }
@@ -353,15 +387,15 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_stick",
       "stick_base",
       "stick_base_link",
-      {0.12, 0.26, 0.},
+      {0.12, 0.20, 0.},
       {0.6532815, 0.6532815, 0.2705981, -0.2705981}});
   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
       "attach_closet_top",
       "closet_top_right_handle",
       "closet_base_link",
-      {0.11, 0.25, -0.35},  // dist to closet plane / offset from handle /
+      {0.13, 0.25, -0.35},  // dist to closet plane / offset from handle /
                             // height from handle
-      {0, 0.8225021, 0, -0.5687621},
+      {0.581828335230560,   0.581365194118550,   0.402335620692726,  -0.402015357557561},
       Eigen::VectorXd()});  // xyz:[ x: 3.1415927, y: -1.21, z: 0 ]
   //   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
   //       "attach_drawer_handle1",
@@ -554,35 +588,25 @@ int main(int argc, char **argv) {
   InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
   setObjectPose(env, "closet_base_link", "closet_base_joint",
                 InverseModelPoseAdjust);
-  std::cout << env.getVKCEnv()
-                   ->getTesseractNonInverse()
-                   ->getLinkTransform("closet_top_right_handle")
-                   .translation()
-            << std::endl;
 
-//   Eigen::Isometry3d stick_pose;
-//   stick_pose.setIdentity();
-//   stick_pose.translation() =
-//       Eigen::Vector3d(1.8322661808, -0.111083378972, 1.15892128103 + 1.17);
+  Eigen::Isometry3d stick_pose;
+  stick_pose.setIdentity();
+  stick_pose.translation() =
+      Eigen::Vector3d(0.458259387629, 1.06640115086, 0.846336094397);
 
-//   stick_pose.linear() =
-//       Eigen::Quaterniond(0.0373512515579, 0.000793829050033, 0.00416189144533,
-//                          0.99929321648)
-//           .matrix();
-//   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
-//       "closet_base_joint", stick_pose);
-//   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
-//   Eigen::Isometry3d InverseModelPoseAdjust;
-//   InverseModelPoseAdjust.setIdentity();
-//   InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
-//   InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
-//   setObjectPose(env, "closet_base_link", "closet_base_joint",
-//                 InverseModelPoseAdjust);
-//   std::cout << env.getVKCEnv()
-//                    ->getTesseractNonInverse()
-//                    ->getLinkTransform("closet_top_right_handle")
-//                    .translation()
-//             << std::endl;
+  stick_pose.linear() = Eigen::Quaterniond(0.512840350468, 0.516000555752,
+                                           -0.48827043224, -0.48200641738)
+                            .matrix();
+  cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "stick_world_joint", stick_pose);
+  env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  InverseModelPoseAdjust.setIdentity();
+  //   InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395,
+  //   0.085); InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0,
+  //   0).matrix();
+  setObjectPose(env, "stick_base_link", "stick_world_joint",
+                InverseModelPoseAdjust);
+
   // ActionSeq actions = getTietaEnvSeq("vkc");
   ActionSeq actions = getDemoSeq(env, "vkc");
 
