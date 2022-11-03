@@ -67,7 +67,7 @@ void setJointAngle(VKCEnvBasic &env, std::string joint_name,
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
 }
 
-ActionSeq getDemoSeq(const std::string robot) {
+ActionSeq getDemoSeq(VKCEnvBasic &env, const std::string robot) {
   ActionSeq actions;
   // pick stick
   {
@@ -78,6 +78,52 @@ ActionSeq getDemoSeq(const std::string robot) {
     auto action = std::make_shared<PickAction>(robot, "attach_closet_top");
     actions.push_back(action);
   }
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    Eigen::Isometry3d transform =
+        env.getVKCEnv()->getTesseract()->getLinkTransform("closet_base_link");
+    std::cout << transform.translation().transpose() << std::endl;
+    joint_objectives.emplace_back("closet_top_right_door_joint", -2.);
+    link_objectives.emplace_back("closet_base_link", transform);
+    auto action = std::make_shared<PlaceAction>(
+        robot, "attach_closet_top", link_objectives, joint_objectives, false);
+    // action->setIKCostCoeff(cost_coeff);
+    setBaseJoint(action);
+    actions.emplace_back(action);
+  }
+  {
+    auto action = std::make_shared<PickAction>(robot, "attach_closet_top");
+    actions.push_back(action);
+  }
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+
+    Eigen::Isometry3d transform =
+        env.getVKCEnv()->getTesseract()->getLinkTransform("closet_base_link");
+    std::cout << transform.translation().transpose() << std::endl;
+    joint_objectives.emplace_back("closet_top_right_door_joint", 0.);
+    link_objectives.emplace_back("closet_base_link", transform);
+    auto action = std::make_shared<PlaceAction>(
+        robot, "attach_closet_top", link_objectives, joint_objectives, false);
+    // action->setIKCostCoeff(cost_coeff);
+    setBaseJoint(action);
+    actions.emplace_back(action);
+  }
+//   {
+//     std::vector<LinkDesiredPose> link_objectives;
+//     std::vector<JointDesiredPose> joint_objectives;
+//     link_objectives.push_back(
+//         LinkDesiredPose("cup_cup_base_link", destination));
+
+//     auto action = make_shared<PlaceAction>(robot, "attach_cup", link_objectives,
+//                                            joint_objectives, true);
+
+//     setBaseJoint(action);
+//     actions.emplace_back(action);
+//   }
   return actions;
 }
 
@@ -88,29 +134,6 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
   ProbGenerator prob_generator;
   seed_generator.setMapInfo(6, 6, 0.3);
 
-  Eigen::Isometry3d cabinet_handle_pose;
-  cabinet_handle_pose.setIdentity();
-  cabinet_handle_pose.translation() =
-      Eigen::Vector3d(1.8322661808, -0.111083378972, 1.15892128103 + 1.17);
-
-  cabinet_handle_pose.linear() =
-      Eigen::Quaterniond(0.0373512515579, 0.000793829050033, 0.00416189144533,
-                         0.99929321648)
-          .matrix();
-  auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
-      "closet_base_joint", cabinet_handle_pose);
-  env.getVKCEnv()->getTesseract()->applyCommand(cmd);
-  Eigen::Isometry3d InverseModelPoseAdjust;
-  InverseModelPoseAdjust.setIdentity();
-  InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
-  InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
-  setObjectPose(env, "closet_base_link", "closet_base_joint",
-                InverseModelPoseAdjust);
-  std::cout << env.getVKCEnv()
-                   ->getTesseractNonInverse()
-                   ->getLinkTransform("closet_top_right_handle")
-                   .translation()
-            << std::endl;
   // setJointAngle(env, "closet_top_right_door_joint", "closet_base_joint",
   // -1.5);
 
@@ -338,7 +361,8 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "closet_base_link",
       {0.11, 0.25, -0.35},  // dist to closet plane / offset from handle /
                             // height from handle
-      {0, 0.8225021, 0, -0.5687621}});  // xyz:[ x: 3.1415927, y: -1.21, z: 0 ]
+      {0, 0.8225021, 0, -0.5687621},
+      Eigen::VectorXd()});  // xyz:[ x: 3.1415927, y: -1.21, z: 0 ]
   //   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
   //       "attach_drawer_handle1",
   //       "drawer_handle1",
@@ -405,44 +429,44 @@ int main(int argc, char **argv) {
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   Commands cmds;
   cmds.clear();
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_0", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_1", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_2", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_1_link_3", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_0", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_1", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_2", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_2_link_3", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_0", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_1", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_2", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_finger_middle_link_3", "chair_chair_interactive_part",
-      "Always"));
-  cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
-      "right_gripper_palm", "chair_chair_interactive_part", "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_1_link_0", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_1_link_1", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_1_link_2", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_1_link_3", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_2_link_0", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_2_link_1", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_2_link_2", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_2_link_3", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_middle_link_0", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_middle_link_1", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_middle_link_2", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_finger_middle_link_3", "chair_chair_interactive_part",
+  //       "Always"));
+  //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
+  //       "right_gripper_palm", "chair_chair_interactive_part", "Always"));
 
   //   cmds.push_back(std::make_shared<AddAllowedCollisionCommand>(
   //       "right_gripper_finger_1_link_0", "chair_base_link", "Always"));
@@ -512,8 +536,55 @@ int main(int argc, char **argv) {
 
   env.getVKCEnv()->getTesseract()->applyCommands(cmds);
 
+  Eigen::Isometry3d cabinet_handle_pose;
+  cabinet_handle_pose.setIdentity();
+  cabinet_handle_pose.translation() =
+      Eigen::Vector3d(1.8322661808, -0.111083378972, 1.15892128103 + 1.17);
+
+  cabinet_handle_pose.linear() =
+      Eigen::Quaterniond(0.0373512515579, 0.000793829050033, 0.00416189144533,
+                         0.99929321648)
+          .matrix();
+  auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "closet_base_joint", cabinet_handle_pose);
+  env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  Eigen::Isometry3d InverseModelPoseAdjust;
+  InverseModelPoseAdjust.setIdentity();
+  InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
+  InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+  setObjectPose(env, "closet_base_link", "closet_base_joint",
+                InverseModelPoseAdjust);
+  std::cout << env.getVKCEnv()
+                   ->getTesseractNonInverse()
+                   ->getLinkTransform("closet_top_right_handle")
+                   .translation()
+            << std::endl;
+
+//   Eigen::Isometry3d stick_pose;
+//   stick_pose.setIdentity();
+//   stick_pose.translation() =
+//       Eigen::Vector3d(1.8322661808, -0.111083378972, 1.15892128103 + 1.17);
+
+//   stick_pose.linear() =
+//       Eigen::Quaterniond(0.0373512515579, 0.000793829050033, 0.00416189144533,
+//                          0.99929321648)
+//           .matrix();
+//   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+//       "closet_base_joint", stick_pose);
+//   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+//   Eigen::Isometry3d InverseModelPoseAdjust;
+//   InverseModelPoseAdjust.setIdentity();
+//   InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
+//   InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+//   setObjectPose(env, "closet_base_link", "closet_base_joint",
+//                 InverseModelPoseAdjust);
+//   std::cout << env.getVKCEnv()
+//                    ->getTesseractNonInverse()
+//                    ->getLinkTransform("closet_top_right_handle")
+//                    .translation()
+//             << std::endl;
   // ActionSeq actions = getTietaEnvSeq("vkc");
-  ActionSeq actions = getDemoSeq("vkc");
+  ActionSeq actions = getDemoSeq(env, "vkc");
 
   run(env, actions, steps, n_iter, rviz, nruns);
 }
