@@ -29,18 +29,22 @@ AStar::Generator::Generator() {
 
 void AStar::Generator::setWorldSize(Vec2i worldSize_) {
   worldSize = worldSize_;
+  clearCache();
 }
 
 void AStar::Generator::setDiagonalMovement(bool enable_) {
   directions = (enable_ ? 8 : 4);
+  clearCache();
 }
 
 void AStar::Generator::setHeuristic(HeuristicFunction heuristic_) {
   heuristic = std::bind(heuristic_, _1, _2);
+  clearCache();
 }
 
 void AStar::Generator::addCollision(Vec2i coordinates_) {
   walls.push_back(coordinates_);
+  clearCache();
 }
 
 void AStar::Generator::removeCollision(Vec2i coordinates_) {
@@ -48,9 +52,13 @@ void AStar::Generator::removeCollision(Vec2i coordinates_) {
   if (it != walls.end()) {
     walls.erase(it);
   }
+  clearCache();
 }
 
-void AStar::Generator::clearCollisions() { walls.clear(); }
+void AStar::Generator::clearCollisions() {
+  walls.clear();
+  clearCache();
+}
 
 void AStar::Generator::printMap(Vec2i source_, Vec2i target_) {
   for (int x = 0; x < worldSize.x; x++) {
@@ -81,18 +89,31 @@ AStar::CoordinateList AStar::Generator::findPath(Vec2i source_, Vec2i target_) {
 AStar::CoordinateList AStar::Generator::findPathCached(Vec2i source_,
                                                        Vec2i target_,
                                                        bool omit_start_end) {
+  // check cache first
+  auto cached = getCache(source_, target_);
+  if (cached.size()) {
+    // std::cout << "cache hit! \t";
+    return cached;
+  }
+
+  cache_lock_ = true;
   bool start_collision, end_collision;
   AStar::CoordinateList result;
   start_collision = end_collision = false;
   if (omit_start_end) {
     start_collision = detectCollision(source_);
     end_collision = detectCollision(target_);
+    removeCollision(source_);
+    removeCollision(target_);
   }
   result = findPath_(source_, target_);
   if (omit_start_end) {
     if (start_collision) addCollision(source_);
     if (end_collision) addCollision(target_);
   }
+
+  setCache(source_, target_, result);
+  cache_lock_ = false;
   return result;
 }
 
@@ -175,6 +196,21 @@ bool AStar::Generator::detectCollision(Vec2i coordinates_) {
     return true;
   }
   return false;
+}
+
+void AStar::Generator::setCache(Vec2i source_, Vec2i target_,
+                                CoordinateList path_) {
+  path_cache.insert({{source_.x, source_.y}, {target_.x, target_.y}}, path_);
+}
+
+AStar::CoordinateList AStar::Generator::getCache(Vec2i source_, Vec2i target_) {
+  auto path = path_cache.get({{source_.x, source_.y}, {target_.x, target_.y}})
+                  .get_value_or(CoordinateList());
+  return path;
+}
+
+void AStar::Generator::clearCache() {
+  if (!cache_lock_) path_cache.clear();
 }
 
 AStar::Vec2i AStar::Heuristic::getDelta(Vec2i source_, Vec2i target_) {

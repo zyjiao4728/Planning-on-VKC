@@ -7,7 +7,7 @@
 #include <AStar.hpp>
 #include <queue>
 
-const int K = 15;
+const int K = 50;
 
 namespace vkc {
 
@@ -96,7 +96,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
           auto detach_object =
               vkc_env->getAttachLocation(place_action->getDetachedObject());
           auto links = kin_group->getActiveLinkNames();
-          
+
           if (detach_object->cartesian_constraints_.size()) {
             CONSOLE_BRIDGE_logDebug(
                 "place action with fixed base object found, disabling "
@@ -293,10 +293,13 @@ LongHorizonSeedGenerator::getValidIKSets(
     const std::vector<ActionBase::Ptr> &actions) {
   std::vector<std::vector<Eigen::VectorXd>> accum;
   std::vector<Eigen::VectorXd> stack;
+  auto start = chrono::system_clock::now();
   CONSOLE_BRIDGE_logDebug("getting valid ik sets...");
   if (act_iks.size() > 0)
     getValidIKSetsHelper_(accum, stack, act_iks, 0, actions);
-  CONSOLE_BRIDGE_logDebug("valid ik sets: %ld", accum.size());
+  chrono::duration<double> duration = chrono::system_clock::now() - start;
+  CONSOLE_BRIDGE_logDebug("valid ik sets: %ld, time elapsed: %fs", accum.size(),
+                          duration.count());
   return accum;
 }
 
@@ -374,21 +377,25 @@ bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
 
   int end_x = int(round((end[0] + map_.map_x / 2.0) / map_.step_size));
   int end_y = int(round((end[1] + map_.map_y / 2.0) / map_.step_size));
-  bool start_collision =
-      action->astar_generator.detectCollision({base_x, base_y});
-  bool end_collision = action->astar_generator.detectCollision({end_x, end_y});
-  // action->astar_generator.printMap({base_x, base_y}, {end_x, end_y});
-  action->astar_generator.removeCollision({base_x, base_y});
-  action->astar_generator.removeCollision({end_x, end_y});
-  auto path =
-      action->astar_generator.findPath({base_x, base_y}, {end_x, end_y});
+  auto path = action->astar_generator.findPathCached({base_x, base_y},
+                                                     {end_x, end_y}, true);
+  // bool start_collision =
+  //     action->astar_generator.detectCollision({base_x, base_y});
+  // bool end_collision = action->astar_generator.detectCollision({end_x,
+  // end_y});
+  // // action->astar_generator.printMap({base_x, base_y}, {end_x, end_y});
+  // action->astar_generator.removeCollision({base_x, base_y});
+  // action->astar_generator.removeCollision({end_x, end_y});
+  // auto path =
+  //     action->astar_generator.findPath({base_x, base_y}, {end_x, end_y});
   bool solution_found = true;
+  // if (start_collision) action->astar_generator.addCollision({base_x,
+  // base_y}); if (end_collision) action->astar_generator.addCollision({end_x,
+  // end_y});
   if (path.front().x != end_x || path.front().y != end_y) {
     // cannot find valid astar path
     solution_found = false;
   }
-  if (start_collision) action->astar_generator.addCollision({base_x, base_y});
-  if (end_collision) action->astar_generator.addCollision({end_x, end_y});
   // std::cout << solution_found << "\t";
   return solution_found;
 }
