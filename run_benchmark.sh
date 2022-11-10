@@ -2,11 +2,11 @@
 cd /home/jiao/BIGAI/vkc_ws/Planning-on-VKC
 source devel/setup.zsh
 
-for iter in {1..50}
+for iter in {1..100}
 do  
-    echo "Round $iter, Household Env"
-    echo "roslaunch vkc_example household_env.launch taskid:=0 nruns:=5 longhorizon:=false"
-    roslaunch vkc_example household_env.launch taskid:=0 nruns:=5 longhorizon:=false steps:=40 rviz:=false
+    # echo "Round $iter, Household Env"
+    # echo "roslaunch vkc_example household_env.launch taskid:=0 nruns:=5 longhorizon:=false"
+    # roslaunch vkc_example household_env.launch taskid:=0 nruns:=5 longhorizon:=false steps:=40 rviz:=false
 
     echo "Round $iter, Household Env"
     echo "roslaunch vkc_example household_env.launch taskid:=0 nruns:=5 longhorizon:=true"

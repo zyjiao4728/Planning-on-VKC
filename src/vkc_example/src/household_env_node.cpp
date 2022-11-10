@@ -110,11 +110,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    toDelimitedFile(ci,
-                    "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/src/vkc_example/"
-                    "trajectory/household_env_" +
-                        std::to_string(j) + ".csv",
-                    ',');
+    // toDelimitedFile(ci,
+    //                 "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/src/vkc_example/"
+    //                 "trajectory/household_env_" +
+    //                     std::to_string(j) + ".csv",
+    //                 ',');
 
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
@@ -187,7 +187,7 @@ void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.57);
     auto action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
                                  joint_objectives, false);

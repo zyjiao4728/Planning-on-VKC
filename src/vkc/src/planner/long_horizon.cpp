@@ -7,7 +7,7 @@
 #include <AStar.hpp>
 #include <queue>
 
-const int K = 50;
+const int K = 100;
 
 namespace vkc {
 
