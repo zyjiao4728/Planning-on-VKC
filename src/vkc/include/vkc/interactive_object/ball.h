@@ -70,7 +70,7 @@ class Ball : public IUsableObject {
   std::string BaseLinkName() { return base_link_name_; }
 
   virtual PickAction::Ptr CreatePickAction(const std::string& manipulator) {
-    return std::make_shared<PickAction>(manipulator, attach_link_name_, false);
+    return std::make_shared<PickAction>(manipulator, attach_link_name_);
   }
 
   virtual PlaceAction::Ptr CreatePlaceAction(
@@ -93,8 +93,7 @@ class Ball : public IUsableObject {
     link_objectives.emplace_back(base_link_name_, tf);
 
     return std::make_shared<PlaceAction>(manipulator, attach_link_name_,
-                                         link_objectives, joint_objectives,
-                                         false);
+                                         link_objectives, joint_objectives);
   }
 
   virtual UseAction::Ptr CreateUseAction(

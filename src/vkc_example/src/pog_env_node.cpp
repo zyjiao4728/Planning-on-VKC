@@ -149,7 +149,7 @@ void OpenContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("wardrobe_joint6", 0.72);
-        place_action = make_shared<PlaceAction>(robot, "attach_wardrobe_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_wardrobe_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(false);
@@ -170,7 +170,7 @@ void OpenContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("cabinet_joint6", 1.7);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -213,7 +213,7 @@ void OpenContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("drawer_joint2", -0.49);
-        place_action = make_shared<PlaceAction>(robot, "attach_drawer_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_drawer_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(false);
@@ -249,7 +249,7 @@ void CloseContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("drawer_joint2", -0.49);
-        place_action = make_shared<PlaceAction>(robot, "attach_drawer_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_drawer_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(false);
@@ -292,7 +292,7 @@ void CloseContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("cabinet_joint6", 1.7);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -313,7 +313,7 @@ void CloseContainers(vkc::ActionSeq &actions, const std::string &robot)
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("wardrobe_joint6", 0.72);
-        place_action = make_shared<PlaceAction>(robot, "attach_wardrobe_handle", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_wardrobe_handle", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(false);

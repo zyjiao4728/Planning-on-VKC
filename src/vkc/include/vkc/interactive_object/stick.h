@@ -59,8 +59,7 @@ class Stick : public IUsableObject {
     link_objectives.emplace_back(base_link_name_, tf);
 
     return std::make_shared<PlaceAction>(manipulator, attach_link_name_,
-                                         link_objectives, joint_objectives,
-                                         false);
+                                         link_objectives, joint_objectives);
   }
 
  private:

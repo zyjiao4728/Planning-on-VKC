@@ -535,21 +535,21 @@ bool sampleArmPose2(
 
     if (found_ik) {
       temp_joint_init[target_joint] += joint_fineres;
-      if (abs(temp_joint_init[target_joint]-joint_init[target_joint])>abs(target_value-joint_init[target_joint])){
+      if (abs(temp_joint_init[target_joint] - joint_init[target_joint]) >
+          abs(target_value - joint_init[target_joint])) {
         temp_joint_init[target_joint] = target_value;
       }
       env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
     } else {
       temp_joint_init[target_joint] -= joint_fineres;
-      if (target_value > 0){
+      if (target_value > 0) {
         temp_joint_init[target_joint] =
-          std::max(0.0, temp_joint_init[target_joint]);
-      }
-      else{
+            std::max(0.0, temp_joint_init[target_joint]);
+      } else {
         temp_joint_init[target_joint] =
-          std::min(0.0, temp_joint_init[target_joint]);
+            std::min(0.0, temp_joint_init[target_joint]);
       }
-      
+
       env.getVKCEnv()->getTesseract()->setState(temp_joint_init);
     }
     // std::cout << 6 << std::endl;
@@ -604,4 +604,63 @@ bool sampleArmPose2(
     }
   }
   return (found_ik && no_collision);
+}
+
+void ik2csv(const std::vector<std::string> &joint_names,
+            const std::vector<Eigen::VectorXd> &joint_states,
+            const std::string &file_path) {
+  std::ofstream myfile;
+  myfile.open(file_path);
+
+  static const Eigen::IOFormat format(
+      Eigen::StreamPrecision, Eigen::DontAlignCols, "", std::string(",", 1));
+  for (std::size_t i = 0; i < joint_names.size() - 1; ++i)
+    myfile << joint_names[i] << ",";
+
+  myfile << joint_names.back() << std::endl;
+
+  for (const auto &ik : joint_states) {
+    myfile << ik.format(format) << std::endl;
+  }
+  myfile.close();
+}
+
+void csv2ik(std::vector<std::string> &joint_names,
+            std::vector<Eigen::VectorXd> &joint_states,
+            const std::string &file_path) {
+  std::ifstream csv_file(file_path);
+  std::string line;
+  bool is_header = true;
+
+  while (std::getline(csv_file, line)) {
+    std::vector<std::string> tokens;
+    boost::split(tokens, line, boost::is_any_of(","), boost::token_compress_on);
+    if (is_header) {
+      is_header = false;
+      for (const auto &t : tokens) {
+        joint_names.push_back(t);
+      }
+      continue;
+    }
+    if (!tesseract_common::isNumeric(tokens[0]))
+      throw std::runtime_error("loadTrajectorySeed: Invalid format");
+    std::vector<double> state_vector;
+    for (const auto &t : tokens) {
+      double value = 0;
+      tesseract_common::toNumeric<double>(t, value);
+      state_vector.push_back(value);
+    }
+    Eigen::VectorXd joint_state = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(
+        state_vector.data(), state_vector.size());
+    joint_states.push_back(joint_state);
+  }
+}
+
+std::string getCurrentTime(std::string time_format) {
+  auto current_time =
+      std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+  auto t = std::localtime(&current_time);
+  char buf[80];
+  std::strftime(buf, sizeof(buf), time_format.data(), t);
+  return buf;
 }

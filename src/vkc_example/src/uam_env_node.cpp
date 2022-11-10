@@ -133,7 +133,7 @@ void installLightBulb(vkc::ActionSeq &actions, const std::string &robot) {
 
     place_action =
         make_shared<PlaceAction>(robot, "attach_lightbulb0_marker_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
 
     actions.emplace_back(place_action);
   }
@@ -162,7 +162,7 @@ void picknplaceLightBulb(vkc::ActionSeq &actions, const std::string &robot) {
 
     place_action =
         make_shared<PlaceAction>(robot, "attach_bulb",
-                                 link_objectives, joint_objectives, true);
+                                 link_objectives, joint_objectives);
 
     actions.emplace_back(place_action);
   }
@@ -189,7 +189,7 @@ void openCabinet(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("cabinet0_small_left_door_joint", -1.57);
     place_action =
         make_shared<PlaceAction>(robot, "attach_cabinet",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     actions.emplace_back(place_action);
   }
 }
@@ -215,7 +215,7 @@ void closeCabinet(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("cabinet0_small_left_door_joint", 0.0);
     place_action =
         make_shared<PlaceAction>(robot, "attach_cabinet",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     actions.emplace_back(place_action);
   }
 }

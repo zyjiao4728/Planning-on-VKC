@@ -128,7 +128,7 @@ void serveCoke(vkc::ActionSeq &actions, const std::string &robot) {
 
     place_action =
         make_shared<PlaceAction>(robot, "attach_coke",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }

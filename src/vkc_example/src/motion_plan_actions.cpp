@@ -57,7 +57,7 @@ void GenerateGraspCup3WithoutToolActions(vkc::ActionSeq &actions, const std::str
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_left", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_left", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -112,7 +112,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
         place_action->RequireInitTraj(true);
 
@@ -129,7 +129,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix(); // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -150,7 +150,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.1);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -174,7 +174,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_1_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -198,7 +198,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         // dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
 
         link_objectives.emplace_back("Cup_2_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_2_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -220,7 +220,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix(); // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -242,7 +242,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -263,7 +263,7 @@ void GenerateActionsUnefficiency(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->RequireInitTraj(false);
 
         place_action->setOperationObjectType(false);
@@ -298,7 +298,7 @@ void GenerateOderedActionsByDistance(vkc::ActionSeq &actions, const std::string 
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.1);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -323,7 +323,7 @@ void GenerateOderedActionsByDistance(vkc::ActionSeq &actions, const std::string 
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -347,7 +347,7 @@ void GenerateOderedActionsByDistance(vkc::ActionSeq &actions, const std::string 
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_2_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -371,7 +371,7 @@ void GenerateOderedActionsByDistance(vkc::ActionSeq &actions, const std::string 
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix(); // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -392,7 +392,7 @@ void GenerateOderedActionsByDistance(vkc::ActionSeq &actions, const std::string 
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->RequireInitTraj(false);
 
         place_action->setOperationObjectType(false);
@@ -441,7 +441,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -459,7 +459,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix(); // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -482,7 +482,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
 
         place_action->RequireInitTraj(true);
@@ -506,7 +506,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
         place_action->RequireInitTraj(true);
 
@@ -530,7 +530,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         // dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
 
         link_objectives.emplace_back("Cup_2_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
 
         place_action->RequireInitTraj(true);
@@ -552,7 +552,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.2);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->RequireInitTraj(true);
 
         place_action->setOperationObjectType(false);
@@ -575,7 +575,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         // dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();   // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -597,7 +597,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -633,7 +633,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_4_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_4_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_4_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("world");
 
         place_action->RequireInitTraj(true);
@@ -654,7 +654,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.2);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -678,7 +678,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_1_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
         place_action->RequireInitTraj(true);
 
@@ -701,7 +701,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.683, 0.683, -0.183, -0.183).matrix();
 
         link_objectives.emplace_back("Cup_2_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_2_body_rotated", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2_body_rotated", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -725,7 +725,7 @@ void GenerateActionsGraspCup4WithPlate(vkc::ActionSeq &actions, const std::strin
         dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, -0.50, -0.50).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_body", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_body", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -788,7 +788,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3_with_tool", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -806,7 +806,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix(); // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Table_5_link");
 
         place_action->RequireInitTraj(true);
@@ -830,7 +830,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_3_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_3", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_3", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
 
         place_action->RequireInitTraj(true);
@@ -854,7 +854,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();
 
         link_objectives.emplace_back("Cup_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
         place_action->RequireInitTraj(true);
 
@@ -878,7 +878,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         // dst_tf.linear() = Eigen::Quaterniond(0.5, 0.5, 0.5, 0.5).matrix();
 
         link_objectives.emplace_back("Cup_2_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_2", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Plate_1_link");
 
         place_action->RequireInitTraj(true);
@@ -900,7 +900,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.2);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
 
         place_action->RequireInitTraj(true);
 
@@ -924,7 +924,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         // dst_tf.linear() = Eigen::Quaterniond(0.707107, 0.707107, 0.0, 0.0).matrix();   // ok
 
         link_objectives.emplace_back("Plate_1_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_plate_1", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -945,7 +945,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(true);
@@ -982,7 +982,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         // dst_tf.linear() = Eigen::Quaterniond(0, 0, 0.0, 1.0).matrix();
 
         link_objectives.emplace_back("Chair_645_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives);
         place_action->setNewAttachObject("world");
 
         place_action->RequireInitTraj(true);
@@ -1002,7 +1002,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", -2.2);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
 
@@ -1026,7 +1026,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.653, 0.653, -0.271, -0.271).matrix();
 
         link_objectives.emplace_back("Cup_4_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_cup_4_body_rotated", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cup_4_body_rotated", link_objectives, joint_objectives);
         place_action->setNewAttachObject("Cabinet_417_link");
 
         place_action->RequireInitTraj(true);
@@ -1048,7 +1048,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         std::vector<JointDesiredPose> joint_objectives;
 
         joint_objectives.emplace_back("Cabinet_417_link_dof_rootd_Bb001_r_joint", 0.0);
-        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_cabinet_417_door", link_objectives, joint_objectives);
         place_action->setOperationObjectType(false);
 
         place_action->RequireInitTraj(false);
@@ -1072,7 +1072,7 @@ void GenerateRobotBigTaskActions(vkc::ActionSeq &actions, const std::string &rob
         dst_tf.linear() = Eigen::Quaterniond(0.707, 0, 0.0, 0.707).matrix();
 
         link_objectives.emplace_back("Chair_645_link", dst_tf);
-        place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(robot, "attach_chair_645", link_objectives, joint_objectives);
         place_action->setNewAttachObject("world");
         place_action->RequireInitTraj(true);
 

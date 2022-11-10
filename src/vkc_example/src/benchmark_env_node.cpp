@@ -167,7 +167,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("door_north_door_joint", 1.3);
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -197,7 +197,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("door_north_door_joint", -DOOR_TARGET);
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -227,7 +227,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("drawer0_base_drawer_joint", -DRAWER_TARGET);
     place_action =
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -255,7 +255,7 @@ void pushDrawer(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("drawer0_base_drawer_joint", 0.0);
     place_action =
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
