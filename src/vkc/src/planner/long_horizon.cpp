@@ -168,17 +168,18 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
   std::cout << "done." << std::endl;
   assert(ik_sets.size() != 0);
   assert(ik_sets.front().size() == sub_actions.size());
-  sub_actions.front()->getJointCandidates().clear();
+  std::vector<Eigen::VectorXd> candidates;
+  // sub_actions.front()->getJointCandidates().clear();
   for (auto ik_set : ik_sets) {
     bool is_diff = true;
-    for (auto ik : sub_actions.front()->getJointCandidates()) {
+    for (auto ik : candidates) {
       if ((ik_set.front() - ik).matrix().norm() < 0.05) {
         is_diff = false;
         break;
       }
     }
     if (is_diff) {
-      sub_actions.front()->getJointCandidates().push_back(ik_set.front());
+      candidates.push_back(ik_set.front());
     }
     // if (std::find(sub_actions.front()->joint_candidates.begin(),
     //               sub_actions.front()->joint_candidates.end(),
@@ -188,6 +189,7 @@ void LongHorizonSeedGenerator::generate(VKCEnvBasic &raw_vkc_env,
     //   sub_actions.front()->joint_candidates.push_back(ik_set.front());
     // }
   }
+  sub_actions.front()->setJointCandidates(candidates);
   std::cout << "first 10 ik candidates: " << std::endl;
   for (int i = 0;
        i < min(10, (int)sub_actions.front()->getJointCandidates().size());

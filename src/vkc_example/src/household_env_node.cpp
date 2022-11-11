@@ -49,7 +49,10 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
 
-      for (const auto &act : sub_actions) {
+      for (int i = 0; i < window_size; i++) {
+        auto &act = sub_actions[i];
+        if (!act->getJointCandidates().size()) continue;
+        ;
         auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
             act->getManipulatorID());
         ik2csv(kin_group->getJointNames(), act->getJointCandidates(),
@@ -166,6 +169,17 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
       }
     }
   }
+}
+
+void showIKs(VKCEnvBasic &env, std::string path) {
+  std::vector<std::string> joint_names;
+  std::vector<Eigen::VectorXd> joint_states;
+  csv2ik(joint_names, joint_states, path);
+  for (auto &s : joint_states) {
+    env.getVKCEnv()->getTesseract()->setState(joint_names, s);
+    env.getPlotter()->waitForInput();
+  }
+  exit(0);
 }
 
 Eigen::VectorXd getPickCoeff(int size = 9) {
@@ -751,6 +765,9 @@ int main(int argc, char **argv) {
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+  showIKs(env,
+          "/home/yida/projects/Planning-on-VKC/src/vkc_example/iks/"
+          "1111_10:25:19_Pick: move_cup_pick.csv");
   sampleInitBasePose(env);
   vector<TesseractJointTraj> joint_trajs;
   ActionSeq actions;
