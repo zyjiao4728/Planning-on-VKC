@@ -7,7 +7,7 @@
 #include <AStar.hpp>
 #include <queue>
 
-const int K = 100;
+const int K = 30;
 
 namespace vkc {
 
@@ -371,7 +371,7 @@ void LongHorizonSeedGenerator::initAstarMap(
 bool LongHorizonSeedGenerator::astarChecking(ActionBase::Ptr action,
                                              Eigen::VectorXd start,
                                              Eigen::VectorXd end) {
-  return true;  // for test usage
+  // return true;  // for test usage
   if (start.size() == 0 || end.size() == 0) return false;
   assert(start.size() > 0);
   assert(end.size() > 0);

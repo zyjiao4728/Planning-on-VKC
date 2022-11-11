@@ -28,25 +28,25 @@ class PlaceAction : public ActionBase {
     }
   }
 
-  PlaceAction(std::string manipulator_id, std::string detached_object_id,
-              std::vector<LinkDesiredPose> link_objectives,
-              std::vector<JointDesiredPose> joint_objectives,
-              bool init_traj_required, std::string name = "PlaceAction"
-              // LinkDesiredPose base_objective
-              )
-      : ActionBase(ActionType::PlaceAction, manipulator_id, name),
-        detached_object_id_(detached_object_id),
-        is_rigid_object_(true)
-  // base_objective_(base_objective)
-  {
-    init_traj_required_ = init_traj_required;
-    for (auto& lo : link_objectives) {
-      addLinkObjectives(lo);
-    }
-    for (auto& jo : joint_objectives) {
-      addJointObjectives(jo.joint_name, jo.joint_angle);
-    }
-  }
+  // PlaceAction(std::string manipulator_id, std::string detached_object_id,
+  //             std::vector<LinkDesiredPose> link_objectives,
+  //             std::vector<JointDesiredPose> joint_objectives,
+  //             bool init_traj_required, std::string name = "PlaceAction"
+  //             // LinkDesiredPose base_objective
+  //             )
+  //     : ActionBase(ActionType::PlaceAction, manipulator_id, name),
+  //       detached_object_id_(detached_object_id),
+  //       is_rigid_object_(true)
+  // // base_objective_(base_objective)
+  // {
+  //   init_traj_required_ = init_traj_required;
+  //   for (auto& lo : link_objectives) {
+  //     addLinkObjectives(lo);
+  //   }
+  //   for (auto& jo : joint_objectives) {
+  //     addJointObjectives(jo.joint_name, jo.joint_angle);
+  //   }
+  // }
 
   ~PlaceAction() = default;
 
