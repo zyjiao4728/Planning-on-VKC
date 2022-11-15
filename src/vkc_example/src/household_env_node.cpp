@@ -49,16 +49,16 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
 
-      for (int i = 0; i < window_size; i++) {
-        auto &act = sub_actions[i];
-        if (!act->getJointCandidates().size()) continue;
-        ;
-        auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
-            act->getManipulatorID());
-        ik2csv(kin_group->getJointNames(), act->getJointCandidates(),
-               folder + "/iks/" + getCurrentTime("%m%d_%T") + "_" +
-                   act->getActionName() + ".csv");
-      }
+      // for (int i = 0; i < window_size; i++) {
+      //   auto &act = sub_actions[i];
+      //   if (!act->getJointCandidates().size()) continue;
+      //   ;
+      //   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
+      //       act->getManipulatorID());
+      //   ik2csv(kin_group->getJointNames(), act->getJointCandidates(),
+      //          folder + "/iks/" + getCurrentTime("%m%d_%T") + "_" +
+      //              act->getActionName() + ".csv");
+      // }
     }
 
     auto end = chrono::steady_clock::now();
