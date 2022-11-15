@@ -74,8 +74,38 @@ void run(ros::NodeHandle nh, VKCEnvBasic &env, ActionSeq &actions, int n_steps, 
   setObjectPose(env, "closet_base_link", "closet_base_joint",
                 InverseModelPoseAdjust);
 
-  
+    Eigen::Isometry3d table_pose;
+    table_pose = get_object_pose(nh, "table");
+    cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "table_table_base_joint", table_pose);
+    env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+    InverseModelPoseAdjust.setIdentity();
+    InverseModelPoseAdjust.setIdentity();
+    setObjectPose(env, "table_table_base_link", "table_table_base_joint",
+                InverseModelPoseAdjust);
+    
+    Eigen::Isometry3d table2_pose;
+    table_pose = get_object_pose(nh, "table2");
+    cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "table2_table_base_joint", table_pose);
+    env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+    InverseModelPoseAdjust.setIdentity();
+    InverseModelPoseAdjust.setIdentity();
+    setObjectPose(env, "table2_table_base_link", "table2_table_base_joint",
+                InverseModelPoseAdjust);
 
+
+
+    Eigen::Isometry3d table3_pose;
+    table_pose = get_object_pose(nh, "table3");
+    cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      "table3_table_base_joint", table_pose);
+    env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+    InverseModelPoseAdjust.setIdentity();
+    InverseModelPoseAdjust.setIdentity();
+    setObjectPose(env, "table3_table_base_link", "table3_table_base_joint",
+                InverseModelPoseAdjust);
+  
 //   Eigen::Isometry3d drawer_pose;
 //   drawer_pose.setIdentity();
 //   drawer_pose.translation() =
@@ -196,7 +226,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("closet_bottom_right_door_joint",
-                                  -1.7198621771937625);
+                                  -1.0);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives);
@@ -254,27 +284,27 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
 //     actions.emplace_back(place_action);
 //   }
 
-  // action9: pick closet handle
-  {
-    auto pick_action =
-        std::make_shared<PickAction>(robot, "attach_closet_right_handle");
-    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    actions.emplace_back(pick_action);
-  }
+  // // action9: pick closet handle
+  // {
+  //   auto pick_action =
+  //       std::make_shared<PickAction>(robot, "attach_closet_right_handle");
+  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(pick_action);
+  // }
 
-  // action10: place closet handle
-  {
-    std::vector<LinkDesiredPose> link_objectives;
-    std::vector<JointDesiredPose> joint_objectives;
+  // // action10: place closet handle
+  // {
+  //   std::vector<LinkDesiredPose> link_objectives;
+  //   std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("closet_bottom_right_door_joint", -0.05);
-    auto place_action =
-        std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
-                                      link_objectives, joint_objectives);
-    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    place_action->setIKCostCoeff(place_coeff);
-    actions.emplace_back(place_action);
-  }
+  //   joint_objectives.emplace_back("closet_bottom_right_door_joint", -0.05);
+  //   auto place_action =
+  //       std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
+  //                                     link_objectives, joint_objectives);
+  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   place_action->setIKCostCoeff(place_coeff);
+  //   actions.emplace_back(place_action);
+  // }
 
   return actions;
 }

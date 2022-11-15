@@ -175,6 +175,9 @@ void showIKs(VKCEnvBasic &env, std::string path) {
   std::vector<std::string> joint_names;
   std::vector<Eigen::VectorXd> joint_states;
   csv2ik(joint_names, joint_states, path);
+  Eigen::VectorXd joint(1);
+  joint << 1.57;
+  env.getVKCEnv()->getTesseract()->setState({"fridge_0001_dof_rootd_Aa002_r_joint"}, joint);
   for (auto &s : joint_states) {
     env.getVKCEnv()->getTesseract()->setState(joint_names, s);
     env.getPlotter()->waitForInput();
