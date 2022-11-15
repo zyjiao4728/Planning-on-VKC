@@ -102,7 +102,8 @@ bool ConstructVKC::initTesseract(std::string monitor_namespace) {
   monitor_ = std::make_shared<tesseract_monitoring::ROSEnvironmentMonitor>(
       env_, monitor_namespace);
   monitor_->startPublishingEnvironment();
-  monitor_->startStateMonitor();
+  // monitor_->startStateMonitor();  // DO NOT ENABLE THIS, WILL CAUSE SERIOUS
+  // PROBLEM(RESET ENVIRONMENT STATE EVERY TIME)
   return true;
 }
 
