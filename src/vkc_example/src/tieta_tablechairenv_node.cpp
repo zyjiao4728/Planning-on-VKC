@@ -105,6 +105,15 @@ void run(ros::NodeHandle nh, VKCEnvBasic &env, ActionSeq &actions, int n_steps, 
     InverseModelPoseAdjust.setIdentity();
     setObjectPose(env, "table3_table_base_link", "table3_table_base_joint",
                 InverseModelPoseAdjust);
+
+    Eigen::Isometry3d cup_pose;
+    cup_pose = get_object_pose(nh, "cup");
+    cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+        "cup_cup_base_joint", cup_pose);
+    env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+    InverseModelPoseAdjust.setIdentity();
+    setObjectPose(env, "cup_cup_base_link", "cup_cup_base_joint",
+                  InverseModelPoseAdjust);
   
 //   Eigen::Isometry3d drawer_pose;
 //   drawer_pose.setIdentity();
@@ -226,7 +235,7 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("closet_bottom_right_door_joint",
-                                  -1.0);
+                                  -1.5);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
                                       link_objectives, joint_objectives);
@@ -234,6 +243,32 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
+
+  // // action3: pick cup
+  // {
+  //   auto pick_action = std::make_shared<PickAction>(robot, "attach_cup");
+  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(pick_action);
+  // }
+
+  // // action4: place cup
+  // {
+  //   std::vector<LinkDesiredPose> link_objectives;
+  //   std::vector<JointDesiredPose> joint_objectives;
+  //   Eigen::Isometry3d destination;
+  //   destination.setIdentity();
+  //   destination.translation() =
+  //       Eigen::Vector3d(1.47093204225, -0.20089658102, 1.06764651278);
+  //   destination.linear() = Eigen::Quaterniond(0.13752651062, 0.0074258581583, 0.00112351909497, 0.990469612463)
+  //                              .matrix();
+  //   link_objectives.push_back(
+  //       LinkDesiredPose("cup_cup_base_link", destination));
+
+  //   auto place_action = std::make_shared<PlaceAction>(
+  //       robot, "attach_cup", link_objectives, joint_objectives);
+  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  //   actions.emplace_back(place_action);
+  // }
 
 //   // action3: pick drawer handle
 //   {
@@ -320,6 +355,16 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
       true});
+  attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
+      "attach_cup",
+      "cup_cup_base_link",
+      "cup_cup_base_link",
+      {0.21, 0.000, 0.00},
+      // {0.707106781186548, 0, -0.707106781186548, 0},
+      {0.6532815, 0.2705981, -0.6532815, -0.2705981},
+      // {1,0,0,0},
+      // {0.5,0.5,-0.5,-0.5},
+      false});
 //   attaches.emplace_back(UrdfSceneEnv::AttachObjectInfo{
 //       "attach_drawer_handle1",
 //       "drawer_handle1",
