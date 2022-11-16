@@ -7,3 +7,6 @@
 [submodule "src/env_description"]
 	path = src/env_description
 	url = ssh://git@gitlab.mybigai.ac.cn:2222/robotics/env_description.git
+[submodule "src/vicon_bridge"]
+	path = src/vicon_bridge
+	url = https://github.com/OliverWu1996/vicon_bridge.git
