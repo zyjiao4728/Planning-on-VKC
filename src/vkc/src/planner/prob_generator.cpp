@@ -72,17 +72,15 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
     CONSOLE_BRIDGE_logInform(
         "joint size in waypoint is equal to kinematic chain, assigning joint "
         "waypoint");
-    std::vector<std::string> joint_names;
     std::vector<double> joint_values;
-    for (auto &jo : wp.getJointTargets()) {
-      joint_names.push_back(jo.first);
-      joint_values.push_back(jo.second);
+    for (auto &jn: kinematic_group->getJointNames()) {
+      joint_values.push_back(wp.getJointTargets()[jn]);
     }
     Eigen::VectorXd joint_state = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(
         joint_values.data(), joint_values.size());
 
     plan_instruction.assignJointWaypoint(
-        JointWaypointPoly{JointWaypoint(joint_names, joint_state)});
+        JointWaypointPoly{JointWaypoint(kinematic_group->getJointNames(), joint_state)});
   }
   program.appendMoveInstruction(plan_instruction);
 
