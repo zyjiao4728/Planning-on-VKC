@@ -23,6 +23,16 @@ class GotoAction : public ActionBase {
     }
   }
 
+  GotoAction(std::string manipulator_id, std::vector<std::string> joint_names,
+             Eigen::VectorXd joint_state,
+             std::string action_name = "GotoAction")
+      : ActionBase(ActionType::GotoAction, manipulator_id, action_name) {
+    assert(joint_names.size() == joint_state.size());
+    for (int i = 0; i < joint_names.size(); i++) {
+      addJointObjectives(joint_names[i], joint_state[i]);
+    }
+  }
+
   ~GotoAction() = default;
 
   // added: wanglei@bigai.ai
