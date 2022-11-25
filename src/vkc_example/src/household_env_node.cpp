@@ -775,9 +775,8 @@ int main(int argc, char **argv) {
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
-  // showIKs(env,
-  //         "/home/yida/projects/Planning-on-VKC/src/vkc_example/iks/"
-  //         "1111_10:25:19_Pick: move_cup_pick.csv");
+  showIKs(env,
+          "/home/y/Documents/WYY_META/Planning-on-VKC/src/vkc_example/iks/1123_18:24:00_Place: open_fridge_place_labeled.csv");
   sampleInitBasePose(env);
   vector<TesseractJointTraj> joint_trajs;
   ActionSeq actions;

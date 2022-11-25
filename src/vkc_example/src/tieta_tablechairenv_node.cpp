@@ -238,29 +238,38 @@ ActionSeq getTietaEnvSeq(const std::string robot)
   }
 
   // action1: pick closet handle
-  // {
-  //   auto pick_action =
-  //       std::make_shared<PickAction>(robot, "attach_closet_right_handle");
-  //   pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+  {
+    auto pick_action =
+        std::make_shared<PickAction>(robot, "attach_closet_right_handle");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
 
-  //   pick_action->setIKCostCoeff(pick_coeff);
-  //   actions.emplace_back(pick_action);
-  // }
+    pick_action->setIKCostCoeff(pick_coeff);
+    actions.emplace_back(pick_action);
+  }
 
   // action2: place closet handle
-  // {
-  //   std::vector<LinkDesiredPose> link_objectives;
-  //   std::vector<JointDesiredPose> joint_objectives;
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
 
-  //   joint_objectives.emplace_back("closet_bottom_right_door_joint",
-  //                                 -1.5);
-  //   auto place_action =
-  //       std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
-  //                                     link_objectives, joint_objectives);
-  //   place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-  //   place_action->setIKCostCoeff(place_coeff);
-  //   actions.emplace_back(place_action);
-  // }
+    joint_objectives.emplace_back("closet_bottom_right_door_joint",
+                                  -1.5);
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
+                                      link_objectives, joint_objectives);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setIKCostCoeff(place_coeff);
+    place_action->loadTrajectorySeed("/home/y/Documents/WYY_META/Planning-on-VKC/src/vkc_example/trajectory/tieta_env_PlaceAction0.csv");
+    actions.emplace_back(place_action);
+  }
+
+  {
+    Eigen::VectorXd state(9);
+    state << 1.0237,-1.529, 1.61232, 2.42, 0.28, -2.3, 1.40, 0.03, 1.15;
+    std::vector<std::string> joint_names = {"base_y_base_x", "base_theta_base_y", "base_link_base_theta", "right_arm_shoulder_pan_joint", "right_arm_shoulder_lift_joint", "right_arm_elbow_joint", "right_arm_wrist_1_joint", "right_arm_wrist_2_joint", "right_arm_wrist_3_joint"};
+    auto action = std::make_shared<GotoAction>(robot, joint_names, state, "goto byeye");
+    actions.emplace_back(action);
+  }
 
   // // action3: pick cup
   // {
