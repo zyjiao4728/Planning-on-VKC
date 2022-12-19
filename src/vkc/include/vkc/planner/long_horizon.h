@@ -24,7 +24,7 @@ struct IKSetWithCost {
 
 class LongHorizonSeedGenerator {
  public:
-  LongHorizonSeedGenerator(int n_steps, int n_iter, size_t window_size,
+  LongHorizonSeedGenerator(int n_iter, size_t window_size,
                            size_t robot_vkc_length);
   /**
    * @brief generate long horizon seeds inside actions
@@ -59,6 +59,8 @@ class LongHorizonSeedGenerator {
                     tesseract_collision::DiscreteContactManager::Ptr
                         discrete_contact_manager);
 
+  void setStepPenalty(double penalty);
+
   bool astarChecking(ActionBase::Ptr action, Eigen::VectorXd start,
                      Eigen::VectorXd end);
   int n_steps;
@@ -66,6 +68,7 @@ class LongHorizonSeedGenerator {
   size_t window_size;
   tesseract_planning::MapInfo map_;
   size_t robot_vkc_length_;
+  Eigen::VectorXd step_coeff;
 };
 std::vector<tesseract_kinematics::IKSolutions> CartesianProduct(
     const std::vector<tesseract_kinematics::IKSolutions> &act_iks);

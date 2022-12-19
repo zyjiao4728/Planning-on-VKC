@@ -26,14 +26,16 @@ using namespace trajopt;
 using TesseractJointTraj = tesseract_common::JointTrajectory;
 // using namespace vkc_example;
 
+static std::string folder = ros::package::getPath("vkc_example");
+
 std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         VKCEnvBasic &env, ActionSeq &actions, int n_steps,
                         int n_iter, bool rviz_enabled, unsigned int nruns,
                         bool longhorizon = false) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
-  seed_generator.setMapInfo(15,15,0.15);
+  seed_generator.setMapInfo(8, 8, 0.2);
 
   int j = 0;
 
@@ -43,15 +45,33 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
+    auto start = chrono::steady_clock::now();
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
-      action->switchCandidate();
+
+      // for (int i = 0; i < window_size; i++) {
+      //   auto &act = sub_actions[i];
+      //   if (!act->getJointCandidates().size()) continue;
+      //   ;
+      //   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
+      //       act->getManipulatorID());
+      //   ik2csv(kin_group->getJointNames(), act->getJointCandidates(),
+      //          folder + "/iks/" + getCurrentTime("%m%d_%T") + "_" +
+      //              act->getActionName() + ".csv");
+      // }
     }
+
+    auto end = chrono::steady_clock::now();
+
+    double seed_time =
+        chrono::duration_cast<chrono::milliseconds>(end - start).count() /
+        1000.;
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
+      start = chrono::steady_clock::now();
       auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       if (rviz_enabled) {
@@ -59,19 +79,17 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
             "optimization is ready. Press <Enter> to process the request.");
       }
 
-      auto start = chrono::steady_clock::now();
       solveProb(prob_ptr, response, n_iter);
-      auto end = chrono::steady_clock::now();
-
+      end = chrono::steady_clock::now();
       // break;
       if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
           response.status.value())  // optimization converges
       {
         converged = true;
         elapsed_time.emplace_back(
+            seed_time +
             chrono::duration_cast<chrono::milliseconds>(end - start).count() /
-            1000.);
-        std::cout << elapsed_time.back() << std::endl;
+                1000.);
         break;
       } else {
         ROS_WARN(
@@ -91,11 +109,11 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
 
     tesseract_common::JointTrajectory trajectory = toJointTrajectory(ci);
     tesseract_common::JointTrajectory refined_traj = trajectory;
-    refineTrajectory(refined_traj, env);
     joint_trajs.emplace_back(trajectory);
 
     if (rviz_enabled && env.getPlotter() != nullptr) {
       ROS_INFO("plotting result");
+      refineTrajectory(refined_traj, env);
       tesseract_common::Toolpath toolpath =
           toToolpath(ci, *env.getVKCEnv()->getTesseract());
       env.getPlotter()->plotMarker(
@@ -107,8 +125,8 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     }
 
     // toDelimitedFile(ci,
-    //                 "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-    //                 "trajectory/urdf_scene_env_" +
+    //                 "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/src/vkc_example/"
+    //                 "trajectory/household_env_" +
     //                     std::to_string(j) + ".csv",
     //                 ',');
 
@@ -132,13 +150,13 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
   Eigen::VectorXd base_values = Eigen::Vector2d(0., 0.);
   tesseract_collision::ContactResultMap contact_results;
 
+  // env.getVKCEnv()->getTesseract()->setState(base_joints,
+  // Eigen::Vector2d(2,-2)); return;
   while (!init_base_position) {
     init_base_position = true;
     contact_results.clear();
     base_values = Eigen::Vector2d(rand() % 100 / 99. * 2. + 0.5,
                                   -rand() % 100 / 99. * 3. + 0.5);
-    env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
-
     env.getVKCEnv()->getTesseract()->setState(base_joints, base_values);
     env.getVKCEnv()->getTesseract()->getDiscreteContactManager()->contactTest(
         contact_results, tesseract_collision::ContactTestType::ALL);
@@ -153,28 +171,45 @@ void sampleInitBasePose(vkc::VKCEnvBasic &env) {
   }
 }
 
+void showIKs(VKCEnvBasic &env, std::string path) {
+  std::vector<std::string> joint_names;
+  std::vector<Eigen::VectorXd> joint_states;
+  csv2ik(joint_names, joint_states, path);
+  Eigen::VectorXd joint(1);
+  joint << 1.57;
+  env.getVKCEnv()->getTesseract()->setState(
+      {"fridge_0001_dof_rootd_Aa002_r_joint"}, joint);
+  for (auto &s : joint_states) {
+    env.getVKCEnv()->getTesseract()->setState(joint_names, s);
+    env.getPlotter()->waitForInput();
+  }
+  exit(0);
+}
+
 Eigen::VectorXd getPickCoeff(int size = 9) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
-  coeff[0] = 2.;
-  coeff[1] = 2.;
-  coeff[3] = 2.;
   return coeff;
 }
 
 Eigen::VectorXd getPlaceCoeff(int size = 10) {
   Eigen::VectorXd coeff;
   coeff.setOnes(size);
+  coeff[2] = 3.;
+  coeff[3] = 3.;
+  coeff[6] = 5.;
+  coeff[9] = 0;
   return coeff;
 }
 
 void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick fridge handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_fridge_handle",
+                                          "open_fridge_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: open fridge door
@@ -182,27 +217,26 @@ void genOpenFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.6);
-    auto place_action =
+    joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", -1.57);
+    auto action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
-                                 joint_objectives, false);
+                                 joint_objectives, "open_fridge_place");
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
-    place_action->setIKCostCoeff(place_coeff);
-    actions.emplace_back(place_action);
+    action->setIKCostCoeff(place_coeff);
+    actions.emplace_back(action);
   }
 }
 
 void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick fridge handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_fridge_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_fridge_handle",
+                                          "close_fridge_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: close fridge door
@@ -211,26 +245,25 @@ void genCloseFridgeSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint", 0.0);
-    auto place_action =
+    auto action =
         make_shared<PlaceAction>(robot, "attach_fridge_handle", link_objectives,
-                                 joint_objectives, false);
+                                 joint_objectives, "close_fridge_place");
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
-    place_action->setIKCostCoeff(place_coeff);
-    actions.emplace_back(place_action);
+    action->setIKCostCoeff(place_coeff);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick door handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_door_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action =
+        make_shared<PickAction>(robot, "attach_door_handle", "open_door_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: open door door
@@ -238,27 +271,27 @@ void genOpenDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("door_8966_joint_1", 1.5);
-    auto place_action = make_shared<PlaceAction>(
-        robot, "attach_door_handle", link_objectives, joint_objectives, false);
+    joint_objectives.emplace_back("door_8966_joint_1", 1.52);
+    auto action =
+        make_shared<PlaceAction>(robot, "attach_door_handle", link_objectives,
+                                 joint_objectives, "open_door_place");
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
-    place_action->setIKCostCoeff(place_coeff);
+    action->setIKCostCoeff(place_coeff);
 
-    actions.emplace_back(place_action);
+    actions.emplace_back(action);
   }
 }
 
 void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action 1: pick door handle
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_door_handle");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action =
+        make_shared<PickAction>(robot, "attach_door_handle", "close_door_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: close door door
@@ -267,16 +300,15 @@ void genCloseDoorSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("door_8966_joint_1", 0.0);
-    auto place_action = make_shared<PlaceAction>(
-        robot, "attach_door_handle", link_objectives, joint_objectives, false);
+    auto action =
+        make_shared<PlaceAction>(robot, "attach_door_handle", link_objectives,
+                                 joint_objectives, "close_door_place");
 
-    setBaseJoint(place_action);
+    setBaseJoint(action);
     auto place_coeff = getPlaceCoeff();
-    place_coeff[6] = 5.;
-    place_coeff[3] = 3.;
-    place_action->setIKCostCoeff(place_coeff);
+    action->setIKCostCoeff(place_coeff);
 
-    actions.emplace_back(place_action);
+    actions.emplace_back(action);
   }
 }
 
@@ -284,10 +316,10 @@ void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot,
                    Eigen::Isometry3d destination) {
   // action 1: pick cup
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_cup");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = make_shared<PickAction>(robot, "attach_cup", "move_cup_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: place cup on the table
@@ -297,11 +329,11 @@ void genMoveCupSeq(vkc::ActionSeq &actions, const std::string &robot,
     link_objectives.push_back(
         LinkDesiredPose("cup_cup_base_link", destination));
 
-    auto place_action = make_shared<PlaceAction>(
-        robot, "attach_cup", link_objectives, joint_objectives, true);
+    auto action = make_shared<PlaceAction>(robot, "attach_cup", link_objectives,
+                                           joint_objectives, "move_cup_place");
 
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
@@ -309,10 +341,11 @@ void genThrowTrashSeq(vkc::ActionSeq &actions, const std::string &robot,
                       Eigen::Isometry3d destination) {
   // action 1: pick up trash
   {
-    auto pick_action = make_shared<PickAction>(robot, "attach_trash_2");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action =
+        make_shared<PickAction>(robot, "attach_trash_2", "throw_trash_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action 2: throw trash
@@ -321,21 +354,23 @@ void genThrowTrashSeq(vkc::ActionSeq &actions, const std::string &robot,
     std::vector<JointDesiredPose> joint_objectives;
     link_objectives.push_back(LinkDesiredPose("trash_base_link", destination));
 
-    auto place_action = make_shared<PlaceAction>(
-        robot, "attach_trash_2", link_objectives, joint_objectives, true);
+    auto action =
+        make_shared<PlaceAction>(robot, "attach_trash_2", link_objectives,
+                                 joint_objectives, "throw_trash_place");
 
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDrawerSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick drawer handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_drawer");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = std::make_shared<PickAction>(robot, "attach_drawer",
+                                               "open_drawer_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action2: place drawer handle
@@ -344,20 +379,22 @@ void genOpenDrawerSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
-    auto place_action = std::make_shared<PlaceAction>(
-        robot, "attach_drawer", link_objectives, joint_objectives, false);
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    auto action =
+        std::make_shared<PlaceAction>(robot, "attach_drawer", link_objectives,
+                                      joint_objectives, "open_drawer_place");
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenCabinetSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick cabinet handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_cabinet");
-    setBaseJoint(pick_action);
-    pick_action->setIKCostCoeff(getPickCoeff());
-    actions.emplace_back(pick_action);
+    auto action = std::make_shared<PickAction>(robot, "attach_cabinet",
+                                               "open_cabinet_pick");
+    setBaseJoint(action);
+    action->setIKCostCoeff(getPickCoeff());
+    actions.emplace_back(action);
   }
 
   // action2: place cabinet handle
@@ -366,24 +403,25 @@ void genOpenCabinetSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("cabinet_48479_joint_0", -0.4);
-    auto place_action = std::make_shared<PlaceAction>(
-        robot, "attach_cabinet", link_objectives, joint_objectives, false);
-    // setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    auto action =
+        std::make_shared<PlaceAction>(robot, "attach_cabinet", link_objectives,
+                                      joint_objectives, "open_cabinet_place");
+    // setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // action1: pick dishwasher handle
   {
-    auto pick_action = std::make_shared<PickAction>(robot, "attach_dishwasher");
+    auto action = std::make_shared<PickAction>(robot, "attach_dishwasher");
     auto pick_coeff = getPickCoeff();
-    setBaseJoint(pick_action);
+    setBaseJoint(action);
     pick_coeff.setZero(9);
     pick_coeff[0] = 1.;
     pick_coeff[1] = 1.;
-    pick_action->setIKCostCoeff(pick_coeff);
-    actions.emplace_back(pick_action);
+    action->setIKCostCoeff(pick_coeff);
+    actions.emplace_back(action);
   }
 
   // action2: place dishwasher handle
@@ -392,22 +430,19 @@ void genOpenDishwasherSeq(vkc::ActionSeq &actions, const std::string &robot) {
     std::vector<JointDesiredPose> joint_objectives;
 
     joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
-    auto place_action = std::make_shared<PlaceAction>(
-        robot, "attach_dishwasher", link_objectives, joint_objectives, false);
-    // cost_coeff[6] = 5.;
-    // cost_coeff[3] = 3.;
-    // cost_coeff[0] = 3.;
-    // cost_coeff[1] = 3.;
-    // place_action->setIKCostCoeff(cost_coeff);
-    setBaseJoint(place_action);
-    actions.emplace_back(place_action);
+    auto action = std::make_shared<PlaceAction>(
+        robot, "attach_dishwasher", link_objectives, joint_objectives);
+    // action->setIKCostCoeff(cost_coeff);
+    setBaseJoint(action);
+    actions.emplace_back(action);
   }
 }
 
 void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
   // pick broom
   {
-    auto action = std::make_shared<PickAction>(robot, "attach_broom");
+    auto action =
+        std::make_shared<PickAction>(robot, "attach_broom", "broom_pick");
     auto coeff = getPickCoeff();
     setBaseJoint(action);
     coeff.setZero(9);
@@ -418,7 +453,8 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
   }
   // pick trash
   {
-    auto action = std::make_shared<PickAction>(robot, "attach_trash");
+    auto action =
+        std::make_shared<PickAction>(robot, "attach_trash", "trash_pick");
     auto coeff = getPickCoeff();
     actions.emplace_back(action);
   }
@@ -432,7 +468,11 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
     link_objectives.emplace_back("trash_base_link", transform);
     auto action =
         std::make_shared<PlaceAction>(robot, "attach_trash", link_objectives,
-                                      joint_objectives, "place trash");
+                                      joint_objectives, "trash_place");
+    auto place_coeff = getPlaceCoeff();
+    place_coeff.setOnes();
+    place_coeff[4] = 10;
+    action->setIKCostCoeff(place_coeff);
     actions.emplace_back(action);
   }
   // place broom
@@ -445,20 +485,177 @@ void genUseBroomSeq(vkc::ActionSeq &actions, const std::string &robot) {
     transform.linear() =
         Eigen::Quaterniond(0.5000, 0.5000, -0.5000, -0.5000).matrix();
     link_objectives.emplace_back("broom_base_link", transform);
-    auto action = std::make_shared<PlaceAction>(
-        robot, "attach_broom", link_objectives, joint_objectives, true);
+    auto action =
+        std::make_shared<PlaceAction>(robot, "attach_broom", link_objectives,
+                                      joint_objectives, "broom_place");
     actions.emplace_back(action);
   }
 }
 
+void genEnvironmentInfo(
+    UrdfSceneEnv::AttachObjectInfos &attaches,
+    UrdfSceneEnv::InverseChainsInfos &inverse_chains,
+    const UrdfSceneEnv::AttachObjectInfo &attach_object_info, int baseline) {
+  attaches.emplace_back(attach_object_info);
+  if (baseline == 0)
+    inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
+        attach_object_info.base_link, attach_object_info.attach_link});
+}
+
+void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
+                               UrdfSceneEnv::InverseChainsInfos &inverse_chains,
+                               int task_id, int baseline = 0) {
+  Eigen::VectorXd constraint_plane(6);
+  constraint_plane << 0, 0, 10, 10, 10, 0;
+  switch (task_id) {
+    case 0:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
+                                         "fridge_0001_dof_rootd_Aa002_r",
+                                         "fridge_0001",
+                                         {0.65, -0.25, -0.65},
+                                         {0.5, -0.5, 0.5, 0.5},
+                                         Eigen::VectorXd()},
+          baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_cup",
+                                         "cup_cup_link",
+                                         "cup_cup_base_link",
+                                         {0.04, 0.05, -0.12},
+                                         {0.707106781, 0, 0, 0.707106781}},
+          baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
+                                                        "door_8966_link_2",
+                                                        "door_8966_base",
+                                                        {0.0, 0.0, 0.25},
+                                                        {0, 0, 1, 0},
+                                                        Eigen::VectorXd()},
+                         baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
+                                         "broom_base",
+                                         "broom_base_link",
+                                         {0, 1.0, 0.11},
+                                         {0, 0.7071068, 0.7071068, 0}},
+          baseline);
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
+                                         "trash_base",
+                                         "trash_base_link",
+                                         {-0.1, 0.18, 0.02},
+                                         {0, 0, 0.258819, 0.9659258}},
+          baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
+                                                        "trash_base",
+                                                        "trash_base_link",
+                                                        {0.0, 0.0, 0.15},
+                                                        {0, 0, 1, 0}},
+                         1);
+      break;
+    case 1:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
+                                         "fridge_0001_dof_rootd_Aa002_r",
+                                         "fridge_0001",
+                                         {0.65, -0.25, -0.65},
+                                         {0.5, -0.5, 0.5, 0.5},
+                                         Eigen::VectorXd()},
+          baseline);
+      break;
+    case 2:
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
+                                                        "door_8966_link_2",
+                                                        "door_8966_base",
+                                                        {0.0, 0.0, 0.25},
+                                                        {0, 0, 1, 0},
+                                                        Eigen::VectorXd()},
+                         baseline);
+      break;
+    case 3:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_cup",
+                                         "cup_cup_link",
+                                         "cup_cup_base_link",
+                                         {0.04, 0.05, -0.12},
+                                         {0.707106781, 0, 0, 0.707106781}},
+          baseline);
+      break;
+    case 4:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_drawer",
+                                         "drawer_handle1",
+                                         "drawer_base_link",
+                                         {0.16, 0.000, 0.00},
+                                         {0.5000, -0.5000, -0.5000, 0.5000},
+                                         Eigen::VectorXd()},
+          baseline);
+      break;
+    case 5:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_cabinet",
+                                         "cabinet_48479_handle0",
+                                         "cabinet_48479_base_link",
+                                         {0.0, 0.0, 0.15},
+                                         {0, -0.707106781, -0.707106781, 0},
+                                         Eigen::VectorXd()},
+          baseline);
+      break;
+    case 6:
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{
+                             "attach_dishwasher",
+                             "dishwasher_link_2",
+                             "dishwasher",
+                             {0.45, 0.55, 0.70},
+                             {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
+                             Eigen::VectorXd()},
+                         baseline);
+      break;
+    case 7:
+      genEnvironmentInfo(
+          attaches, inverse_chains,
+          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
+                                         "broom_base",
+                                         "broom_base_link",
+                                         {0, 1.0, 0.11},
+                                         {0, 0.7071068, 0.7071068, 0}},
+          baseline);
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo(
+                             "attach_trash", "trash_base", "trash_base_link",
+                             {-0.1, 0.18, 0.02}, {0, 0, 0.258819, 0.9659258},
+                             constraint_plane),
+                         baseline);
+      break;
+    case 8:
+      genEnvironmentInfo(attaches, inverse_chains,
+                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
+                                                        "trash_base",
+                                                        "trash_base_link",
+                                                        {0.0, 0.0, 0.15},
+                                                        {0, 0, 1, 0}},
+                         baseline);
+      break;
+    default:
+      break;
+  }
+
+  CONSOLE_BRIDGE_logDebug("environment info generation success");
+}
+
 void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
                    const std::string &robot, int task_id) {
-  PickAction::Ptr pick_action;
-  PlaceAction::Ptr place_action;
-
-  Eigen::VectorXd cost_coeff;
-  Eigen::VectorXd pick_coeff;
-
   Eigen::Isometry3d onKitchenTable;
   onKitchenTable.setIdentity();
   onKitchenTable.translation() = Eigen::Vector3d(-0.6, -1.6, 1.11);
@@ -478,13 +675,14 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
   switch (task_id) {
     case 0:
-      // genOpenFridgeSeq(actions, robot);
-      // genMoveCupSeq(actions, robot, onKitchenTable);
-      // genCloseFridgeSeq(actions, robot);
+      genOpenFridgeSeq(actions, robot);
+      genMoveCupSeq(actions, robot, onKitchenTable);
+      genCloseFridgeSeq(actions, robot);
       genOpenDoorSeq(actions, robot);
       genMoveCupSeq(actions, robot, onDesk);
       genCloseDoorSeq(actions, robot);
       genUseBroomSeq(actions, robot);
+      genThrowTrashSeq(actions, robot, inTrashCan);
       break;
     case 1:
       genOpenFridgeSeq(actions, robot);
@@ -531,172 +729,15 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
   }
 }
 
-void genEnvironmentInfo(
-    UrdfSceneEnv::AttachObjectInfos &attaches,
-    UrdfSceneEnv::InverseChainsInfos &inverse_chains,
-    const UrdfSceneEnv::AttachObjectInfo &attach_object_info, int baseline) {
-  attaches.emplace_back(attach_object_info);
-  if (baseline == 0)
-    inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
-        attach_object_info.base_link, attach_object_info.attach_link});
-}
-
-void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
-                               UrdfSceneEnv::InverseChainsInfos &inverse_chains,
-                               int task_id, int baseline = 0) {
-  switch (task_id) {
-    case 0:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
-                                         "fridge_0001_dof_rootd_Aa002_r",
-                                         "fridge_0001",
-                                         {0.65, -0.25, -0.65},
-                                         {0.5, -0.5, 0.5, 0.5},
-                                         true},
-          baseline);
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_cup",
-                                         "cup_cup_link",
-                                         "cup_cup_base_link",
-                                         {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false},
-          baseline);
-      genEnvironmentInfo(attaches, inverse_chains,
-                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
-                                                        "door_8966_link_2",
-                                                        "door_8966_base",
-                                                        {0.0, 0.0, 0.25},
-                                                        {0, 0, 1, 0},
-                                                        true},
-                         baseline);
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
-                                         "broom_base",
-                                         "broom_base_link",
-                                         {0, 1.0, 0.11},
-                                         {0, 0.7071068, 0.7071068, 0},
-                                         false},
-          baseline);
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
-                                         "trash_base",
-                                         "trash_base_link",
-                                         {-0.1, 0.18, 0.02},
-                                         {0, 0, 0.258819, 0.9659258},
-                                         false},
-          baseline);
-      genEnvironmentInfo(attaches, inverse_chains,
-                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
-                                                        "trash_base",
-                                                        "trash_base_link",
-                                                        {0.0, 0.0, 0.15},
-                                                        {0, 0, 1, 0},
-                                                        false},
-                         1);
-      break;
-    case 1:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_fridge_handle",
-                                         "fridge_0001_dof_rootd_Aa002_r",
-                                         "fridge_0001",
-                                         {0.65, -0.25, -0.65},
-                                         {0.5, -0.5, 0.5, 0.5},
-                                         true},
-          baseline);
-      break;
-    case 2:
-      genEnvironmentInfo(attaches, inverse_chains,
-                         UrdfSceneEnv::AttachObjectInfo{"attach_door_handle",
-                                                        "door_8966_link_2",
-                                                        "door_8966_base",
-                                                        {0.0, 0.0, 0.25},
-                                                        {0, 0, 1, 0},
-                                                        true},
-                         baseline);
-      break;
-    case 3:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_cup",
-                                         "cup_cup_link",
-                                         "cup_cup_base_link",
-                                         {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false},
-          baseline);
-      break;
-    case 4:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_drawer",
-                                         "drawer_handle1",
-                                         "drawer_base_link",
-                                         {0.16, 0.000, 0.00},
-                                         {0.5000, -0.5000, -0.5000, 0.5000},
-                                         true},
-          baseline);
-      break;
-    case 5:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_cabinet",
-                                         "cabinet_48479_handle0",
-                                         "cabinet_48479_base_link",
-                                         {0.0, 0.0, 0.15},
-                                         {0, -0.707106781, -0.707106781, 0},
-                                         true},
-          baseline);
-      break;
-    case 6:
-      genEnvironmentInfo(attaches, inverse_chains,
-                         UrdfSceneEnv::AttachObjectInfo{
-                             "attach_dishwasher",
-                             "dishwasher_link_2",
-                             "dishwasher",
-                             {0.45, 0.55, 0.70},
-                             {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
-                             true},
-                         baseline);
-      break;
-    case 7:
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_broom",
-                                         "broom_base",
-                                         "broom_base_link",
-                                         {0, 1.0, 0.11},
-                                         {0, 0.7071068, 0.7071068, 0},
-                                         false},
-          baseline);
-      genEnvironmentInfo(
-          attaches, inverse_chains,
-          UrdfSceneEnv::AttachObjectInfo{"attach_trash",
-                                         "trash_base",
-                                         "trash_base_link",
-                                         {-0.1, 0.18, 0.02},
-                                         {0, 0, 0.258819, 0.9659258},
-                                         false},
-          baseline);
-    case 8:
-      genEnvironmentInfo(attaches, inverse_chains,
-                         UrdfSceneEnv::AttachObjectInfo{"attach_trash_2",
-                                                        "trash_base",
-                                                        "trash_base_link",
-                                                        {0.0, 0.0, 0.15},
-                                                        {0, 0, 1, 0},
-                                                        false},
-                         baseline);
-    default:
-      break;
+void setTrajSeed(vkc::ActionSeq &actions) {
+  int idx = 0;
+  for (auto act : actions) {
+    // if (idx == 16) return;
+    act->loadTrajectorySeed(ros::package::getPath("vkc_example") +
+                            "/trajectory/household_env_" + std::to_string(idx) +
+                            ".csv");
+    idx++;
   }
-
-  CONSOLE_BRIDGE_logDebug("environment info generation success");
 }
 
 int main(int argc, char **argv) {
@@ -735,17 +776,21 @@ int main(int argc, char **argv) {
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
+  // showIKs(env,
+  //         "/home/y/Documents/WYY_META/Planning-on-VKC/src/vkc_example/iks/1123_18:24:00_Place:
+  //         open_fridge_place_labeled.csv");
   sampleInitBasePose(env);
   vector<TesseractJointTraj> joint_trajs;
   ActionSeq actions;
   std::vector<double> data;
 
   genTRODemoSeq(env, actions, robot, taskid);
+  setTrajSeed(actions);
   auto elapsed_time =
       run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
   interpVKCData(data, elapsed_time, joint_trajs);
-  std::string save_path = ros::package::getPath("vkc_example") +
-                          "/trajectory/household_env_" +
-                          std::to_string(taskid) + ".csv";
+  std::string save_path =
+      ros::package::getPath("vkc_example") + "/trajectory/household_env_" +
+      std::to_string(taskid) + "_" + to_string(longhorizon) + ".csv";
   saveDataToFile(data, save_path);
 }

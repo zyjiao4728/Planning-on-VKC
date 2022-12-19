@@ -42,6 +42,9 @@
     <disable_collisions link1="closet_base_link" link2="table_table_link" reason="Adjacent"/>
     <disable_collisions link1="closet_base_link" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_bottom_right_door_link" reason="Default"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="closet_bottom_right_door_link" reason="Default"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_drawer1" reason="Default"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_drawer2" reason="Default"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_bottom_right_handle" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_top_left_door_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_top_left_handle" reason="Never"/>
@@ -49,8 +52,12 @@
     <disable_collisions link1="closet_bottom_left_door_link" link2="closet_top_right_handle" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_back_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_left_wall" reason="Never"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_top_wall" reason="Never"/>
+    <disable_collisions link1="closet_bottom_left_door_link" link2="drawer_bottom_wall" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="table_table_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_left_door_link" link2="wall_link" reason="Never"/>
+    <disable_collisions link1="closet_bottom_right_door_link" link2="closet_base_link" reason="Never"/>
+    <disable_collisions link1="closet_bottom_right_door_link" link2="closet_bottom_left_door_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_bottom_right_handle" reason="Adjacent"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_top_left_door_link" reason="Never"/>
     <disable_collisions link1="closet_bottom_right_door_link" link2="closet_top_left_handle" reason="Never"/>
@@ -187,4 +194,8 @@
     <disable_collisions link1="drawer_top_wall" link2="table_table_link" reason="Adjacent"/>
     <disable_collisions link1="drawer_top_wall" link2="wall_link" reason="Adjacent"/>
     <disable_collisions link1="table_table_link" link2="wall_link" reason="Adjacent"/>
+    <disable_collisions link1="foldable_table_table_plane" link2="foldable_table_table_plane_below" reason="Adjacent"/>
+    <disable_collisions link1="chair_chair_interactive_part" link2="chair_base_link" reason="Adjacent"/>
+    <disable_collisions link1="cup_cup_link" link2="table_table_link" reason="Adjacent"/>
+    <disable_collisions link1="cup_cup_link" link2="closet_base_link" reason="Adjacent"/>
 </robot>

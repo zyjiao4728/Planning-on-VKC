@@ -182,8 +182,8 @@ class ProbTranslator {
   OMPLPlanners::Planners planner_;
 
   // buffered pose information
-  std::vector<LinkDesiredPose> l_obj;
-  std::vector<JointDesiredPose> j_obj;
+  std::unordered_map<std::string, Eigen::Isometry3d> l_obj;
+  std::unordered_map<std::string, double> j_obj;
 
   // BaseBias base_bias;
   // tesseract_kinematics::ForwardKinematics::ConstPtr kin_base;

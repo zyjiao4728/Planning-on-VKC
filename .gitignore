@@ -69,3 +69,5 @@ CATKIN_IGNORE
 
 # data file
 *.csv
+*.zip
+*.7z

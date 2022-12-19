@@ -138,4 +138,15 @@ bool sampleArmPose2(
     Eigen::VectorXd &ik_result,
     vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr,
     int remaining_steps);
+
+void ik2csv(const std::vector<std::string> &joint_names,
+            const std::vector<Eigen::VectorXd> &joint_states,
+            const std::string &file_path);
+
+void csv2ik(std::vector<std::string> &joint_names,
+            std::vector<Eigen::VectorXd> &joint_states,
+            const std::string &file_path);
+
+std::string getCurrentTime(std::string time_format = "%T");
+
 #endif

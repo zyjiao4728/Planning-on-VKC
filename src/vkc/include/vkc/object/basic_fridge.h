@@ -384,7 +384,7 @@ class BaseFridge : public BaseObject {
         Eigen::Vector3d(-0.1, 0, 0.0);
     attach_location.local_joint_origin_transform.linear() =
         Eigen::Quaterniond(1.0, 0.0, 0.0, 0.0).matrix();
-    attach_location.fixed_base = true;
+    attach_location.setFixedCartesianConstraint();
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

@@ -86,7 +86,7 @@ class BaseHook : public BaseObject {
         Eigen::Vector3d(0.0, -0.45, 0.0);
     attach_location.local_joint_origin_transform.linear() =
         Eigen::Quaterniond(0.6533, -0.2706, -0.2706, 0.6533).matrix();
-    attach_location.fixed_base = true;
+    attach_location.setFixedCartesianConstraint();
 
     // Define connection joint
     attach_location.connection.type = tesseract_scene_graph::JointType::FIXED;

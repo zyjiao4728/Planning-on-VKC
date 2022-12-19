@@ -419,7 +419,29 @@ std::string VKCEnvBasic::updateEnv_(const std::vector<std::string>& joint_names,
     //   std::cout << "non inverse: " << j << std::endl;
     // }
     tesseract_->getTesseract()->setState(joint_names, joint_states);
-    // tesseract_->getTesseractNonInverse()->setState(joint_names, joint_states);
+    std::vector<std::string> non_inverse_joint_names;
+    std::vector<double> non_inverse_joint_values;
+    auto all_non_inverse_joints =
+        tesseract_->getTesseractNonInverse()->getActiveJointNames();
+    auto joint_objectives = action->getJointObjectives();
+    for (int i = 0; i < joint_names.size(); i++) {
+      if (std::find(all_non_inverse_joints.begin(),
+                    all_non_inverse_joints.end(),
+                    joint_names[i]) != all_non_inverse_joints.end()) {
+        non_inverse_joint_names.push_back(joint_names[i]);
+        if (joint_objectives.size() &&
+            joint_objectives.find(joint_names[i]) != joint_objectives.end()) {
+          non_inverse_joint_values.push_back(-1 * joint_objectives[joint_names[i]]);
+        } else {
+          non_inverse_joint_values.push_back(joint_states[i]);
+        }
+      }
+    }
+    Eigen::VectorXd non_inverse_joint_states =
+        Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(
+            non_inverse_joint_values.data(), non_inverse_joint_values.size());
+    tesseract_->getTesseractNonInverse()->setState(non_inverse_joint_names,
+                                                   non_inverse_joint_states);
   }
 
   if (action == nullptr) {

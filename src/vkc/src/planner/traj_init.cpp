@@ -653,7 +653,7 @@ CompositeInstruction generateMixedSeed(
   if (ik_cost_coeff.size()) {
     std::stringstream ss;
     ss << ik_cost_coeff.transpose();
-    CONSOLE_BRIDGE_logInform("setting ik cost coeff: %s", ss.str().c_str());
+    CONSOLE_BRIDGE_logDebug("setting ik cost coeff: %s", ss.str().c_str());
     profile->cost_coeff = ik_cost_coeff;
   }
 

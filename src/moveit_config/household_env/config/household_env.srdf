@@ -395,7 +395,7 @@
     <disable_collisions link1="cup_cup_link" link2="drawer_left_wall" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="drawer_right_wall" reason="Adjacent"/>
     <disable_collisions link1="cup_cup_link" link2="drawer_top_wall" reason="Adjacent"/>
-    <disable_collisions link1="cup_cup_link" link2="fridge_0001" reason="Adjacent"/>
+    <!-- <disable_collisions link1="cup_cup_link" link2="fridge_0001" reason="Adjacent"/> -->
     <!-- <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Aa001_r" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Aa002_r" reason="Never"/>
     <disable_collisions link1="cup_cup_link" link2="fridge_0001_dof_rootd_Ba001_t" reason="Never"/>
@@ -678,6 +678,7 @@
     <disable_collisions link1="door_8966_link_1" link2="drawer_handle2" reason="Never"/>
     <disable_collisions link1="door_8966_link_1" link2="drawer_left_wall" reason="Adjacent"/>
     <disable_collisions link1="door_8966_link_1" link2="drawer_right_wall" reason="Adjacent"/>
+    <disable_collisions link1="door_8966_link_1" link2="wall_ground" reason="Never"/>
     <disable_collisions link1="door_8966_link_1" link2="drawer_top_wall" reason="Adjacent"/>
     <disable_collisions link1="door_8966_link_1" link2="fridge_0001" reason="Adjacent"/>
     <disable_collisions link1="door_8966_link_1" link2="fridge_0001_dof_rootd_Aa001_r" reason="Never"/>

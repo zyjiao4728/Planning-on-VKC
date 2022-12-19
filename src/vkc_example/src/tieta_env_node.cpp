@@ -8,68 +8,99 @@
 
 using namespace vkc;
 using namespace tesseract_planning;
+
+void setObjectPose(VKCEnvBasic &env, std::string base_link_name,
+                   std::string world_joint_name, Eigen::Isometry3d adjust) {
+  Eigen::Isometry3d base_link_tf =
+      env.getVKCEnv()->getTesseract()->getLinkTransform(base_link_name);
+  auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
+      world_joint_name, base_link_tf * adjust.inverse());
+  env.getVKCEnv()->getTesseractNonInverse()->applyCommand(cmd);
+  return;
+}
+
 void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
          bool rviz_enabled, unsigned int nruns) {
-  int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  int window_size = 2;
+  LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   ProbGenerator prob_generator;
+  seed_generator.setMapInfo(6, 6, 0.3);
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
   Eigen::Isometry3d cabinet_handle_pose;
   cabinet_handle_pose.setIdentity();
   cabinet_handle_pose.translation() =
-      Eigen::Vector3d(1.73760272641, -0.131711069369, 1.15869220362);
+      Eigen::Vector3d(1.6008290705, -0.119028821604, 1.16077205044);
 
   cabinet_handle_pose.linear() =
-      Eigen::Quaterniond(0.000975581363827, -3.01806195085e-06, 0.00387550816736, 0.999992014302)
+      Eigen::Quaterniond(0.01213719228, 0.00147056921893, 0.00352577932278, 0.999919044158)
           .matrix();
   auto cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "closet_base_joint", cabinet_handle_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  Eigen::Isometry3d InverseModelPoseAdjust;
+  InverseModelPoseAdjust.setIdentity();
+  InverseModelPoseAdjust.translation() = Eigen::Vector3d(0.5745, 1.1395, 0.085);
+  InverseModelPoseAdjust.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+  setObjectPose(env, "closet_base_link", "closet_base_joint",
+                InverseModelPoseAdjust);
 
   Eigen::Isometry3d table_pose;
   table_pose.setIdentity();
   table_pose.translation() =
-      Eigen::Vector3d(0.0494302277549, 0.0346623792256, 0.778096496981);
-  table_pose.linear() = Eigen::Quaterniond(0.999992270955, -0.00119567048179, 0.000854061043671, -0.00364677681261)
+      Eigen::Vector3d(-0.000741231206823, -0.00100066802074, 0.778162612167);
+  table_pose.linear() = Eigen::Quaterniond(0.999926188341, -0.00112456813974, -2.28605265373e-05, -0.0120976317792)
                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "table_table_base_joint", table_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  InverseModelPoseAdjust.setIdentity();
+  setObjectPose(env, "table_table_base_link", "table_table_base_joint",
+                InverseModelPoseAdjust);
 
   Eigen::Isometry3d drawer_pose;
   drawer_pose.setIdentity();
   drawer_pose.translation() =
-      Eigen::Vector3d(1.79285226625, -0.296073099604, 0.7964706518);
+      Eigen::Vector3d(1.63689526462, -0.277244723554, 0.797022783282);
 
-  drawer_pose.linear() =
-      Eigen::Quaterniond(-0.000652506691703, -0.000891127240437, -0.00252776855698, 0.999996195249)
-          .matrix();
+  drawer_pose.linear() = Eigen::Quaterniond(0.0166118400848, -0.00847124317006, -0.00158642556722, 0.999824868696)
+                             .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "drawer_world_joint", drawer_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  InverseModelPoseAdjust.setIdentity();
+  setObjectPose(env, "drawer_base_link", "drawer_world_joint",
+                InverseModelPoseAdjust);
 
   Eigen::Isometry3d box_pose;
   box_pose.setIdentity();
   box_pose.translation() =
-      Eigen::Vector3d(0.0681355090171, 0.183286519863, 0.820042031806);
-  box_pose.linear() = Eigen::Quaterniond(0.510347424339, -0.488814749986, -0.509740912307, -0.490683043306)
+      Eigen::Vector3d(0.0220869188096, 0.131105779323, 0.820314461283);
+  box_pose.linear() = Eigen::Quaterniond(0.498370590928, 0.4978297229, -0.501032788889, 0.502750898113)
                           .matrix();
   cmd = std::make_shared<tesseract_environment::ChangeJointOriginCommand>(
       "box_box_base_joint", box_pose);
   env.getVKCEnv()->getTesseract()->applyCommand(cmd);
+  InverseModelPoseAdjust.setIdentity();
+  setObjectPose(env, "box_box_base_link", "box_box_base_joint",
+                InverseModelPoseAdjust);
+  int j = 0;
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
     ActionSeq sub_actions(ptr, actions.end());
     seed_generator.generate(env, sub_actions);
-    action->switchCandidate();
 
     PlannerResponse response;
     unsigned int try_cnt = 0;
     bool converged = false;
     while (try_cnt++ < nruns) {
-      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      tesseract_planning::PlannerRequest prob_ptr;
+      if (j == 2 || j == 8) {
+        prob_ptr = prob_generator.genRequest(env, action, 60, n_iter);
+      } else {
+        prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
+      }
 
       if (rviz_enabled) {
         env.getPlotter()->waitForInput(
@@ -127,6 +158,8 @@ void run(VKCEnvBasic &env, ActionSeq &actions, int n_steps, int n_iter,
     CONSOLE_BRIDGE_logInform("update env finished");
 
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
+
+    j++;
   }
 }
 
@@ -137,14 +170,15 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
   pick_coeff << 1, 1, 1, 1, 1, 1, 1, 1, 1;
 
   Eigen::VectorXd place_coeff(9);
-  place_coeff << 4, 2, 5, 8, 1, 1, 10, 1, 1;
+  place_coeff << 3, 3, 3, 8, 1, 1, 10, 1, 1;
+  // place_coeff << 2, 2, 5, 8, 1, 1, 10, 1, 1;
 
   // action1: pick closet handle
   {
     auto pick_action =
         std::make_shared<PickAction>(robot, "attach_closet_right_handle");
     pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
-    
+
     pick_action->setIKCostCoeff(pick_coeff);
     actions.emplace_back(pick_action);
   }
@@ -158,8 +192,8 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
                                   -1.7198621771937625);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
-                                      link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+                                      link_objectives, joint_objectives);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -180,9 +214,9 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
-                                      link_objectives, joint_objectives, false);
+                                      link_objectives, joint_objectives);
     place_action->setIKCostCoeff(place_coeff);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
 
@@ -200,14 +234,14 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     Eigen::Isometry3d destination;
     destination.setIdentity();
     destination.translation() =
-        Eigen::Vector3d(1.68779672726, -0.308085188269, 0.80901874319 + 0.15);
-    destination.linear() = Eigen::Quaterniond(0.482290316678, 0.520295676427, -0.488380097755, 0.508107606367)
+        Eigen::Vector3d(1.520242745, -0.267358451194, 0.810395824685 + 0.15);
+    destination.linear() = Eigen::Quaterniond(0.509883484332, -0.499930970934, -0.491384342801, -0.498627400327)
                                .matrix();
     link_objectives.push_back(
         LinkDesiredPose("box_box_base_link", destination));
 
     auto place_action = std::make_shared<PlaceAction>(
-        robot, "attach_box", link_objectives, joint_objectives, false);
+        robot, "attach_box", link_objectives, joint_objectives);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
@@ -229,8 +263,10 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     joint_objectives.emplace_back("drawer_base_drawer1_joint", 0.0);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_drawer_handle1",
-                                      link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+                                      link_objectives, joint_objectives);
+
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -248,11 +284,11 @@ ActionSeq getTietaEnvSeq(const std::string robot) {
     std::vector<LinkDesiredPose> link_objectives;
     std::vector<JointDesiredPose> joint_objectives;
 
-    joint_objectives.emplace_back("closet_bottom_right_door_joint", 0.0);
+    joint_objectives.emplace_back("closet_bottom_right_door_joint", -0.05);
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_closet_right_handle",
-                                      link_objectives, joint_objectives, false);
-    // place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+                                      link_objectives, joint_objectives);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     place_action->setIKCostCoeff(place_coeff);
     actions.emplace_back(place_action);
   }
@@ -266,7 +302,7 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_closet_right_handle",
       "closet_bottom_right_handle",
       "closet_base_link",
-      {0.245, 0.000, 0.00},
+      {0.25, 0.000, 0.00},
       {0.6532815, 0.2705981, -0.6532815, -0.2705981},
       // {0.923879532511287,0,0,0.382683432365090},
       // {0.5,0.5,-0.5,-0.5},
@@ -286,7 +322,7 @@ void genEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
       "attach_box",
       "box_box_base_link",
       "box_box_base_link",
-      {0.20, 0.000, 0.00},
+      {0.21, 0.000, 0.00},
       // {0.707106781186548, 0, -0.707106781186548, 0},
       {0.6532815, 0.2705981, -0.6532815, -0.2705981},
       // {1,0,0,0},
@@ -325,6 +361,7 @@ int main(int argc, char **argv) {
   genEnvironmentInfo(attaches, inverse_chains);
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
+
   ActionSeq actions = getTietaEnvSeq("vkc");
 
   run(env, actions, steps, n_iter, rviz, nruns);

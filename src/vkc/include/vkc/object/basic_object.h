@@ -9,6 +9,7 @@ TESSERACT_COMMON_IGNORE_WARNINGS_PUSH
 
 #include <memory>
 TESSERACT_COMMON_IGNORE_WARNINGS_POP
+#include <tesseract_command_language/poly/mixed_waypoint_poly.h>
 #include <tesseract_environment/utils.h>
 #include <tesseract_monitoring/environment_monitor.h>
 #include <tesseract_rosutils/conversions.h>
@@ -67,8 +68,9 @@ class BaseObject {
                                          Joint frame */
     Joint connection; /**< @brief Joint to be established between end effector
                          and link */
-    bool fixed_base =
-        false; /**< @brief If base_link is physicallly fixed to groud */
+    std::unordered_map<std::string, Eigen::VectorXd> cartesian_constraints_;
+    // bool fixed_base =
+    //     false; /**< @brief If base_link is physicallly fixed to groud */
 
     // Constructor
     AttachLocation(std::string name, std::string link_name)
@@ -84,10 +86,23 @@ class BaseObject {
           std::make_unique<AttachLocation>(name_, link_name_);
       ptr->connection = connection.clone();
       ptr->base_link_ = base_link_;
-      ptr->fixed_base = fixed_base;
+      // ptr->fixed_base = fixed_base;
+      ptr->cartesian_constraints_ = cartesian_constraints_;
       ptr->local_joint_origin_transform = local_joint_origin_transform;
       ptr->world_joint_origin_transform = world_joint_origin_transform;
       return ptr;
+    }
+
+    void setFixedCartesianConstraint() {
+      cartesian_constraints_[base_link_] = Eigen::VectorXd();
+    }
+
+    void addCartesianConstraint(Eigen::VectorXd coeff) {
+      assert(base_link_.size() > 0);
+      cartesian_constraints_[base_link_] = coeff;
+    }
+    void addCartesianConstraint(std::string link_name, Eigen::VectorXd coeff) {
+      cartesian_constraints_[link_name] = coeff;
     }
   };
 

@@ -259,6 +259,7 @@ add_library(${PROJECT_NAME}_prob_generator SHARED
   src/planner/long_horizon.cpp
   src/planner/prob_translator.cpp
   src/planner/prob_translator_utils.cpp
+  src/utils.cpp
 )
 target_link_libraries(${PROJECT_NAME}_prob_generator
   ${PROJECT_NAME}_construct_vkc

@@ -70,10 +70,8 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())
     //                          ->getJointNames());
-    // seed_generator.generate(env, sub_actions);
     // std::cout << "sg after generate" << std::endl;
     // printSceneGraph(env.getVKCEnv()->getTesseract()->getSceneGraph());
-    // action->switchCandidate();
     // fmt::print("kg: {}", env.getVKCEnv()
     //                          ->getTesseract()
     //                          ->getKinematicGroup(action->getManipulatorID())
@@ -250,9 +248,8 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("fridge_0001_dof_rootd_Aa002_r_joint",
                                       -1.6);
-        place_action =
-            make_shared<PlaceAction>(robot, "attach_fridge_handle",
-                                     link_objectives, joint_objectives, false);
+        place_action = make_shared<PlaceAction>(
+            robot, "attach_fridge_handle", link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
 
@@ -278,10 +275,10 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
         std::vector<LinkDesiredPose> link_objectives;
         std::vector<JointDesiredPose> joint_objectives;
 
-        joint_objectives.emplace_back("door_8966_joint_1", 1.5);
+        joint_objectives.emplace_back("door_8966_joint_1", 1.52);
         place_action =
             make_shared<PlaceAction>(robot, "attach_door_handle",
-                                     link_objectives, joint_objectives, false);
+                                     link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
 
@@ -317,7 +314,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
             LinkDesiredPose("cup_cup_base_link", destination));
 
         place_action = make_shared<PlaceAction>(
-            robot, "attach_cup", link_objectives, joint_objectives, true);
+            robot, "attach_cup", link_objectives, joint_objectives);
 
         setBaseJoint(place_action);
         actions.emplace_back(place_action);
@@ -339,7 +336,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("drawer_base_drawer1_joint", -0.22);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_drawer", link_objectives, joint_objectives, false);
+            robot, "attach_drawer", link_objectives, joint_objectives);
         setBaseJoint(place_action);
         actions.emplace_back(place_action);
       }
@@ -370,7 +367,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("cabinet_48479_joint_0", -0.4);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_cabinet", link_objectives, joint_objectives, false);
+            robot, "attach_cabinet", link_objectives, joint_objectives);
         // setBaseJoint(place_action);
         actions.emplace_back(place_action);
       }
@@ -395,8 +392,7 @@ void genTRODemoSeq(VKCEnvBasic &env, vkc::ActionSeq &actions,
 
         joint_objectives.emplace_back("dishwasher_joint_2", -0.8);
         auto place_action = std::make_shared<PlaceAction>(
-            robot, "attach_dishwasher", link_objectives, joint_objectives,
-            false);
+            robot, "attach_dishwasher", link_objectives, joint_objectives);
         // cost_coeff[6] = 5.;
         // cost_coeff[3] = 3.;
         // cost_coeff[0] = 3.;
@@ -420,7 +416,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "fridge_0001",
                                          {0.65, -0.25, -0.65},
                                          {0.5, -0.5, 0.5, 0.5},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "fridge_0001", "fridge_0001_dof_rootd_Aa002_r"});
@@ -432,7 +428,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                                            "door_8966_base",
                                                            {0.0, 0.0, 0.25},
                                                            {0, 0, 1, 0},
-                                                           true});
+                                                           Eigen::VectorXd()});
 
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
@@ -445,8 +441,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cup_cup_link",
                                          "cup_cup_base_link",
                                          {0.04, 0.05, -0.12},
-                                         {0.707106781, 0, 0, 0.707106781},
-                                         false});
+                                         {0.707106781, 0, 0, 0.707106781}});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "cup_cup_base_link", "cup_cup_link"});
@@ -459,7 +454,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "drawer_base_link",
                                          {0.16, 0.000, 0.00},
                                          {0.5000, -0.5000, -0.5000, 0.5000},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "drawer_base_link", "drawer_handle1"});
@@ -472,7 +467,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
                                          "cabinet_48479_base_link",
                                          {0.0, 0.0, 0.15},
                                          {0, -0.707106781, -0.707106781, 0},
-                                         true});
+                                         Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(UrdfSceneEnv::InverseChainsInfo{
             "cabinet_48479_base_link", "cabinet_48479_handle0"});
@@ -485,7 +480,7 @@ void genTRODemoEnvironmentInfo(UrdfSceneEnv::AttachObjectInfos &attaches,
           "dishwasher",
           {0.45, 0.55, 0.70},
           {-0.382683432365090, 0.923879532511287, 0.0, 0.0},
-          true});
+          Eigen::VectorXd()});
       if (baseline == 0)
         inverse_chains.emplace_back(
             UrdfSceneEnv::InverseChainsInfo{"dishwasher", "dishwasher_link_2"});

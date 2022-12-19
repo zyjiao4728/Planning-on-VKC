@@ -31,7 +31,7 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
                         int n_iter, bool rviz_enabled, unsigned int nruns,
                         bool long_horizon = false, bool use_ompl = false) {
   int window_size = 3;
-  LongHorizonSeedGenerator seed_generator(n_steps, n_iter, window_size, 9);
+  LongHorizonSeedGenerator seed_generator(n_iter, window_size, 9);
   if (long_horizon) {
     seed_generator.generate(env, actions);
   }
@@ -167,7 +167,7 @@ void pullDoor(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("door_north_door_joint", 1.3);
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -197,7 +197,7 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("door_north_door_joint", -DOOR_TARGET);
     place_action =
         make_shared<PlaceAction>(robot, "attach_door_north_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -227,7 +227,7 @@ void pullDrawer(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("drawer0_base_drawer_joint", -DRAWER_TARGET);
     place_action =
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -255,7 +255,7 @@ void pushDrawer(vkc::ActionSeq &actions, const std::string &robot) {
     joint_objectives.emplace_back("drawer0_base_drawer_joint", 0.0);
     place_action =
         make_shared<PlaceAction>(robot, "attach_drawer0_handle_link",
-                                 link_objectives, joint_objectives, false);
+                                 link_objectives, joint_objectives);
     place_action->setOperationObjectType(false);
 
     setBaseJoint(place_action);
@@ -307,7 +307,7 @@ void vkc_ompl_reach(vkc::ActionSeq &actions, Eigen::VectorXd vkc_pose) {
 
     auto action =
         make_shared<GotoAction>("vkc", link_objectives, joint_objectives);
-    action->joint_candidate = vkc_pose;
+    action->setJointCandidates({vkc_pose});
 
     actions.emplace_back(action);
   }

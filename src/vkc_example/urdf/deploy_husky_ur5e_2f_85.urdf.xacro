@@ -23,7 +23,7 @@
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <child link="base_link" />
       <axis xyz="0 0 1" />
-      <limit effort="20" velocity="5.0" lower="-6.28" upper="6.28" />
+      <limit effort="20" velocity="5.0" lower="-3.14" upper="3.14" />
     </joint>
 
     <joint name="${prefix}base_theta_base_y" type="prismatic">

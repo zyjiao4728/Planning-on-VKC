@@ -3,6 +3,8 @@
 
 #include <console_bridge/console.h>
 #include <tesseract_command_language/composite_instruction.h>
+#include <tesseract_common/utils.h>
+#include <vkc/utils.h>
 
 #include <Eigen/Eigen>
 #include <string>
@@ -62,7 +64,7 @@ class ActionBase {
              const std::string& name)
       : action_type_(action_type),
         manipulator_id_(manipulator_id),
-        name_(name),  // to print action's name easily,  added:
+        name_(std::move(name)),  // to print action's name easily,  added:
                       // wanglei@bigai.ai, time: 2021-10-22
         init_traj_required_(
             false)  // initial trajectory for this action is required,  added:
@@ -74,8 +76,6 @@ class ActionBase {
   virtual ~ActionBase() = default;
 
   tesseract_planning::CompositeInstruction seed;
-  Eigen::VectorXd joint_candidate;
-  std::vector<Eigen::VectorXd> joint_candidates;
 
   ActionType getActionType() { return action_type_; }
 
@@ -139,9 +139,34 @@ class ActionBase {
 
   void clearBaseJoint() { base_joint_ = std::make_pair("", ""); }
 
+  void setJointCandidates(
+      const std::vector<Eigen::VectorXd>& joint_candidates) {
+    joint_candidates_ = joint_candidates;
+    joint_candidate_index = 0;
+  };
+
+  std::vector<Eigen::VectorXd>& getJointCandidates() {
+    return joint_candidates_;
+  }
+
+  Eigen::VectorXd getJointCandidate() {
+    if (joint_candidate_index < 0) {
+      CONSOLE_BRIDGE_logDebug(
+          "getting joint candidate but nothing found, returning empty eigen "
+          "vector");
+      return Eigen::VectorXd();
+    }
+    return joint_candidates_[joint_candidate_index];
+  };
+
   void switchCandidate() {
-    joint_candidate = joint_candidates.front();
-    joint_candidates.erase(joint_candidates.begin());
+    joint_candidate_index += 1;
+    if (joint_candidate_index == joint_candidates_.size()) {
+      CONSOLE_BRIDGE_logWarn(
+          "no joint candidate left, setting joint candidate index to -1");
+      joint_candidate_index = -1;
+    }
+    auto joint_candidate = getJointCandidate();
     std::stringstream ss;
     ss << joint_candidate.transpose();
     CONSOLE_BRIDGE_logDebug("current joint candidate: %s", ss.str().c_str());
@@ -151,6 +176,66 @@ class ActionBase {
 
   AStar::Generator astar_generator;  // TODO: change to shared_ptr and get/set
   bool astar_init;
+
+  std::unordered_map<std::string, Eigen::Isometry3d>& getLinkObjectives() {
+    return link_objectives_;
+  }
+  void addLinkObjectives(LinkDesiredPose link_pose) {
+    link_objectives_[link_pose.link_name] = link_pose.tf;
+    return;
+  }
+
+  std::unordered_map<std::string, double>& getJointObjectives() {
+    return joint_objectives_;
+  }
+  void addJointObjectives(std::string joint_name, double joint_val) {
+    joint_objectives_[joint_name] = joint_val;
+    return;
+  }
+
+  void loadTrajectorySeed(std::string file_path) {
+    std::ifstream csv_file(file_path);
+
+    std::vector<std::string> joint_names;
+    std::vector<Eigen::VectorXd> joint_states;
+    if (!csv_file.is_open())
+      throw std::runtime_error("Could not open csv file");
+
+    std::string line;
+    bool is_header = true;
+
+    while (std::getline(csv_file, line)) {
+      std::vector<std::string> tokens;
+      boost::split(tokens, line, boost::is_any_of(","),
+                   boost::token_compress_on);
+      if (is_header) {
+        is_header = false;
+        for (const auto& t : tokens) {
+          joint_names.push_back(t);
+        }
+        continue;
+      }
+      if (!tesseract_common::isNumeric(tokens[0]))
+        throw std::runtime_error("loadTrajectorySeed: Invalid format");
+      std::vector<double> state_vector;
+      for (const auto& t : tokens) {
+        double value = 0;
+        tesseract_common::toNumeric<double>(t, value);
+        state_vector.push_back(value);
+      }
+      Eigen::VectorXd joint_state =
+          Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(state_vector.data(),
+                                                        state_vector.size());
+      joint_states.push_back(joint_state);
+    }
+    trajectory_seed_.first = joint_names;
+    trajectory_seed_.second = joint_states;
+  }
+
+  std::pair<std::vector<std::string>, std::vector<Eigen::VectorXd>>&
+  getTrajectorySeed() {
+    return trajectory_seed_;
+  }
 
  protected:
   ActionType action_type_;
@@ -164,6 +249,12 @@ class ActionBase {
   bool init_traj_required_;
   std::pair<std::string, std::string> base_joint_;
   Eigen::VectorXd ik_cost_coeff_;
+  std::unordered_map<std::string, Eigen::Isometry3d> link_objectives_;
+  std::unordered_map<std::string, double> joint_objectives_;
+  std::vector<Eigen::VectorXd> joint_candidates_;
+  int joint_candidate_index = -1;
+  std::pair<std::vector<std::string>, std::vector<Eigen::VectorXd>>
+      trajectory_seed_;
 };
 
 // added: wanglei@bigai.ai

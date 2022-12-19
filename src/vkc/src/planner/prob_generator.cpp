@@ -25,6 +25,7 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env,
                                          ActionBase::Ptr action, int n_steps,
                                          int n_iter) {
   MixedWaypointPoly wp;
+  CONSOLE_BRIDGE_logDebug("generating mixed waypoint...");
   wp = genMixedWaypoint(env, action);
   return genRequest(env, action, wp, n_steps, n_iter);
 }
@@ -66,20 +67,35 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
                                    "DEFAULT");
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", act->getActionName()));
+  // decide if a joint waypoint should be assigned
+  if (wp.getJointTargets().size() == kinematic_group->getJointNames().size()) {
+    CONSOLE_BRIDGE_logInform(
+        "joint size in waypoint is equal to kinematic chain, assigning joint "
+        "waypoint");
+    std::vector<double> joint_values;
+    for (auto &jn: kinematic_group->getJointNames()) {
+      joint_values.push_back(wp.getJointTargets()[jn]);
+    }
+    Eigen::VectorXd joint_state = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(
+        joint_values.data(), joint_values.size());
+
+    plan_instruction.assignJointWaypoint(
+        JointWaypointPoly{JointWaypoint(kinematic_group->getJointNames(), joint_state)});
+  }
   program.appendMoveInstruction(plan_instruction);
 
   auto seed_instruction = plan_instruction;
-  if (act->joint_candidate.size()) {
+  if (act->getJointCandidate().size()) {
     std::stringstream ss;
-    ss << act->joint_candidate.transpose();
+    ss << act->getJointCandidate().transpose();
     CONSOLE_BRIDGE_logInform(
         "joint candidate found, resetting seed waypoint to joint waypoint: %s",
         ss.str().c_str());
     // std::cout << act->joint_candidate.size() << std::endl;
     assert(kinematic_group->getJointNames().size() ==
-           act->joint_candidate.size());
-    seed_instruction.assignJointWaypoint(JointWaypointPoly{
-        JointWaypoint(kinematic_group->getJointNames(), act->joint_candidate)});
+           act->getJointCandidate().size());
+    seed_instruction.assignJointWaypoint(JointWaypointPoly{JointWaypoint(
+        kinematic_group->getJointNames(), act->getJointCandidate())});
   }
   seed_program.appendMoveInstruction(seed_instruction);
 
@@ -89,11 +105,13 @@ PlannerRequest ProbGenerator::genRequest(VKCEnvBasic &env, ActionBase::Ptr act,
   // CompositeInstruction seed =
   //     generateSeed(program, cur_state, env.getVKCEnv()->getTesseract());
   CompositeInstruction seed =
-      act->seed.empty()
-          ? generateMixedSeed(seed_program, cur_state,
+      act->getTrajectorySeed().first.size()
+          ? generateTrajectorySeed(program, act->getTrajectorySeed().first,
+                                   act->getTrajectorySeed().second,
+                                   env.getVKCEnv()->getTesseract())
+          : generateMixedSeed(seed_program, cur_state,
                               env.getVKCEnv()->getTesseract(), n_steps,
-                              act->getBaseJoint(), act->getIKCostCoeff())
-          : act->seed;
+                              act->getBaseJoint(), act->getIKCostCoeff());
 
   ROS_INFO("number of move instructions in pick seed: %ld",
            seed.getMoveInstructionCount());
@@ -167,11 +185,11 @@ PlannerRequest ProbGenerator::getOmplRequest(VKCEnvBasic &env,
                       env_->getCurrentJointValues(kin_group->getJointNames()));
   MoveInstruction plan_instruction(wp, MoveInstructionType::FREESPACE,
                                    default_profile);
-  if (action->joint_candidate.size()) {
+  if (action->getJointCandidate().size()) {
     CONSOLE_BRIDGE_logDebug(
         "joint candidate found, resetting seed waypoint to joint waypoint...");
-    plan_instruction.assignJointWaypoint(JointWaypointPoly{
-        JointWaypoint(kin_group->getJointNames(), action->joint_candidate)});
+    plan_instruction.assignJointWaypoint(JointWaypointPoly{JointWaypoint(
+        kin_group->getJointNames(), action->getJointCandidate())});
   }
   plan_instruction.setDescription(
       fmt::format("waypoint for {}", action->getActionName()));
@@ -225,10 +243,11 @@ MixedWaypointPoly ProbGenerator::genMixedWaypoint(VKCEnvBasic &env,
       return genPlaceMixedWaypoint(env, place_act);
     }
 
-    // case ActionType::UseAction: {
-    //   UseAction::Ptr use_act = std::dynamic_pointer_cast<UseAction>(action);
-    //   return genUseMixedWaypoint(env, use_act);
-    // }
+      // case ActionType::UseAction: {
+      //   UseAction::Ptr use_act =
+      //   std::dynamic_pointer_cast<UseAction>(action); return
+      //   genUseMixedWaypoint(env, use_act);
+      // }
 
     default: {
       ROS_ERROR("Undefined action type.");
@@ -280,23 +299,31 @@ MixedWaypointPoly ProbGenerator::genPlaceMixedWaypoint(VKCEnvBasic &env,
       env.getAttachLocation(act->getDetachedObject());
   if (detach_location_ptr == nullptr)
     throw std::runtime_error("detach location ptr is null");
-  if (detach_location_ptr->fixed_base) {
-    auto detach_pose = env.getVKCEnv()->getTesseract()->getLinkTransform(
-        detach_location_ptr->base_link_);
+  for (auto &cc : detach_location_ptr->cartesian_constraints_) {
+    auto detach_pose =
+        env.getVKCEnv()->getTesseract()->getLinkTransform(cc.first);
     // waypoint.addLinkTarget(manip.tcp_frame, detach_pose);
     // addCartWaypoint(program, detach_pose, "place object(fixed base)");
-    act->addLinkObjectives(
-        LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
-    waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose);
+    // fixed base object need to have new link objectives
+    if (cc.second.size() == 0)
+      act->addLinkObjectives(
+          LinkDesiredPose(detach_location_ptr->base_link_, detach_pose));
+    else if (!act->getLinkObjectives().size()) {
+      CONSOLE_BRIDGE_logError(
+          "cartesian constraint with non-fixed base set, but no link objective "
+          "provided!!!");
+    }
+    waypoint.addLinkConstraint(detach_location_ptr->base_link_, detach_pose,
+                               cc.second);
   }
 
   for (auto jo : act->getJointObjectives()) {
     // std::cout << jo.joint_angle << std::endl;
-    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
+    waypoint.addJointTarget(jo.first, jo.second);
   }
 
   for (auto lo : act->getLinkObjectives()) {
-    waypoint.addLinkTarget(lo.link_name, lo.tf);
+    waypoint.addLinkTarget(lo.first, lo.second);
     // addCartWaypoint(program, lo.tf, "place object");
   }
   return waypoint;
@@ -309,13 +336,13 @@ MixedWaypointPoly ProbGenerator::genGotoMixedWaypoint(VKCEnvBasic &env,
   MixedWaypoint waypoint(kin_group->getJointNames());
 
   for (auto jo : act->getJointObjectives()) {
-    waypoint.addJointTarget(jo.joint_name, jo.joint_angle);
+    waypoint.addJointTarget(jo.first, jo.second);
   }
 
   for (auto lo : act->getLinkObjectives()) {
-    waypoint.addLinkTarget(lo.link_name, lo.tf);
-    std::cout << lo.tf.linear() << std::endl;
-    std::cout << lo.tf.translation() << std::endl;
+    waypoint.addLinkTarget(lo.first, lo.second);
+    std::cout << lo.second.linear() << std::endl;
+    std::cout << lo.second.translation() << std::endl;
   }
   return waypoint;
 }
@@ -419,7 +446,7 @@ void ProbGenerator::addSolverProfile(ProfileDictionary::Ptr profiles,
   trajopt_solver_profile->opt_info.min_trust_box_size = 1e-2;
   trajopt_solver_profile->opt_info.min_approx_improve = 1e-2;
   trajopt_solver_profile->opt_info.inflate_constraints_individually = true;
-  trajopt_solver_profile->opt_info.max_time = 40.;
+  trajopt_solver_profile->opt_info.max_time = 80.;
 
   profiles->addProfile<TrajOptSolverProfile>(
       profile_ns::TRAJOPT_DEFAULT_NAMESPACE, "DEFAULT", trajopt_solver_profile);

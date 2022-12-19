@@ -61,7 +61,7 @@ tesseract_planning::JointWaypointPoly ProbTranslator::setupGoalWaypoint(
                     ? Eigen::VectorXd::Zero(
                           (long unsigned int)kin_->getJointNames().size())
                     : start_waypoint.getPosition();
-    auto pose = l_obj[0].tf;
+    auto pose = l_obj.begin(0)->second;
     if (collisionFreeInverseKinematics(env, manipulator, solutions, pose,
                                        seed)) {
       tesseract_planning::JointWaypointPoly jw{
@@ -74,7 +74,7 @@ tesseract_planning::JointWaypointPoly ProbTranslator::setupGoalWaypoint(
       Eigen::VectorXd solutions = Eigen::VectorXd::Zero(kin_->numJoints());
       int idx = 0;
       for (auto j : j_obj) {
-        solutions(idx) = j.joint_angle;
+        solutions(idx) = j.second;
         idx++;
       }
 
@@ -342,7 +342,7 @@ bool ProbTranslator::transPickProb(VKCEnvBasic &env, vkc::PickAction::Ptr act) {
   Eigen::Isometry3d target_pos =
       attach_location_ptr->world_joint_origin_transform;
 
-  this->l_obj = {LinkDesiredPose(env.getEndEffectorLink(), target_pos)};
+  this->l_obj = {{env.getEndEffectorLink(), target_pos}};
   this->j_obj.clear();
 
   return getStartAndGoalState(env, act->getManipulatorID());
@@ -365,29 +365,30 @@ bool ProbTranslator::transPlaceProb(VKCEnvBasic &env,
   // -----------------------
   BaseObject::AttachLocation::ConstPtr detach_location_ptr =
       std::move(env.getAttachLocation(act->getDetachedObject()));
-  if (detach_location_ptr->fixed_base) {
-    // std::string fix_link_name = detach_location_ptr->base_link_;
-    // std::cout << fix_link_name.c_str() << std::endl;
-    // Eigen::Isometry3d fix_link_trans = env.getVKCEnv()
-    //                                        ->getTesseract()
-    //                                        ->getEnvironment()
-    //                                        ->getLinkTransform(detach_location_ptr->base_link_);
-    // std::cout << fix_link_trans.matrix() << std::endl;
+  throw std::runtime_error("translate not implemented");
+  // if (detach_location_ptr->cartesian_constraints_.size()) {
+  // std::string fix_link_name = detach_location_ptr->base_link_;
+  // std::cout << fix_link_name.c_str() << std::endl;
+  // Eigen::Isometry3d fix_link_trans = env.getVKCEnv()
+  //                                        ->getTesseract()
+  //                                        ->getEnvironment()
+  //                                        ->getLinkTransform(detach_location_ptr->base_link_);
+  // std::cout << fix_link_trans.matrix() << std::endl;
 
-    // // this->coi_->setConstraintsStd(fix_link_name, fix_link_trans, 0.3);
+  // // this->coi_->setConstraintsStd(fix_link_name, fix_link_trans, 0.3);
 
-    // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-    //     this->coi_->spaceInformation(),
-    //     env.getVKCEnv()->getTesseract(),
-    //     this->kin, fix_link_name, fix_link_trans, 0.3));
+  // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+  //     this->coi_->spaceInformation(),
+  //     env.getVKCEnv()->getTesseract(),
+  //     this->kin, fix_link_name, fix_link_trans, 0.3));
 
-    ROS_ERROR("Fixed based method is not valid with OMPL!");
-  } else {
-    // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
-    //     this->coi_->spaceInformation(),
-    //     env.getVKCEnv()->getTesseract(),
-    //     kin));
-  }
+  ROS_ERROR("Fixed based method is not valid with OMPL!");
+  // } else {
+  // this->coi_->setMotionValidator(std::make_shared<tesseract_motion_planners::ContinuousMotionValidator>(
+  //     this->coi_->spaceInformation(),
+  //     env.getVKCEnv()->getTesseract(),
+  //     kin));
+  // }
 
   insertPlanners(planner_);
 
