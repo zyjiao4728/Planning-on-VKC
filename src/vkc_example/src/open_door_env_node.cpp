@@ -239,7 +239,7 @@ void pickMarker(vkc::ActionSeq &actions, const std::string &robot) {
 
     auto place_action =
         std::make_shared<PlaceAction>(robot, "attach_marker_3_marker_link",
-                                      link_objectives, joint_objectives, false);
+                                      link_objectives, joint_objectives);
     place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
     actions.emplace_back(place_action);
   }
