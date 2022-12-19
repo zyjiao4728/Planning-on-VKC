@@ -33,7 +33,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
 
-  env.disableInverseKinematicChain();
+  // env.disableInverseKinematicChain();
 
   for (auto ptr = actions.begin(); ptr < actions.end(); ptr++) {
     auto action = *ptr;
@@ -42,23 +42,22 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
     bool converged = false;
     while (try_cnt++ < nruns) {
       CONSOLE_BRIDGE_logDebug("generating sampling based planning request");
-      auto prob_ptr =
-          prob_generator.getOmplRequest(env, action, n_steps, n_iter);
-      // auto prob_ptr = prob_generator.genRequest(env, action, n_steps,
+      // auto prob_ptr = prob_generator.getOmplRequest(env, action, n_steps,
       // n_iter);
+      auto prob_ptr = prob_generator.genRequest(env, action, n_steps, n_iter);
 
       env.getPlotter()->waitForInput(
           "optimization is ready. Press <Enter> to process the request.");
 
       // CostInfo cost = solveProb(prob_ptr, response, n_iter);
-      // solveProb(prob_ptr, response, n_iter);
-      solveOmplProb(prob_ptr, response, n_iter);
+      solveProb(prob_ptr, response, n_iter);
+      // solveOmplProb(prob_ptr, response, n_iter);
 
       // break;
-      if (OMPLMotionPlannerStatusCategory::SolutionFound ==
-          response.status.value())
-      // if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
-      //     response.status.value())  // optimization converges
+      // if (OMPLMotionPlannerStatusCategory::SolutionFound ==
+      //     response.status.value())
+      if (TrajOptMotionPlannerStatusCategory::SolutionFound ==
+          response.status.value())  // optimization converges
       {
         converged = true;
         break;
@@ -87,7 +86,7 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
 
     // tesseract_common::TrajArray refined_traj =
     //     response.trajectory.leftCols(response.joint_names.size());
-    // refineTrajectory(refined_traj);
+    refineTrajectory(refined_traj, env);
 
     // std::cout << "optimized trajectory: " << std::endl
     //           << refined_traj << std::endl;
@@ -103,11 +102,11 @@ void run(vector<TesseractJointTraj> &joint_trajs, VKCEnvBasic &env,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    toDelimitedFile(ci,
-                    "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
-                    "trajectory/open_door_push_" +
-                        std::to_string(j) + ".csv",
-                    ',');
+    // toDelimitedFile(ci,
+    //                 "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/"
+    //                 "trajectory/open_door_push_" +
+    //                     std::to_string(j) + ".csv",
+    //                 ',');
     // saveTrajToFile(refined_traj,
     // "/home/jiao/BIGAI/vkc_ws/ARoMa/applications/vkc-planning/trajectory/open_door_pull.csv");
     env.updateEnv(refined_traj.back().joint_names, refined_traj.back().position,
@@ -217,6 +216,35 @@ void pushDoor(vkc::ActionSeq &actions, const std::string &robot) {
   }
 }
 
+void pickMarker(vkc::ActionSeq &actions, const std::string &robot) {
+  // PlaceAction::Ptr place_action;
+
+  /** open door **/
+  // action 1: pick the door handle
+  {
+    auto pick_action =
+        make_shared<PickAction>(robot, "attach_marker_4_marker_link");
+    pick_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(pick_action);
+  }
+  {
+    std::vector<LinkDesiredPose> link_objectives;
+    std::vector<JointDesiredPose> joint_objectives;
+    Eigen::Isometry3d destination;
+    destination.setIdentity();
+    destination.translation() = Eigen::Vector3d(2, 4, 0.6);
+    destination.linear() = Eigen::Quaterniond(1, 0, 0, 0).matrix();
+    link_objectives.push_back(
+        LinkDesiredPose("marker_3_marker_link", destination));
+
+    auto place_action =
+        std::make_shared<PlaceAction>(robot, "attach_marker_3_marker_link",
+                                      link_objectives, joint_objectives, false);
+    place_action->setBaseJoint("base_y_base_x", "base_theta_base_y");
+    actions.emplace_back(place_action);
+  }
+}
+
 int main(int argc, char **argv) {
   srand(time(NULL));
 
@@ -249,8 +277,9 @@ int main(int argc, char **argv) {
 
   ActionSeq actions;
   // pushDoor(actions, robot);
-  pullDoor(actions, robot);
+  // pullDoor(actions, robot);
   // pullDrawer(actions, robot);
+  pickMarker(actions, robot);
 
   run(joint_trajs, env, actions, steps, n_iter, rviz, nruns);
 }

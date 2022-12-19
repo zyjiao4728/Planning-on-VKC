@@ -25,7 +25,7 @@ class BaseMarker : public BaseObject {
     Visual::Ptr marker_link_visual = std::make_shared<Visual>();
     marker_link_visual->origin = Eigen::Isometry3d::Identity();
     marker_link_visual->geometry =
-        std::make_shared<tesseract_geometry::Sphere>(radius_);
+        std::make_shared<tesseract_geometry::Box>(radius_,radius_,radius_);
     material_name = marker_link.getName() + "_color";
     marker_link_visual->material = std::make_shared<Material>(material_name);
     marker_link_visual->material->color = color_;
@@ -68,7 +68,7 @@ class BaseMarker : public BaseObject {
     attach_location.local_joint_origin_transform.translation() +=
         Eigen::Vector3d(0, 0, 0.15);
     attach_location.local_joint_origin_transform.linear() =
-        Eigen::Quaterniond(0.70710678, 0, -0.70710678, 0).matrix();
+        Eigen::Quaterniond(0,0,1,0).matrix();
     // attach_location.local_joint_origin_transform.linear() =
     // Eigen::Quaterniond(1, 0, 0, 0).matrix();
     // attach_location.fixed_base = false;

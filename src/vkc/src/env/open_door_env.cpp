@@ -84,8 +84,28 @@ bool OpenDoorEnv::createEnvironment() {
   drawer0.createObject();
   drawer0.createWorldJoint(Eigen::Vector4d(2, -arena_y / 2.0 + 1.3, 0.5, 1.57));
 
+  vkc::BaseWall table("table", 0.6, 9, 0.55);
+  table.setColor(Eigen::Vector4d(0.4, 0.2, 0.0, 1.0));
+  table.createObject();
+  table.createWorldJoint(Eigen::Vector4d(2, 0, 0, 0));
+
+  for (int i = 0; i < 8; i++) {
+    vkc::BaseMarker marker("marker_" + std::to_string(i), 0.1);
+    marker.createObject();
+    if (i == 0){
+        marker.createWorldJoint(Eigen::Vector4d(2, 4, 0.6, 0));
+    }
+    else{
+        marker.createWorldJoint(Eigen::Vector4d(2, i-4, 0.6, 0));
+    }
+    updateAttachLocations(marker.getAttachLocations());
+    marker.addToEnvironment(tesseract_->getTesseractNonInverse());
+    marker.addToEnvironment(tesseract_->getTesseract());
+    marker.inverseRootTip("world", marker.getName() + "_marker_link");
+  }
+
   updateAttachLocations(door_north.getAttachLocations());
-  updateAttachLocations(drawer0.getAttachLocations());
+  //   updateAttachLocations(drawer0.getAttachLocations());
 
   ROS_INFO("add attach location success.");
 
@@ -95,10 +115,11 @@ bool OpenDoorEnv::createEnvironment() {
   wall_east.addToEnvironment(tesseract_->getTesseractNonInverse());
   wall_south.addToEnvironment(tesseract_->getTesseractNonInverse());
   door_north.addToEnvironment(tesseract_->getTesseractNonInverse());
-  drawer0.addToEnvironment(tesseract_->getTesseractNonInverse());
+  table.addToEnvironment(tesseract_->getTesseractNonInverse());
+  //   drawer0.addToEnvironment(tesseract_->getTesseractNonInverse());
 
   door_north.inverseRootTip("world", door_north.getName() + "_handle_link");
-  drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
+  //   drawer0.inverseRootTip("world", drawer0.getName() + "_handle_link");
 
   wall_north_left.addToEnvironment(tesseract_->getTesseract());
   wall_north_right.addToEnvironment(tesseract_->getTesseract());
@@ -106,7 +127,8 @@ bool OpenDoorEnv::createEnvironment() {
   wall_east.addToEnvironment(tesseract_->getTesseract());
   wall_south.addToEnvironment(tesseract_->getTesseract());
   door_north.addToEnvironment(tesseract_->getTesseract());
-  drawer0.addToEnvironment(tesseract_->getTesseract());
+  table.addToEnvironment(tesseract_->getTesseract());
+  //   drawer0.addToEnvironment(tesseract_->getTesseract());
 
   ROS_INFO("add objects to environment success");
 
