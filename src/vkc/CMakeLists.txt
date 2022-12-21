@@ -110,122 +110,6 @@ target_include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(${PROJECT_NAME}_benchmark_env SHARED src/env/benchmark_env.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_benchmark_env
-  ${PROJECT_NAME}_construct_vkc
-  ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract_motion_planners_trajopt 
-  tesseract::tesseract_motion_planners_3mo
-  ${catkin_LIBRARIES}
-)
-target_compile_options(
-  ${PROJECT_NAME}_benchmark_env 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_benchmark_env PUBLIC -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_benchmark_env PUBLIC cxx_std_11)
-endif()
-target_include_directories(
-  ${PROJECT_NAME}_benchmark_env PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>"
-)
-target_include_directories(
-  ${PROJECT_NAME}_benchmark_env SYSTEM PUBLIC
-  ${catkin_INCLUDE_DIRS}
-)
-
-
-add_library(${PROJECT_NAME}_open_door_env SHARED src/env/open_door_env.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_open_door_env
-  ${PROJECT_NAME}_construct_vkc
-  ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract_motion_planners_trajopt 
-  tesseract::tesseract_motion_planners_ompl
-  tesseract::tesseract_motion_planners_3mo
-  ${catkin_LIBRARIES}
-)
-target_compile_options(
-  ${PROJECT_NAME}_open_door_env 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_open_door_env PUBLIC -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_open_door_env PUBLIC cxx_std_11)
-endif()
-target_include_directories(
-  ${PROJECT_NAME}_open_door_env PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>"
-)
-target_include_directories(
-  ${PROJECT_NAME}_open_door_env SYSTEM PUBLIC
-  ${catkin_INCLUDE_DIRS}
-)
-
-add_library(${PROJECT_NAME}_arena_env SHARED src/env/arena_env.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_arena_env
-  ${PROJECT_NAME}_construct_vkc
-  ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract_motion_planners_trajopt 
-  ${catkin_LIBRARIES}
-)
-target_compile_options(
-  ${PROJECT_NAME}_arena_env 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_arena_env PUBLIC -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_arena_env PUBLIC cxx_std_11)
-endif()
-target_include_directories(
-  ${PROJECT_NAME}_arena_env PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>"
-)
-target_include_directories(
-  ${PROJECT_NAME}_arena_env SYSTEM PUBLIC
-  ${catkin_INCLUDE_DIRS}
-)
-
-add_library(${PROJECT_NAME}_uam_env SHARED src/env/uam_env.cpp)
-target_link_libraries(
-  ${PROJECT_NAME}_uam_env
-  ${PROJECT_NAME}_construct_vkc
-  ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_prob_generator
-  tesseract::tesseract_motion_planners_trajopt 
-  ${catkin_LIBRARIES}
-)
-target_compile_options(
-  ${PROJECT_NAME}_uam_env 
-  PUBLIC -Wsuggest-override -Wconversion -Wsign-conversion
-)
-if(CXX_FEATURE_FOUND EQUAL "-1")
-    target_compile_options(${PROJECT_NAME}_uam_env PUBLIC -std=c++11)
-else()
-    target_compile_features(${PROJECT_NAME}_uam_env PUBLIC cxx_std_11)
-endif()
-target_include_directories(
-  ${PROJECT_NAME}_uam_env PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<INSTALL_INTERFACE:include>"
-)
-target_include_directories(
-  ${PROJECT_NAME}_uam_env SYSTEM PUBLIC
-  ${catkin_INCLUDE_DIRS}
-)
-
 add_library(${PROJECT_NAME}_husky SHARED 
   src/planner/ur_kin.cpp
 )
@@ -295,12 +179,8 @@ target_include_directories(
 list(APPEND PACKAGE_LIBRARIES 
   ${PROJECT_NAME}_construct_vkc
   ${PROJECT_NAME}_vkc_env_basic
-  ${PROJECT_NAME}_arena_env
   ${PROJECT_NAME}_urdf_scene_env
-  ${PROJECT_NAME}_uam_env
   ${PROJECT_NAME}_prob_generator
-  ${PROJECT_NAME}_open_door_env
-  ${PROJECT_NAME}_benchmark_env
 )
 
 # Mark executables and/or libraries for installation

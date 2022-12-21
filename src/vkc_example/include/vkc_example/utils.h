@@ -58,29 +58,14 @@ void solveProb(tesseract_planning::PlannerRequest request,
 void solveOmplProb(tesseract_planning::PlannerRequest request,
                    tesseract_planning::PlannerResponse &response, int n_iter);
 
-// CostInfo solveProb_cost(trajopt::TrajOptProb::Ptr prob_ptr,
-// tesseract_planning::PlannerResponse &response,
-//                         int n_iter, bool enable_ploting = false);
-
 void refineTrajectory(tesseract_common::JointTrajectory &traj,
                       vkc::VKCEnvBasic &env);
 
 int saveTrajToFile(const tesseract_common::TrajArray &traj,
                    const std::string filename);
 
-double computeTrajLength(const std::vector<Eigen::VectorXd> trajectory);
-
 std::vector<vkc::JointDesiredPose> getJointHome(
     std::unordered_map<std::string, double> home_pose);
-
-void TrajectoryVisualize(
-    vkc::VKCEnvBasic &env, vkc::ActionSeq &actions,
-    std::vector<tesseract_common::JointTrajectory> &joint_trajs);
-
-int saveDataToFile(const std::vector<double> &data, const std::string filename);
-
-void interpVKCData(std::vector<double> &data, std::vector<double> &elapsed_time,
-                   std::vector<tesseract_common::JointTrajectory> &joint_trajs);
 
 void setBaseJoint(vkc::ActionBase::Ptr action);
 
@@ -126,18 +111,6 @@ void setupLog(
   console_bridge::useOutputHandler(oh);
   console_bridge::setLogLevel(level);
 }
-
-Eigen::VectorXd sampleBasePose(vkc::VKCEnvBasic &env,
-                               Eigen::Isometry3d ee_goal);
-
-bool sampleArmPose1(vkc::VKCEnvBasic &env, Eigen::Isometry3d ee_goal,
-                    Eigen::VectorXd &ik_result);
-
-bool sampleArmPose2(
-    vkc::VKCEnvBasic &env, std::string target_joint, double target_value,
-    Eigen::VectorXd &ik_result,
-    vkc::BaseObject::AttachLocation::ConstPtr attach_location_ptr,
-    int remaining_steps);
 
 void ik2csv(const std::vector<std::string> &joint_names,
             const std::vector<Eigen::VectorXd> &joint_states,

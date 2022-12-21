@@ -776,9 +776,7 @@ int main(int argc, char **argv) {
 
   UrdfSceneEnv env(nh, plotting, rviz, steps, attaches, inverse_chains);
   env.updateEnv(std::vector<std::string>(), Eigen::VectorXd(), nullptr);
-  // showIKs(env,
-  //         "/home/y/Documents/WYY_META/Planning-on-VKC/src/vkc_example/iks/1123_18:24:00_Place:
-  //         open_fridge_place_labeled.csv");
+
   sampleInitBasePose(env);
   vector<TesseractJointTraj> joint_trajs;
   ActionSeq actions;
@@ -788,9 +786,7 @@ int main(int argc, char **argv) {
   setTrajSeed(actions);
   auto elapsed_time =
       run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
-  interpVKCData(data, elapsed_time, joint_trajs);
   std::string save_path =
       ros::package::getPath("vkc_example") + "/trajectory/household_env_" +
       std::to_string(taskid) + "_" + to_string(longhorizon) + ".csv";
-  saveDataToFile(data, save_path);
 }
