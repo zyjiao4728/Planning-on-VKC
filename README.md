@@ -26,7 +26,7 @@ Then download our package and extract files into `projects` folder.
 
 ```bash
 cd projects
-git clone --recursive <github-package-url>
+git clone --recurse-submodules <github-package-url>
 cd <github-package-folder>
 rosdep install --from-paths src --ignore-src -r -y
 catkin build
