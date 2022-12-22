@@ -1,6 +1,6 @@
 # Planning-on-VKC
 
-![ros_vesrion](https://img.shields.io/badge/ROS-Noetic-blue) ![sys-vesrion](https://img.shields.io/badge/Ubuntu-18.04-blue) 
+![ros_vesrion](https://img.shields.io/badge/ROS-Noetic-blue) ![sys-vesrion](https://img.shields.io/badge/Ubuntu-20.04-blue) 
 
 A motion planning framework for virtual kinematic chain.
 
@@ -22,17 +22,17 @@ ros-noetic-ompl ros-noetic-octomap-ros ros-noetic-lms1xx ros-noetic-ifopt
 ```
 
 
-Then download our package
+Then download our package and extract files into `projects` folder.
 
 ```bash
 cd projects
 git clone --recursive <github-package-url>
 cd <github-package-folder>
 rosdep install --from-paths src --ignore-src -r -y
-catkin build --force-cmake -DTESSERACT_ENABLE_TESTING_ALL=OFF -DTESSERACT_ENABLE_TESTING_ALL=OFF
+catkin build
 ```
 
-where `<github-package-url>` the GitHub download URL of our package.
+where `<github-package-url>` is the GitHub download URL of our package.
 
 *Note: Use `--dry-run` to list the packages which will be built.*
 
@@ -53,7 +53,7 @@ roslaunch tesseract_ros_example <example-name>.launch
 The demo shows how a robot tries to pick an object with a tool and to operate articulated object such as opening the door of a cabinet.
 ``` bash
 source <path-to-src>/devel/setup.bash
-roslaunch vkc_example arena_env.launch
+roslaunch vkc_example household_env.launch
 ```
 ![image](./src/pictures/vkc_pick_stick.gif)   ![image](./src/pictures/vkc_move_ball_with_stick.gif)    ![image](./src/pictures/vkc_open_cabinet_door.gif)
 #### 2.2.2 Example of loading scene URDF with build-in module:
@@ -70,19 +70,3 @@ source <path-to-src>/devel/setup.bash
 roslaunch vkc_example vkc_big_task.launch
 ```
 ![image](./src/pictures/vkc_big_task_move_cup_with_plate.gif)    ![image](./src/pictures/vkc_big_task_move_all_cups_with_plate_into_cabinet.gif)    ![image](./src/pictures/vkc_big_task_move_chair_away_from_path_way.gif)
-## 3. Trouble Shooting
-
-### 3.1 Trajopt build test error:
-
-Set default optimization solver to `BPMPD` :
-
-``` bash
-export TRAJOPT_CONVEX_SOLVER=BPMPD
-```
-
-If you have installed Gurobi, use `GUROBI` as your default optimizer:
-
-``` bash
-export TRAJOPT_CONVEX_SOLVER=GUROBI
-```
-

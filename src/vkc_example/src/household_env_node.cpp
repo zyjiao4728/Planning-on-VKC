@@ -48,17 +48,6 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
     auto start = chrono::steady_clock::now();
     if (longhorizon) {
       seed_generator.generate(env, sub_actions);
-
-      // for (int i = 0; i < window_size; i++) {
-      //   auto &act = sub_actions[i];
-      //   if (!act->getJointCandidates().size()) continue;
-      //   ;
-      //   auto kin_group = env.getVKCEnv()->getTesseract()->getKinematicGroup(
-      //       act->getManipulatorID());
-      //   ik2csv(kin_group->getJointNames(), act->getJointCandidates(),
-      //          folder + "/iks/" + getCurrentTime("%m%d_%T") + "_" +
-      //              act->getActionName() + ".csv");
-      // }
     }
 
     auto end = chrono::steady_clock::now();
@@ -124,19 +113,10 @@ std::vector<double> run(vector<TesseractJointTraj> &joint_trajs,
           "Finished optimization. Press <Enter> to start next action");
     }
 
-    // toDelimitedFile(ci,
-    //                 "/home/jiao/BIGAI/vkc_ws/Planning-on-VKC/src/vkc_example/"
-    //                 "trajectory/household_env_" +
-    //                     std::to_string(j) + ".csv",
-    //                 ',');
 
     env.updateEnv(trajectory.back().joint_names, trajectory.back().position,
                   action);
     CONSOLE_BRIDGE_logInform("update env finished");
-    // const tesseract_srdf::KinematicsInformation kin_info =
-    // env.getVKCEnv()->getTesseract()->getKinematicsInformation(); auto cmd =
-    // std::make_shared<AddKinematicsInformationCommand>(kin_info);
-    // env.getVKCEnv()->getTesseract()->applyCommand(cmd);
 
     if (env.getPlotter() != nullptr && rviz_enabled) env.getPlotter()->clear();
     ++j;
@@ -746,7 +726,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "household_env_node");
   ros::NodeHandle pnh("~");
   ros::NodeHandle nh;
-  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_DEBUG);
+  setupLog(console_bridge::CONSOLE_BRIDGE_LOG_WARN);
   ROS_INFO("Initializaing environment node...");
 
   bool plotting = true;
@@ -783,10 +763,6 @@ int main(int argc, char **argv) {
   std::vector<double> data;
 
   genTRODemoSeq(env, actions, robot, taskid);
-  setTrajSeed(actions);
-  auto elapsed_time =
-      run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
-  std::string save_path =
-      ros::package::getPath("vkc_example") + "/trajectory/household_env_" +
-      std::to_string(taskid) + "_" + to_string(longhorizon) + ".csv";
+ // setTrajSeed(actions); // uncomment this to enable pre computed seed
+  run(joint_trajs, env, actions, steps, n_iter, rviz, nruns, longhorizon);
 }
