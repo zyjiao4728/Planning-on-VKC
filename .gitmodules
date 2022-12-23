@@ -1,6 +1,6 @@
 [submodule "src/tesseract_ros"]
 	path = src/tesseract_ros
-	url = ssh://git@github.com:BigAI-Robotics/tesseract_ros.git
+	url = git@github.com:BigAI-Robotics/tesseract_ros.git
 	shallow = true
 [submodule "src/KMeansRex"]
 	path = src/KMeansRex
