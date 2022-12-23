@@ -71,3 +71,5 @@ CATKIN_IGNORE
 *.csv
 *.zip
 *.7z
+
+!src/vkc_example/trajectory/household_*
