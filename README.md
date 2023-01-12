@@ -8,6 +8,8 @@ A motion planning framework for virtual kinematic chain.
 
 ## 1. Installation
 
+
+### 1.1 Preparation
 Firstly, following dependencies need to be manually installed and set up.
 - [ROS Noetic](http://wiki.ros.org/noetic/Installation): we use ROS noetic as our basic platform.
 - [Gurobi Optimizer](https://www.gurobi.com/downloads/gurobi-optimizer-eula/): For Gurobi download and licensed, you need to register an account first (Free academic use if you have an .edu email). An detail installation documentation is available [here](https://www.gurobi.com/documentation/).
@@ -21,14 +23,19 @@ sudo apt install python3-catkin-tools ros-noetic-octomap-msgs ros-noetic-octomap
 ros-noetic-ompl ros-noetic-octomap-ros ros-noetic-lms1xx ros-noetic-ifopt
 ```
 
+### 1.2 Clone repositories
 
-Then download our package and extract files into `projects` folder.
+We recommend to clone the repository instead of downloading files to avoid submodule errors.
+
+Be sure you have [added ssh key to github account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) to clone the submodules.
+
+Cloning the repositories(especially submodules) may take up to hours, depend on your network connection.
 
 ```bash
 cd projects
 git clone --recurse-submodules <github-package-url>
 cd <github-package-folder>
-git submodule update --init
+git submodule update --init --recursive --progress
 rosdep install --from-paths src --ignore-src -r -y
 catkin build
 ```
